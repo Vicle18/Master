@@ -20,17 +20,17 @@ for better description, see https://strimzi.io/docs/operators/latest/deploying.h
 
 ### replace namespace in cluster operator configuration to kafka
 ```
-sed -i '' 's/namespace: .*/namespace: kafka/' install/cluster-operator/*RoleBinding*.yaml
+sed -i '' 's/namespace: .*/namespace: kafka/' kafka/strimzi-0.32.0/install/cluster-operator/*RoleBinding*.yaml
 ```
 
 ### deploy cluster operator
 ```
-kubectl create -f install/cluster-operator -n kafka
+kubectl create -f kafka/strimzi-0.32.0/install/cluster-operator -n kafka
 ```
 
 ### deploy kafka
 ```
-kubectl apply -f examples/kafka/kafka-ephemeral-single.yaml
+kubectl apply -f kafka/strimzi-0.32.0/examples/kafka/kafka-ephemeral-single.yaml
 ```
 
 ### Launch producer
