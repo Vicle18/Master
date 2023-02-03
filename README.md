@@ -2,7 +2,6 @@
 
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)
 ```
-kind create cluster --config "kubernetes/kind_config.yaml"
 ```
 
 ## Create kafka namespace
