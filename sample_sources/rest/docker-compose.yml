@@ -1,5 +1,4 @@
-# this is a docker compose file for a python rest server
-# it uses the python:3.6 image from docker hub
+
 services:
   server:
     build: .

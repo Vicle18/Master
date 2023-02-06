@@ -1,0 +1,40 @@
+2023-02-06 12:39:04,768 DEBUG [SocketServer listenerType=ZK_BROKER, nodeId=0] Connection with /10.244.0.97 (channelId=10.244.0.114:9093-10.244.0.97:60040-2) disconnected (org.apache.kafka.common.network.Selector) [data-plane-kafka-network-thread-0-ListenerName(TLS-9093)-SASL_SSL-4]
+java.io.EOFException
+        at org.apache.kafka.common.network.SslTransportLayer.read(SslTransportLayer.java:629)
+        at org.apache.kafka.common.network.NetworkReceive.readFrom(NetworkReceive.java:95)
+        at org.apache.kafka.common.network.KafkaChannel.receive(KafkaChannel.java:452)
+        at org.apache.kafka.common.network.KafkaChannel.read(KafkaChannel.java:402)
+        at org.apache.kafka.common.network.Selector.attemptRead(Selector.java:674)
+        at org.apache.kafka.common.network.Selector.pollSelectionKeys(Selector.java:576)
+        at org.apache.kafka.common.network.Selector.poll(Selector.java:481)
+        at kafka.network.Processor.poll(SocketServer.scala:1055)
+        at kafka.network.Processor.run(SocketServer.scala:959)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+2023-02-06 12:39:04,768 DEBUG [SocketServer listenerType=ZK_BROKER, nodeId=0] Connection with /10.244.0.97 (channelId=10.244.0.114:9093-10.244.0.97:55288-1) disconnected (org.apache.kafka.common.network.Selector) [data-plane-kafka-network-thread-0-ListenerName(TLS-9093)-SASL_SSL-6]
+java.io.EOFException
+        at org.apache.kafka.common.network.SslTransportLayer.read(SslTransportLayer.java:629)
+        at org.apache.kafka.common.network.NetworkReceive.readFrom(NetworkReceive.java:95)
+        at org.apache.kafka.common.network.KafkaChannel.receive(KafkaChannel.java:452)
+        at org.apache.kafka.common.network.KafkaChannel.read(KafkaChannel.java:402)
+        at org.apache.kafka.common.network.Selector.attemptRead(Selector.java:674)
+        at org.apache.kafka.common.network.Selector.pollSelectionKeys(Selector.java:576)
+        at org.apache.kafka.common.network.Selector.poll(Selector.java:481)
+        at kafka.network.Processor.poll(SocketServer.scala:1055)
+        at kafka.network.Processor.run(SocketServer.scala:959)
+        at java.base/java.lang.Thread.run(Thread.java:829)
+2023-02-06 12:39:05,235 DEBUG Incremental fetch context with session id 1624968908 returning 0 partition(s) (kafka.server.IncrementalFetchContext) [executor-Fetch]
+2023-02-06 12:39:05,236 DEBUG Created a new incremental FetchContext for session id 1624968908, epoch 1879: added 0 partition(s), updated 0 partition(s), removed 0 partition(s) (kafka.server.FetchManager) [data-plane-kafka-request-handler-5]
+2023-02-06 12:39:05,236 DEBUG Authorization GRANTED - user is a superuser: User:CN=my-cluster-entity-topic-operator,O=io.strimzi, cluster: my-cluster, operation: READ, resource: TOPIC:__strimzi_store_topic (io.strimzi.kafka.oauth.server.authorizer.KeycloakRBACAuthorizer.grant) [data-plane-kafka-request-handler-5]
+2023-02-06 12:39:05,736 DEBUG Incremental fetch context with session id 1624968908 returning 0 partition(s) (kafka.server.IncrementalFetchContext) [executor-Fetch]
+2023-02-06 12:39:05,740 DEBUG Created a new incremental FetchContext for session id 1624968908, epoch 1880: added 0 partition(s), updated 0 partition(s), removed 0 partition(s) (kafka.server.FetchManager) [data-plane-kafka-request-handler-2]
+2023-02-06 12:39:05,741 DEBUG Authorization GRANTED - user is a superuser: User:CN=my-cluster-entity-topic-operator,O=io.strimzi, cluster: my-cluster, operation: READ, resource: TOPIC:__strimzi_store_topic (io.strimzi.kafka.oauth.server.authorizer.KeycloakRBACAuthorizer.grant) [data-plane-kafka-request-handler-2]
+2023-02-06 12:39:06,207 DEBUG Authorization GRANTED - user is a superuser: User:CN=my-cluster-entity-topic-operator,O=io.strimzi, cluster: my-cluster, operation: READ, resource: GROUP:__strimzi-topic-operator-kstreams (io.strimzi.kafka.oauth.server.authorizer.KeycloakRBACAuthorizer.grant) [data-plane-kafka-request-handler-4]
+2023-02-06 12:39:06,207 DEBUG Request key MemberKey(__strimzi-topic-operator-kstreams,__strimzi-topic-operator-kstreams-b14963c5-605f-4959-8aef-4f755a366c79-StreamThread-1-consumer-ec5bbd78-cfac-4a51-ae68-a0bca233a434) unblocked 1 Heartbeat operations (kafka.server.DelayedOperationPurgatory) [data-plane-kafka-request-handler-4]
+2023-02-06 12:39:06,242 DEBUG Incremental fetch context with session id 1624968908 returning 0 partition(s) (kafka.server.IncrementalFetchContext) [executor-Fetch]
+2023-02-06 12:39:06,243 DEBUG Created a new incremental FetchContext for session id 1624968908, epoch 1881: added 0 partition(s), updated 0 partition(s), removed 0 partition(s) (kafka.server.FetchManager) [data-plane-kafka-request-handler-7]
+2023-02-06 12:39:06,243 DEBUG Authorization GRANTED - user is a superuser: User:CN=my-cluster-entity-topic-operator,O=io.strimzi, cluster: my-cluster, operation: READ, resource: TOPIC:__strimzi_store_topic (io.strimzi.kafka.oauth.server.authorizer.KeycloakRBACAuthorizer.grant) [data-plane-kafka-request-handler-7]
+2023
+
+bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9093 --topic amessages --producer.config /tmp/team-a-client.properties
+
+bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9093 --topic amessages --from-beginning --consumer.config /tmp/team-a-client.properties --group a_consumer_group_1

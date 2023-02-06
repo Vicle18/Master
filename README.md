@@ -2,7 +2,9 @@
 
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)
 ```
+kind create cluster --config kind_config.yaml
 ```
+
 
 ## Create kafka namespace
 ```
@@ -11,7 +13,7 @@ kubectl create -f ./kubernetes/create_kafka_namespace.yaml
 
 ## Set default namespace to kafka
 ```
-kubectl config set-context --current --namespace=kafka
+kubectl config set-context --current --namespace=sso
 ```
 
 ## Deploy Strimzi Kafka on Kubernetes (cd to strimzi-0.32...)
@@ -19,17 +21,17 @@ for better description, see https://strimzi.io/docs/operators/latest/deploying.h
 
 ### replace namespace in cluster operator configuration to kafka
 ```
-sed -i '' 's/namespace: .*/namespace: kafka/' kafka/strimzi-0.32.0/install/cluster-operator/*RoleBinding*.yaml
+sed -i '' 's/namespace: .*/namespace: sso/' kafka/strimzi-0.32.0/install/cluster-operator/*RoleBinding*.yaml
 ```
 
 ### deploy cluster operator
 ```
-kubectl create -f kafka/strimzi-0.32.0/install/cluster-operator -n kafka
+kubectl create -f kafka/strimzi-0.32.0/install/cluster-operator -n sso
 ```
 
 ### deploy kafka
 ```
-kubectl apply -f kafka/strimzi-0.32.0/examples/kafka/kafka-ephemeral-single.yaml
+kubectl apply -f kafka/kafka-persistent-single-oauth.yaml -n sso
 ```
 
 ### Launch producer

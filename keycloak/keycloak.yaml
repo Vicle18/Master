@@ -1,0 +1,140 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  - name: https
+    port: 8443
+    targetPort: 8443
+  selector:
+    app: keycloak
+  type: LoadBalancer
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: sleighzy/keycloak
+        env:
+        - name: KEYCLOAK_USER
+          value: "admin"
+        - name: KEYCLOAK_PASSWORD
+          value: "admin"
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        readinessProbe:
+          httpGet:
+            path: /auth/realms/master
+            port: 8080
+        volumeMounts:
+        - name: tls-keys
+          mountPath: "/etc/x509/https"
+          readOnly: true
+      volumes:
+        - name: tls-keys
+          secret:
+            secretName: tls-keys
+  
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: example-ingress
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2
+# spec:
+#   tls:
+#     - hosts:
+#       - fake
+#       secretName: tls-keys
+#   rules:
+#   - http:
+#       paths:
+#       - pathType: Prefix
+#         path: /foo(/|$)(.*)
+#         backend:
+#           service:
+#             name: foo-service
+#             port:
+#               number: 8080
+#       - pathType: Prefix
+#         path: /bar(/|$)(.*)
+#         backend:
+#           service:
+#             name: bar-service
+#             port:
+#               number: 8080
+#       - pathType: Prefix
+#         path: "/"
+#         backend:
+#           service:
+#             name: keycloak
+#             port:
+#               number: 443
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: keycloak
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: keycloak
+#   template:
+#     metadata:
+#       labels:
+#         app: keycloak
+#     spec:
+#       containers:
+#       - name: keycloak
+#         image: wizzn/keycloak:14
+#         env:
+#         - name: KEYCLOAK_USER
+#           value: "admin"
+#         - name: KEYCLOAK_PASSWORD
+#           value: "admin"
+#         - name: PROXY_ADDRESS_FORWARDING
+#           value: "true"
+#         ports:
+#         - name: http
+#           containerPort: 8080
+#         - name: https
+#           containerPort: 8443
+#         readinessProbe:
+#           httpGet:
+#             path: /auth/realms/master
+#             port: 8080
+#         volumeMounts:
+#         - name: tls-keys
+#           mountPath: "/etc/x509/https"
+#           readOnly: true
+#       volumes:
+#         - name: tls-keys
+#           secret:
+#             secretName: tls-keys
