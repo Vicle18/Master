@@ -29,12 +29,12 @@ sed -i '' 's/namespace: .*/namespace: sso/' kafka/strimzi-0.32.0/install/cluster
 kubectl create -f kafka/strimzi-0.32.0/install/cluster-operator -n sso
 ```
 
-### deploy kafka
+<!-- ### deploy kafka
 ```
 kubectl apply -f kafka/kafka-persistent-single-oauth.yaml -n sso
-```
+``` -->
 
-### Launch producer
+<!-- ### Launch producer
 ```
 kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
 ```
@@ -42,4 +42,4 @@ kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 
 ### Launch consumer
 ```
 kubectl run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 --rm=true --restart=Never -- bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic --from-beginning
-```
+``` -->

@@ -92,7 +92,7 @@
       "clientRoles" : {
         "account" : [ "manage-account", "view-profile" ]
       },
-      "groups" : [ "/ClusterManager Group" ]
+      "groups" : [ ]
     },
     {
       "username" : "service-account-team-b-client",
@@ -102,7 +102,7 @@
       "clientRoles" : {
         "account" : [ "manage-account", "view-profile" ]
       },
-      "groups" : [ "/ClusterManager Group" ]
+      "groups" : [ ]
     }
   ],
   "clients": [
@@ -153,10 +153,10 @@
         "policyEnforcementMode": "ENFORCING",
         "resources": [
           {
-            "name": "Topic:a*",
+            "name": "Topic:a_*",
             "type": "Topic",
             "ownerManagedAccess": false,
-            "displayName": "Topics that start with a",
+            "displayName": "Topics that start with a_",
             "attributes": {},
             "uris": [],
             "scopes": [
@@ -183,17 +183,14 @@
               },
               {
                 "name": "AlterConfigs"
-              },
-              {
-                "name": "IdempotentWrite"
               }
             ]
           },
           {
-            "name": "Group:x*",
+            "name": "Group:x_*",
             "type": "Group",
             "ownerManagedAccess": false,
-            "displayName": "Consumer groups that start with x",
+            "displayName": "Consumer groups that start with x_",
             "attributes": {},
             "uris": [],
             "scopes": [
@@ -209,10 +206,10 @@
             ]
           },
           {
-            "name": "Topic:x*",
+            "name": "Topic:x_*",
             "type": "Topic",
             "ownerManagedAccess": false,
-            "displayName": "Topics that start with x",
+            "displayName": "Topics that start with x_",
             "attributes": {},
             "uris": [],
             "scopes": [
@@ -243,10 +240,10 @@
             ]
           },
           {
-            "name": "Group:a*",
+            "name": "Group:a_*",
             "type": "Group",
             "ownerManagedAccess": false,
-            "displayName": "Groups that start with a",
+            "displayName": "Groups that start with a_",
             "attributes": {},
             "uris": [],
             "scopes": [
@@ -315,7 +312,7 @@
             ]
           },
           {
-            "name": "kafka-cluster:my-cluster,Topic:b*",
+            "name": "kafka-cluster:my-cluster,Topic:b_*",
             "type": "Topic",
             "ownerManagedAccess": false,
             "attributes": {},
@@ -503,6 +500,17 @@
             }
           },
           {
+            "id": "93030db9-0f83-4fe5-af41-b90aaac09ec3",
+            "name": "Dev Team A Access to cluster",
+            "type": "resource",
+            "logic": "POSITIVE",
+            "decisionStrategy": "UNANIMOUS",
+            "config": {
+              "resources": "[\"Cluster:*\"]",
+              "applyPolicies": "[\"Dev Team A\"]"
+            }
+          },
+          {
             "name": "Dev Team B owns topics that start with b_ on cluster my-cluster",
             "type": "resource",
             "logic": "POSITIVE",
@@ -589,15 +597,6 @@
             "decisionStrategy" : "UNANIMOUS",
             "config" : {
               "resources" : "[\"Topic:*\"]",
-              "applyPolicies" : "[\"ClusterManager Group\"]"
-            }
-          }, {
-            "name" : "ClusterManager Group has full access to cluster config",
-            "type" : "resource",
-            "logic" : "POSITIVE",
-            "decisionStrategy" : "UNANIMOUS",
-            "config" : {
-              "resources" : "[\"Cluster:*\"]",
               "applyPolicies" : "[\"ClusterManager Group\"]"
             }
           }
