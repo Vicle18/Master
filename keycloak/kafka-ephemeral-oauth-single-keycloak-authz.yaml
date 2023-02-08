@@ -20,6 +20,8 @@ spec:
           tlsTrustedCertificates:
             - secretName: oauth-server-cert
               certificate: sso.crt
+        # ADD new listener on port 9092
+        
     authorization:
       type: keycloak
       clientId: kafka
