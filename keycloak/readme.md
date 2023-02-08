@@ -5,7 +5,8 @@ https://strimzi.io/docs/operators/0.32.0/configuring.html#con-mapping-keycloak-a
 
 # Setup for a secure kafka with keycloak
 ## Generate relevant certificates, including root certificate and signed certificates for keycloak using the following script
-./certificate_gen.sh
+## Only if there are no certificates, otherwise not necessary
+./certificate_gen.sh 
 
 ## Save the generated certificates and private key as a kubernetes secret
 kubectl create secret tls tls-keys -n sso \
