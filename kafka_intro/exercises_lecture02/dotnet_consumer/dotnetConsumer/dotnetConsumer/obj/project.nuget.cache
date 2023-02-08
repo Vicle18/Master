@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "q8S0cuv8uh/3fY6Olso+W+7FtR+Q1AXyUN1lKYg2ARHENe4fH7NEvq9XwpUg2wjvy/MirOPWo2z6wkP/CUdPGw==",
+  "success": true,
+  "projectFilePath": "/Users/bendesiewertsen/Documents/SDU/10_Semester/SoftwareArchitecture/Exercises/exercises_lecture02/dotnet_consumer/dotnetConsumer/dotnetConsumer/dotnetConsumer.csproj",
+  "expectedPackageFiles": [
+    "/Users/bendesiewertsen/.nuget/packages/confluent.kafka/2.0.2/confluent.kafka.2.0.2.nupkg.sha512",
+    "/Users/bendesiewertsen/.nuget/packages/librdkafka.redist/2.0.2/librdkafka.redist.2.0.2.nupkg.sha512",
+    "/Users/bendesiewertsen/.nuget/packages/system.memory/4.5.0/system.memory.4.5.0.nupkg.sha512"
+  ],
+  "logs": []
+}
