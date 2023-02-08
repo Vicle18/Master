@@ -1,0 +1,18 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: ingress-adapter
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: ingress-adapter
+  template: 
+    metadata: 
+      labels: 
+        app: ingress-adapter
+    spec: 
+      containers: 
+        - name: ingress-adapter 
+          image: ingress:latest
+          imagePullPolicy: Never
