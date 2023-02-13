@@ -44,7 +44,7 @@ public class Controller : IController
     private void InitializeIngressCommunication()
     {
         _ingressClient = new MQTTIngressClient(_config);
-        _ingressClient.Initialize();
+        _ingressClient.Initialize(TransmitMessage);
     }
 
     public void StartTransmission()
@@ -61,8 +61,9 @@ public class Controller : IController
         Log.Debug("Stopping transmission");
     }
 
-    public void TransmitMessage(string targetTopic, string value)
+    private void TransmitMessage(string targetTopic, string value)
     {
-        _busClient.Publish(targetTopic);
+        // _busClient.Publish(targetTopic);
+        Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
     }
 }

@@ -40,18 +40,18 @@ public class MQTTIngressClient : IIngressClient
         Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs) );
     }
     
-    public void Initialize()
+    public void Initialize(Action<string, string> messageHandler)
     {
         Task task = Task.Run(async () =>
         {
             Log.Debug($"Starting initializing MQTT receiver");
-            await InitializeMqttClient();
+            await InitializeMqttClient(messageHandler);
             Log.Debug($"Finished initializing MQTT receiver");
             SubscribeToTopic("example");
         }, cts.Token);
     }
     
-    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId)
+    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId, Action<string, string> messageHandler)
         {
             Log.Debug( "Connecting to mqtt with broker: {broker}, and clientId {clientId}", mqttHost + ":" + mqttPort, mqttClientId);
             await Task.Run(async () =>
@@ -61,7 +61,8 @@ public class MQTTIngressClient : IIngressClient
                     .WithTcpServer(mqttHost
                         , int.Parse(mqttPort))
                     .Build();
-                SetReceivingHandler();
+                SetReceivingHandler(messageHandler);
+
                 while (!mqttClient.IsConnected)
                 {
                     Task currentExecution = Task.Delay(5000, new CancellationTokenSource().Token);
@@ -70,7 +71,7 @@ public class MQTTIngressClient : IIngressClient
                         try
                         {
                             mqttClient.ConnectAsync(options, CancellationToken.None).GetAwaiter().GetResult();
-                            await StartHeartBeat();
+                            await StartHeartBeat(messageHandler);
                         }
                         catch (MQTTnet.Exceptions.MqttCommunicationTimedOutException ex)
                         {
@@ -89,14 +90,14 @@ public class MQTTIngressClient : IIngressClient
             });
         }
 
-    private async Task InitializeMqttClient()
+    private async Task InitializeMqttClient(Action<string, string> messageHandler)
     {
         factory = new MqttFactory();
         mqttClient = factory.CreateMqttClient();
-        await ConnectToMQTT(_mqttConfig.HOST, _mqttConfig.PORT, Guid.NewGuid().ToString());
+        await ConnectToMQTT(_mqttConfig.HOST, _mqttConfig.PORT, Guid.NewGuid().ToString(), messageHandler);
     }
 
-    private async Task StartHeartBeat()
+    private async Task StartHeartBeat(Action<string, string> messageHandler)
     {
         Log.Debug( "Starting heartbeat");
         await Task.Run(async () =>
@@ -109,7 +110,7 @@ public class MQTTIngressClient : IIngressClient
                     Log.Information("Still connected to MQTT Broker");
                 });
             }
-            await InitializeMqttClient();
+            await InitializeMqttClient(messageHandler);
         }, cts.Token);
     }
     
@@ -127,14 +128,25 @@ public class MQTTIngressClient : IIngressClient
         }
     }
     
-    private void SetReceivingHandler()
+    private void SetReceivingHandler(Action<string, string> messageHandler)
     {
         mqttClient.ApplicationMessageReceivedAsync += e =>
         {
-            Log.Debug( 
-                $"Received MQTT message:{Encoding.UTF8.GetString(e.ApplicationMessage.Payload)} on topic {e.ApplicationMessage.Topic}");
-            //HANDLE MESSAGE HERE, I.E. SEND TO CONTROLLER
-            return Task.CompletedTask;
+            try
+            {
+                var message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                var topic = e.ApplicationMessage.Topic;
+                Log.Debug($"Received MQTT message:{message} on topic {topic}");
+                var targetTopic = _transitionPairs[topic];
+                messageHandler(targetTopic, message);
+                return Task.CompletedTask;
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error at mqtt receiving handler");
+            }
+
+            throw new InvalidOperationException();
         };
     }
 
