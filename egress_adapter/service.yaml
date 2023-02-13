@@ -1,0 +1,16 @@
+
+# Patch the type by 
+# kubectl patch svc <my_service> -p '{"spec": {"ports": [{"port": 1883,"targetPort": 1883,"name": "https"},{"port": 1883,"targetPort": 1883,"name": "http"}],"type": "ClusterIP"}}'
+# Maybe the second {} can be avoided 
+apiVersion: v1
+kind: Service
+metadata:
+  name: egress-broker
+spec:
+  selector:
+    app: myappbroker
+  type: LoadBalancer
+  ports:
+  - port: 1883
+    targetPort: 1883
+    nodePort: 30005

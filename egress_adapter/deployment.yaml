@@ -26,4 +26,3 @@ spec:
             cpu: "150m"  
         ports:
         - containerPort: 1883
-
