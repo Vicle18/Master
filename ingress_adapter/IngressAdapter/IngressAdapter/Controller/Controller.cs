@@ -1,4 +1,5 @@
 using IngressAdapter.BusCommunication;
+using IngressAdapter.BusCommunication.KAFKA;
 using IngressAdapter.IngressCommunication;
 using IngressAdapter.IngressCommunication.MQTT;
 using Microsoft.Extensions.Configuration;
@@ -38,7 +39,7 @@ public class Controller : IController
 
     private void InitializeBusCommunication()
     {
-        _busClient = new BusClient(_config);
+        _busClient = new KafkaClient(_config);
     }
     
     private void InitializeIngressCommunication()
@@ -56,14 +57,21 @@ public class Controller : IController
         Log.Debug("Starting Transmission");
         while (!cts.IsCancellationRequested)
         {
-            
+            JObject msg = new JObject()
+            {
+                ["id"]=_config.GetValue<string>("ID"),
+                ["timestamp"]=DateTime.Now
+                
+            };
+            _busClient.Publish("ingress_availability", msg.ToString());
+            Task.Delay(3000).Wait();
         }
         Log.Debug("Stopping transmission");
     }
 
     private void TransmitMessage(string targetTopic, string value)
     {
-        // _busClient.Publish(targetTopic);
+        _busClient.Publish(targetTopic, value);
         Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
     }
 }

@@ -22,9 +22,7 @@ public class MQTTIngressClient : IIngressClient
         _config = config;
         _mqttConfig = new MQTTConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_mqttConfig);
-        Log.Debug("Starting MQTT");
-        Console.WriteLine($"Received config: {_mqttConfig}");
-        Log.Debug("Received config: {config}", _mqttConfig);
+        Log.Debug("Received ingress config: {config}", _mqttConfig);
         _transitionPairs = new Dictionary<string, string>();
         ExtractTransitionPairs(_mqttConfig.TRANSMISSION_PAIRS);
     }

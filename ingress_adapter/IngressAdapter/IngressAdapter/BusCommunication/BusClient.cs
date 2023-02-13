@@ -11,12 +11,19 @@ public class BusClient : IBusClient
         _config = config;
     }
 
-    public void Subscribe(string topic)
+
+    public void Initialize()
     {
+        throw new NotImplementedException();
+    }
+
+    public void Subscribe(string topic, Action<string, string> messageHandler)
+    {
+        throw new NotImplementedException();
     }
 
     public void Publish(string topic, string message)
     {
-        
+        throw new NotImplementedException();
     }
 }

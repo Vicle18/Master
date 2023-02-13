@@ -2,6 +2,7 @@ namespace IngressAdapter.BusCommunication;
 
 public interface IBusClient
 {
-    public void Subscribe(string topic);
+    public void Initialize();
+    public void Subscribe(string topic, Action<string, string> messageHandler);
     public void Publish(string topic, string message);
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GenericAAS.BusCommunication.KAFKA
+namespace IngressAdapter.BusCommunication.KAFKA
 {
     /// <summary>
     /// Responsible for receiving messages from multiple topics, the client can subscribe to multiple topics at once, add new ones and remove them again
@@ -18,7 +18,7 @@ namespace GenericAAS.BusCommunication.KAFKA
         /// Responsible for adding a new subscription to be listened to
         /// </summary>
         /// <param name="topic"></param>
-        public void AddSubscription(string topic, Action<string, ReceivedBusMessage> msgHandler);
+        public void AddSubscription(string topic, Action<string, string> msgHandler);
         /// <summary>
         /// Responsible for removing a previously subscribed to topic
         /// </summary>
