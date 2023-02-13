@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IngressAdapter", "IngressAdapter\IngressAdapter.csproj", "{72E3AF9D-BAA9-4D26-AA34-C115EF593EFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestIngressAdapter", "TestIngressAdapter\TestIngressAdapter.csproj", "{1F61EAD7-0D67-4FD9-9718-5299A5D46D35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{72E3AF9D-BAA9-4D26-AA34-C115EF593EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E3AF9D-BAA9-4D26-AA34-C115EF593EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E3AF9D-BAA9-4D26-AA34-C115EF593EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E3AF9D-BAA9-4D26-AA34-C115EF593EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F61EAD7-0D67-4FD9-9718-5299A5D46D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F61EAD7-0D67-4FD9-9718-5299A5D46D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F61EAD7-0D67-4FD9-9718-5299A5D46D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F61EAD7-0D67-4FD9-9718-5299A5D46D35}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
