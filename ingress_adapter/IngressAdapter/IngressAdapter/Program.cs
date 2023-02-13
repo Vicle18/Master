@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System;
+using IngressAdapter.BusCommunication;
 using IngressAdapter.Controller;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,23 +18,17 @@ namespace IngressAdapter
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {NewLine}{Exception}")
+                .MinimumLevel.Debug()
                 .CreateBootstrapLogger();
             
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IController, Controller.Controller>();
-                    // services.AddSingleton<IBusClientCreator, BusClientCreator>();
-                    // services.AddSingleton<IAssetClientCreator, AssetClientCreator>();
-                    // services.AddSingleton<IController, Controller.Controller>();
-                    // services.AddSingleton<IExecutionHandler, ExecutionHandler>();
-                    // services.AddSingleton<IStreamingClientCreator, StreamingClientCreator>();
-                    // services.AddSingleton<IResponseTool, ResponseTool>();
-                    // services.AddSingleton<IBusMessageBuilder, BusMessageBuilder>();
-                    //
-                    // services.AddSingleton<II4Logger>(provider => new I4Logger(provider.GetService<IConfiguration>(), provider.GetService<IConfiguration>().GetValue<string>("SERVICE_ID")));
-                    //
-
+                    services.AddSingleton<IBusClient, BusClient>();
+                    
+                    
+                    
                 }).ConfigureAppConfiguration((config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory())
@@ -43,6 +38,14 @@ namespace IngressAdapter
                 })
                 .UseSerilog()
                 .Build();
+            
+            
+            
+            
+            
+            
+            
+            
             var controller = ActivatorUtilities.GetServiceOrCreateInstance<IController>(host.Services);
             var config = ActivatorUtilities.GetServiceOrCreateInstance<IConfiguration>(host.Services);
 

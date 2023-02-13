@@ -61,8 +61,8 @@ public class Controller : IController
         Log.Debug("Stopping transmission");
     }
 
-    public void TransmitMessage()
+    public void TransmitMessage(string targetTopic, string value)
     {
-        
+        _busClient.Publish(targetTopic);
     }
 }

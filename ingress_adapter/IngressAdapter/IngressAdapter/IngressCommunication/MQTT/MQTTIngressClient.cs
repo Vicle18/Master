@@ -22,9 +22,6 @@ public class MQTTIngressClient : IIngressClient
         _config = config;
         _mqttConfig = new MQTTConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_mqttConfig);
-        // _host = config.GetValue<string>("HOST");
-        // _port = config.GetValue<string>("PORT");
-        // _clientId = config.GetValue<string>("CLIENT_ID");
         Log.Debug("Starting MQTT");
         Console.WriteLine($"Received config: {_mqttConfig}");
         Log.Debug("Received config: {config}", _mqttConfig);
@@ -50,6 +47,7 @@ public class MQTTIngressClient : IIngressClient
             Log.Debug($"Starting initializing MQTT receiver");
             await InitializeMqttClient();
             Log.Debug($"Finished initializing MQTT receiver");
+            SubscribeToTopic("example");
         }, cts.Token);
     }
     
@@ -113,6 +111,20 @@ public class MQTTIngressClient : IIngressClient
             }
             await InitializeMqttClient();
         }, cts.Token);
+    }
+    
+    public async void SubscribeToTopic(string topic)
+    {
+        if (mqttClient.IsConnected)
+        {
+            Log.Debug( "Subscribing to MQTT topic {topic}", topic);
+            await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
+        }
+        else
+        {
+            Log.Debug( "could not subscribe to topic {topic}, because the client was not connected",
+                topic);
+        }
     }
     
     private void SetReceivingHandler()
