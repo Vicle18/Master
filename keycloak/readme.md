@@ -20,7 +20,7 @@ kubectl apply -f keycloak.yaml -n sso
 #### Current problem is, that the port forward fails after a minute or two, to increase time on mac, use in the same console
 ulimit -n 65536 
 ### To access keycloak, you need to port forward
-kubectl port-forward -n sso service/keycloak 8444:8443
+kubectl port-forward -n sso service/keycloak 8443:8443
 
 
 ##### Then you can open keycloak here:
@@ -107,7 +107,7 @@ bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9093
 First message
 
 ##### Consume
-bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9093 --topic a_messages --from-beginning --consumer.config /tmp/team-a-client.properties --group a_consumer_group_a
+bin/kafka-console-consumer.sh --bootstrap-server my-cluster-kafka-bootstrap:9093 --topic a_topic --from-beginning --consumer.config /tmp/team-a-client.properties --group a_consumer_group_a
 
 ### Team B
 cat > /tmp/team-b-client.properties << EOF

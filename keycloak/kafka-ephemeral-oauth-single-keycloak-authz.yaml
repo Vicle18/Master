@@ -7,6 +7,16 @@ spec:
     version: 3.3.1
     replicas: 1
     listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: external
+        port: 9094
+        type: nodeport
+        tls: true
+        authentication:
+          type: tls
       - name: tls
         port: 9093
         type: internal

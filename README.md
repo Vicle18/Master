@@ -4,7 +4,7 @@
 ```
 kind create cluster --config kubernetes/kind_config.yaml
 ```
-f
+
 
 ## Create kafka namespace
 ```
