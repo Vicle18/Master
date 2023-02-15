@@ -15,6 +15,8 @@ services:
     volumes:
       - ./run_workaround.sh:/tmp/run_workaround.sh
     command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    profiles:
+      - kafka
     networks:
       shared_network:
   kowl: 
@@ -26,6 +28,29 @@ services:
     restart: always
     depends_on: 
       - "kafka1"
+    profiles:
+      - kafka
+    networks:
+      shared_network:
+  neo4j:
+    image: neo4j
+    restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - ./neo4j/conf:/conf
+      - ./neo4j/data:/data
+      - ./neo4j/import:/import
+      - ./neo4j/logs:/logs
+      - ./neo4j/plugins:/plugins
+    environment: 
+      # Raise memory limits
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+    profiles:
+      - neo4j
     networks:
       shared_network:
 networks:
