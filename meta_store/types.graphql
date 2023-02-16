@@ -1,0 +1,70 @@
+# Interfaces
+interface Resource {
+    id: ID!
+    name: String!
+}
+
+interface ManufacturingFacility {
+    id: ID!
+    name: String!
+}
+
+# Types
+type Company implements ManufacturingFacility & Resource {
+    id: ID!
+    name: String!
+    plants: [Plant!]! @relationship(type: "has", direction: OUT)
+}
+
+type Plant {
+    id: ID!
+    name: String!
+
+}
+
+type Area{
+    id: ID!
+    name: String!
+    lines: [Line!]! @relationship(type: "has", direction: OUT)
+    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+}
+
+
+type Line{
+    id: ID!
+    name: String!
+    cells: [Cell!]!  @relationship(type: "has", direction: OUT)
+    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+}
+
+type Cell{
+    id: ID!
+    name: String!
+    machines: [Machine!]! @relationship(type: "has", direction: OUT)
+    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+}
+
+type Machine{
+    id: ID!
+    name: String!
+    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+}
+
+type ObservableProperty{
+    id: ID!
+    name: String!
+    description: String!
+    frequency: Int!
+    topic: Topic! @relationship(type: "has", direction: OUT)
+}
+
+type Topic{
+    id: ID!
+    name: String!
+    description: String!
+}
+
+
+
+
+

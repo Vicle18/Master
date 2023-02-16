@@ -1,15 +1,8 @@
 ﻿using Confluent.Kafka;
-using I4ToolchainDotnetCore.Logging;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Serilog;
 
-namespace GenericAAS.BusCommunication.KAFKA
+namespace IngressAdapter.BusCommunication.KAFKA
 {
     /// <summary>
     /// An Implementation of a kafka receiver, that creates a new consumer for each subscription. Good for handling multiple topics, where one or more
@@ -19,21 +12,19 @@ namespace GenericAAS.BusCommunication.KAFKA
     {
         private readonly IConfiguration _config;
         private Dictionary<string, CancellationTokenSource> topicSubCancellationTokenSources;
-        private II4Logger _log;
         private string _host;
         private string _port;
         private IKafkaProducer _producer;
         private string _groupId;
-        public KafkaMultiThreadReceiver(string host, string port, string groupId, II4Logger log, IKafkaProducer producer)
+        public KafkaMultiThreadReceiver(string host, string port, string groupId, IKafkaProducer producer)
         {
-            _log = log;
             _host = host;
             _port = port;
             _groupId = groupId;
             _producer = producer;
             topicSubCancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
         }
-        public void AddSubscription(string topic, Action<string, ReceivedBusMessage> msgHandler)
+        public void AddSubscription(string topic, Action<string, string> msgHandler)
         {
             var conf = new ConsumerConfig
             {
@@ -41,9 +32,7 @@ namespace GenericAAS.BusCommunication.KAFKA
                 BootstrapServers = _host + ":" + _port,
                 AutoOffsetReset = AutoOffsetReset.Latest,
             };
-            _producer.ProduceMessage(topic, new JObject(){["test"]="test"});
-
-            _log.LogDebug(GetType(), "subscribed to {topic}", topic);
+            Log.Debug( "subscribed to {topic}", topic);
             var cts = new CancellationTokenSource();
             Task task = Task.Run(() =>
             {
@@ -64,18 +53,19 @@ namespace GenericAAS.BusCommunication.KAFKA
                             {
                                 if (cts.Token.IsCancellationRequested) throw new OperationCanceledException("cancelled externally");
                                 var consumeResult = consumer.Consume(cts.Token);
-                                _log.LogDebug(GetType(), $"Received Message from Kafka: {consumeResult.Message.Value}");
-                                msgHandler(consumeResult.Topic, new ReceivedBusMessage()
-                                {
-                                    Topic = consumeResult.Topic,
-                                    Message = JObject.Parse(consumeResult.Message.Value),
-                                    TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
-                                    Raw = JsonConvert.SerializeObject(consumeResult)
-                                });
+                                Log.Debug( $"Received Message from Kafka: {consumeResult.Message.Value}");
+                                // msgHandler(consumeResult.Topic, new ReceivedBusMessage()
+                                // {
+                                //     Topic = consumeResult.Topic,
+                                //     Message = JObject.Parse(consumeResult.Message.Value),
+                                //     TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
+                                //     Raw = JsonConvert.SerializeObject(consumeResult)
+                                // });
+                                
                             }
                             catch (ConsumeException e)
                             {
-                                _log.LogError(GetType(), "Error occured: {error}", e.Message);
+                                Log.Error( "Error occured: {error}", e.Message);
                             }
                         }
                     }
@@ -97,7 +87,7 @@ namespace GenericAAS.BusCommunication.KAFKA
             }
             else
             {
-                _log.LogError(GetType(), "could not find subscription to topic {topic}", topic);
+                Log.Error( "could not find subscription to topic {topic}", topic);
             }
         }
 
@@ -116,7 +106,7 @@ namespace GenericAAS.BusCommunication.KAFKA
                     Task _currentExecution = Task.Delay(5000, cts.Token);
                     await _currentExecution.ContinueWith(task =>
                     {
-                        _log.LogDebug(GetType(), "Still running");
+                        Log.Debug( "Still running");
                     });
                 }
             });
