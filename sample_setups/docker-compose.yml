@@ -79,11 +79,13 @@ services:
   meta: 
     build: ../meta_store
     ports:
-      - 4000:4000
+      - 4001:4000
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=bendevictor
       - NEO4J_URI=neo4j://neo4j:7687
+    depends_on:
+      - neo4j
     profiles:
       - meta_store
     networks:
@@ -144,6 +146,7 @@ services:
 ## nginx
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - "8090:8080"
     volumes:
