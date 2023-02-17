@@ -1,0 +1,99 @@
+services:
+## Kafka
+  kafka1:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka1
+    ports:
+      - 19092:19092
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka1:9092,CONTROLLER://kafka1:9093,EXTERNAL://0.0.0.0:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,EXTERNAL://${HOST_DNS}:19092
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    profiles:
+      - kafka
+    networks:
+      shared_network:
+  kowl: 
+    image: quay.io/cloudhut/kowl:master
+    ports:
+      - 8088:8080
+    environment:
+      KAFKA_BROKERS: kafka1:9092
+    restart: always
+    depends_on: 
+      - "kafka1"
+    profiles:
+      - kafka
+    networks:
+      shared_network:
+## Neo4j
+  neo4j:
+    image: neo4j
+    restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7687:7687
+    volumes:
+      - ./neo4j/conf:/conf
+      - ./neo4j/data:/data
+      - ./neo4j/import:/import
+      - ./neo4j/logs:/logs
+      - ./neo4j/plugins:/plugins
+    environment: 
+      # Raise memory limits
+      - NEO4J_dbms_memory_pagecache_size=1G
+      - NEO4J_dbms.memory.heap.initial_size=1G
+      - NEO4J_dbms_memory_heap_max__size=1G
+    profiles:
+      - neo4j
+    networks:
+      shared_network:
+## MQTT
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - .mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+    profiles:
+      - mqtt_broker
+  producer:
+    build: ./mqtt
+    depends_on:
+      - mosquitto
+    environment:
+      - HOST=mosquitto
+      - PORT=1883
+    profiles:
+      - mqtt_producer
+## REST
+  server:
+    build: ./rest
+    ports:
+      - "5001:5001"
+    profiles:
+      - rest_server
+## nginx
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8090:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/html:/usr/share/nginx/html
+    depends_on:
+      - server
+    profiles:
+      - nginx
+    networks:
+      shared_network:
+networks:
+  shared_network:
+    name: "shared_network"
