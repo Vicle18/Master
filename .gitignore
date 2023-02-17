@@ -1,3 +1,5 @@
+/sample_setups/.env
+
 *.swp
 *.*~
 project.lock.json
