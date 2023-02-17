@@ -61,9 +61,11 @@ services:
     ports:
       - 1883:1883
     volumes:
-      - .mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
     profiles:
       - mqtt_broker
+    networks:
+      shared_network:
   producer:
     build: ./mqtt
     depends_on:

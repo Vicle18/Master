@@ -34,9 +34,10 @@ public class MQTTEgressClient : IEgressClient
             var pair = stringPair.Split(":");
             _transitionPairs.Add(pair[0], pair[1]);
         }
-        Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs) );
+
+        Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs));
     }
-    
+
     public void Initialize(Action<string, string> messageHandler)
     {
         Task task = Task.Run(async () =>
@@ -45,6 +46,7 @@ public class MQTTEgressClient : IEgressClient
             await InitializeMqttClient(messageHandler);
             Log.Debug($"Finished initializing MQTT receiver");
             SubscribeToTopic("example");
+            PubishToTopic("Machine1/sensor1", "highly valuable value");
         }, cts.Token);
     }
 
@@ -53,44 +55,46 @@ public class MQTTEgressClient : IEgressClient
         throw new NotImplementedException();
     }
 
-    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId, Action<string, string> messageHandler)
+    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId,
+        Action<string, string> messageHandler)
+    {
+        Log.Debug("Connecting to mqtt with broker: {broker}, and clientId {clientId}", mqttHost + ":" + mqttPort,
+            mqttClientId);
+        await Task.Run(async () =>
         {
-            Log.Debug( "Connecting to mqtt with broker: {broker}, and clientId {clientId}", mqttHost + ":" + mqttPort, mqttClientId);
-            await Task.Run(async () =>
-            {
-                var options = new MqttClientOptionsBuilder()
-                    .WithClientId(mqttClientId+new Random().Next())
-                    .WithTcpServer(mqttHost
-                        , int.Parse(mqttPort))
-                    .Build();
-                SetReceivingHandler(messageHandler);
+            var options = new MqttClientOptionsBuilder()
+                .WithClientId(mqttClientId + new Random().Next())
+                .WithTcpServer(mqttHost
+                    , int.Parse(mqttPort))
+                .Build();
+            SetReceivingHandler(messageHandler);
 
-                while (!mqttClient.IsConnected)
+            while (!mqttClient.IsConnected)
+            {
+                Task currentExecution = Task.Delay(5000, new CancellationTokenSource().Token);
+                await currentExecution.ContinueWith(async task =>
                 {
-                    Task currentExecution = Task.Delay(5000, new CancellationTokenSource().Token);
-                    await currentExecution.ContinueWith(async task =>
+                    try
                     {
-                        try
-                        {
-                            mqttClient.ConnectAsync(options, CancellationToken.None).GetAwaiter().GetResult();
-                            await StartHeartBeat(messageHandler);
-                        }
-                        catch (MQTTnet.Exceptions.MqttCommunicationTimedOutException ex)
-                        {
-                            Log.Error( ex,
-                                "could not connect to MQTT broker with ip {ip} and port: {port}",
-                                mqttHost, mqttPort);
-                        }
-                        catch (MQTTnet.Exceptions.MqttCommunicationException ex)
-                        {
-                            Log.Error(ex,
-                                "could not connect to MQTT broker with ip {ip} and port: {port}",
-                                mqttHost, mqttPort);
-                        }
-                    });
-                }
-            });
-        }
+                        mqttClient.ConnectAsync(options, CancellationToken.None).GetAwaiter().GetResult();
+                        await StartHeartBeat(messageHandler);
+                    }
+                    catch (MQTTnet.Exceptions.MqttCommunicationTimedOutException ex)
+                    {
+                        Log.Error(ex,
+                            "could not connect to MQTT broker with ip {ip} and port: {port}",
+                            mqttHost, mqttPort);
+                    }
+                    catch (MQTTnet.Exceptions.MqttCommunicationException ex)
+                    {
+                        Log.Error(ex,
+                            "could not connect to MQTT broker with ip {ip} and port: {port}",
+                            mqttHost, mqttPort);
+                    }
+                });
+            }
+        });
+    }
 
     private async Task InitializeMqttClient(Action<string, string> messageHandler)
     {
@@ -101,7 +105,7 @@ public class MQTTEgressClient : IEgressClient
 
     private async Task StartHeartBeat(Action<string, string> messageHandler)
     {
-        Log.Debug( "Starting heartbeat");
+        Log.Debug("Starting heartbeat");
         await Task.Run(async () =>
         {
             while (mqttClient.IsConnected)
@@ -112,24 +116,39 @@ public class MQTTEgressClient : IEgressClient
                     Log.Information("Still connected to MQTT Broker");
                 });
             }
+
             await InitializeMqttClient(messageHandler);
         }, cts.Token);
     }
-    
+
     public async void SubscribeToTopic(string topic)
     {
         if (mqttClient.IsConnected)
         {
-            Log.Debug( "Subscribing to MQTT topic {topic}", topic);
+            Log.Debug("Subscribing to MQTT topic {topic}", topic);
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
+            PubishToTopic(topic, "message");
         }
         else
         {
-            Log.Debug( "could not subscribe to topic {topic}, because the client was not connected",
+            Log.Debug("could not subscribe to topic {topic}, because the client was not connected",
                 topic);
         }
     }
-    
+
+    public async void PubishToTopic(string topic, string value)
+    {
+        if (mqttClient.IsConnected)
+        {
+            Log.Debug("Publishing to MQTT {topic}", topic);
+            var publishMessage = new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(value)
+                .Build();
+            await mqttClient.PublishAsync(publishMessage);
+        }
+    }
+
     private void SetReceivingHandler(Action<string, string> messageHandler)
     {
         mqttClient.ApplicationMessageReceivedAsync += e =>
@@ -154,9 +173,8 @@ public class MQTTEgressClient : IEgressClient
 
     public void StartIngestion()
     {
-        
     }
-    
+
     public bool HasConnection()
     {
         return mqttClient?.IsConnected ?? false;

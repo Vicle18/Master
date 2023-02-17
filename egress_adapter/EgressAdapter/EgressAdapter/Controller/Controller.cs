@@ -1,4 +1,5 @@
 using EgressAdapter.BusCommunication;
+using EgressAdapter.BusCommunication.KAFKA;
 using EgressAdapter.EgressCommunication;
 using EgressAdapter.EgressCommunication.MQTT;
 using Microsoft.Extensions.Configuration;
@@ -28,16 +29,29 @@ public class Controller : IController
         InitializeBusCommunication();
         InitializeEgressCommunication();
         PublishAvailabilityNotification();
+        SubscribeToKafkaTopic("test");
     }
+
 
     private void PublishAvailabilityNotification()
     {
         JObject msg = new JObject()
         {
-            ["id"] = "HumidityID",
+            ["id"] = "DoesItWork",
             ["available"] = true
         };
-        _busClient.PublishMessage("egress_available", msg.ToString());
+        _busClient.Publish("test", msg.ToString());
+    }
+
+    private void SubscribeToKafkaTopic(string topic)
+    {
+        Log.Debug("Subscribing to KAFKA TOPIC");
+        _busClient.Subscribe(topic, MessageHandler);
+    }
+
+    private void MessageHandler(string topic, string message)
+    {
+        Log.Debug("Received KAFKA message {message} from {topic}", message, topic);
     }
 
     private void InitializeEgressCommunication()
@@ -53,7 +67,7 @@ public class Controller : IController
 
     private void InitializeBusCommunication()
     {
-        _busClient = new BusClient(_config);
+        _busClient = new KafkaClient(_config);
     }
 
     public void StartTransmission()
