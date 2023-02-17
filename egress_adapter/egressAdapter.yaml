@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: egress-pod
+spec:
+   containers:
+   - name: egress-container
+     image: clemme/egress:latest
+     resources:
+            limits:
+              memory: "0.6Gi"
+              cpu: "300m"
+            requests:
+              memory: "0.2Gi"
+              cpu: "150m"
+     ports:
+     - containerPort: 6379
