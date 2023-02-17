@@ -1,8 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using System;
-using IngressAdapter.BusCommunication;
-using IngressAdapter.Controller;
+using EgressAdapter.Controller;
+using EgressAdapter.BusCommunication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace IngressAdapter
+namespace EgressAdapter
 {
     internal class Program
     {
@@ -38,6 +38,7 @@ namespace IngressAdapter
                 })
                 .UseSerilog()
                 .Build();
+            
             
             var controller = ActivatorUtilities.GetServiceOrCreateInstance<IController>(host.Services);
             var config = ActivatorUtilities.GetServiceOrCreateInstance<IConfiguration>(host.Services);

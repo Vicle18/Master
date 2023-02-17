@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EgressAdapter", "EgressAdapter\EgressAdapter.csproj", "{A167C122-3E04-4C35-8329-E16C27662559}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEgressAdapter", "TestEgressAdapter\TestEgressAdapter.csproj", "{53108BD5-C157-4F0F-B5DB-B6487ADB286D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A167C122-3E04-4C35-8329-E16C27662559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A167C122-3E04-4C35-8329-E16C27662559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A167C122-3E04-4C35-8329-E16C27662559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A167C122-3E04-4C35-8329-E16C27662559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53108BD5-C157-4F0F-B5DB-B6487ADB286D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53108BD5-C157-4F0F-B5DB-B6487ADB286D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53108BD5-C157-4F0F-B5DB-B6487ADB286D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53108BD5-C157-4F0F-B5DB-B6487ADB286D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
