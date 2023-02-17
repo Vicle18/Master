@@ -18,10 +18,4 @@ docker login --username=$DOCKER_USER --password=$DOCKER_PASS
 echo "Pushing the image"
 docker push -a "${IMAGE_NAME}"
 
-echo "Clean old pod"
-kubectl delete pod egress-pod
-
-echo "Deploy pod based on uploaded image"
-kubectl apply -f egressAdapter.yaml -n sso --force
-
 echo "Successfully deployed, hooray!"
