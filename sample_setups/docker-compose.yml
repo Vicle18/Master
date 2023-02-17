@@ -11,15 +11,57 @@ services:
       KAFKA_LISTENERS: PLAINTEXT://kafka1:9092,CONTROLLER://kafka1:9093,EXTERNAL://0.0.0.0:19092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,EXTERNAL://${HOST_DNS}:19092
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
-      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
       KAFKA_PROCESS_ROLES: 'broker,controller'
     volumes:
       - ./run_workaround.sh:/tmp/run_workaround.sh
     command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
-    profiles:
-      - kafka
     networks:
       shared_network:
+    profiles:
+      - kafka
+      
+  kafka2:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka2
+    ports:
+      - 19094:19094
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka2:9092,CONTROLLER://kafka2:9093,EXTERNAL://0.0.0.0:19094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,EXTERNAL://${HOST_DNS}:19094
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    networks:
+      shared_network:
+    profiles:
+      - kafka
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka3
+    ports:
+      - 19095:19095
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka3:9092,CONTROLLER://kafka3:9093,EXTERNAL://0.0.0.0:19095
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092,EXTERNAL://${HOST_DNS}:19095
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    networks:
+      shared_network:
+    profiles:
+      - kafka
   kowl: 
     image: quay.io/cloudhut/kowl:master
     ports:
@@ -33,7 +75,20 @@ services:
       - kafka
     networks:
       shared_network:
-## Neo4j
+## meta store
+  meta: 
+    build: ../meta_store
+    ports:
+      - 4000:4000
+    environment:
+      - NEO4J_USER=neo4j
+      - NEO4J_PASSWORD=bendevictor
+      - NEO4J_URI=neo4j://neo4j:7687
+    profiles:
+      - meta_store
+    networks:
+      shared_network:
+
   neo4j:
     image: neo4j
     restart: unless-stopped
@@ -52,7 +107,7 @@ services:
       - NEO4J_dbms.memory.heap.initial_size=1G
       - NEO4J_dbms_memory_heap_max__size=1G
     profiles:
-      - neo4j
+      - meta_store
     networks:
       shared_network:
 ## MQTT
@@ -64,6 +119,8 @@ services:
       - .mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf
     profiles:
       - mqtt_broker
+    networks:
+      shared_network:
   producer:
     build: ./mqtt
     depends_on:
@@ -73,6 +130,8 @@ services:
       - PORT=1883
     profiles:
       - mqtt_producer
+    networks:
+      shared_network:
 ## REST
   server:
     build: ./rest
@@ -80,14 +139,15 @@ services:
       - "5001:5001"
     profiles:
       - rest_server
+    networks:
+      shared_network:
 ## nginx
   nginx:
     image: nginx:latest
     ports:
-      - "8090:80"
+      - "8090:8080"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/html:/usr/share/nginx/html
     depends_on:
       - server
     profiles:
