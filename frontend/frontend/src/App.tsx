@@ -27,14 +27,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home title={"Home"} />}></Route>
         <Route
-          path="/overview"
+          path="/Overview"
           element={<OverviewPage title={"OverviewPage"} />}
         />
         <Route
           element={<Favourites title={"Favourites"} />}
-          path="favourites"
+          path="Favourites"
         />
-        <Route element={<IntegratePage title={"IntegratePage"} />} path="users">
+        <Route element={<IntegratePage title={"IntegratePage"} />} path="Integrate">
           {/* <Route element={<AllUsers />} index /> // 'website.com/users'
         <Route element={<AddUser />} path='add-user'/> //'website.com/users/add-user'
         <Route element={<ViewUser /> path=':id' /> //'website.com/users/012345' */}

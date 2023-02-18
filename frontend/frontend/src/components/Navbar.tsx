@@ -17,7 +17,7 @@ import StackedLineChartIcon from "@mui/icons-material/StackedLineChart";
 import Overview from "../views/Overview/OverviewPage";
 import Favourites from "../views/Favourites/Favourites";
 import Integrate from "../views/Integrate/IntegratePage";
-import { useNavigate } from "react-router-dom";
+import { To, useNavigate } from "react-router-dom";
 
 const pages = ["Overview", "Favourites", "Integrate"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -44,8 +44,10 @@ function Navbar() {
     // <Navigate to="/overview">Overview</Navigate>;
   };
 
-  const handleCloseNavMenu = () => {
-    navigate("/overview");
+  const handleCloseNavMenu = (page: any) => {
+    console.log("inside handle close nav")
+    console.log(page)
+    navigate(page);
     setAnchorElNav(null);
   };
 
@@ -141,7 +143,7 @@ function Navbar() {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
+                onClick={()=>handleCloseNavMenu(page)}
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 {page}
