@@ -25,23 +25,19 @@ function App() {
     <BrowserRouter>
       <Navbar /> {/* If actual page is Login/Register, do not display*/}
       <Routes>
-        <Route path="/" element={<Home title={"Home"} />}>
-          <Route
-            path="/overview"
-            element={<OverviewPage title={"OverviewPage"} />}
-          />
-          <Route
-            element={<Favourites title={"Favourites"} />}
-            path="favourites"
-          />
-          <Route
-            element={<IntegratePage title={"IntegratePage"} />}
-            path="users"
-          >
-            {/* <Route element={<AllUsers />} index /> // 'website.com/users'
+        <Route path="/" element={<Home title={"Home"} />}></Route>
+        <Route
+          path="/overview"
+          element={<OverviewPage title={"OverviewPage"} />}
+        />
+        <Route
+          element={<Favourites title={"Favourites"} />}
+          path="favourites"
+        />
+        <Route element={<IntegratePage title={"IntegratePage"} />} path="users">
+          {/* <Route element={<AllUsers />} index /> // 'website.com/users'
         <Route element={<AddUser />} path='add-user'/> //'website.com/users/add-user'
         <Route element={<ViewUser /> path=':id' /> //'website.com/users/012345' */}
-          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
