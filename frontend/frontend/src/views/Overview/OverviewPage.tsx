@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
-import { Properties } from '../Properties';
 
 interface OverviewProps {
   title: string;
 }
 
-const Overview: FC<Properties> = ({ title }) => {
+const Overview: FC<OverviewProps> = ({ title }) => {
   return (
     <>
       <h1>{title}</h1>
