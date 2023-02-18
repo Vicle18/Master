@@ -2,23 +2,23 @@ import React, { Fragment } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Favourites from "./views/Favourites/Favourites";
 import IntegratePage from "./views/Integrate/IntegratePage";
 import OverviewPage from "./views/Overview/OverviewPage";
-import Home from "./views/Home/Home";
+import HomePage from "./views/Home/HomePage";
+import FavouritesPage from "./views/Favourites/FavouritesPage";
 
 function App() {
   return (
     <BrowserRouter>
       <Navbar /> {/* If actual page is Login/Register, do not display*/}
       <Routes>
-        <Route path="/" element={<Home title={"Home"} />}></Route>
+        <Route path="/" element={<HomePage title={"Home"} />}></Route>
         <Route
           path="/Overview"
-          element={<OverviewPage title={"OverviewPage"} />}
+          element={<OverviewPage title={"Overview"} />}
         />
         <Route
-          element={<Favourites title={"Favourites"} />}
+          element={<FavouritesPage title={"Favourites"} />}
           path="Favourites"
         />
         <Route

@@ -15,7 +15,7 @@ import ListItemText from "@mui/material/ListItemText";
 import AdbIcon from "@mui/icons-material/Adb";
 import StackedLineChartIcon from "@mui/icons-material/StackedLineChart";
 import Overview from "../views/Overview/OverviewPage";
-import Favourites from "../views/Favourites/Favourites";
+import Favourites from "../views/Favourites/FavouritesPage";
 import Integrate from "../views/Integrate/IntegratePage";
 import { To, useNavigate } from "react-router-dom";
 
