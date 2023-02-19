@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-orchestrator
+  namespace: sso
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: service-orchestrator-role
+  namespace: sso
+rules:
+- apiGroups: [""]
+  resources: ["secrets", "pods", "services", "endpoints", "persistentvolumeclaims", "events", "configmaps", "serviceaccounts", "ingresses", "deployments", "replicasets", "statefulsets", "daemonsets", "jobs", "cronjobs", "horizontalpodautoscalers", "networkpolicies", "poddisruptionbudgets", "podsecuritypolicies", "clusterroles", "clusterrolebindings", "rolebindings", "roles"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: service-orchestrator-rolebinding
+  namespace: sso
+subjects:
+- kind: ServiceAccount
+  name: service-orchestrator
+  namespace: sso
+roleRef:
+  kind: Role
+  name: service-orchestrator-role
+  apiGroup: rbac.authorization.k8s.io
+

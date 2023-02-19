@@ -11,6 +11,7 @@ CREATE (companyA)-[:has]->(plantB)
 CREATE (areaA:Area:ManufacturingFacility:Resource {name: 'Area A'})
 CREATE (areaB:Area:ManufacturingFacility:Resource {name: 'Area B'})
 
+
 // create relationships
 CREATE (plantA)-[:has]->(areaA)
 CREATE (plantB)-[:has]->(areaB)

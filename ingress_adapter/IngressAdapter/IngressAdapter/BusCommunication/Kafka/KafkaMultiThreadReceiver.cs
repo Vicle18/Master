@@ -53,7 +53,7 @@ namespace IngressAdapter.BusCommunication.KAFKA
                             {
                                 if (cts.Token.IsCancellationRequested) throw new OperationCanceledException("cancelled externally");
                                 var consumeResult = consumer.Consume(CancellationToken.None);
-                                consumer.
+                                
                                 Log.Debug( $"Received Message from Kafka: {consumeResult.Message.Value}");
                                 // msgHandler(consumeResult.Topic, new ReceivedBusMessage()
                                 // {

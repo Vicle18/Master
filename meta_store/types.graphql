@@ -19,7 +19,7 @@ type Company implements ManufacturingFacility & Resource {
 type Plant {
     id: ID!
     name: String!
-
+    areas: [Area!]! @relationship(type: "has", direction: OUT)
 }
 
 type Area{

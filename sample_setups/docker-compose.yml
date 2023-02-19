@@ -80,6 +80,7 @@ services:
     build: ../meta_store
     ports:
       - 4001:4000
+    restart: always
     environment:
       - NEO4J_USER=neo4j
       - NEO4J_PASSWORD=bendevictor
