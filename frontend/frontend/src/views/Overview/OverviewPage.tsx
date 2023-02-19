@@ -1,9 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import CustomizedTreeView from '../../components/IngressOverview';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid2 from '@mui/material/Unstable_Grid2';
+import DetailedView from '../../components/IngressDetailed';
+import Chart from '../../components/DataChart';
 interface OverviewProps {
   title: string;
 }
@@ -15,18 +17,26 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 const Overview: FC<OverviewProps> = ({ title }) => {
+  const [selectedItemData, setSelectedItemData] = useState(null);
+
+  const handleItemClick = (data: any) => {
+    console.log('data at parent', data);
+    
+    setSelectedItemData(data);
+  };
+
   return (
     <>
       <Box sx={{ flexGrow: 6 }}>
       <Grid2 container spacing={2}>
         <Grid2 xs={3}>
-          <CustomizedTreeView />
+          <CustomizedTreeView onItemClick={handleItemClick} />
         </Grid2>
         <Grid2 xs={5.5}>
-          <Item>xs=4</Item>
+          <DetailedView containingEntityId={selectedItemData}/>
         </Grid2>
         <Grid2 xs={3.5}>
-          <Item>xs=4</Item>
+            <Chart url="http://localhost:5001/data" refreshInterval={1000} />
         </Grid2>
       </Grid2>
     </Box>

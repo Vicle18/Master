@@ -106,9 +106,7 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
     const keys = Object.keys(node);
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
-        if (Array.isArray(node[key]) && node[key].length > 0) {
-            console.log(key);
-            
+        if (Array.isArray(node[key]) && node[key].length > 0) {            
             return key;
         }
     }
@@ -116,35 +114,42 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
 };
 
 
-const renderTree = (nodes: TreeNode[]) => {
+const renderTree = (nodes: TreeNode[], onItemClick: (data: any) => void) => {
     return nodes.map((node) => {
         
         const childrenKey = findChildrenKey(node);
         return (
-        <StyledTreeItem key={node.name} nodeId={node.name} label={node.name} onClick={() => console.log(`Clicked ${node.name}`)}>
-            {childrenKey && renderTree(node[childrenKey])}
+        <StyledTreeItem key={node.name} nodeId={node.name} label={node.name} onClick={() => onItemClick(node.name)}>
+            {childrenKey && renderTree(node[childrenKey], onItemClick)}
         </StyledTreeItem>
         );
     });
 };
 
-export default function CustomizedTreeView() {
-    const { loading, error, data } = useQuery(GET_LOCATIONS);
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error : {error.message}</p>;
-  console.log(data);
-
-
-  return (
-    <TreeView
-      aria-label="customized"
-      defaultExpanded={['1']}
-      defaultCollapseIcon={<MinusSquare />}
-      defaultExpandIcon={<PlusSquare />}
-      defaultEndIcon={<CloseSquare />}
-      sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-    >
-        {renderTree(data.companies)}
-    </TreeView>
-  );
+interface TreeViewProps {
+    onItemClick: (data: any) => void;
 }
+
+const CustomizedTreeView: React.FC<TreeViewProps> = ({onItemClick}) => {
+    const { loading, error, data } = useQuery(GET_LOCATIONS);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error : {error.message}</p>;
+    // console.log(data);
+  
+  
+    return (
+      <TreeView
+        aria-label="customized"
+        defaultExpanded={['1']}
+        defaultCollapseIcon={<MinusSquare />}
+        defaultExpandIcon={<PlusSquare />}
+        defaultEndIcon={<CloseSquare />}
+        sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
+      >
+          {renderTree(data.companies, onItemClick)}
+      </TreeView>
+    );
+}
+
+
+export default CustomizedTreeView;
