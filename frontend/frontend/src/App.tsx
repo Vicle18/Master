@@ -6,8 +6,14 @@ import IntegratePage from "./views/Integrate/IntegratePage";
 import OverviewPage from "./views/Overview/OverviewPage";
 import HomePage from "./views/Home/HomePage";
 import FavouritesPage from "./views/Favourites/FavouritesPage";
+// import Home from "./views/Home/Home";
+// import { gql, useQuery } from "@apollo/client";
+
+
 
 function App() {
+  
+
   return (
     <BrowserRouter>
       <Navbar /> {/* If actual page is Login/Register, do not display*/}

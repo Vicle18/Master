@@ -11,8 +11,7 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import ListItemText from "@mui/material/ListItemText";
-import AdbIcon from "@mui/icons-material/Adb";
+
 import StackedLineChartIcon from "@mui/icons-material/StackedLineChart";
 import Overview from "../views/Overview/OverviewPage";
 import Favourites from "../views/Favourites/FavouritesPage";
