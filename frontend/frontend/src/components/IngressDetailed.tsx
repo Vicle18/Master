@@ -3,14 +3,12 @@ import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Button, Icon } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import Stack from '@mui/material/Stack';
 import CurrentValue from './CurrentValue';
 import Divider from '@mui/material/Divider';
 import Chip from '@mui/material/Chip';
-import BusinessIcon from '@mui/icons-material/Business';
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query GetDataForContainingEntity($where: ResourceWhere) {
@@ -26,16 +24,13 @@ query GetDataForContainingEntity($where: ResourceWhere) {
 }
 `;
 
-
-interface IData {
-    name: string;
-}
   
 interface IDetailedViewProps {
     containingEntityId: any;
+    onOpenChart: (data: any) => void;
 }
   
-const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
+const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId, onOpenChart }) => {
     const { loading, error, data } = useQuery(
         GET_DATA_FOR_CONTAINING_ENTITY, {variables: {where: {name: containingEntityId}}});
     if (loading) return <p>Loading...</p>;
@@ -46,6 +41,13 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
     var properties = data.resources[0];
 
 
+    const handleShowChart = (data: any) => {
+        const newData = {
+            name: data.name,
+            topic: data.topic.name
+          };
+        onOpenChart(newData);
+      };
     return (
         <>
             <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" sx={{ marginBottom:"20px"}}>
@@ -64,7 +66,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
                 <Typography sx={{ color: 'text.secondary' }}>{item.topic.name}</Typography>
                 <Box sx={{ marginLeft: 'auto' }}>
                     <CurrentValue 
-                    url={`http://localhost:5001/example`}
+                    // url={`http://localhost:5001/input/${item.topic.name}`}
+                    url={`http://localhost:5292/api/DataRequest/amount/${item.topic.name}/1`}
+
                     refreshInterval={10000}
                     />
                 </Box>
@@ -73,7 +77,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
                 <Typography>"Some details"</Typography>
                 <Stack direction="row" spacing={2}>
                     <Button variant="contained">Create new egress</Button>
-                    <Button variant="contained">Show data</Button>
+                    <Button variant="contained" onClick={() => handleShowChart(item)}>Show data</Button>
                     <Button variant="outlined" color="error">Delete</Button>
                 </Stack>
                 </AccordionDetails>

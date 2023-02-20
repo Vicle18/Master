@@ -24,8 +24,8 @@ ChartJS.register(
     Legend
   );
 type ChartProps = {
-  url: string;
   refreshInterval: number;
+  chartMetadata: any;
 };
 
 type DataPoint = {
@@ -62,63 +62,41 @@ const optionss: ChartOptions<"line"> = {
         }
     }
   };
-//   options: {
-//     plugins: {
-//       title: {
-//         text: 'Chart.js Time Scale',
-//         display: true
-//       }
-//     },
-//     scales: {
-//       x: {
-//         type: 'time',
-//         title: {
-//           display: true,
-//           text: 'Date'
-//         }
-//       },
-//       y: {
-//         title: {
-//           display: true,
-//           text: 'value'
-//         }
-//       }
-//     },
-//   },
 
-const DataChart: React.FC<ChartProps> = ({ url, refreshInterval }) => {
+const DataChart: React.FC<ChartProps> = ({ chartMetadata, refreshInterval}) => {
   const [data, setData] = useState<DataPoint[]>([]);
-
+    const newUrl = `http://localhost:5292/api/DataRequest/amount/${chartMetadata?.topic}/10`
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(url);
+
+      const result = await axios.get(newUrl);
       setData(result.data);
     };
 
     fetchData();
     const intervalId = setInterval(fetchData, refreshInterval);
     return () => clearInterval(intervalId);
-  }, [url, refreshInterval]);
+  }, [chartMetadata, refreshInterval]);
 
   const chartData = {
     labels: data.map(d => d.timestamp),
     datasets: [
       {
-        label: 'Vibration',
+        label: chartMetadata?.name,
         data: data.map(d => d.value),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1
+        tension: 0.2
       }
     ]
   };
   if (optionss.scales && optionss.scales.y) {
-    optionss.scales.y.min = -100;
+    optionss.scales.y.min = 0;
     optionss.scales.y.max = 100;
   }
 
   if(optionss.plugins && optionss.plugins.title) {
-    optionss.plugins.title.text = 'Machine F: Vibration';
+    optionss.plugins.title.text = chartMetadata?.name;
     }
 
   return <Line options={optionss} data={chartData} />;

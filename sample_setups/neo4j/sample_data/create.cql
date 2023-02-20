@@ -110,12 +110,12 @@ CREATE (jointVibration2:ObservableProperty {
 
 
 // Create topics
-CREATE (topicA:Topic {name: 'Topic A'})
-CREATE (topicB:Topic {name: 'Topic B'})
-CREATE (topicC:Topic {name: 'Topic C'})
-CREATE (topicD:Topic {name: 'Topic D'})
-CREATE (topicE:Topic {name: 'Topic E'})
-CREATE (topicF:Topic {name: 'Topic F'})
+CREATE (topicA:Topic {name: 'TopicA'})
+CREATE (topicB:Topic {name: 'TopicB'})
+CREATE (topicC:Topic {name: 'TopicC'})
+CREATE (topicD:Topic {name: 'TopicD'})
+CREATE (topicE:Topic {name: 'TopicE'})
+CREATE (topicF:Topic {name: 'TopicF'})
 
 //create relationships
 CREATE (jointTemperature)-[:has]->(topicA)
@@ -127,10 +127,8 @@ CREATE (jointVibration2)-[:has]->(topicF)
 
 // Create relationships
 CREATE (machineA)-[:has{frequency:100}]->(jointTemperature)
-CREATE (machineB)-[:has{frequency:100}]->(jointTemperature2)
+CREATE (machineA)-[:has{frequency:100}]->(jointTemperature2)
 CREATE (machineC)-[:has{frequency:100}]->(jointPressure)
 CREATE (machineD)-[:has{frequency:100}]->(jointPressure2)
-CREATE (machineE)-[:has{frequency:100}]->(jointVibration)
+CREATE (machineD)-[:has{frequency:100}]->(jointVibration)
 CREATE (machineF)-[:has{frequency:100}]->(jointVibration2)
-
-

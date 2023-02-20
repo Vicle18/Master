@@ -6,9 +6,7 @@ import TreeItem, { TreeItemProps, treeItemClasses } from "@mui/lab/TreeItem";
 import Collapse from "@mui/material/Collapse";
 import { useSpring, animated } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
-import { gql, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
-import SearchBar from "./IngressOverviewSearch";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -111,12 +109,6 @@ const renderTree = (nodes: TreeNode[], onItemClick: (data: any) => void) => {
 };
 
 function findMatchingNodes(nodes: TreeNode[], searchString: string) {
-  console.log(
-    "finding nodes for search string",
-    searchString,
-    " and nodes",
-    nodes
-  );
 
   const matchingNodes: TreeNode[] = [];
   if (nodes) {
@@ -125,10 +117,7 @@ function findMatchingNodes(nodes: TreeNode[], searchString: string) {
         // found a matching node, add its ancestors and itself to the list
         matchingNodes.push(...ancestors, node);
       }
-      console.log("node", node);
-
       const childrenKey = findChildrenKey(node);
-      console.log("childrenkey", childrenKey);
 
       if (childrenKey && Array.isArray(node[childrenKey])) {
         node[childrenKey]?.forEach((child: TreeNode) => {
@@ -142,32 +131,12 @@ function findMatchingNodes(nodes: TreeNode[], searchString: string) {
         traverse(node, []);
       });
     } else {
-      console.log("Error: nodes argument is not an array.");
+      //console.log("Error: nodes argument is not an array.");
     }
   }
   return matchingNodes;
 }
 
-function extractNames(nodes: TreeNode[]) {
-  const names: string[] = [];
-  const traverse = (node: TreeNode) => {
-    names.push(node.name);
-    const childrenKey = findChildrenKey(node);
-    if (childrenKey && Array.isArray(node[childrenKey])) {
-      node[childrenKey]?.forEach((child: TreeNode) => {
-        traverse(child);
-      });
-    }
-  };
-  if (Array.isArray(nodes)) {
-    nodes.forEach((node) => {
-      traverse(node);
-    });
-  } else {
-    console.log("Error: nodes argument is not an array.");
-  }
-  return names;
-}
 
 interface TreeViewProps {
   data: any;

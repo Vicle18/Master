@@ -1,4 +1,9 @@
 /sample_setups/.env
+/sample_setups/neo4j/conf
+/sample_setups/neo4j/data
+/sample_setups/neo4j/import
+/sample_setups/neo4j/logs
+/sample_setups/neo4j/plugins
 
 *.swp
 *.*~

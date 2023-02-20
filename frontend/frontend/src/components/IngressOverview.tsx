@@ -52,7 +52,7 @@ function extractNames(nodes: TreeNode[]) {
       traverse(node);
     });
   } else {
-    console.log("Error: nodes argument is not an array.");
+    //console.log("Error: nodes argument is not an array.");
   }
   return names;
 }
