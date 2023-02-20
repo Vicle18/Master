@@ -44,17 +44,24 @@ const optionss: ChartOptions<"line"> = {
         x: {
             type: 'time',
             time: {
-                unit: 'minute'
+                unit: 'second'
+            },
+            title: {
+                display: true,
+                text: 'Time'
             }
         },
         y: {
             type: 'linear',
             min: 0,
-            max: 100
+            max: 100,
+            title: {
+                display: true,
+                text: 'value'
+            }
         }
     }
   };
-
 //   options: {
 //     plugins: {
 //       title: {
@@ -97,7 +104,7 @@ const DataChart: React.FC<ChartProps> = ({ url, refreshInterval }) => {
     labels: data.map(d => d.timestamp),
     datasets: [
       {
-        label: 'Value',
+        label: 'Vibration',
         data: data.map(d => d.value),
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
@@ -105,6 +112,14 @@ const DataChart: React.FC<ChartProps> = ({ url, refreshInterval }) => {
       }
     ]
   };
+  if (optionss.scales && optionss.scales.y) {
+    optionss.scales.y.min = -100;
+    optionss.scales.y.max = 100;
+  }
+
+  if(optionss.plugins && optionss.plugins.title) {
+    optionss.plugins.title.text = 'Machine F: Vibration';
+    }
 
   return <Line options={optionss} data={chartData} />;
 };

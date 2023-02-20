@@ -4,13 +4,18 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Icon } from '@mui/material';
 import { gql, useQuery } from '@apollo/client';
 import Stack from '@mui/material/Stack';
 import CurrentValue from './CurrentValue';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
+import BusinessIcon from '@mui/icons-material/Business';
+import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing';
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query GetDataForContainingEntity($where: ResourceWhere) {
     resources(where: $where) {
+        name
         ObservableProperties {
             name
             topic {
@@ -43,7 +48,16 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
 
     return (
         <>
-            {properties?.ObservableProperties?.map((item: any, index: any) => (
+            <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" sx={{ marginBottom:"20px"}}>
+                <Icon component={PrecisionManufacturingIcon} sx={{ fontSize: 40 }} />
+                <Typography component="div" variant="h5" sx={{ marginLeft: "10px" }}>
+                {properties?.name}
+                </Typography>   
+             </Stack>         
+             <Divider sx={{ marginBottom:"20px"}} >
+                <Chip label="Observable Properties" />
+            </Divider>
+          {properties?.ObservableProperties?.map((item: any, index: any) => (
             <Accordion key={index}>
                 <AccordionSummary>
                 <Typography sx={{ width: '33%', flexShrink: 0 }}>{item.name}</Typography>
@@ -51,7 +65,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
                 <Box sx={{ marginLeft: 'auto' }}>
                     <CurrentValue 
                     url={`http://localhost:5001/example`}
-                    refreshInterval={1000}
+                    refreshInterval={10000}
                     />
                 </Box>
                 </AccordionSummary>
