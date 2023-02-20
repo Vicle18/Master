@@ -28,22 +28,6 @@ function App() {
           element={<IntegratePage title={"Integrate"} />}
           path="/Integrate"
         ></Route>
-        {/* <Route
-          element={<CreateIngressPage title={"CreateIngressPage"} />}
-          path="/CreateIngressPage"
-        ></Route>
-        <Route
-          element={<CreateEgressPage />}
-          path="/CreateEgressPage"
-        ></Route>
-        <Route
-          element={<ViewIngressPage title={"ViewIngressPage"} />}
-          path="/ViewIngressPage"
-        ></Route>
-        <Route
-          element={<ViewEgressPage title={"ViewEgressPage$<"} />}
-          path="/ViewEgressPage"
-        ></Route> */}
       </Routes>
     </BrowserRouter>
   );

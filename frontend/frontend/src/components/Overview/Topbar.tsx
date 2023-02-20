@@ -20,8 +20,6 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
-import { useNavigate } from "react-router-dom";
-import ViewEgressPage from "../../views/Overview/Egress/ViewEgressPage";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -98,9 +96,12 @@ const StyledMenu = styled((props: MenuProps) => (
   },
 }));
 
-function TopBar() {
-  const [PopupIngress, setPopupIngress] = React.useState(false);
+interface Props {
+  onIngressEgressButtonClick: (id: string) => void;
+}
 
+function TopBar(props: Props) {
+  const [PopupIngress, setPopupIngress] = React.useState(false);
   const handlerClickOpen = () => {
     setPopupIngress(true);
   };
@@ -120,6 +121,10 @@ function TopBar() {
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
+  };
+
+  const handleIngressEgressButtonClick = (id: string) => {
+    props.onIngressEgressButtonClick(id);
   };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -195,7 +200,7 @@ function TopBar() {
                   variant="contained"
                   disableElevation
                   key={page}
-                  onClick={handleCloseNavMenu}
+                  onClick={() => handleIngressEgressButtonClick(page)}
                   sx={{
                     my: 2,
                     color: "white",
@@ -204,7 +209,7 @@ function TopBar() {
                     marginLeft: 1,
                   }}
                 >
-                  {page}
+                  {`${page}`}
                 </Button>
               ))}
             </Box>
