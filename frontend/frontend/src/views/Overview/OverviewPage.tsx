@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../../components/IngressDetailed";
 import Chart from "../../components/DataChart";
-import IngressOverview from "../../components/IngressOverview";
+import IngressOverview from "../../components/IngressOverviewLeft";
 interface OverviewProps {
   title: string;
 }
