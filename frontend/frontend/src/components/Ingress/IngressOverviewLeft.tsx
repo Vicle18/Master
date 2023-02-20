@@ -68,7 +68,7 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
 };
 
 
-const IngressOverview: React.FC<Props> = ({ onItemClick }) => {
+const IngressOverviewLeft: React.FC<Props> = ({ onItemClick }) => {
   const [searchString, setSearchString] = useState('');
 
 
@@ -90,4 +90,4 @@ const IngressOverview: React.FC<Props> = ({ onItemClick }) => {
   );
 };
 
-export default IngressOverview;
+export default IngressOverviewLeft;
