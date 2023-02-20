@@ -155,7 +155,8 @@ function TopBar() {
                     my: 2,
                     color: "white",
                     display: "block",
-                    backgroundColor: "inherit",
+                    backgroundColor: "primary",
+                    marginLeft: 1
                   }}
                 >
                   {page}
@@ -168,7 +169,7 @@ function TopBar() {
                 aria-controls={open ? "demo-customized-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                sx={{ color: "white", backgroundColor: "inherit" }}
+                sx={{ color: "white", backgroundColor: "primary", marginLeft: 1 }}
                 variant="contained"
                 disableElevation
                 onClick={handleClick}

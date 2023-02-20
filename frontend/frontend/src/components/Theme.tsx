@@ -5,20 +5,20 @@ export const theme = createTheme({
   palette: {
     primary: {
       light: "#cfd8dc",
-      main: "#607d8b",
+      main: "#1855b8",
       dark: "#37474f",
       contrastText: "#fff",
     },
     secondary: {
       light: "#ff7961",
-      main: "#cfd8dc",
+      main: "#ffffff",
       dark: "#ba000d",
       contrastText: "#000",
     },
   },
 });
 
-export const themeLight = createMuiTheme({
+const themeLight = createMuiTheme({
   palette: {
     background: {
       default: "#e4f0e2"
@@ -26,7 +26,7 @@ export const themeLight = createMuiTheme({
   },
 });
 
-export const themeDark = createMuiTheme({
+const themeDark = createMuiTheme({
   palette: {
     background: {
       default: "#222222",
