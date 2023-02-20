@@ -1,10 +1,24 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import datetime
 from flask_cors import CORS
 import random
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+@app.route('/input/<input>', methods=['GET'])
+def input(input):
+    # Generate a random number between 1 and 10.
+    num = random.randint(1, 10)
+
+    # Append the random number to the input.
+    output = input + str(num)
+
+    # Create a response with the output.
+    response = jsonify({"output": output})
+
+    return response
+
 @app.route('/example', methods=['GET'])
 def example():
     # Generate a random number between 1 and 10.

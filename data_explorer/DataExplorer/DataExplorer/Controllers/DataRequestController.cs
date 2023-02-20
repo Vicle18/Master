@@ -37,7 +37,7 @@ namespace DataExplorer.Controllers
                 jsonResult.Add(new JObject()
                 {
                     ["timestamp"] = message.Timestamp.UtcDateTime,
-                    ["message"] = message.Value
+                    ["value"] = message.Value
                 });
             }
             _logger.LogDebug("returning: {message}", jsonResult.ToString());
@@ -63,7 +63,7 @@ namespace DataExplorer.Controllers
                 jsonResult.Add(new JObject()
                 {
                     ["timestamp"] = message.Timestamp.UtcDateTime,
-                    ["message"] = message.Value
+                    ["value"] = message.Value
                 });
             }
             _logger.LogDebug("returning: {message}", jsonResult.ToString());
