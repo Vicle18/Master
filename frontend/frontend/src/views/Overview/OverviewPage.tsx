@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import TopBar from '../../components/Overview/Topbar';
 
 interface OverviewProps {
   title: string;
@@ -7,6 +8,7 @@ interface OverviewProps {
 const Overview: FC<OverviewProps> = ({ title }) => {
   return (
     <>
+      <TopBar></TopBar>
       <h1>{title}</h1>
     </>
   );

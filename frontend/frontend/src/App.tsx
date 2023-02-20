@@ -22,7 +22,7 @@ function App() {
           path="Favourites"
         />
         <Route
-          element={<IntegratePage title={"IntegratePage"} />}
+          element={<IntegratePage title={"Integrate"} />}
           path="Integrate"
         ></Route>
       </Routes>
