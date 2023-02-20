@@ -8,6 +8,7 @@ import Paper from '@mui/material/Paper';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import DetailedView from '../../components/IngressDetailed';
 import Chart from '../../components/DataChart';
+import CreateEgress from './Egress/CreateEgressPage';
 interface OverviewProps {
   title: string;
 }

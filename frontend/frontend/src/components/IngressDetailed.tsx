@@ -38,7 +38,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({ containingEntityId }) => {
         console.log("graph ", error);
         return <p>Error : {error.message}</p>;
     }
-    console.log("data ", data.resources);
     var properties = data.resources[0];
 
 

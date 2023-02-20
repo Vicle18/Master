@@ -18,8 +18,16 @@ import ArchiveIcon from "@mui/icons-material/Archive";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
+import { useNavigate } from "react-router-dom";
+import ViewEgressPage from "../../views/Overview/Egress/ViewEgressPage";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const pages = ["Ingress", "Egress"];
 const settings = ["Ingress", "Egress", "Containing Element"];
@@ -69,6 +77,18 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 function TopBar() {
+  const [PopupIngress, setPopupIngress] = React.useState(false);
+
+  const handlerClickOpen = () => {
+    setPopupIngress(true);
+  };
+
+  const handlerClose = () => {
+    console.log("handler close");
+    setPopupIngress(false);
+    console.log("after close");
+  };
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -95,7 +115,11 @@ function TopBar() {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (page: string) => {
+    console.log("handle");
+    // <ViewEgressPage title={"title"}></ViewEgressPage>;
+    // <CreateEgress></CreateEgress>;
+    console.log("After");
     setAnchorEl(null);
   };
 
@@ -112,7 +136,6 @@ function TopBar() {
                 aria-haspopup="true"
                 onClick={handleOpenNavMenu}
                 color="secondary"
-                aria-isRound="true"
               >
                 <MenuIcon />
               </IconButton>
@@ -131,7 +154,7 @@ function TopBar() {
                 open={Boolean(anchorElNav)}
                 onClose={handleCloseNavMenu}
                 sx={{
-                  display: { xs: "block", md: "none" }
+                  display: { xs: "block", md: "none" },
                 }}
               >
                 {pages.map((page) => (
@@ -141,7 +164,7 @@ function TopBar() {
                 ))}
               </StyledMenu>
             </Box>
-            <Box sx={{ display: "inline-flex"}}>
+            <Box sx={{ display: "inline-flex" }}>
               {pages.map((page) => (
                 <Button
                   id="ingress-egress-button"
@@ -156,7 +179,7 @@ function TopBar() {
                     color: "white",
                     display: "block",
                     backgroundColor: "primary",
-                    marginLeft: 1
+                    marginLeft: 1,
                   }}
                 >
                   {page}
@@ -169,7 +192,11 @@ function TopBar() {
                 aria-controls={open ? "demo-customized-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                sx={{ color: "white", backgroundColor: "primary", marginLeft: 1 }}
+                sx={{
+                  color: "white",
+                  backgroundColor: "primary",
+                  marginLeft: 1,
+                }}
                 variant="contained"
                 disableElevation
                 onClick={handleClick}
@@ -186,20 +213,36 @@ function TopBar() {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem onClick={handlerClickOpen} disableRipple>
                   <EditIcon />
                   Ingress
                 </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
+                {CreateIngress()}
+                <MenuItem
+                  onClick={() => {
+                    handleClose("/CreateEgressPage");
+                  }}
+                  disableRipple
+                >
                   <FileCopyIcon />
                   Egress
                 </MenuItem>
                 <Divider sx={{ my: 0.5 }} />
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem
+                  onClick={() => {
+                    handleClose("/CreateEgressPage");
+                  }}
+                  disableRipple
+                >
                   <ArchiveIcon />
                   Containing Element
                 </MenuItem>
-                <MenuItem onClick={handleClose} disableRipple>
+                <MenuItem
+                  onClick={() => {
+                    handleClose("/CreateEgressPage");
+                  }}
+                  disableRipple
+                >
                   <MoreHorizIcon />
                   More
                 </MenuItem>
@@ -210,5 +253,34 @@ function TopBar() {
       </AppBar>
     </ThemeProvider>
   );
+
+  function CreateIngress() {
+    return (
+      <div>
+        <Dialog open={PopupIngress} onClose={handlerClose}>
+          <DialogTitle>Create Ingress Datapoint</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              To create an Ingress Datapoint, please enter the following
+              information.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Email Address"
+              type="email"
+              fullWidth
+              variant="standard"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handlerClose}>Cancel</Button>
+            <Button onClick={handlerClose}>Subscribe</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 }
 export default TopBar;
