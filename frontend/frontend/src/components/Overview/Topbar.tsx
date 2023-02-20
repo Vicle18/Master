@@ -28,10 +28,32 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { isButtonElement } from "react-router-dom/dist/dom";
+import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  Theme,
+  useTheme,
+} from "@mui/material";
+import { ReactNode } from "react";
 
 const pages = ["Ingress", "Egress"];
 const settings = ["Ingress", "Egress", "Containing Element"];
 const test = ["Create"];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const SelectorMenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -254,7 +276,39 @@ function TopBar() {
     </ThemeProvider>
   );
 
+  function getStyles(name: string, personName: string[], theme: Theme) {
+    return {
+      fontWeight:
+        personName.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium,
+    };
+  }
+
+  function handleChange(
+    event: SelectChangeEvent<string>,
+    child: ReactNode
+  ): void {
+    console.log("something");
+  }
+
   function CreateIngress() {
+    const names = [
+      "Oliver Hansen",
+      "Van Henry",
+      "April Tucker",
+      "Ralph Hubbard",
+      "Omar Alexander",
+      "Carlos Abbott",
+      "Miriam Wagner",
+      "Bradley Wilkerson",
+      "Virginia Andrews",
+      "Kelly Snyder",
+    ];
+
+    const theme = useTheme();
+    const [personName, setPersonName] = React.useState<string[]>([]);
+
     return (
       <div>
         <Dialog open={PopupIngress} onClose={handlerClose}>
@@ -264,15 +318,67 @@ function TopBar() {
               To create an Ingress Datapoint, please enter the following
               information.
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-              variant="standard"
-            />
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: "flex", alignItems: "flex-end" },
+              }}
+            >
+              <TextField
+                autoFocus
+                margin="normal"
+                id="datapoint_id"
+                label="Data Point ID"
+                type="value"
+                fullWidth
+                variant="standard"
+              />
+              <Button
+                id="generate-id-button"
+                aria-haspopup="true"
+                sx={{
+                  color: "white",
+                  backgroundColor: "primary",
+                  marginLeft: 1,
+                  marginBottom: 1,
+                }}
+                variant="contained"
+                disableElevation
+                onClick={handleClick}
+              >
+                Generate
+              </Button>
+            </Box>
+            <Box
+              marginTop={2}
+              sx={{
+                flexGrow: 1,
+                display: { xs: "flex", alignItems: "flex-end" },
+              }}
+            >
+              <div>
+                <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+                <Select
+                  labelId="demo-multiple-name-label"
+                  id="demo-multiple-name"
+                  multiple
+                  value={"personName"}
+                  onChange={handleChange}
+                  input={<OutlinedInput label="Name" />}
+                  MenuProps={SelectorMenuProps}
+                >
+                  {names.map((name) => (
+                    <MenuItem
+                      key={name}
+                      value={name}
+                      style={getStyles(name, personName, theme)}
+                    >
+                      {name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </div>
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handlerClose}>Cancel</Button>
