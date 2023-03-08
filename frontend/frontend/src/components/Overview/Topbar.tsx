@@ -10,8 +10,6 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { styled, alpha } from "@mui/material/styles";
-import Menu, { MenuProps } from "@mui/material/Menu";
 import EditIcon from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -20,6 +18,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
+import { useNavigate } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -37,6 +36,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { ReactNode } from "react";
+import { StyledMenu } from "./StyledMenu";
 
 const pages = ["Ingress", "Egress"];
 const settings = ["Ingress", "Egress", "Containing Element"];
@@ -53,69 +53,26 @@ const SelectorMenuProps = {
   },
 };
 
-const StyledMenu = styled((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  "& .MuiPaper-root": {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === "light"
-        ? "rgb(55, 65, 81)"
-        : theme.palette.grey[300],
-    boxShadow:
-      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-    "& .MuiMenu-list": {
-      padding: "4px 0",
-    },
-    "& .MuiMenuItem-root": {
-      "& .MuiSvgIcon-root": {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
-      },
-      "&:active": {
-        backgroundColor: alpha(
-          theme.palette.secondary.main,
-          theme.palette.action.selectedOpacity
-        ),
-      },
-    },
-  },
-}));
-
-interface Props {
-  onIngressEgressButtonClick: (id: string) => void;
-}
-
-function TopBar(props: Props) {
+function TopBar() {
   const [PopupIngress, setPopupIngress] = React.useState(false);
-  const handlerClickOpen = () => {
+  const [PopupEgress, setPopupEgress] = React.useState(false);
+
+  const handlerClickOpenIngress = () => {
     setPopupIngress(true);
   };
 
   const handlerClose = () => {
-    console.log("handler close");
     setPopupIngress(false);
-    console.log("after close");
+    setPopupEgress(false);
   };
 
+  const handlerClickOpenEgress = () => {
+    setPopupEgress(true);
+  };
+
+
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
@@ -123,20 +80,12 @@ function TopBar(props: Props) {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleIngressEgressButtonClick = (id: string) => {
-    props.onIngressEgressButtonClick(id);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -200,7 +149,7 @@ function TopBar(props: Props) {
                   variant="contained"
                   disableElevation
                   key={page}
-                  onClick={() => handleIngressEgressButtonClick(page)}
+                  onClick={handleCloseNavMenu}
                   sx={{
                     my: 2,
                     color: "white",
@@ -209,7 +158,7 @@ function TopBar(props: Props) {
                     marginLeft: 1,
                   }}
                 >
-                  {`${page}`}
+                  {page}
                 </Button>
               ))}
             </Box>
@@ -240,21 +189,20 @@ function TopBar(props: Props) {
                 open={open}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handlerClickOpen} disableRipple>
+                <MenuItem onClick={handlerClickOpenIngress} disableRipple>
                   <EditIcon />
                   Ingress
                 </MenuItem>
                 {CreateIngress()}
-                <MenuItem
-                  onClick={() => {
-                    handleClose("/CreateEgressPage");
-                  }}
-                  disableRipple
-                >
-                  <FileCopyIcon />
+                
+                <MenuItem onClick={handlerClickOpenEgress} disableRipple>
+                  <EditIcon />
                   Egress
                 </MenuItem>
+                {CreateIngress()}
+
                 <Divider sx={{ my: 0.5 }} />
+                
                 <MenuItem
                   onClick={() => {
                     handleClose("/CreateEgressPage");
@@ -264,15 +212,6 @@ function TopBar(props: Props) {
                   <ArchiveIcon />
                   Containing Element
                 </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleClose("/CreateEgressPage");
-                  }}
-                  disableRipple
-                >
-                  <MoreHorizIcon />
-                  More
-                </MenuItem>
               </StyledMenu>
             </div>
           </Toolbar>
@@ -281,38 +220,10 @@ function TopBar(props: Props) {
     </ThemeProvider>
   );
 
-  function getStyles(name: string, personName: string[], theme: Theme) {
-    return {
-      fontWeight:
-        personName.indexOf(name) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-  }
 
-  function handleChange(
-    event: SelectChangeEvent<string>,
-    child: ReactNode
-  ): void {
-    console.log("something");
-  }
 
   function CreateIngress() {
-    const names = [
-      "Oliver Hansen",
-      "Van Henry",
-      "April Tucker",
-      "Ralph Hubbard",
-      "Omar Alexander",
-      "Carlos Abbott",
-      "Miriam Wagner",
-      "Bradley Wilkerson",
-      "Virginia Andrews",
-      "Kelly Snyder",
-    ];
 
-    const theme = useTheme();
-    const [personName, setPersonName] = React.useState<string[]>([]);
 
     return (
       <div>
@@ -361,28 +272,7 @@ function TopBar(props: Props) {
                 display: { xs: "flex", alignItems: "flex-end" },
               }}
             >
-              <div>
-                <InputLabel id="demo-multiple-name-label">Name</InputLabel>
-                <Select
-                  labelId="demo-multiple-name-label"
-                  id="demo-multiple-name"
-                  multiple
-                  value={"personName"}
-                  onChange={handleChange}
-                  input={<OutlinedInput label="Name" />}
-                  MenuProps={SelectorMenuProps}
-                >
-                  {names.map((name) => (
-                    <MenuItem
-                      key={name}
-                      value={name}
-                      style={getStyles(name, personName, theme)}
-                    >
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </div>
+              
             </Box>
           </DialogContent>
           <DialogActions>
