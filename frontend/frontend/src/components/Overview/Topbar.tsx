@@ -28,6 +28,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { isButtonElement } from "react-router-dom/dist/dom";
 import {
   FormControl,
+  FormLabel,
   InputLabel,
   OutlinedInput,
   Select,
@@ -37,10 +38,32 @@ import {
 } from "@mui/material";
 import { ReactNode } from "react";
 import { StyledMenu } from "./StyledMenu";
+import { Label } from "@mui/icons-material";
 
 const pages = ["Ingress", "Egress"];
 const settings = ["Ingress", "Egress", "Containing Element"];
 const test = ["Create"];
+
+const names = [
+  "Container1",
+  "Container2",
+  "Container3",
+  "Container4",
+  "Container5",
+  "Container6",
+];
+
+const protocols = [
+  "MQTT",
+  "OPC UA",
+  "ROS2",
+];
+
+const dataformats = [
+  "String",
+  "Raw",
+  "JSON",
+];
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -48,7 +71,7 @@ const SelectorMenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 230,
     },
   },
 };
@@ -56,6 +79,9 @@ const SelectorMenuProps = {
 function TopBar() {
   const [PopupIngress, setPopupIngress] = React.useState(false);
   const [PopupEgress, setPopupEgress] = React.useState(false);
+  const [personName, setPersonName] = React.useState<string[]>([]);
+  const [protocolName, setProtocolName] = React.useState<string[]>([]);
+  const [formatName, setFormatName] = React.useState<string[]>([]);
 
   const handlerClickOpenIngress = () => {
     setPopupIngress(true);
@@ -70,8 +96,6 @@ function TopBar() {
     setPopupEgress(true);
   };
 
-
-
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -83,8 +107,34 @@ function TopBar() {
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
+  const handleElementChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
 
-
+  const handleProtocolChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setProtocolName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+  const handleFormatChange = (event: SelectChangeEvent<typeof personName>) => {
+    const {
+      target: { value },
+    } = event;
+    setFormatName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -92,10 +142,6 @@ function TopBar() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (page: string) => {
-    console.log("handle");
-    // <ViewEgressPage title={"title"}></ViewEgressPage>;
-    // <CreateEgress></CreateEgress>;
-    console.log("After");
     setAnchorEl(null);
   };
 
@@ -194,7 +240,7 @@ function TopBar() {
                   Ingress
                 </MenuItem>
                 {CreateIngress()}
-                
+
                 <MenuItem onClick={handlerClickOpenEgress} disableRipple>
                   <EditIcon />
                   Egress
@@ -202,7 +248,7 @@ function TopBar() {
                 {CreateIngress()}
 
                 <Divider sx={{ my: 0.5 }} />
-                
+
                 <MenuItem
                   onClick={() => {
                     handleClose("/CreateEgressPage");
@@ -220,68 +266,229 @@ function TopBar() {
     </ThemeProvider>
   );
 
-
-
   function CreateIngress() {
-
-
     return (
       <div>
         <Dialog open={PopupIngress} onClose={handlerClose}>
           <DialogTitle>Create Ingress Datapoint</DialogTitle>
-          <DialogContent>
+          <DialogContent dividers={true}>
             <DialogContentText>
               To create an Ingress Datapoint, please enter the following
               information.
             </DialogContentText>
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: { xs: "flex", alignItems: "flex-end" },
-              }}
-            >
-              <TextField
-                autoFocus
-                margin="normal"
-                id="datapoint_id"
-                label="Data Point ID"
-                type="value"
-                fullWidth
-                variant="standard"
-              />
-              <Button
-                id="generate-id-button"
-                aria-haspopup="true"
-                sx={{
-                  color: "white",
-                  backgroundColor: "primary",
-                  marginLeft: 1,
-                  marginBottom: 1,
-                }}
-                variant="contained"
-                disableElevation
-                onClick={handleClick}
-              >
-                Generate
-              </Button>
-            </Box>
-            <Box
-              marginTop={2}
-              sx={{
-                flexGrow: 1,
-                display: { xs: "flex", alignItems: "flex-end" },
-              }}
-            >
-              
-            </Box>
+            {InsertId(handleClick)}
+            {ContainingElementSelector(personName, handleElementChange)}
+            {ProtocolSelector(protocolName, handleProtocolChange)}
+            {InsertFrequency(handleClick)}
+            {DataFormatSelector(formatName, handleFormatChange)}
           </DialogContent>
           <DialogActions>
             <Button onClick={handlerClose}>Cancel</Button>
-            <Button onClick={handlerClose}>Subscribe</Button>
+            <Button onClick={handlerClose}>Create</Button>
           </DialogActions>
         </Dialog>
       </div>
     );
   }
 }
+
 export default TopBar;
+
+function InsertId(handleClick: (event: React.MouseEvent<HTMLElement>) => void) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: { xs: "flex", alignItems: "center" },
+      }}
+    >
+      <FormLabel
+        sx={{
+          marginTop: 0.5,
+          marginRight: 9.8,
+        }}
+      >
+        Endpoint ID
+      </FormLabel>
+      <TextField
+        autoFocus
+        margin="normal"
+        id="datapoint_id"
+        label="Data Point ID"
+        type="value"
+        size="small"
+      />
+      <Button
+        id="generate-id-button"
+        aria-haspopup="true"
+        sx={{
+          color: "white",
+          backgroundColor: "primary",
+          marginLeft: 1,
+          marginTop: 0.5,
+        }}
+        variant="contained"
+        disableElevation
+        onClick={handleClick}
+      >
+        Generate
+      </Button>
+    </Box>
+  );
+}
+
+function ContainingElementSelector(
+  personName: string[],
+  handleChange: (event: SelectChangeEvent<string[]>) => void
+) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: { xs: "flex", alignItems: "center" },
+      }}
+    >
+      <FormLabel
+        sx={{
+          marginRight: 2,
+        }}
+      >
+        Containing Element
+      </FormLabel>
+      <FormControl sx={{ m: 0.5, width: 200 }} size="small">
+        <InputLabel>Select Element</InputLabel>
+        <Select
+          multiple
+          value={personName}
+          onChange={handleChange}
+          input={<OutlinedInput label="Containing Element" />}
+          MenuProps={SelectorMenuProps}
+        >
+          {names.map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+}
+
+function ProtocolSelector(
+  personName: string[],
+  handleChange: (event: SelectChangeEvent<string[]>) => void
+) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: { xs: "flex", alignItems: "center" },
+        marginTop:1,
+      }}
+    >
+      <FormLabel
+        sx={{
+          marginRight: 12.3,
+        }}
+      >
+        Protocol
+      </FormLabel>
+      <FormControl sx={{ m: 0.5, width: 200 }} size="small">
+        <InputLabel>Select Protocol</InputLabel>
+        <Select
+          multiple
+          value={personName}
+          onChange={handleChange}
+          input={<OutlinedInput label="Containing Element" />}
+          MenuProps={SelectorMenuProps}
+        >
+          {protocols.map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+}
+
+function InsertFrequency(handleClick: (event: React.MouseEvent<HTMLElement>) => void) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: { xs: "flex", alignItems: "center" },
+      }}
+    >
+      <FormLabel
+        sx={{
+          marginTop: 0.5,
+          marginRight: 10.6,
+        }}
+      >
+        Frequency
+      </FormLabel>
+      <TextField
+        autoFocus
+        margin="normal"
+        id="freq_id"
+        label="Current Frequency"
+        type="value"
+        size="small"
+      />
+      <TextField
+        autoFocus
+        margin="normal"
+        id="freq2_id"
+        label="Modify"
+        type="value"
+        size="small"
+        sx={{
+          width:100,
+          marginLeft:2
+        }}
+      />
+    </Box>
+  );
+}
+
+function DataFormatSelector(
+  dataformat: string[],
+  handleChange: (event: SelectChangeEvent<string[]>) => void
+) {
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        display: { xs: "flex", alignItems: "center" },
+        marginTop:1,
+      }}
+    >
+      <FormLabel
+        sx={{
+          marginRight: 8.3,
+        }}
+      >
+        Data Format
+      </FormLabel>
+      <FormControl sx={{ m: 0.5, width: 200 }} size="small">
+        <InputLabel>Select Data Format</InputLabel>
+        <Select
+          multiple
+          value={dataformat}
+          onChange={handleChange}
+          input={<OutlinedInput label="Data Format" />}
+          MenuProps={SelectorMenuProps}
+        >
+          {dataformats.map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+}
