@@ -12,12 +12,12 @@ import {
 import { SelectorMenuProps} from "../../Overview/Topbar";
 
 export const containingElements = [
-  "Container1",
-  "Container2",
-  "Container3",
-  "Container4",
-  "Container5",
-  "Container6",
+  "3151 Gripper",
+  "2341 AMR",
+  "3241 Gripper",
+  "HMI",
+  "ERP",
+  "MES",
 ];
 
 export function ContainingElementSelector(
@@ -40,7 +40,6 @@ export function ContainingElementSelector(
       <FormControl sx={{ m: 0.5, width: 200 }} size="small">
         <InputLabel>Select Element</InputLabel>
         <Select
-          multiple
           value={personName}
           onChange={handleChange}
           input={<OutlinedInput label="Containing Element" />}

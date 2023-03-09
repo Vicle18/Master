@@ -79,6 +79,10 @@ function TopBar() {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const createClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = (page: string) => {
     setAnchorEl(null);
   };
@@ -159,7 +163,7 @@ function TopBar() {
                 }}
                 variant="contained"
                 disableElevation
-                onClick={handleClick}
+                onClick={createClick}
                 endIcon={<KeyboardArrowDownIcon />}
               >
                 Create

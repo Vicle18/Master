@@ -38,7 +38,6 @@ export function ProtocolSelector(
       <FormControl sx={{ m: 0.5, width: 200 }} size="small">
         <InputLabel>Select Protocol</InputLabel>
         <Select
-          multiple
           value={personName}
           onChange={handleChange}
           input={<OutlinedInput label="Containing Element" />}

@@ -24,14 +24,14 @@ export function InsertFrequency(handleClick: (event: React.MouseEvent<HTMLElemen
         margin="normal"
         id="freq_id"
         label="Current Frequency"
-        type="value"
+        type="number"
         size="small" />
       <TextField
         autoFocus
         margin="normal"
         id="freq2_id"
         label="Modify"
-        type="value"
+        type="number"
         size="small"
         sx={{
           width: 100,

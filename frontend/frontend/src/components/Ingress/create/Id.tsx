@@ -3,8 +3,15 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { FormLabel } from "@mui/material";
+import { useId } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 
-export function InsertId(handleClick: (event: React.MouseEvent<HTMLElement>) => void) {
+
+export function InsertId(
+  handleClick: (event: React.MouseEvent<HTMLElement>) => void
+) {
+  const [name, setName] = React.useState("");
+  const id = useId(); 
   return (
     <Box
       sx={{
@@ -26,7 +33,12 @@ export function InsertId(handleClick: (event: React.MouseEvent<HTMLElement>) => 
         id="datapoint_id"
         label="Data Point ID"
         type="value"
-        size="small" />
+        size="small"
+        value={name}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setName(event.target.value);
+        }}
+      />
       <Button
         id="generate-id-button"
         aria-haspopup="true"
@@ -38,7 +50,7 @@ export function InsertId(handleClick: (event: React.MouseEvent<HTMLElement>) => 
         }}
         variant="contained"
         disableElevation
-        onClick={handleClick}
+        onClick={() => setName(uuidv4())}
       >
         Generate
       </Button>

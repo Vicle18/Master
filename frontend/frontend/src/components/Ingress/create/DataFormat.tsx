@@ -40,7 +40,6 @@ export function DataFormatSelector(
       <FormControl sx={{ m: 0.5, width: 200 }} size="small">
         <InputLabel>Select Data Format</InputLabel>
         <Select
-          multiple
           value={dataformat}
           onChange={handleChange}
           input={<OutlinedInput label="Data Format" />}
