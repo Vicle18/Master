@@ -25,10 +25,9 @@ namespace EgressAdapter
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IController, Controller.Controller>();
-                    services.AddSingleton<IBusClient, BusClient>();
-                    
-                    
-                    
+
+
+
                 }).ConfigureAppConfiguration((config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory())
