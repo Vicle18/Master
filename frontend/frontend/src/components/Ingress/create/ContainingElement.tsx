@@ -7,9 +7,9 @@ import {
   InputLabel,
   OutlinedInput,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from "@mui/material";
-import { SelectorMenuProps} from "../../Overview/Topbar";
+import { SelectorMenuProps } from "../../Overview/Topbar";
 
 export const containingElements = [
   "3151 Gripper",
@@ -19,10 +19,21 @@ export const containingElements = [
   "ERP",
   "MES",
 ];
+export var elementName: string[];
+export var setElementName: React.Dispatch<React.SetStateAction<string[]>>
+export function ContainingElementSelector() {
+  [elementName, setElementName] = React.useState<string[]>([]);
+  const handleChange = (event: SelectChangeEvent<typeof elementName>) => {
+    const {
+      target: { value },
+    } = event;
+    setElementName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+    console.log(value);
+  };
 
-export function ContainingElementSelector(
-  personName: string[],
-  handleChange: (event: SelectChangeEvent<string[]>) => void) {
   return (
     <Box
       sx={{
@@ -40,7 +51,7 @@ export function ContainingElementSelector(
       <FormControl sx={{ m: 0.5, width: 200 }} size="small">
         <InputLabel>Select Element</InputLabel>
         <Select
-          value={personName}
+          value={elementName}
           onChange={handleChange}
           input={<OutlinedInput label="Containing Element" />}
           MenuProps={SelectorMenuProps}
@@ -54,16 +65,4 @@ export function ContainingElementSelector(
       </FormControl>
     </Box>
   );
-}
-
-export function elementChanger(elementName: string[], setPersonName: React.Dispatch<React.SetStateAction<string[]>>) {
-  return (event: SelectChangeEvent<typeof elementName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
 }

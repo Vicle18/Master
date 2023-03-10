@@ -7,21 +7,27 @@ import {
   InputLabel,
   OutlinedInput,
   Select,
-  SelectChangeEvent
+  SelectChangeEvent,
 } from "@mui/material";
 import { SelectorMenuProps } from "../../Overview/Topbar";
 
-export const dataformats = [
-  "String",
-  "Raw",
-  "JSON",
-];
+export const dataformats = ["String", "Raw", "JSON"];
+export var formatName: string[]
+export var setFormatName: React.Dispatch<React.SetStateAction<string[]>>
 
 
-export function DataFormatSelector(
-
-  dataformat: string[],
-  handleChange: (event: SelectChangeEvent<string[]>) => void) {
+export function DataFormatSelector() {
+  [formatName, setFormatName] = React.useState<string[]>([]);
+  const handleChange = (event: SelectChangeEvent<typeof formatName>) => {
+    const {
+      target: { value },
+    } = event;
+    setFormatName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+    console.log(value);
+  };
   return (
     <Box
       sx={{
@@ -40,7 +46,7 @@ export function DataFormatSelector(
       <FormControl sx={{ m: 0.5, width: 200 }} size="small">
         <InputLabel>Select Data Format</InputLabel>
         <Select
-          value={dataformat}
+          value={formatName}
           onChange={handleChange}
           input={<OutlinedInput label="Data Format" />}
           MenuProps={SelectorMenuProps}
@@ -56,14 +62,4 @@ export function DataFormatSelector(
   );
 }
 
-export function formatChanger(elementName: string[], setFormatName: React.Dispatch<React.SetStateAction<string[]>>) {
-  return (event: SelectChangeEvent<typeof elementName>) => {
-    const {
-      target: { value },
-    } = event;
-    setFormatName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
-}
+
