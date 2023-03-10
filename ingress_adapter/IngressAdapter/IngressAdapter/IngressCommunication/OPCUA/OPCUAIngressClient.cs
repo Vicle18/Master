@@ -46,10 +46,10 @@ public class OPCUAIngressClient : IIngressClient
                 var subscription = new Subscription(_session.DefaultSubscription) {PublishingInterval = 100}; // change the publish interval to increase fetching rate
                 var monitoredItem = new MonitoredItem(subscription.DefaultItem)
                 {
-                    DisplayName = "MoveAssemblyPart", 
-                    StartNodeId = "ns=6;s=::AsGlobalPV:MoveAssemblyPart", 
+                    StartNodeId = _opcuaConfig.NODE_NAME, 
                     MonitoringMode = MonitoringMode.Reporting,
-                    SamplingInterval = 100
+                    SamplingInterval = 100,
+                    
                 };
                 subscription.AddItem(monitoredItem);
                 subscription.FastDataChangeCallback = MyFastDataChangeCallback;
@@ -71,7 +71,8 @@ public class OPCUAIngressClient : IIngressClient
     {
         try
         {
-            Console.WriteLine($"Value changed to: {notification.MonitoredItems[0].Value.Value}");
+            ;
+            Log.Debug("Value of OPCUA Node: {node} changed to: {value}", subscription.MonitoredItems.First().StartNodeId.Identifier ,notification.MonitoredItems[0].Value.Value);
             _messageHandler(_opcuaConfig.TARGET_TOPIC, notification.MonitoredItems[0].Value.Value.ToString()!);
         }
         catch (Exception e)
@@ -104,17 +105,7 @@ public class OPCUAIngressClient : IIngressClient
                 try
                 {
                     Log.Debug("Creating client session with url: {endpointUrl}", endpointUrlString);
-                    // ApplicationConfiguration config = GetConfig().GetAwaiter().GetResult();
-                    // // ClientConfiguration clientConfiguration = new ClientConfiguration()
-                    // //     {WellKnownDiscoveryUrls = new StringCollection() {"opc.tcp://192.168.1.100/UADiscovery"}};
-                    // // config.ClientConfiguration = clientConfiguration;
-                    // EndpointDescription selectedEndpoint = CoreClientUtils.SelectEndpoint(GenerateUrl(), autoAccept, timeOut);
-                    // UserIdentity userIdentity = new UserIdentity(new AnonymousIdentityToken());
-                    // var endpointConfiguration = EndpointConfiguration.Create(config);
-                    // var endpoint = new ConfiguredEndpoint(null, selectedEndpoint, endpointConfiguration);
-                    // _session = await Session.Create(config, null, endpoint, false, false, "OPC UA Complex Types Client", 60000, userIdentity, null);
-                    // retry = false;
-                    
+
                     ApplicationConfiguration config = new ApplicationConfiguration();
                     config.ApplicationName = "My OPC UA Client";
                     config.ApplicationType = ApplicationType.Client;
