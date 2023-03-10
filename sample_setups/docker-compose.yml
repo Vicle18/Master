@@ -109,6 +109,7 @@ services:
       - NEO4J_dbms_memory_pagecache_size=1G
       - NEO4J_dbms.memory.heap.initial_size=1G
       - NEO4J_dbms_memory_heap_max__size=1G
+      - NEO4J_AUTH=neo4j/bendevictor
     profiles:
       - meta_store
     networks:
@@ -126,6 +127,7 @@ services:
       shared_network:
   producer:
     build: ./mqtt
+    restart: always
     depends_on:
       - mosquitto
     environment:
@@ -156,6 +158,37 @@ services:
       - server
     profiles:
       - nginx
+    networks:
+      shared_network:
+## opcua broker
+  opcuabroker:
+    build:
+      context: ./opcua
+      dockerfile: Dockerfile
+    ports:
+      - 8888:8888
+    profiles:
+      - opcua_broker
+    networks:
+      shared_network:
+## opcua client
+  opcuaclient:
+    build:
+      context: ./opcua
+      dockerfile: Dockerfile.producer
+    depends_on:
+      - opcuabroker
+    restart: always
+    environment:
+      - OPCUA_SERVER_URL=opc.tcp://opcuabroker:8888/freeopcua/server/
+      - OPCUA_NODE_NAME=ns=6;s=::AsGlobalPV:MoveAssemblyPart
+      - OPCUA_SLEEP_TIME=2 # seconds
+      - OPCUA_VALUE=int # bool, int, string
+      - OPCUA_MIN_VALUE=0 # only for int
+      - OPCUA_MAX_VALUE=10 # only for int
+      - OPCUA_STRING_VALUES=this,that,other # only for string
+    profiles:
+      - opcua_producer
     networks:
       shared_network:
 networks:

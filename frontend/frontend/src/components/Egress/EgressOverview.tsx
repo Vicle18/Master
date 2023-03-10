@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import Box from "@mui/material/Box";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { useState } from "react";
+import EgressFilter from "./EgressFilter";
 
 interface IngressOverviewProps {
   //onItemClick: (data: any) => void;
@@ -17,8 +18,8 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
     setSelectedItemData(data);
   };
 
-  const handleOpenChart = (data: any) => {
-    setSelectedDataForChart(data);
+  const handleSearchResult = (data: any) => {
+    setSelectedItemData(data);
   };
 
   return (
@@ -36,7 +37,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            "test"
+            <EgressFilter onSearch={handleSearchResult}/>
           </Grid2>
           <Grid2
             xs={5.2}

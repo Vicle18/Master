@@ -3,6 +3,7 @@
 using System;
 using IngressAdapter.BusCommunication;
 using IngressAdapter.Controller;
+using IngressAdapter.IngressCommunication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,9 +27,9 @@ namespace IngressAdapter
                 {
                     services.AddSingleton<IController, Controller.Controller>();
                     services.AddSingleton<IBusClient, BusClient>();
-                    
-                    
-                    
+                    services.AddTransient<IIngressClientCreator, IngressClientCreator>();
+
+
                 }).ConfigureAppConfiguration((config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory())

@@ -17,6 +17,7 @@
       <Content Include="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
+      <None Remove="IngressCommunication\OPCUA\Client.Config.xml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,7 +27,8 @@
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
       <PackageReference Include="MQTTnet" Version="4.1.4.563" />
-      <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+      <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua" Version="1.4.371.60" />
       <PackageReference Include="Serilog" Version="2.12.0" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />

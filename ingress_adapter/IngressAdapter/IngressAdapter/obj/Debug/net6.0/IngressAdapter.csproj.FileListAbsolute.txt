@@ -78,3 +78,12 @@
 /Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/Debug/net6.0/IngressAdapter.csproj.CopyComplete
 /Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/appsettings.json
 /Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Newtonsoft.Json.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Bindings.Https.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Client.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Configuration.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Core.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Gds.Client.Common.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Gds.Server.Common.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Security.Certificates.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/Opc.Ua.Server.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/BouncyCastle.Crypto.dll

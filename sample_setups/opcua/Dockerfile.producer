@@ -1,0 +1,14 @@
+# set base image
+FROM python:3.9-slim-buster
+
+# set working directory
+WORKDIR /app
+
+# install dependencies
+RUN pip install opcua
+
+# copy script to working directory
+COPY opcua_producer.py .
+
+# run script
+CMD [ "python", "opcua_producer.py" ]

@@ -2,6 +2,7 @@ using IngressAdapter.BusCommunication;
 using IngressAdapter.BusCommunication.KAFKA;
 using IngressAdapter.IngressCommunication;
 using IngressAdapter.IngressCommunication.MQTT;
+using IngressAdapter.IngressCommunication.OPCUA;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -11,20 +12,30 @@ namespace IngressAdapter.Controller;
 public class Controller : IController
 {
     private readonly IConfiguration _config;
+    private readonly IIngressClientCreator _clientCreator;
     private IBusClient _busClient;
     private IIngressClient _ingressClient;
     private CancellationTokenSource cts = new CancellationTokenSource();
-    public Controller(IConfiguration config)
+    public Controller(IConfiguration config, IIngressClientCreator clientCreator)
     {
         _config = config;
+        _clientCreator = clientCreator;
     }
 
     public void Initialize()
     {
-        Log.Debug("Initializing Controller");
-        InitializeBusCommunication();
-        InitializeIngressCommunication();
-        PublishAvailabilityNotification();
+        try
+        {
+            Log.Debug("Initializing Controller");
+            InitializeBusCommunication();
+            InitializeIngressCommunication();
+            PublishAvailabilityNotification();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     private void PublishAvailabilityNotification()
@@ -44,8 +55,10 @@ public class Controller : IController
     
     private void InitializeIngressCommunication()
     {
-        _ingressClient = new MQTTIngressClient(_config);
+        var clientType = _config.GetSection("INGRESS_CONFIG").GetValue<string>("PROTOCOL") ?? throw new ArgumentException();
+        _ingressClient = _clientCreator.CreateIngressClient(clientType);
         _ingressClient.Initialize(TransmitMessage);
+        _ingressClient.StartIngestion();
     }
 
     public void StartTransmission()
