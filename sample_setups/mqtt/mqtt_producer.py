@@ -10,7 +10,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 
 host = os.environ.get('HOST') or "localhost"
-port = os.environ.get('PORT') or 1883
+port = int(os.environ.get('PORT') or 1883)
 # Connect to the broker.
 client.connect(host, port, 60)
 

@@ -127,6 +127,7 @@ services:
       shared_network:
   producer:
     build: ./mqtt
+    restart: always
     depends_on:
       - mosquitto
     environment:
@@ -181,7 +182,7 @@ services:
     environment:
       - OPCUA_SERVER_URL=opc.tcp://opcuabroker:8888/freeopcua/server/
       - OPCUA_NODE_NAME=ns=6;s=::AsGlobalPV:MoveAssemblyPart
-      - OPCUA_SLEEP_TIME=0.5
+      - OPCUA_SLEEP_TIME=2 # seconds
       - OPCUA_VALUE=int # bool, int, string
       - OPCUA_MIN_VALUE=0 # only for int
       - OPCUA_MAX_VALUE=10 # only for int
