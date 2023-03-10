@@ -27,7 +27,7 @@
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
       <PackageReference Include="MQTTnet" Version="4.1.4.563" />
       <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.1.4.563" />
-      <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
       <PackageReference Include="Serilog" Version="3.0.0-dev-01862" />
       <PackageReference Include="Serilog.Extensions.Hosting" Version="5.0.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00907" />
