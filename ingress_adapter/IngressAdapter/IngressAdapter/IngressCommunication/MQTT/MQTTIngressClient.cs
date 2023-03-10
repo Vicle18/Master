@@ -18,7 +18,6 @@ public class MQTTIngressClient : IIngressClient
 
     public MQTTIngressClient(IConfiguration config)
     {
-        
         _config = config;
         _mqttConfig = new MQTTConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_mqttConfig);

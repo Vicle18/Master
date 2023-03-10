@@ -2,6 +2,7 @@ using IngressAdapter.BusCommunication;
 using IngressAdapter.BusCommunication.KAFKA;
 using IngressAdapter.IngressCommunication;
 using IngressAdapter.IngressCommunication.MQTT;
+using IngressAdapter.IngressCommunication.OPCUA;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -44,8 +45,9 @@ public class Controller : IController
     
     private void InitializeIngressCommunication()
     {
-        _ingressClient = new MQTTIngressClient(_config);
+        _ingressClient = new OPCUAIngressClient(_config);
         _ingressClient.Initialize(TransmitMessage);
+        _ingressClient.StartIngestion();
     }
 
     public void StartTransmission()
