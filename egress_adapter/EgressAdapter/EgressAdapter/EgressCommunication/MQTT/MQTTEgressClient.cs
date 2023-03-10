@@ -46,7 +46,7 @@ public class MQTTEgressClient : IEgressClient
             await InitializeMqttClient(messageHandler);
             Log.Debug($"Finished initializing MQTT receiver");
             SubscribeToTopic("example");
-            PubishToTopic("Machine1/sensor1", "highly valuable value");
+            PublishToTopic("Machine1/sensor1", "highly valuable value");
         }, cts.Token);
     }
 
@@ -127,7 +127,7 @@ public class MQTTEgressClient : IEgressClient
         {
             Log.Debug("Subscribing to MQTT topic {topic}", topic);
             await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder().WithTopic(topic).Build());
-            PubishToTopic(topic, "message");
+            PublishToTopic(topic, "message");
         }
         else
         {
@@ -136,7 +136,7 @@ public class MQTTEgressClient : IEgressClient
         }
     }
 
-    public async void PubishToTopic(string topic, string value)
+    public async void PublishToTopic(string topic, string value)
     {
         if (mqttClient.IsConnected)
         {
@@ -169,10 +169,6 @@ public class MQTTEgressClient : IEgressClient
 
             throw new InvalidOperationException();
         };
-    }
-
-    public void StartIngestion()
-    {
     }
 
     public bool HasConnection()

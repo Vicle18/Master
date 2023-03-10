@@ -52,6 +52,7 @@ public class Controller : IController
     private void MessageHandler(string topic, string message)
     {
         Log.Debug("Received KAFKA message {message} from {topic}", message, topic);
+        _egressClient.
     }
 
     private void InitializeEgressCommunication()
