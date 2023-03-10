@@ -11,6 +11,13 @@ var setChangeFrequency: React.Dispatch<React.SetStateAction<string>>;
 export function InsertFrequency(handleClick: (event: React.MouseEvent<HTMLElement>) => void) {
   [standardFrequency, setStandardFrequency] = React.useState("");
   [changedFrequency, setChangeFrequency] = React.useState("");
+
+  const handleFrequencyCheck = (value : any) =>{
+    if(parseInt(value) < parseInt(standardFrequency)){
+      setChangeFrequency(value)
+    }
+  }
+
   return (
     <Box
       sx={{
@@ -46,7 +53,7 @@ export function InsertFrequency(handleClick: (event: React.MouseEvent<HTMLElemen
         size="small"
         value={changedFrequency}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          setChangeFrequency(event.target.value);
+          handleFrequencyCheck(event.target.value);
         }}
         sx={{
           width: 100,
