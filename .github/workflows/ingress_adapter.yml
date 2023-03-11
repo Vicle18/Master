@@ -17,8 +17,8 @@ jobs:
         working-directory: ${{ env.working-directory }}
     
     steps:
-    - 
-      uses: actions/checkout@v3
+#    - 
+#      uses: actions/checkout@v3
 #    - 
 #      name: Build the Docker image
 #      run: docker build . --file ./IngressAdapter/Dockerfile --tag ingress-adapter:$(date +%s)
@@ -41,4 +41,4 @@ jobs:
       with:
         context: ./ingress_adapter/IngressAdapter/
         push: true
-        tags: clemme/ingress:1.3
+        tags: clemme/ingress:1.3.1
