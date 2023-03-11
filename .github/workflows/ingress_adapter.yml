@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file ./ingress_adapter/IngressAdapter/Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file ./ingress_adapter/IngressAdapter/IngressAdapter/Dockerfile --tag my-image-name:$(date +%s)
