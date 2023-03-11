@@ -3,11 +3,10 @@ name: Build Ingress Adapter
 on:
   push:
     branches:
-      - "**"
+      - main
+      - 'feature/ingress**'
     tags:
-      - "v*.*.*"
       - "ingress/v*.*.*"
-    #branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -33,10 +32,12 @@ jobs:
         images: |
           clemme/ingress
         # generate Docker tags based on the following events/attributes
-        # type=semver,pattern={{raw}}
-        # type=ref,event=branch
+        # match the tag format "ingress/v1.0.0" and extracting the version number
+        # and use the branch name as tag
+        # use the latest tag
         tags: |
           type=match,pattern=ingress/v(\d.\d.\d),group=1
+          type=ref,event=branch 
         flavor: |
           latest=true
     -
