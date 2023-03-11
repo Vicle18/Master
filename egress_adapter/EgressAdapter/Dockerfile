@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["EgressAdapter.csproj", "EgressAdapter/"]
+COPY ["EgressAdapter/EgressAdapter.csproj", "EgressAdapter/"]
 RUN dotnet restore "EgressAdapter/EgressAdapter.csproj"
 COPY . .
 WORKDIR "/src/EgressAdapter"
