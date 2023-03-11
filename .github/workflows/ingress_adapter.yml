@@ -39,6 +39,6 @@ jobs:
       name: Build and push
       uses: docker/build-push-action@v4
       with:
-        context: ./IngressAdapter
+        context: ./ingress_adapter/IngressAdapter/IngressAdapter
         push: true
         tags: clemme/ingress:1.3
