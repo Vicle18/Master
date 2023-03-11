@@ -191,6 +191,23 @@ services:
       - opcua_producer
     networks:
       shared_network:
+## ingress
+  ingress:
+    image: clemme/ingress:latest
+    environment:
+      - INGRESS_CONFIG__PROTOCOL=OPCUA
+      - INGRESS_CONFIG__PARAMETERS__SERVER_URL=opc.tcp://${HOST_DNS}:8888/freeopcua/server/
+      - INGRESS_CONFIG__PARAMETERS__NODE_NAME=ns=6;s=::AsGlobalPV:MoveAssemblyPart
+      - INGRESS_CONFIG__PARAMETERS__VALUE_TYPE=int
+      - INGRESS_CONFIG__PARAMETERS__TARGET_TOPIC=opcuaTest
+      - BUS_CONFIG__PROTOCOL=KAFKA
+      - BUS_CONFIG__PARAMETERS__HOST=${HOST_DNS}
+      - BUS_CONFIG__PARAMETERS__PORT=19092
+    restart: always
+    profiles:
+      - ingress
+    networks:
+      shared_network:
 networks:
   shared_network:
     name: "shared_network"
