@@ -36,7 +36,6 @@ jobs:
         # type=semver,pattern={{raw}}
         # type=ref,event=branch
         tags: |
-          type=semver,enable=false
           type=match,pattern=ingress/v(\d.\d.\d),group=1
         flavor: |
           latest=true
