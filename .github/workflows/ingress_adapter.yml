@@ -6,6 +6,7 @@ on:
       - "**"
     tags:
       - "v*.*.*"
+      - "ingress/v*.*.*"
     #branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
@@ -35,6 +36,7 @@ jobs:
         tags: |
           type=semver,pattern={{raw}}
           type=ref,event=branch
+          type=match,pattern=ingress/v(\d.\d.\d)
         flavor: |
           latest=true
     -
