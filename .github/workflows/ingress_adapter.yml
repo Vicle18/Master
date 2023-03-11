@@ -34,9 +34,10 @@ jobs:
           clemme/ingress
         # generate Docker tags based on the following events/attributes
         tags: |
-          type=semver,pattern={{raw}}
-          type=ref,event=branch
           type=match,pattern=ingress/v(\d.\d.\d)
+#          type=semver,pattern={{raw}}
+#          type=ref,event=branch
+          
         flavor: |
           latest=true
     -
