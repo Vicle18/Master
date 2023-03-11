@@ -6,7 +6,7 @@ WORKDIR /src
 COPY ["EgressAdapter.csproj", "EgressAdapter/"]
 RUN dotnet restore "EgressAdapter/EgressAdapter.csproj"
 COPY . .
-WORKDIR "/src/"
+WORKDIR "/src/EgressAdapter"
 RUN dotnet build "EgressAdapter.csproj" -c Release -o /app/build
 
 FROM build AS publish
