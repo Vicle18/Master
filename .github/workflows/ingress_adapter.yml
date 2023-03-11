@@ -2,7 +2,11 @@ name: Build Ingress Adapter
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "**"
+    tags:
+      - "v*.*.*"
+    #branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -17,7 +21,19 @@ jobs:
         working-directory: ${{ env.working-directory }}
     
     steps:
-    - uses: actions/checkout@v3
+    - 
+      uses: actions/checkout@v3
+    -
+      name: Docker meta
+      id: meta
+      uses: docker/metadata-action@v4
+      with:
+        # list of Docker images to use as base name for tags
+        images: |
+          clemme/ingress
+        # generate Docker tags based on the following events/attributes
+        tags: |
+          type=semver,pattern={{raw}}
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2
@@ -36,6 +52,7 @@ jobs:
       with:
         context: ./ingress_adapter/IngressAdapter/
         push: true
-        tags: clemme/ingress:latest
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
