@@ -19,9 +19,9 @@ jobs:
     steps:
     - 
       uses: actions/checkout@v3
-    - 
-      name: Build the Docker image
-      run: docker build . --file ./IngressAdapter/Dockerfile --tag ingress-adapter:$(date +%s)
+#    - 
+#      name: Build the Docker image
+#      run: docker build . --file ./IngressAdapter/Dockerfile --tag ingress-adapter:$(date +%s)
       
     -
       name: Set up QEMU
@@ -39,6 +39,6 @@ jobs:
       name: Build and push
       uses: docker/build-push-action@v4
       with:
-        context: ./ingress_adapter/IngressAdapter/IngressAdapter
+        context: ./ingress_adapter/IngressAdapter/
         push: true
         tags: clemme/ingress:1.3
