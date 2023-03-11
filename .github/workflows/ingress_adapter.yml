@@ -33,11 +33,10 @@ jobs:
         images: |
           clemme/ingress
         # generate Docker tags based on the following events/attributes
+        # type=semver,pattern={{raw}}
+        # type=ref,event=branch
         tags: |
-          type=match,pattern=ingress/v(\d.\d.\d),group=0
-#          type=semver,pattern={{raw}}
-#          type=ref,event=branch
-          
+          type=match,pattern=ingress/v(\d.\d.\d),group=1
         flavor: |
           latest=true
     -
