@@ -7,6 +7,8 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <LangVersion>10</LangVersion>
+        <Version Condition="'$(BUILD_VERSION)' == ''">1.4.0</Version>
+        <Version Condition="'$(BUILD_VERSION)' != ''">$(BUILD_VERSION)</Version>
     </PropertyGroup>
 
     <ItemGroup>
