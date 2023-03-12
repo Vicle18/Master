@@ -36,7 +36,7 @@ jobs:
         # and use the branch name as tag
         # use the latest tag
         tags: |
-          type=match,pattern=ingress/v(\d.\d.\d),group=1
+          type=match,pattern=egress/v(\d.\d.\d),group=1
           type=ref,event=branch 
         flavor: |
           latest=true
