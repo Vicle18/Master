@@ -1,4 +1,4 @@
-name: Build Ingress Adapter
+name: Build Service Configurator
 
 on:
   push:
