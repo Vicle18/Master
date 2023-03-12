@@ -3,7 +3,7 @@ name: Build Egress Adapter
 on:
   push:
     branches:
-      - main
+      # - main
       - 'feature/egress**'
     tags:
       - "egress/v*.*.*"
