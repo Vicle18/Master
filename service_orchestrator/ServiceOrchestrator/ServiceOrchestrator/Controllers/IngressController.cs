@@ -4,7 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Serilog;
 using ServiceOrchestrator.ContainerManagement;
+using ServiceOrchestrator.ContainerManagement.Kubernetes;
 
 namespace ServiceOrchestrator.Controllers
 {
@@ -20,12 +23,13 @@ namespace ServiceOrchestrator.Controllers
             _logger = logger;
             _containerManager = containerManager;
         }
+
         // GET: api/Ingress
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _logger.LogInformation("get request for ingress controller");
-            return new string[] { "value1", "value2" };
+            Log.Debug("Inside get");
+            return new string[] { "value1Ingress", "value2Ingress" };
         }
 
         // GET: api/Ingress/5
@@ -37,9 +41,22 @@ namespace ServiceOrchestrator.Controllers
 
         // POST: api/Ingress
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] object data)
         {
+            Log.Debug("Inside post");
+            
+            Log.Debug(data?.ToString());
+            Log.Debug("INITIALDATA", data.ToString());
+
+            ContainerConfig config = new ContainerConfig();
+            
+            
+            //dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(json); // deserialize JSON string into dynamic object
+            //Log.Debug(jsonObject);
+            
+            //config.EnvironmentVariables.Add();
         }
+
 
         // PUT: api/Ingress/5
         [HttpPut("{id}")]

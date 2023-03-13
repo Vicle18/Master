@@ -31,7 +31,6 @@ public class KubernetesManager : IContainerManager
             SkipTlsVerify = true,
             Namespace = "sso",
         };
-        KubernetesClientConfiguration.InClusterConfig();
         // var config = KubernetesClientConfiguration.BuildDefaultConfig();
         client = new k8s.Kubernetes(config);
         StartContainer(new ContainerConfig());
