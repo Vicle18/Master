@@ -11,15 +11,15 @@ namespace EgressAdapter.Controller;
 public class Controller : IController
 {
     private readonly IConfiguration _config;
+    private readonly IEgressClientCreator _egressClientCreator;
     private IBusClient _busClient;
     private IEgressClient _egressClient;
     private CancellationTokenSource cts = new CancellationTokenSource();
 
-    public Controller(IConfiguration config)
+    public Controller(IConfiguration config, IEgressClientCreator egressClientCreator)
     {
         _config = config;
-//        _busClient = busClient;
-//        _egressClient = egressClient;
+        _egressClientCreator = egressClientCreator;
     }
 
 
@@ -56,8 +56,9 @@ public class Controller : IController
 
     private void InitializeEgressCommunication()
     {
-        _egressClient = new MQTTEgressClient(_config);
-        _egressClient.Initialize(TransmitMessage);
+        var clientType = _config.GetSection("EGRESS_CONFIG").GetValue<string>("PROTOCOL") ?? throw new ArgumentException();
+        _egressClient = _egressClientCreator.CreateEgressClient(clientType);
+        _egressClient.Initialize(_busClient);
     }
 
     private void TransmitMessage(string arg1, string arg2)

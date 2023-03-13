@@ -36,6 +36,7 @@ import {
 } from "../Ingress/create/Frequency";
 import { DataFormatSelector, formatName, dataformats } from "../Ingress/create/DataFormat";
 import { createEndpoint } from "./createEndpointMenu";
+import axios from 'axios';
 
 const pages = ["Ingress", "Egress"];
 
@@ -53,7 +54,7 @@ export const SelectorMenuProps = {
 function TopBar() {
   const [PopupIngress, setPopupIngress] = React.useState(false);
   const [PopupEgress, setPopupEgress] = React.useState(false);
-
+  const [isDisabled, setIsDisabled] = React.useState(true);
   const handlerClickOpenIngress = () => {
     setPopupIngress(true);
   };
@@ -62,15 +63,68 @@ function TopBar() {
     setPopupIngress(false);
   };
 
+  const validateInput = () => {
+    // console.log("id ", id.length != 0)
+    // console.log("element ", elementName[0].length != 0)
+    // console.log("protocol ", protocolName[0].length != 0)
+    // console.log("frequency ", standardFrequency.length != 0)
+    // console.log("formatName ", formatName[0].length != 0)
+
+    if (id.length != 0 &&
+      elementName[0].length != 0 &&
+      protocolName[0].length != 0 &&
+      standardFrequency.length != 0 &&
+      formatName[0].length != 0) {
+      setIsDisabled(false);
+    }
+  };
+
+  /**
+   * Create an endpoint based on the specified values
+   */
   const handlerCreate = () => {
     setPopupIngress(false);
+    let endpoint = JSON.stringify(
+      {
+        "endpointID": id,
+        "frequency": changedFrequency.length === 0 ? standardFrequency : changedFrequency,
+        "formatName": formatName[0],
+        "elementName": elementName[0],
+        "protocolName": protocolName[0],
+        "host": host,
+        "port": port,
+      }
+    )
 
-    //changedFrequency,
-    //standardFrequency,
-    //formatName
-    //protocolName
-    //elementName
-    //id
+    const headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+      'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, X-Requested-With'
+    };
+
+
+    axios.get('https://localhost:7033/api/Ingress', { headers })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+    fetch('https://localhost:7033/api/Ingress?=', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, X-Requested-With'
+      },
+      body: endpoint
+    })
+      .then(response => response.json())
+      .then(data => console.log('data: ' + data))
+      .catch(error => console.error(error))
   };
 
   const handlerClickOpenEgress = () => {
@@ -133,15 +187,17 @@ function TopBar() {
               To create an Ingress Datapoint, please enter the following
               information.
             </DialogContentText>
-            {InsertId()}
-            {ContainingElementSelector()}
-            {ProtocolSelector()}
-            {InsertFrequency(handleClick)}
-            {DataFormatSelector()}
+            <Box onChange={validateInput}>
+              {InsertId()}
+              {ContainingElementSelector()}
+              {ProtocolSelector()}
+              {DataFormatSelector()}
+              {InsertFrequency(handleClick)}
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handlerClose}>Cancel</Button>
-            <Button onClick={handlerCreate}>Create</Button>
+            <Button onClick={handlerCreate} disabled={isDisabled}>Create</Button>
           </DialogActions>
         </Dialog>
       </div>

@@ -38,12 +38,10 @@ namespace EgressAdapter.BusCommunication.KAFKA
             var cts = new CancellationTokenSource();
             Task task = Task.Run(() =>
             {
-                Log.Debug("Executing Task {number}", 1);
                 using (var consumer = new ConsumerBuilder<Ignore, string>(conf).Build())
                 {
                     Log.Debug("Printing {Host} and {Port}", _host, _port);
                     consumer.Subscribe(topic);
-                    Log.Debug("Executing Task {number}", 2);
                     Console.CancelKeyPress += (_, e) =>
                     {
                         e.Cancel = true; // prevent the process from terminating.
@@ -52,21 +50,16 @@ namespace EgressAdapter.BusCommunication.KAFKA
                     try
                     {
                         _producer.ProduceMessage("test", "message");
-                        Log.Debug("Executing Task {number}", 3);
                         while (true)
                         {
-                            Log.Debug("Executing Task {number}", 4);
                             try
                             {
                                 if (cts.Token.IsCancellationRequested)
                                     throw new OperationCanceledException("cancelled externally");
-                                Log.Debug("Executing Task {number}", 5);
 
                                 var consumeResult = consumer.Consume(CancellationToken.None);
-                                Log.Debug("Executing Task {number}", 6);
                                 Log.Debug($"Received Message from Kafka: {consumeResult.Message.Value}");
                                 msgHandler(topic, consumeResult.Message.Value);
-                                Log.Debug("Executing Task {number}", 7);
                             }
                             catch (ConsumeException e)
                             {
