@@ -39,7 +39,7 @@ jobs:
           type=match,pattern=meta-store/v(\d.\d.\d),group=1
           type=ref,event=branch 
         flavor: |
-          latest=true
+          latest=true 
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2
