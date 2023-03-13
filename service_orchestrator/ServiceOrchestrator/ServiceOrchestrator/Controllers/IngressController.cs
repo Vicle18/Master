@@ -39,6 +39,7 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            _logger.LogInformation("get request for ingress controller");
         }
 
         // PUT: api/Ingress/5
