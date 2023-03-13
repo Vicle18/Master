@@ -287,7 +287,7 @@ services:
       - BUS_CONFIG__PROTOCOL=KAFKA
       - BUS_CONFIG__PARAMETERS__HOST=host.docker.internal
       - BUS_CONFIG__PARAMETERS__PORT=19092
-    #restart: always
+    # restart: always
     profiles:
       - ingress
     networks:

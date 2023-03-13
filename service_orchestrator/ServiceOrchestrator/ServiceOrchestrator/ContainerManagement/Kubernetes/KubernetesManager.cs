@@ -31,10 +31,9 @@ public class KubernetesManager : IContainerManager
             SkipTlsVerify = true,
             Namespace = "sso",
         };
-        KubernetesClientConfiguration.InClusterConfig();
         // var config = KubernetesClientConfiguration.BuildDefaultConfig();
         client = new k8s.Kubernetes(config);
-        StartContainer(new ContainerConfig());
+        //StartContainer(new ContainerConfig());
         _logger.LogDebug("active pods in kubernetes: {pods}", string.Join(", ", client.ListNamespacedPod("sso").Items.Select(p => p.Name())));
     }
 
