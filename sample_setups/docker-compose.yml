@@ -158,10 +158,9 @@ services:
       - kafka_ksqldb
     networks:
       shared_network:
-
 ## meta store
   meta: 
-    build: ../meta_store
+    image: clemme/meta-store:latest
     ports:
       - 4001:4000
     restart: always
