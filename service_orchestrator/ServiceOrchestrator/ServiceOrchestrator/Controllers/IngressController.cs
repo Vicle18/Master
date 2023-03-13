@@ -51,7 +51,7 @@ namespace ServiceOrchestrator.Controllers
             ContainerConfig config = new ContainerConfig();
             
             
-            //dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(json); // deserialize JSON string into dynamic object
+            ////dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(json); // deserialize JSON string into dynamic object
             //Log.Debug(jsonObject);
             
             //config.EnvironmentVariables.Add();
