@@ -3,6 +3,7 @@
 using System;
 using EgressAdapter.Controller;
 using EgressAdapter.BusCommunication;
+using EgressAdapter.EgressCommunication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,10 +26,9 @@ namespace EgressAdapter
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IController, Controller.Controller>();
-                    services.AddSingleton<IBusClient, BusClient>();
-                    
-                    
-                    
+                    services.AddTransient<IEgressClientCreator, EgressClientCreator>();
+
+
                 }).ConfigureAppConfiguration((config) =>
                 {
                     config.SetBasePath(Directory.GetCurrentDirectory())
