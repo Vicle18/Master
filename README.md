@@ -1,5 +1,10 @@
 # Useful Commands
 
+## pushing a new version
+git tag -a ingress/v0.1.0 -m "my version 0.1.0"
+git push origin ingress/v0.1.0
+### informatio about pipeline metadata
+https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)
 ```
 kind create cluster --config kubernetes/kind_config.yaml 

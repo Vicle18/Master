@@ -6,94 +6,132 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import { styled, alpha } from "@mui/material/styles";
-import Menu, { MenuProps } from "@mui/material/Menu";
-import EditIcon from "@mui/icons-material/Edit";
-import Divider from "@mui/material/Divider";
-import ArchiveIcon from "@mui/icons-material/Archive";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { StyledMenu } from "./StyledMenu";
+import { InsertId } from "../Ingress/create/Id";
+import {
+  ContainingElementSelector,
+  elementName,
+} from "../Ingress/create/ContainingElement";
+import { id } from "../Ingress/create/Id";
+import {
+  ProtocolSelector,
+  protocolName,
+  topic,
+  port,
+  host,
+} from "../Ingress/create/Protocol";
+import {
+  InsertFrequency,
+  standardFrequency,
+  changedFrequency,
+} from "../Ingress/create/Frequency";
+import { DataFormatSelector, formatName, dataformats } from "../Ingress/create/DataFormat";
+import { createEndpoint } from "./createEndpointMenu";
+import axios from 'axios';
 
 const pages = ["Ingress", "Egress"];
-const settings = ["Ingress", "Egress", "Containing Element"];
-const test = ["Create"];
 
-const StyledMenu = styled((props: MenuProps) => (
-  <Menu
-    elevation={0}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
-    transformOrigin={{
-      vertical: "top",
-      horizontal: "right",
-    }}
-    {...props}
-  />
-))(({ theme }) => ({
-  "& .MuiPaper-root": {
-    borderRadius: 6,
-    marginTop: theme.spacing(1),
-    minWidth: 180,
-    color:
-      theme.palette.mode === "light"
-        ? "rgb(55, 65, 81)"
-        : theme.palette.grey[300],
-    boxShadow:
-      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
-    "& .MuiMenu-list": {
-      padding: "4px 0",
-    },
-    "& .MuiMenuItem-root": {
-      "& .MuiSvgIcon-root": {
-        fontSize: 18,
-        color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5),
-      },
-      "&:active": {
-        backgroundColor: alpha(
-          theme.palette.secondary.main,
-          theme.palette.action.selectedOpacity
-        ),
-      },
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+export const SelectorMenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 230,
     },
   },
-}));
+};
 
-interface Props {
-  onIngressEgressButtonClick: (id: string) => void;
-}
-
-function TopBar(props: Props) {
+function TopBar() {
   const [PopupIngress, setPopupIngress] = React.useState(false);
-  const handlerClickOpen = () => {
+  const [PopupEgress, setPopupEgress] = React.useState(false);
+  const [isDisabled, setIsDisabled] = React.useState(true);
+  const handlerClickOpenIngress = () => {
     setPopupIngress(true);
   };
 
   const handlerClose = () => {
-    console.log("handler close");
     setPopupIngress(false);
-    console.log("after close");
+  };
+
+  const validateInput = () => {
+    // console.log("id ", id.length != 0)
+    // console.log("element ", elementName[0].length != 0)
+    // console.log("protocol ", protocolName[0].length != 0)
+    // console.log("frequency ", standardFrequency.length != 0)
+    // console.log("formatName ", formatName[0].length != 0)
+
+    if (id.length != 0 &&
+      elementName[0].length != 0 &&
+      protocolName[0].length != 0 &&
+      standardFrequency.length != 0 &&
+      formatName[0].length != 0) {
+      setIsDisabled(false);
+    }
+  };
+
+  /**
+   * Create an endpoint based on the specified values
+   */
+  const handlerCreate = () => {
+    setPopupIngress(false);
+    let endpoint = JSON.stringify(
+      {
+        "endpointID": id,
+        "frequency": changedFrequency.length === 0 ? standardFrequency : changedFrequency,
+        "formatName": formatName[0],
+        "elementName": elementName[0],
+        "protocolName": protocolName[0],
+        "host": host,
+        "port": port,
+      }
+    )
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+      'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, X-Requested-With'
+    };
+
+
+    axios.get('https://localhost:7033/api/Ingress', { headers })
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+
+    fetch('https://localhost:7033/api/Ingress?=', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token, X-Requested-With'
+      },
+      body: endpoint
+    })
+      .then(response => response.json())
+      .then(data => console.log('data: ' + data))
+      .catch(error => console.error(error))
+  };
+
+  const handlerClickOpenEgress = () => {
+    setPopupEgress(true);
   };
 
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
 
@@ -101,30 +139,20 @@ function TopBar(props: Props) {
     setAnchorElNav(event.currentTarget);
   };
 
-  const handleIngressEgressButtonClick = (id: string) => {
-    props.onIngressEgressButtonClick(id);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const createClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
   const handleClose = (page: string) => {
-    console.log("handle");
-    // <ViewEgressPage title={"title"}></ViewEgressPage>;
-    // <CreateEgress></CreateEgress>;
-    console.log("After");
     setAnchorEl(null);
   };
 
@@ -133,126 +161,16 @@ function TopBar(props: Props) {
       <AppBar position="static" color="secondary">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="secondary"
-              >
-                <MenuIcon />
-              </IconButton>
-              <StyledMenu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
-              </StyledMenu>
-            </Box>
-            <Box sx={{ display: "inline-flex" }}>
-              {pages.map((page) => (
-                <Button
-                  id="ingress-egress-button"
-                  aria-controls={open ? "demo-customized-menu" : undefined}
-                  aria-haspopup="true"
-                  variant="contained"
-                  disableElevation
-                  key={page}
-                  onClick={() => handleIngressEgressButtonClick(page)}
-                  sx={{
-                    my: 2,
-                    color: "white",
-                    display: "block",
-                    backgroundColor: "primary",
-                    marginLeft: 1,
-                  }}
-                >
-                  {`${page}`}
-                </Button>
-              ))}
-            </Box>
-            <div>
-              <Button
-                id="demo-customized-button"
-                aria-controls={open ? "demo-customized-menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                sx={{
-                  color: "white",
-                  backgroundColor: "primary",
-                  marginLeft: 1,
-                }}
-                variant="contained"
-                disableElevation
-                onClick={handleClick}
-                endIcon={<KeyboardArrowDownIcon />}
-              >
-                Create
-              </Button>
-              <StyledMenu
-                id="demo-customized-menu"
-                MenuListProps={{
-                  "aria-labelledby": "demo-customized-button",
-                }}
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-              >
-                <MenuItem onClick={handlerClickOpen} disableRipple>
-                  <EditIcon />
-                  Ingress
-                </MenuItem>
-                {CreateIngress()}
-                <MenuItem
-                  onClick={() => {
-                    handleClose("/CreateEgressPage");
-                  }}
-                  disableRipple
-                >
-                  <FileCopyIcon />
-                  Egress
-                </MenuItem>
-                <Divider sx={{ my: 0.5 }} />
-                <MenuItem
-                  onClick={() => {
-                    handleClose("/CreateEgressPage");
-                  }}
-                  disableRipple
-                >
-                  <ArchiveIcon />
-                  Containing Element
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleClose("/CreateEgressPage");
-                  }}
-                  disableRipple
-                >
-                  <MoreHorizIcon />
-                  More
-                </MenuItem>
-              </StyledMenu>
-            </div>
+            {addCreateDropDown(open, handleCloseNavMenu)}
+            {createEndpoint(
+              open,
+              createClick,
+              anchorEl,
+              handleClose,
+              handlerClickOpenIngress,
+              CreateIngress,
+              handlerClickOpenEgress
+            )}
           </Toolbar>
         </Container>
       </AppBar>
@@ -264,28 +182,54 @@ function TopBar(props: Props) {
       <div>
         <Dialog open={PopupIngress} onClose={handlerClose}>
           <DialogTitle>Create Ingress Datapoint</DialogTitle>
-          <DialogContent>
+          <DialogContent dividers={true}>
             <DialogContentText>
               To create an Ingress Datapoint, please enter the following
               information.
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              fullWidth
-              variant="standard"
-            />
+            <Box onChange={validateInput}>
+              {InsertId()}
+              {ContainingElementSelector()}
+              {ProtocolSelector()}
+              {DataFormatSelector()}
+              {InsertFrequency(handleClick)}
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button onClick={handlerClose}>Cancel</Button>
-            <Button onClick={handlerClose}>Subscribe</Button>
+            <Button onClick={handlerCreate} disabled={isDisabled}>Create</Button>
           </DialogActions>
         </Dialog>
       </div>
     );
   }
 }
+
 export default TopBar;
+
+function addCreateDropDown(open: boolean, handleCloseNavMenu: () => void) {
+  return (
+    <Box sx={{ display: "inline-flex" }}>
+      {pages.map((page) => (
+        <Button
+          id="ingress-egress-button"
+          aria-controls={open ? "demo-customized-menu" : undefined}
+          aria-haspopup="true"
+          variant="contained"
+          disableElevation
+          key={page}
+          onClick={handleCloseNavMenu}
+          sx={{
+            my: 2,
+            color: "white",
+            display: "block",
+            backgroundColor: "primary",
+            marginLeft: 1,
+          }}
+        >
+          {page}
+        </Button>
+      ))}
+    </Box>
+  );
+}

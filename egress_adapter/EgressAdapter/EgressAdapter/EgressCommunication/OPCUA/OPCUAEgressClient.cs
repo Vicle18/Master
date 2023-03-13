@@ -1,5 +1,6 @@
 using EgressAdapter.BusCommunication;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Opc.Ua;
 using Opc.Ua.Client;
 using Serilog;
@@ -20,7 +21,8 @@ public class OPCUAEgressClient : IEgressClient
     public void Initialize(IBusClient busClient)
     {
         CreateClientSession(_opcuaConfig.SERVER_URL);
-        foreach (var pair in _opcuaConfig.TRANSMISSION_PAIRS)
+        var myArray = JsonConvert.DeserializeObject<List<OPCUATransmissionPair>>(_opcuaConfig.TRANSMISSION_PAIRS);
+        foreach (var pair in myArray)
         {
             switch (pair.VALUE_TYPE)
             {

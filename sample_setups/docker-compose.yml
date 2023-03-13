@@ -275,6 +275,24 @@ services:
       - opcua_producer
     networks:
       shared_network:
+## ingress
+  ingress:
+    # image: clemme/ingress:latest
+    image: ingress
+    environment:
+      - INGRESS_CONFIG__PROTOCOL=OPCUA
+      - INGRESS_CONFIG__PARAMETERS__SERVER_URL=opc.tcp://host.docker.internal:8888/freeopcua/server/
+      - INGRESS_CONFIG__PARAMETERS__NODE_NAME=ns=6;s=::AsGlobalPV:MoveAssemblyPart
+      - INGRESS_CONFIG__PARAMETERS__VALUE_TYPE=int
+      - INGRESS_CONFIG__PARAMETERS__TARGET_TOPIC=opcuaTest
+      - BUS_CONFIG__PROTOCOL=KAFKA
+      - BUS_CONFIG__PARAMETERS__HOST=host.docker.internal
+      - BUS_CONFIG__PARAMETERS__PORT=19092
+    #restart: always
+    profiles:
+      - ingress
+    networks:
+      shared_network:
 networks:
   shared_network:
     name: "shared_network"
