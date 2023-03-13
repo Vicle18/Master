@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: egress-adapter-service
+  namespace: sso
+spec:
+  selector:
+    app: egress-adapter
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: egress-adapter-deployment
+  namespace: sso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: egress-adapter
+  template:
+    metadata:
+      labels:
+        app: egress-adapter
+    spec:
+      containers:
+      - name: egress-adapter-container
+        image: clemme/egress
+        env:
+        - name: BUS_CONFIG__PROTOCOL
+          value: "KAFKA"
+        - name: BUS_CONFIG__PARAMETERS__HOST
+          value: "my-cluster-kafka-brokers"
+        - name: BUS_CONFIG__PARAMETERS__PORT
+          value: "9092"
+        - name: egress_CONFIG__PROTOCOL
+          value: "OPCUA"
+        - name: EGRESS_CONFIG__PARAMETERS__SERVER_URL
+          value: "opc.tcp://10.123.252.192:8888/freeopcua/server/"
+        - name: EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS
+          value: "[{\"NODE_NAME\": \"ns=6;s=::AsGlobalPV:LoadOffTrack\",\"VALUE_TYPE\": \"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]"
+        # ports:
+        # - containerPort: 80
+ 
+
