@@ -64,6 +64,8 @@ type ObservableProperty{
     connectionDetails: String!
     propertyOf: ContainingElement! @relationship(type: "has", direction: IN)
     accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
+    dataFormat: String!
+    changedFrequency: Int!
 }
 
 type EgressEndpoint{
@@ -71,6 +73,8 @@ type EgressEndpoint{
     name: String!
     description: String!
     connectionDetails: String!
+    frequency: Int!
+    dataFormat: String!
     accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
 }
 

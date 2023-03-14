@@ -77,6 +77,7 @@ namespace MiddlewareManager.Controllers
                             description = value.description,
                             frequency = Int32.Parse(value.frequency),
                             id = Guid.NewGuid().ToString(),
+                            connectionDetails = value.connectionDetails,
                             topic = new 
                             {
                                 create = new 
