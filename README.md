@@ -99,6 +99,12 @@ kubectl rollout status --watch --timeout=600s statefulset/my-neo4j-release
 kubectl port-forward svc/my-neo4j-release tcp-bolt tcp-http tcp-https
 ```
 
+## Access neo4j query engine
+```
+kubectl run --rm -it --namespace "sso" --image "neo4j:5.5.0" cypher-shell \
+>      -- cypher-shell -a "neo4j://my-neo4j-release.sso.svc.cluster.local:7687" -u neo4j -p "bendevictor"
+```
+
 ## delete neo4j
 ```
 helm uninstall my-neo4j-release
