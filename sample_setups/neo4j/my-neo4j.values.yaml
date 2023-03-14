@@ -8,6 +8,15 @@ neo4j:
   # Uncomment to use enterprise edition
   #edition: "enterprise"
   #acceptLicenseAgreement: "yes"
+config:
+  server.directories.plugins: "/var/lib/neo4j/labs"
+  dbms.security.procedures.unrestricted: "apoc.*"
+  server.config.strict_validation.enabled: "false"
+  dbms.security.procedures.allowlist: "gds.*,apoc.*"
+apoc_config:
+  apoc.trigger.enabled: "true"
+  apoc.jdbc.neo4j.url: "jdbc:foo:bar"
+  apoc.import.file.enabled: "true"
 
 volumes:
   data:
