@@ -4,41 +4,28 @@ namespace MiddlewareManager.DataModel;
 
 public class Response
 {
-    public CreateObservablePropertiesResponse createObservableProperties { get; set; }
+    public CreateObservablePropertiesResult createObservableProperties { get; set; }
     public override string ToString()
     {
         return JsonSerializer.Serialize(this);
     }
 }
 
-public class CreateObservablePropertiesResponse
+public class CreateObservablePropertiesResult
 {
-    public CreateObservablePropertiesInfo info { get; set; }
-    public List<ObservableProperty> observableProperties { get; set; }
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
-}
-
-public class CreateObservablePropertiesInfo
-{
-    public int nodesCreated { get; set; }
-    public int relationshipsCreated { get; set; }
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
+    public List<ObservableProperty> ObservableProperties { get; set; }
 }
 
 public class ObservableProperty
 {
-    public string name { get; set; }
+    public string Name { get; set; }
+    public PropertyOf PropertyOf { get; set; }
     public Topic topic { get; set; }
-    public override string ToString()
-    {
-        return JsonSerializer.Serialize(this);
-    }
+}
+
+public class PropertyOf
+{
+    public string Name { get; set; }
 }
 
 public class Topic

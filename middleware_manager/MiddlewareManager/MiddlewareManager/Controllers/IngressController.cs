@@ -44,7 +44,7 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Ingress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResponse>> Post([FromBody] CreateIngressDTO value)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDTO value)
         {
             _logger.LogDebug("creating ingress with values: {value}", value);
             var graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
@@ -53,29 +53,21 @@ namespace MiddlewareManager.Controllers
             }, new SystemTextJsonSerializer());
 
             var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
-            // Instantiate an object of the MyObject class
-            var myObject = new MyObject
-            {
-                // Set the Machine property of the object
-                [JsonPropertyName("Machine")]
-                Machine = new
-                {
-                    name = value.containingElement
-                }
-            };
-
+            
             var request = new GraphQLRequest
             {
                 Query = @"
                             mutation Mutation($input: [ObservablePropertyCreateInput!]!) {
                               createObservableProperties(input: $input) {
                                 observableProperties {
-                                  id
                                   name
                                   propertyOf {
                                     ... on Machine {
                                       name
                                     }
+                                  }
+                                  topic {
+                                    name
                                   }
                                 }
                               }
@@ -113,11 +105,7 @@ namespace MiddlewareManager.Controllers
                                     {
                                         node = new
                                         {
-                                            _on = new
-                                            {
-                                                
-                                                myObject.Machine
-                                            }
+                                            name = value.containingElement
                                         }
                                     }
                                 }
@@ -132,6 +120,7 @@ namespace MiddlewareManager.Controllers
             {
                 return BadRequest(response.Errors);
             }
+
             return Ok(response.Data);
         }
 
@@ -146,13 +135,6 @@ namespace MiddlewareManager.Controllers
         public void Delete(int id)
         {
         }
-        
-        public class MyObject // used to enable Machine to be with capital M (otherwise graphql cant interpret)
-        {
-            [JsonPropertyName("Machine")]
-            public object Machine { get; set; }
-        }
-
 
 
     }
