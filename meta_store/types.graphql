@@ -10,12 +10,16 @@
 # }
 interface ContainingElement {
     observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    id: ID!
+    name: String!
+    description: String!
 }
 
 # Types
 type Company implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     plants: [Plant!]! @relationship(type: "has", direction: OUT)
     observableProperties: [ObservableProperty!]!
 }
@@ -23,6 +27,7 @@ type Company implements ContainingElement{
 type Plant implements ContainingElement {
     id: ID!
     name: String!
+    description: String!
     areas: [Area!]! @relationship(type: "has", direction: OUT)
     observableProperties: [ObservableProperty!]!
 }
@@ -30,6 +35,7 @@ type Plant implements ContainingElement {
 type Area implements ContainingElement {
     id: ID!
     name: String!
+    description: String!
     lines: [Line!]! @relationship(type: "has", direction: OUT)
     observableProperties: [ObservableProperty!]!
 }
@@ -38,6 +44,7 @@ type Area implements ContainingElement {
 type Line implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     cells: [Cell!]!  @relationship(type: "has", direction: OUT)
     observableProperties: [ObservableProperty!]!
 }
@@ -45,6 +52,7 @@ type Line implements ContainingElement{
 type Cell implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     machines: [Machine!]! @relationship(type: "has", direction: OUT)
     observableProperties: [ObservableProperty!]!
 }
@@ -52,6 +60,7 @@ type Cell implements ContainingElement{
 type Machine implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     observableProperties: [ObservableProperty!]!
 }
 

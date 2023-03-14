@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.Newtonsoft;
+using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiddlewareManager.DataModel;
@@ -48,9 +50,20 @@ namespace MiddlewareManager.Controllers
             var graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
             {
                 EndPoint = new Uri("http://localhost:4000")
-            }, new NewtonsoftJsonSerializer());
+            }, new SystemTextJsonSerializer());
 
             var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
+            // Instantiate an object of the MyObject class
+            var myObject = new MyObject
+            {
+                // Set the Machine property of the object
+                [JsonPropertyName("Machine")]
+                Machine = new
+                {
+                    name = value.containingElement
+                }
+            };
+
             var request = new GraphQLRequest
             {
                 Query = @"
@@ -78,6 +91,8 @@ namespace MiddlewareManager.Controllers
                             frequency = Int32.Parse(value.frequency),
                             id = Guid.NewGuid().ToString(),
                             connectionDetails = value.connectionDetails,
+                            dataFormat = value.dataFormat,
+                            changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
                             topic = new 
                             {
                                 create = new 
@@ -100,10 +115,8 @@ namespace MiddlewareManager.Controllers
                                         {
                                             _on = new
                                             {
-                                                Machine = new
-                                                {
-                                                    name = value.containingElement
-                                                }
+                                                
+                                                myObject.Machine
                                             }
                                         }
                                     }
@@ -133,5 +146,14 @@ namespace MiddlewareManager.Controllers
         public void Delete(int id)
         {
         }
+        
+        public class MyObject // used to enable Machine to be with capital M (otherwise graphql cant interpret)
+        {
+            [JsonPropertyName("Machine")]
+            public object Machine { get; set; }
+        }
+
+
+
     }
 }
