@@ -61,7 +61,17 @@ type ObservableProperty{
     description: String!
     frequency: Int!
     topic: Topic! @relationship(type: "has", direction: OUT)
+    connectionDetails: String!
     propertyOf: ContainingElement! @relationship(type: "has", direction: IN)
+    accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
+}
+
+type EgressEndpoint{
+    id: ID!
+    name: String!
+    description: String!
+    connectionDetails: String!
+    accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
 }
 
 type Topic{

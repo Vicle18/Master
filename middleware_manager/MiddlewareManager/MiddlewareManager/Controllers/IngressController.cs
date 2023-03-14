@@ -56,14 +56,13 @@ namespace MiddlewareManager.Controllers
                 Query = @"
                             mutation Mutation($input: [ObservablePropertyCreateInput!]!) {
                               createObservableProperties(input: $input) {
-                                info {
-                                  nodesCreated
-                                  relationshipsCreated
-                                }
                                 observableProperties {
+                                  id
                                   name
-                                  topic {
-                                    name
+                                  propertyOf {
+                                    ... on Machine {
+                                      name
+                                    }
                                   }
                                 }
                               }
@@ -87,6 +86,25 @@ namespace MiddlewareManager.Controllers
                                         name = topicName,
                                         id = Guid.NewGuid().ToString(),
                                         description = "topic description"
+                                    }
+                                }
+                            },
+                            propertyOf = new
+                            {
+                                connect = new
+                                {
+                                    where = new
+                                    {
+                                        node = new
+                                        {
+                                            _on = new
+                                            {
+                                                Machine = new
+                                                {
+                                                    name = value.containingElement
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
