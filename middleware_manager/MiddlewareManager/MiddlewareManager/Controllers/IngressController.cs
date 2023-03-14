@@ -10,6 +10,8 @@ using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiddlewareManager.DataModel;
+using MiddlewareManager.Repositories;
+using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
 
 namespace MiddlewareManager.Controllers
@@ -20,11 +22,13 @@ namespace MiddlewareManager.Controllers
     {
         private readonly IConfiguration _config;
         private readonly ILogger<IngressController> _logger;
+        private readonly IIngressRepository _ingressRepo;
 
-        public IngressController(IConfiguration config, ILogger<IngressController> logger)
+        public IngressController(IConfiguration config, ILogger<IngressController> logger, IIngressRepository ingressRepo)
         {
             _config = config;
             _logger = logger;
+            _ingressRepo = ingressRepo;
             _logger.LogDebug("starting {controller}", "IngressController");
             
         }
@@ -47,81 +51,17 @@ namespace MiddlewareManager.Controllers
         public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDTO value)
         {
             _logger.LogDebug("creating ingress with values: {value}", value);
-            var graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
+            try
             {
-                EndPoint = new Uri("http://localhost:4000")
-            }, new SystemTextJsonSerializer());
-
-            var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
-            
-            var request = new GraphQLRequest
-            {
-                Query = @"
-                            mutation Mutation($input: [ObservablePropertyCreateInput!]!) {
-                              createObservableProperties(input: $input) {
-                                observableProperties {
-                                  name
-                                  propertyOf {
-                                    ... on Machine {
-                                      name
-                                    }
-                                  }
-                                  topic {
-                                    name
-                                  }
-                                }
-                              }
-                            }",
-                Variables = new
-                {
-                    input = new []
-                    {
-                        new 
-                        {
-                            name = value.name,
-                            description = value.description,
-                            frequency = Int32.Parse(value.frequency),
-                            id = Guid.NewGuid().ToString(),
-                            connectionDetails = value.connectionDetails,
-                            dataFormat = value.dataFormat,
-                            changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
-                            topic = new 
-                            {
-                                create = new 
-                                {
-                                    node = new 
-                                    {
-                                        name = topicName,
-                                        id = Guid.NewGuid().ToString(),
-                                        description = "topic description"
-                                    }
-                                }
-                            },
-                            propertyOf = new
-                            {
-                                connect = new
-                                {
-                                    where = new
-                                    {
-                                        node = new
-                                        {
-                                            name = value.containingElement
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            var response = await graphQLClient.SendMutationAsync<Response>(request);
-            _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
-            if (response.Errors != null)
-            {
-                return BadRequest(response.Errors);
+                var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
+                var response = await _ingressRepo.CreateObservableProperty(value, topicName);
+                // sending connectionDetails to the Service Configurator
+                return Ok(response);
             }
-
-            return Ok(response.Data);
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT: api/Ingress/5

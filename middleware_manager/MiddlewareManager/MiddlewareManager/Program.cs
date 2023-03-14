@@ -1,4 +1,5 @@
 
+using MiddlewareManager.Repositories;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -14,6 +15,7 @@ builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development"}.json", optional: true)
     .AddEnvironmentVariables();
 builder.Services.AddControllers();
+builder.Services.AddSingleton<IIngressRepository, IngressRepository>();
 builder.Host.UseSerilog();
 
 
