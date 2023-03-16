@@ -104,7 +104,7 @@ function TopBar() {
     };
 
 
-    axios.get('https://localhost:7033/api/Ingress', { headers })
+    axios.get('http://localhost:8090/api/Ingress', { headers })
       .then(response => {
         console.log(response.data);
       })
@@ -113,7 +113,7 @@ function TopBar() {
       });
 
 
-    fetch('https://localhost:7033/api/Ingress?=', {
+    fetch('http://localhost:8090/api/Ingress?=', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

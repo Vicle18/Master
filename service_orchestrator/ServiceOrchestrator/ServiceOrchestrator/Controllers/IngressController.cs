@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,8 @@ using Newtonsoft.Json;
 using Serilog;
 using ServiceOrchestrator.ContainerManagement;
 using ServiceOrchestrator.ContainerManagement.Kubernetes;
+using ServiceOrchestrator.Endpoint;
+using ServiceOrchestrator.Protocols;
 
 namespace ServiceOrchestrator.Controllers
 {
@@ -17,6 +20,7 @@ namespace ServiceOrchestrator.Controllers
     {
         private readonly ILogger<IngressController> _logger;
         private readonly IContainerManager _containerManager;
+        private readonly ContainerConfig _containerConfig;
 
         public IngressController(ILogger<IngressController> logger, IContainerManager containerManager)
         {
@@ -41,20 +45,34 @@ namespace ServiceOrchestrator.Controllers
 
         // POST: api/Ingress
         [HttpPost]
-        public void Post([FromBody] object data)
+        public void Post([FromBody] EndpointPayload data)
         {
-            Log.Debug("Inside post");
-            
-            Log.Debug(data?.ToString());
-            Log.Debug("INITIALDATA", data.ToString());
+            ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
+            ManagePayload(data, config);
 
-            ContainerConfig config = new ContainerConfig();
-            
-            
-            //dynamic jsonObject = JsonConvert.DeserializeObject<dynamic>(json); // deserialize JSON string into dynamic object
-            //Log.Debug(jsonObject);
-            
-            //config.EnvironmentVariables.Add();
+            _containerManager.StartContainer(config);
+        }
+
+        private static void ManagePayload(EndpointPayload data, ContainerConfig config)
+        {
+            config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.Protocol);
+            config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___TRANSMISSION_PAIRS",
+                data.Parameters["TRANSMISSION_PAIRS"]);
+
+            if (data.Protocol == Protocol.MQTT.ToString())
+            {
+                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___HOST", data.Parameters["HOST"]);
+                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___PORT", data.Parameters["PORT"]);
+            }
+            else if (data.Protocol == Protocol.OPCUA.ToString())
+            {
+                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",
+                    data.Parameters["SERVER_URL"]);
+            }
+            else if (data.Protocol == Protocol.REST.ToString())
+            {
+                Log.Error("REST IS NOT SUPPORTED YET");
+            }
         }
 
 
