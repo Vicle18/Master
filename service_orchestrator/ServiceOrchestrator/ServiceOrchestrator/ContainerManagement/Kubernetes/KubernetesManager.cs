@@ -35,8 +35,7 @@ public class KubernetesManager : IContainerManager
         };
         // var config = KubernetesClientConfiguration.BuildDefaultConfig();
         client = new k8s.Kubernetes(config);
-        _logger.LogDebug("active pods in kubernetes: {pods}",
-            string.Join(", ", client.ListNamespacedPod("sso").Items.Select(p => p.Name())));
+        _logger.LogDebug("active pods in kubernetes: {pods}", string.Join(", ", client.ListNamespacedPod("sso").Items.Select(p => p.Name())));
     }
 
 

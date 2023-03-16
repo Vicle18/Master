@@ -1,12 +1,12 @@
-name: Build Meta Store
+name: Build Service Configurator
 
 on:
   push:
     branches:
       # - main
-      - 'feature/meta-store**'
+      - 'feature/middleware-manager**'
     tags:
-      - "meta-store/v*.*.*"
+      - "middleware-manager/v*.*.*"
   pull_request:
     branches: [ "main" ]
 
@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env: 
-      working-directory: ./meta_store/
+      working-directory: ./middleware_manager/MiddlewareManager/
     
     defaults:
       run:
@@ -30,16 +30,16 @@ jobs:
       with:
         # list of Docker images to use as base name for tags
         images: |
-          clemme/meta-store
+          clemme/middleware-manager
         # generate Docker tags based on the following events/attributes
-        # match the tag format "meta-store/v1.0.0" and extracting the version number
+        # match the tag format "middleware-manager/v1.0.0" and extracting the version number
         # and use the branch name as tag
         # use the latest tag
         tags: |
-          type=match,pattern=meta-store/v(\d.\d.\d),group=1
+          type=match,pattern=middleware-manager/v(\d.\d.\d),group=1
           type=ref,event=branch 
         flavor: |
-          latest=true 
+          latest=true
     -
       name: Set up QEMU
       uses: docker/setup-qemu-action@v2

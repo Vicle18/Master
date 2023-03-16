@@ -8,50 +8,60 @@
 #     id: ID!
 #     name: String!
 # }
+interface ContainingElement {
+    observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    id: ID!
+    name: String!
+    description: String!
+}
 
 # Types
-type Company {
+type Company implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     plants: [Plant!]! @relationship(type: "has", direction: OUT)
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
-
+    observableProperties: [ObservableProperty!]!
 }
 
-type Plant {
+type Plant implements ContainingElement {
     id: ID!
     name: String!
+    description: String!
     areas: [Area!]! @relationship(type: "has", direction: OUT)
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
-
+    observableProperties: [ObservableProperty!]!
 }
 
-type Area{
+type Area implements ContainingElement {
     id: ID!
     name: String!
+    description: String!
     lines: [Line!]! @relationship(type: "has", direction: OUT)
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    observableProperties: [ObservableProperty!]!
 }
 
 
-type Line{
+type Line implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     cells: [Cell!]!  @relationship(type: "has", direction: OUT)
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    observableProperties: [ObservableProperty!]!
 }
 
-type Cell{
+type Cell implements ContainingElement{
     id: ID!
     name: String!
+    description: String!
     machines: [Machine!]! @relationship(type: "has", direction: OUT)
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    observableProperties: [ObservableProperty!]!
 }
 
-type Machine{
+type Machine implements ContainingElement{
     id: ID!
     name: String!
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+    description: String!
+    observableProperties: [ObservableProperty!]!
 }
 
 type ObservableProperty{
@@ -60,12 +70,28 @@ type ObservableProperty{
     description: String!
     frequency: Int!
     topic: Topic! @relationship(type: "has", direction: OUT)
+    connectionDetails: String!
+    propertyOf: ContainingElement! @relationship(type: "has", direction: IN)
+    accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
+    dataFormat: String!
+    changedFrequency: Int!
+}
+
+type EgressEndpoint{
+    id: ID!
+    name: String!
+    description: String!
+    connectionDetails: String!
+    frequency: Int!
+    dataFormat: String!
+    accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
 }
 
 type Topic{
     id: ID!
     name: String!
     description: String!
+    topicOf: ObservableProperty! @relationship(type: "has", direction: IN)
 }
 
 type Resource{
