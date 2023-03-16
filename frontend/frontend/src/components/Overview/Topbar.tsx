@@ -96,6 +96,16 @@ function TopBar() {
       }
     )
 
+    let testEndpointID = JSON.stringify({
+      "PROTOCOL": "MQTT",
+      "PARAMETERS": {
+        "HOST": "localhost",
+        "PORT": 1883,
+        "TRANSMISSION_PAIRS": "example:example,temp2:motor_temperature",
+      }
+    }
+    )
+
     const headers = {
       'Content-Type': 'application/json',
       'Access-Control-Allow-Origin': '*',
