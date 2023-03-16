@@ -1,8 +1,5 @@
-using System.Diagnostics;
-using System.Drawing.Printing;
 using k8s;
 using k8s.Models;
-using Serilog;
 
 namespace ServiceOrchestrator.ContainerManagement.Kubernetes;
 
@@ -10,7 +7,7 @@ public class KubernetesManager : IContainerManager
 {
     private readonly IConfiguration _config;
     private readonly ILogger<KubernetesManager> _logger;
-    private k8s.Kubernetes client;
+    private k8s.Kubernetes _client;
 
     public KubernetesManager(IConfiguration config, ILogger<KubernetesManager> logger)
     {
@@ -34,8 +31,8 @@ public class KubernetesManager : IContainerManager
             Namespace = "sso",
         };
         // var config = KubernetesClientConfiguration.BuildDefaultConfig();
-        client = new k8s.Kubernetes(config);
-        _logger.LogDebug("active pods in kubernetes: {pods}", string.Join(", ", client.ListNamespacedPod("sso").Items.Select(p => p.Name())));
+        _client = new k8s.Kubernetes(config);
+        _logger.LogDebug("active pods in kubernetes: {pods}", string.Join(", ", _client.ListNamespacedPod("sso").Items.Select(p => p.Name())));
     }
 
 
@@ -43,7 +40,7 @@ public class KubernetesManager : IContainerManager
     {
         string uniqueId = Guid.NewGuid().ToString("N");
         var pod = CreateV1Pod(config, uniqueId);
-        var createdPod = client.CreateNamespacedPod(pod, "sso");
+        var createdPod = _client.CreateNamespacedPod(pod, "sso");
         _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
     }
 
