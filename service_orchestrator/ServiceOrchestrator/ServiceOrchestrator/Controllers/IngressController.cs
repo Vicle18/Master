@@ -47,6 +47,7 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public void Post([FromBody] EndpointPayload data)
         {
+            Log.Debug("RECEIVING DATA INGRESS SERVICE ORCHESTRATOR");
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
 
@@ -59,19 +60,21 @@ namespace ServiceOrchestrator.Controllers
             config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___TRANSMISSION_PAIRS",
                 data.Parameters["TRANSMISSION_PAIRS"]);
 
-            if (data.Protocol == Protocol.MQTT.ToString())
+            switch (data.Protocol)
             {
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___HOST", data.Parameters["HOST"]);
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___PORT", data.Parameters["PORT"]);
-            }
-            else if (data.Protocol == Protocol.OPCUA.ToString())
-            {
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",
-                    data.Parameters["SERVER_URL"]);
-            }
-            else if (data.Protocol == Protocol.REST.ToString())
-            {
-                Log.Error("REST IS NOT SUPPORTED YET");
+                case "MQTT":
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___HOST", data.Parameters["HOST"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___PORT", data.Parameters["PORT"]);
+                    break;
+                case "OPCUA":
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",
+                        data.Parameters["SERVER_URL"]);
+                    break;
+                case "REST":
+                    Log.Error("REST IS NOT SUPPORTED YET");
+                    break;
+                default:
+                    throw new ArgumentException("Unsupported protocol");
             }
         }
 

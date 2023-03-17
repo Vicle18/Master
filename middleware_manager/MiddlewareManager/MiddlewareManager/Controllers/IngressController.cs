@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GraphQL;
@@ -9,10 +11,12 @@ using GraphQL.Client.Serializer.Newtonsoft;
 using GraphQL.Client.Serializer.SystemTextJson;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MiddlewareManager.AdapterModel;
 using MiddlewareManager.DataModel;
+using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
-using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
+using Serilog;
 
 namespace MiddlewareManager.Controllers
 {
@@ -23,15 +27,18 @@ namespace MiddlewareManager.Controllers
         private readonly IConfiguration _config;
         private readonly ILogger<IngressController> _logger;
         private readonly IIngressRepository _ingressRepo;
+        private readonly HttpClient _client;
 
-        public IngressController(IConfiguration config, ILogger<IngressController> logger, IIngressRepository ingressRepo)
+        public IngressController(IConfiguration config, ILogger<IngressController> logger,
+            IIngressRepository ingressRepo)
         {
             _config = config;
             _logger = logger;
             _ingressRepo = ingressRepo;
             _logger.LogDebug("starting {controller}", "IngressController");
-            
+            _client = new HttpClient();
         }
+
         // GET: api/Ingress
         [HttpGet]
         public IEnumerable<string> Get()
@@ -54,14 +61,47 @@ namespace MiddlewareManager.Controllers
             try
             {
                 var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
-                var response = await _ingressRepo.CreateObservableProperty(value, topicName);
-                // sending connectionDetails to the Service Configurator
+                //var connectionString = ExtractAdapterConnectionDetails(value, topicName);
+                var connectionDetails =
+                    ConnectionDetailsFactory.Create(value.protocol, value.host, value.port, value.topic, topicName);
+                var response = await _ingressRepo.CreateObservableProperty(value, topicName,
+                    JsonSerializer.Serialize(connectionDetails));
+
+                await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
+
+                //return Ok(response);
                 return Ok(response);
             }
             catch (ArgumentException e)
             {
                 return BadRequest(e.Message);
             }
+        }
+        /**
+         * Creates an HTTP request to the ServiceConfigurator
+         */
+        private async Task ForwardsRequestToConfigurator(CreateIngressDTO value, string topicName,
+            string connectionDetails)
+        {
+            // Create the HTTP request message with the JSON string as the content
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Ingress?=");
+            request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
+
+            // Send the request and wait for the response
+            var response = await _client.SendAsync(request);
+
+            // Get the response content
+            var responseString = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("Received ServiceConfigurator Response: {responseString}", responseString);
+        }
+
+        private string ExtractAdapterConnectionDetails(CreateIngressDTO value, string topicName)
+        {
+            var connectionDetails =
+                ConnectionDetailsFactory.Create(value.protocol, value.host, value.port, value.topic, topicName);
+            var jsonString = JsonSerializer.Serialize(connectionDetails);
+
+            return jsonString;
         }
 
         // PUT: api/Ingress/5
@@ -75,7 +115,5 @@ namespace MiddlewareManager.Controllers
         public void Delete(int id)
         {
         }
-
-
     }
 }
