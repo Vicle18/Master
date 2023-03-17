@@ -1,7 +1,33 @@
 namespace ServiceOrchestrator.ContainerManagement;
 
-public struct ContainerConfig
+public class ContainerConfig
 {
-    public string ImageName { get; set; }
-    public Dictionary<string,string> EnvironmentVariables { get; set; }
+    private string _ImageName;
+    private Dictionary<string, string> _EnvironmentVariables;
+
+    public ContainerConfig(string imageName, Dictionary<string, string> environmentVariables)
+    {
+        _ImageName = imageName;
+        _EnvironmentVariables = environmentVariables;
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        _EnvironmentVariables.Add("BUS_CONFIG__PROTOCOL", "KAFKA");
+        _EnvironmentVariables.Add("BUS_CONFIG__PARAMETERS__HOST", "my-cluster-kafka-brokers");
+        _EnvironmentVariables.Add("BUS_CONFIG__PARAMETERS__PORT", "9092");
+    }
+
+    public string ImageName
+    {
+        get { return _ImageName; }
+        set { _ImageName = value; }
+    }
+
+    public Dictionary<string, string> EnvironmentVariables
+    {
+        get { return _EnvironmentVariables; }
+        set { _EnvironmentVariables = value; }
+    }
 }

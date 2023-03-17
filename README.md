@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a ingress/v0.1.0 -m "my version 0.1.0"
-git push origin ingress/v0.1.0
+git tag -a meta-store/v1.0.0 -m "my version 1.0.0"
+git push origin meta-store/1.0.0
 ### informatio about pipeline metadata
 https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)
@@ -89,4 +89,37 @@ kubectl apply -f sample_setups/egress/egress.yaml
 kubectl delete -f sample_setups/ingress/ingress.yaml
 kubectl delete -f sample_setups/egress/egress.yaml
 ```
+
+# Neo4j deployment
+https://neo4j.com/docs/operations-manual/current/kubernetes/quickstart-standalone/create-value-file/ 
+```
+helm install my-neo4j-release neo4j/neo4j --namespace sso -f sample_setups/neo4j/my-neo4j.values.yaml
+kubectl rollout status --watch --timeout=600s statefulset/my-neo4j-release
+
+kubectl port-forward svc/my-neo4j-release tcp-bolt tcp-http tcp-https
+```
+
+## Access neo4j query engine
+```
+kubectl run --rm -it --namespace "sso" --image "neo4j:5.5.0" cypher-shell \
+>      -- cypher-shell -a "neo4j://my-neo4j-release.sso.svc.cluster.local:7687" -u neo4j -p "bendevictor"
+```
+
+## delete neo4j
+```
+helm uninstall my-neo4j-release
+```
+
+## Metastore
+```
+kubectl apply -f sample_setups/neo4j/meta-store.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=meta-store" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 4000:4000
+
+
+kubectl delete -f sample_setups/neo4j/meta-store.yaml
+
+```
+
 

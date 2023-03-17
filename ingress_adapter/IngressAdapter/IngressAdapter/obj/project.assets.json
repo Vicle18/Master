@@ -5299,26 +5299,25 @@
     ]
   },
   "packageFolders": {
-    "/Users/bendesiewertsen/.nuget/packages/": {}
+    "/Users/victorclemmensen/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/IngressAdapter.csproj",
+      "projectUniqueName": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/IngressAdapter.csproj",
       "projectName": "IngressAdapter",
-      "projectPath": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/IngressAdapter.csproj",
-      "packagesPath": "/Users/bendesiewertsen/.nuget/packages/",
-      "outputPath": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/",
+      "projectPath": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/IngressAdapter.csproj",
+      "packagesPath": "/Users/victorclemmensen/.nuget/packages/",
+      "outputPath": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/bendesiewertsen/.nuget/NuGet/NuGet.Config"
+        "/Users/victorclemmensen/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.pkg.github.com/SDU-SW-Engineering/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net6.0": {
@@ -5397,7 +5396,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.402/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.406/RuntimeIdentifierGraph.json"
       }
     }
   }
