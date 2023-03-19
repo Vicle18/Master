@@ -54,6 +54,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
             <DetailedView
               containingEntityId={selectedItemData}
               onOpenChart={handleOpenChart}
+              withDetails={true}
             />
           </Grid2>
           <Grid2
