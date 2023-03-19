@@ -30,7 +30,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
 
         <Grid2 container spacing={2} sx={{ height: "100%" }}>
           <Grid2
-            xs={2}
+            xs={2.5}
             sx={{
               marginTop: "30px",
               marginLeft: "20px",
@@ -42,7 +42,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
             <IngressOverviewLeft onItemClick={handleItemClick} />
           </Grid2>
           <Grid2
-            xs={5.2}
+            xs={5}
             sx={{
               marginTop: "30px",
               marginRight: "20px",

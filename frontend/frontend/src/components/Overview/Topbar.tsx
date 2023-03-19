@@ -12,6 +12,8 @@ import { theme } from "../Theme";
 import { CreateEndpoint } from "./createEndpointMenu";
 import CreateIngress from "../Ingress/create/CreateIngress";
 import CreateEgress from "../Egress/create/CreateEgress";
+import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
+import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 
 
 const pages = ["Ingress", "Egress"];
@@ -30,6 +32,7 @@ export const SelectorMenuProps = {
 function TopBar() {
   const [PopupIngress, setPopupIngress] = React.useState(false);
   const [PopupEgress, setPopupEgress] = React.useState(false);
+  const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
   const [isDisabled, setIsDisabled] = React.useState(true);
   const handlerClickOpenIngress = () => {
     setPopupIngress(true);
@@ -43,7 +46,9 @@ function TopBar() {
   const handlerClickOpenEgress = () => {
     setPopupEgress(true);
   };
-
+  const handlerClickOpenContainingElement = () => {
+    setPopupContainingElement(true);
+  };
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -84,8 +89,12 @@ function TopBar() {
               CreateIngress,
               PopupEgress,
               setPopupEgress,
-              CreateEgress,
-              handlerClickOpenEgress
+              CreateEgressStepper,
+              handlerClickOpenEgress,
+              PopupContainingElement,
+              setPopupContainingElement,
+              CreateContainingElementStepper,
+              handlerClickOpenContainingElement
             )}
           </Toolbar>
         </Container>

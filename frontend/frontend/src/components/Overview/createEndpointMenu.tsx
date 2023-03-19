@@ -21,7 +21,8 @@ import {
   Typography,
 } from "@mui/material";
 import CreateEgress from "../Egress/create/CreateEgress";
-import CreateEgressStepper from "../Egress/create/CreateEgress copy";
+import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
+import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
@@ -36,13 +37,22 @@ export function CreateEndpoint(
   }>,
   PopupEgress: boolean,
   setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>,
-  CreateEgress: React.FC<{
+  CreateEgressStepper: React.FC<{
     PopupEgress: boolean;
     setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>;
     handleResult: (result: string) => void;
   }>,
+  handlerClickOpenEgress: () => void,
+  PopupContainingElement: boolean,
+  setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
+  CreateContainingElement: React.FC<{
+    PopupContainingElement: boolean;
+    setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
+    handleResult: (result: string) => void;
+  }>,
 
-  handlerClickOpenEgress: () => void
+  
+  handlerClickOpenContainingElement: () => void
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
@@ -105,14 +115,14 @@ export function CreateEndpoint(
         <Divider sx={{ my: 0.5 }} />
 
         <MenuItem
-          onClick={() => {
-            handleClose("/CreateEgressPage");
-          }}
+          onClick={handlerClickOpenContainingElement}
           disableRipple
         >
           <AddBox />
           Containing Element
         </MenuItem>
+        {CreateContainingElementStepper({ PopupContainingElement, setPopupContainingElement, handleResult })}
+
       </StyledMenu>
       {result && (
         <Snackbar

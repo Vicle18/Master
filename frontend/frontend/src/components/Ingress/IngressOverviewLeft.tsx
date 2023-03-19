@@ -6,6 +6,7 @@ import { useState } from "react";
 
 type Props = {
   onItemClick: (data: any) => void;
+  selectedNode?: string;
 };
 
 const GET_LOCATIONS = gql`
@@ -68,7 +69,7 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
 };
 
 
-const IngressOverviewLeft: React.FC<Props> = ({ onItemClick }) => {
+const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode}) => {
   const [searchString, setSearchString] = useState('');
 
 
