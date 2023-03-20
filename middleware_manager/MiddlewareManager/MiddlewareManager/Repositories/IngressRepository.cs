@@ -2,6 +2,8 @@ using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
 using MiddlewareManager.DataModel;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace MiddlewareManager.Repositories;
 
@@ -23,8 +25,9 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName)
+    public async Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName, string connectionDetails)
     {
+        Log.Debug("BEFORE REQUEST");
         var request = new GraphQLRequest
         {
             Query = @"
@@ -53,7 +56,7 @@ public class IngressRepository : IIngressRepository
                         description = value.description,
                         frequency = Int32.Parse(value.frequency),
                         id = Guid.NewGuid().ToString(),
-                        connectionDetails = value.connectionDetails,
+                        connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
                         topic = new
@@ -85,7 +88,9 @@ public class IngressRepository : IIngressRepository
                 }
             }
         };
+        Log.Debug("BEFORE SEND MUTATION");
         var response = await graphQLClient.SendMutationAsync<Response>(request);
+        Log.Debug(JsonConvert.SerializeObject(response));
         _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
         if (response.Errors != null)
         {

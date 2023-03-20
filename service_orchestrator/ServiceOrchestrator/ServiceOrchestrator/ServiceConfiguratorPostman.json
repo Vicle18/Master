@@ -1,0 +1,217 @@
+{
+	"info": {
+		"_postman_id": "158fdf96-ef2c-4ce3-9a96-7249d89ad754",
+		"name": "master",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15545345"
+	},
+	"item": [
+		{
+			"name": "ServiceConfigurator",
+			"item": [
+				{
+					"name": "INGRESS",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://localhost:7073/api/Egress",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7073",
+							"path": [
+								"api",
+								"Egress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "INGRESSPutMQTT",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PROTOCOL\": \"MQTT\",\n      \"PARAMETERS\": {\n        \"HOST\": \"localhost\",\n        \"PORT\": 1883,\n        \"TRANSMISSION_PAIRS\": \"example:example,temp2:motor_temperature\",\n      }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7033/api/Egress?=",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7033",
+							"path": [
+								"api",
+								"Egress"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "INGRESSPutOPCUA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PROTOCOL\": \"MQTT\",\n      \"PARAMETERS\": {\n        \"HOST\": \"localhost\",\n        \"PORT\": 1883,\n        \"TRANSMISSION_PAIRS\": \"example:example,temp2:motor_temperature\",\n      }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7033/api/Egress?=",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7033",
+							"path": [
+								"api",
+								"Egress"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "INGRESSPutREST",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PROTOCOL\": \"MQTT\",\n      \"PARAMETERS\": {\n        \"HOST\": \"localhost\",\n        \"PORT\": 1883,\n        \"TRANSMISSION_PAIRS\": \"example:example,temp2:motor_temperature\",\n      }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7033/api/Egress?=",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7033",
+							"path": [
+								"api",
+								"Egress"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EGRESSPutMQTT",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PROTOCOL\": \"MQTT\",\n      \"PARAMETERS\": {\n        \"HOST\": \"localhost\",\n        \"PORT\": 1883,\n        \"TRANSMISSION_PAIRS\": \"example:example,temp2:motor_temperature\",\n      }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7033/api/Egress?=",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7033",
+							"path": [
+								"api",
+								"Egress"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "EGRESSPutOPCUA",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"PROTOCOL\": \"MQTT\",\n      \"PARAMETERS\": {\n        \"HOST\": \"localhost\",\n        \"PORT\": 1883,\n        \"TRANSMISSION_PAIRS\": \"example:example,temp2:motor_temperature\",\n      }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7033/api/Egress?=",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7033",
+							"path": [
+								"api",
+								"Egress"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

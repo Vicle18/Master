@@ -4,5 +4,5 @@ namespace MiddlewareManager.Repositories;
 
 public interface IIngressRepository
 {
-    public Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName);
+    public Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName, string connectionDetails);
 }
