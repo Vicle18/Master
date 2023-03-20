@@ -47,7 +47,6 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public void Post([FromBody] EndpointPayload data)
         {
-            Log.Debug("RECEIVING DATA INGRESS SERVICE ORCHESTRATOR");
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
 

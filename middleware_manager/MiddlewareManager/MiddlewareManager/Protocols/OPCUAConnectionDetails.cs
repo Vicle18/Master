@@ -9,6 +9,6 @@ public class OPCUAConnectionDetails : IConnectionDetails
 
 public class OPCUAParameters
 {
-    public string SERVERURL { get; set; }
+    public string SERVER_URL { get; set; }
     public string TRANSMISSION_PAIRS { get; set; }
 }

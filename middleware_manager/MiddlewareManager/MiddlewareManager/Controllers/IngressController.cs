@@ -61,9 +61,8 @@ namespace MiddlewareManager.Controllers
             try
             {
                 var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
-                //var connectionString = ExtractAdapterConnectionDetails(value, topicName);
                 var connectionDetails =
-                    ConnectionDetailsFactory.Create(value.protocol, value.host, value.port, value.topic, topicName);
+                    ConnectionDetailsFactory.Create(value, topicName);
                 var response = await _ingressRepo.CreateObservableProperty(value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 
@@ -77,6 +76,7 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
+
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
@@ -93,15 +93,6 @@ namespace MiddlewareManager.Controllers
             // Get the response content
             var responseString = await response.Content.ReadAsStringAsync();
             _logger.LogDebug("Received ServiceConfigurator Response: {responseString}", responseString);
-        }
-
-        private string ExtractAdapterConnectionDetails(CreateIngressDTO value, string topicName)
-        {
-            var connectionDetails =
-                ConnectionDetailsFactory.Create(value.protocol, value.host, value.port, value.topic, topicName);
-            var jsonString = JsonSerializer.Serialize(connectionDetails);
-
-            return jsonString;
         }
 
         // PUT: api/Ingress/5

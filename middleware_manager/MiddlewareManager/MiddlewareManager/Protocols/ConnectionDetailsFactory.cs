@@ -1,30 +1,43 @@
+using System.Diagnostics;
+using MiddlewareManager.DataModel;
+using Newtonsoft.Json;
+using Serilog;
+
 namespace MiddlewareManager.Protocols;
 
 public class ConnectionDetailsFactory
 {
-    public static IConnectionDetails Create(string protocol, string host, string port, string topic , string topicName)
+    public static IConnectionDetails Create(CreateIngressDTO value, string topicName)
     {
-        switch (protocol)
+        switch (value.protocol)
         {
             case "MQTT":
                 return new MQTTConnectionDetails
                 {
-                    PROTOCOL = protocol,
+                    PROTOCOL = value.protocol,
                     PARAMETERS = new MQTTParameters
                     {
-                        HOST = host,
-                        PORT = port,
-                        TRANSMISSION_PAIRS = topic + ":" + topicName
+                        HOST = value.host,
+                        PORT = value.port,
+                        TRANSMISSION_PAIRS = $"[{value.topic} : {topicName}]",
                     }
                 };
             case "OPCUA":
                 return new OPCUAConnectionDetails
                 {
-                    PROTOCOL = protocol,
+                    PROTOCOL = value.protocol,
                     PARAMETERS = new OPCUAParameters
                     {
-                        SERVERURL = host,
-                        TRANSMISSION_PAIRS = topic + ":" + topicName
+                        SERVER_URL = value.host,
+                        TRANSMISSION_PAIRS = JsonConvert.SerializeObject(new object[]
+                        {
+                            new
+                            {
+                                NODE_NAME = $"{value.nodeName}",
+                                VALUE_TYPE = $"{value.dataFormat}",
+                                ORIGIN_TOPIC = $"{value.topic}"
+                            }
+                        })
                     }
                 };
             default:
