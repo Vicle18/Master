@@ -43,26 +43,30 @@ export function CreateEndpoint(
     handleResult: (result: string) => void;
   }>,
   handlerClickOpenEgress: () => void,
-  PopupContainingElement: boolean,
-  setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
-  CreateContainingElement: React.FC<{
-    PopupContainingElement: boolean;
-    setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
-    handleResult: (result: string) => void;
-  }>,
+  // PopupContainingElement: boolean,
+  // setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
+  // CreateContainingElement: React.FC<{
+  //   PopupContainingElement: boolean;
+  //   setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
+  //   handleResult: (result: string) => void;
+  // }>,
 
   
-  handlerClickOpenContainingElement: () => void
+  // handlerClickOpenContainingElement: () => void
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
+
 
   const [result, setResult] = useState<string | null>(null);
   const handleSubmit = (name: string, description: string) => {
     // Send data to API
     console.log(`Submitting ${name} and ${description} to API`);
   };
-
+  const handlerClickOpenContainingElement = () => {
+    setPopupContainingElement(true);
+  };
   const handleResult = (result: string) => {
     console.log(`Result: ${result}`);
     setOpenSnackbar(true);
