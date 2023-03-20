@@ -32,14 +32,19 @@ const CreateIngress: React.FC<Props> = ({ setPopupIngress, PopupIngress }) => {
   const handlerCreate = () => {
     setPopupIngress(false);
     const endpoint = JSON.stringify({
-      endpointID: id,
+      name: "unique_identifier",
+      description: "description",
+      endpointId: id,
+      protocol: protocolName[0],
+      host: host,
+      topic: "topic",
+      port: port,
+      ContainingElement: elementName[0],
       frequency:
         changedFrequency.length === 0 ? standardFrequency : changedFrequency,
-      formatName: formatName[0],
-      elementName: elementName[0],
-      protocolName: protocolName[0],
-      host: host,
-      port: port,
+      dataFormat: formatName[0],
+
+
     });
 
     const headers = {
@@ -50,16 +55,8 @@ const CreateIngress: React.FC<Props> = ({ setPopupIngress, PopupIngress }) => {
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
 
-    axios
-      .get("https://localhost:7033/api/Ingress", { headers })
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
 
-    fetch("https://localhost:7033/api/Ingress?=", {
+    fetch("https://localhost:7014/api/Ingress?=", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
