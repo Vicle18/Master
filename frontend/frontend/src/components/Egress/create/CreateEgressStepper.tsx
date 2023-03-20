@@ -89,7 +89,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     };
 
     axios
-      .get("https://localhost:7033/api/Egress", { headers })
+      .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress`, { headers })
       .then((response) => {
         console.log(response.data);
         setResult(response.data);
@@ -101,7 +101,7 @@ const CreateEgressStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
-    fetch("https://localhost:7033/api/Egress?=", {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

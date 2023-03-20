@@ -30,32 +30,18 @@ export const SelectorMenuProps = {
 };
 
 function TopBar() {
-  const [PopupIngress, setPopupIngress] = React.useState(false);
-  const [PopupEgress, setPopupEgress] = React.useState(false);
-  const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
-  const [isDisabled, setIsDisabled] = React.useState(true);
-  const handlerClickOpenIngress = () => {
-    setPopupIngress(true);
-  };
+  
 
   /**
    * Create an endpoint based on the specified values
    */
   
 
-  const handlerClickOpenEgress = () => {
-    setPopupEgress(true);
-  };
-  const handlerClickOpenContainingElement = () => {
-    setPopupContainingElement(true);
-  };
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
@@ -83,18 +69,6 @@ function TopBar() {
               createClick,
               anchorEl,
               handleClose,
-              handlerClickOpenIngress,
-              PopupIngress,
-              setPopupIngress,
-              CreateIngress,
-              PopupEgress,
-              setPopupEgress,
-              CreateEgressStepper,
-              handlerClickOpenEgress,
-              // PopupContainingElement,
-              // setPopupContainingElement,
-              // CreateContainingElementStepper,
-              // handlerClickOpenContainingElement
             )}
           </Toolbar>
         </Container>
