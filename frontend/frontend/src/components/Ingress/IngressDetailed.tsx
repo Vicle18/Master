@@ -15,10 +15,12 @@ const GET_DATA_FOR_CONTAINING_ENTITY = gql`
     resources(where: $where) {
       name
       ObservableProperties {
+        id
         name
         topic {
           name
         }
+        frequency
       }
     }
   }
@@ -54,7 +56,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowChart = (data: any) => {
     const newData = {
+      id: data.id,
       name: data.name,
+      frequency: data.frequency,
       topic: data.topic.name,
     };
     onOpenChart(newData);
@@ -99,7 +103,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
             <Box sx={{ marginLeft: "auto" }}>
               <CurrentValue
                 // url={`http://localhost:5001/input/${item.topic.name}`}
-                url={`http://localhost:5292/api/DataRequest/amount/${item.topic.name}/1`}
+                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.topic.name}/1`}
                 refreshInterval={10000}
               />
             </Box>

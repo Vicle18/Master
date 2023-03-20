@@ -10,10 +10,6 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
 
 import { CreateEndpoint } from "./createEndpointMenu";
-import CreateIngress from "../Ingress/create/CreateIngress";
-import CreateEgress from "../Egress/create/CreateEgress";
-import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
-import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 
 
 const pages = ["Ingress", "Egress"];

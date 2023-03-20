@@ -1,4 +1,12 @@
 import * as Yup from "yup";
+
+export interface ingressNode{
+    id: string;
+    name: string;
+    topic: string;
+    frequency: number;
+
+}
 export interface FormData {
     name: string;
     description: string;
@@ -6,7 +14,7 @@ export interface FormData {
     host?: string;
     port?: string;
     nodeId?: string;
-    ingressNodes: (string | undefined)[];
+    ingressNodes?: (ingressNode | undefined)[];
   }
   
 export const initialValues: FormData = {
@@ -16,7 +24,12 @@ export const initialValues: FormData = {
     host: "23.23.23.23",
     port: "1883",
     nodeId: "",
-    ingressNodes: ["test", "test2"],
+    ingressNodes: [{
+        id: "firstNode",
+        name: "firstNode",
+        topic: "firstTopic",
+        frequency: 30,
+    }],
   };
   
  export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -39,7 +52,7 @@ export const initialValues: FormData = {
       otherwise: (schema) => schema,
     }),
     ingressNodes: Yup.array()
-      .of(Yup.string())
+      .of(Yup.mixed<ingressNode>())
       .min(1)
-      .required("Ingress nodes are required"),
+      .optional(),
   });

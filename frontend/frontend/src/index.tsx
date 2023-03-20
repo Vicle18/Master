@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 );
 
 const client = new ApolloClient({
-  uri: `${process.env.REACT_APP_METASTORE}`,
+  uri: `${process.env.REACT_APP_METASTORE_URL}`,
   cache: new InMemoryCache(),
 });
 
