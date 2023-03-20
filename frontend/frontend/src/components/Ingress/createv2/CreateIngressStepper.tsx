@@ -39,45 +39,36 @@ import * as Yup from "yup";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
 import { initialValues, validationSchema, FormData } from "./FormDefinition";
-import DetailedView from "../Ingress/IngressDetailed";
-import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
+import IngressOverviewLeft from "../IngressOverviewLeft";
 
 interface Props {
-  setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
-  PopupContainingElement: boolean;
+  setPopupIngress: React.Dispatch<React.SetStateAction<boolean>>;
+  PopupIngress: boolean;
   handleResult: (result: string) => void;
 }
 
 const steps = [
-  "Define Meta data",
-  "Select Parent",
-  "Select Children",
-  "Select Observable Properties",
+  "Define Ingress Endpoint",
+  "Select Containing Element",
+  "Test Connection",
 ];
 
-const CreateContainingElementStepper: React.FC<Props> = ({
-  setPopupContainingElement,
-  PopupContainingElement,
+const CreateIngressStepper: React.FC<Props> = ({
+  setPopupIngress,
+  PopupIngress,
   handleResult,
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [ingressNodes, setIngressNodes] = useState<string[]>(
-    initialValues.ingressNodes as string[]
-  );
-  const [children, setChildren] = useState<string[]>(
-    initialValues.children as string[]
-  );
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedChild, setSelectedChild] = useState<string>("");
 
-  const [selectedParent, setSelectedParent] = useState<string>("");
-  const [selectedContainingElement, setSelectedContainingElement] =
-    useState<string>("");
+  const [selectedContainingElement, setSelectedParent] = useState<string>("");
+  const [selectedIngress, setSelectedIngress] = useState<string>("");
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
-    setPopupContainingElement(false);
+    setPopupIngress(false);
   };
 
   const handleNext = () => {
@@ -88,8 +79,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   };
 
   const handleSubmit = (values: FormData) => {
-    console.log("submit", values, ingressNodes);
-    setPopupContainingElement(false);
+    console.log("submit", values);
+    setPopupIngress(false);
 
     const headers = {
       "Content-Type": "application/json",
@@ -100,7 +91,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     };
 
     axios
-      .get("https://localhost:7033/api/ContainingElement", { headers })
+      .get("https://localhost:7033/api/Ingress", { headers })
       .then((response) => {
         console.log(response.data);
         setResult(response.data);
@@ -112,7 +103,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
-    fetch("https://localhost:7033/api/ContainingElement?=", {
+    fetch("https://localhost:7033/api/Ingress?=", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -127,38 +118,18 @@ const CreateContainingElementStepper: React.FC<Props> = ({
       .catch((error) => console.error(error));
   };
 
-  function HandleContainingElementClick(data: any): void {
-    setSelectedContainingElement(data);
+  function HandleIngressClick(data: any): void {
+    setSelectedIngress(data);
     console.log("selected containing element", data);
   }
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
 
-  const handleSelectObservableProperty = (observableProperty: any) => {
-    console.log("observable property", observableProperty);
-    setSelectedIngressNode(observableProperty.name);
-    setIngressNodes([...ingressNodes, observableProperty.name]);
-  };
-  const handleDelete = (element: string) => {
-    setIngressNodes(ingressNodes.filter((node) => node !== element));
-  };
-
-  const handleSelectChild = (child: any) => {
-    console.log("observable property", child);
-    setChildren([...children, child]);
-  };
-  const handleDeleteChild = (child: string) => {
-    setChildren(children.filter((node) => node !== child));
-  };
-
-
-
-
   return (
     <div>
       <Dialog
-        open={PopupContainingElement}
+        open={PopupIngress}
         onClose={handlerClose}
         scroll={"paper"}
         fullWidth={true}
@@ -192,7 +163,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                 sx={{ overflow: "auto", maxHeight: "calc(100vh - 250px)" }}
               >
                 {/* <DialogContentText>
-                  To create an ContainingElement endpoint, please enter the following
+                  To create an Ingress endpoint, please enter the following
                   information.
                 </DialogContentText> */}
                 <Stepper nonLinear activeStep={activeStep}>
@@ -259,6 +230,80 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+                    <FormControl variant="outlined" fullWidth margin="normal">
+                      <InputLabel id="protocol-label">Protocol</InputLabel>
+                      <Field
+                        as={Select}
+                        name="protocol"
+                        labelId="protocol-label"
+                        label="Protocol"
+                        size="small"
+                      >
+                        <MenuItem value="MQTT">MQTT</MenuItem>
+                        <MenuItem value="OPCUA">OPCUA</MenuItem>
+                      </Field>
+                    </FormControl>
+                    {values.protocol === "MQTT" ? (
+                      <>
+                        <Field name="host">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Host"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.host && Boolean(errors.host)}
+                              helperText={touched.host && errors.host}
+                            />
+                          )}
+                        </Field>
+                        <Field name="port">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Port"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.port && Boolean(errors.port)}
+                              helperText={touched.port && errors.port}
+                            />
+                          )}
+                        </Field>
+                        <Field name="topic">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Topic"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.topic && Boolean(errors.topic)}
+                              helperText={touched.topic && errors.topic}
+                            />
+                          )}
+                        </Field>
+                      </>
+                    ) : (
+                      <Field name="nodeId">
+                        {({ field }: FieldProps<FormData>) => (
+                          <TextField
+                            {...field}
+                            label="Node ID"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            error={touched.nodeId && Boolean(errors.nodeId)}
+                            helperText={touched.nodeId && errors.nodeId}
+                          />
+                        )}
+                      </Field>
+                    )}
                   </>
                 )}
                 {activeStep === 1 && (
@@ -285,7 +330,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 maxWidth="100%"
                               >
                                 <Typography variant="body1">
-                                  Current Element: {selectedParent}
+                                  Current Element: {selectedContainingElement}
                                 </Typography>
                               </Box>
                             </Grid2>
@@ -294,7 +339,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                  values.parent = selectedParent;
+                                  values.containingElement =
+                                    selectedContainingElement;
                                 }}
                               >
                                 SELECT
@@ -306,9 +352,9 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         <Divider />
                         <IngressOverviewLeft
                           onItemClick={(parent: string) => {
-                            HandleContainingElementClick(parent);
+                            HandleIngressClick(parent);
                             setSelectedParent(parent);
-                            console.log("parent", values.parent);
+                            console.log("parent", values.containingElement);
                           }}
                         />
                       </Grid2>
@@ -329,7 +375,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           maxWidth="100%"
                         >
                           <Typography variant="body1">
-                            Selected Element: {values.parent}
+                            Selected Element: {values.containingElement}
                           </Typography>
                         </Box>
                       </Grid2>
@@ -349,169 +395,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           borderRadius: "10px",
                           backgroundColor: "whitesmoke",
                         }}
-                      >
-                        <Box mb={2}>
-                          <Grid2 container alignItems="center" spacing={2}>
-                            <Grid2 container xs={9}>
-                              <Box
-                                display="inline-block"
-                                borderRadius={3}
-                                border="2px solid black"
-                                padding={2}
-                                maxWidth="100%"
-                              >
-                                <Typography variant="body1">
-                                  Current Element: {selectedChild}
-                                </Typography>
-                              </Box>
-                            </Grid2>
-                            <Grid2 container xs={3}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  handleSelectChild(selectedChild);
-                                }}
-                              >
-                                SELECT
-                              </Button>
-                            </Grid2>
-                          </Grid2>
-                        </Box>
-
-                        <Divider />
-                        <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
-                            HandleContainingElementClick(parent);
-                            setSelectedChild(parent);
-                            console.log("parent", values.parent);
-                          }}
-                        />
-                      </Grid2>
-                      <Grid2
-                        xs={3}
-                        sx={{
-                          marginTop: "30px",
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        <List
-                          dense={true}
-                          sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                          }}
-                          subheader={
-                            <ListSubheader>Children</ListSubheader>
-                          }
-                        >
-                          {children.map((node) => (
-                            <ListItemButton
-                              key={node}
-                              sx={{
-                                "&:hover": { backgroundColor: "#f0f0f0" },
-                              }}
-                            >
-                              <ListItemIcon>
-                                <SensorsIcon />
-                              </ListItemIcon>
-                              <ListItemText primary={node} />
-                              <IconButton
-                                edge="end"
-                                onClick={() => handleDeleteChild(node)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Grid2>
-                    </Grid2>
-                  </>
-                )}
-
-                {activeStep === 3 && (
-                  <>
-                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      
-                      <Grid2
-                        xs={3.6}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
-                            HandleContainingElementClick(parent);
-                            values.parent = parent;
-                            console.log("parent", values.parent);
-                          }}
-                        />
-                      </Grid2>
-                      <Grid2
-                        xs={4.3}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "50px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <DetailedView
-                          containingEntityId={selectedContainingElement}
-                          onOpenChart={handleSelectObservableProperty}
-                          withDetails={false}
-                        />
-                      </Grid2>
-                      <Grid2
-                        xs={2.5}
-                        sx={{
-                          marginTop: "30px",
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <List
-                          dense={true}
-                          sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                          }}
-                          subheader={
-                            <ListSubheader>Observable Properties</ListSubheader>
-                          }
-                        >
-                          {ingressNodes.map((node) => (
-                            <ListItemButton
-                              key={node}
-                              sx={{
-                                "&:hover": { backgroundColor: "#f0f0f0" },
-                              }}
-                            >
-                              <ListItemIcon>
-                                <SensorsIcon />
-                              </ListItemIcon>
-                              <ListItemText primary={node} />
-                              <IconButton
-                                edge="end"
-                                onClick={() => handleDelete(node)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Grid2>
+                      ></Grid2>
                     </Grid2>
                   </>
                 )}
@@ -547,7 +431,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!(isValid)}
+                  disabled={!isValid}
                 >
                   Create
                 </Button>
@@ -559,4 +443,4 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     </div>
   );
 };
-export default CreateContainingElementStepper;
+export default CreateIngressStepper;

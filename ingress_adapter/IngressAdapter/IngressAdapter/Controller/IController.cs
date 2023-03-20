@@ -2,6 +2,6 @@ namespace IngressAdapter.Controller;
 
 public interface IController
 {
-    public void Initialize();
+    public Task Initialize();
     public void StartTransmission();
 }

@@ -22,13 +22,13 @@ public class Controller : IController
         _clientCreator = clientCreator;
     }
 
-    public void Initialize()
+    public async Task Initialize()
     {
         try
         {
             Log.Debug("Initializing Controller");
             InitializeBusCommunication();
-            InitializeIngressCommunication();
+            await InitializeIngressCommunication();
             PublishAvailabilityNotification();
         }
         catch (Exception e)
@@ -53,11 +53,11 @@ public class Controller : IController
         _busClient = new KafkaClient(_config);
     }
     
-    private void InitializeIngressCommunication()
+    private async Task InitializeIngressCommunication()
     {
         var clientType = _config.GetSection("INGRESS_CONFIG").GetValue<string>("PROTOCOL") ?? throw new ArgumentException();
         _ingressClient = _clientCreator.CreateIngressClient(clientType);
-        _ingressClient.Initialize(TransmitMessage);
+        await _ingressClient.Initialize(TransmitMessage);
         _ingressClient.StartIngestion();
     }
 

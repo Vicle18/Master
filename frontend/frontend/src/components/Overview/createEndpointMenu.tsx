@@ -23,26 +23,12 @@ import {
 import CreateEgress from "../Egress/create/CreateEgress";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
+import CreateIngressStepper from "../Ingress/createv2/CreateIngressStepper";
 export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
   anchorEl: HTMLElement | null,
   handleClose: (page: string) => void,
-  handlerClickOpenIngress: () => void,
-  PopupIngress: boolean,
-  setPopupIngress: React.Dispatch<React.SetStateAction<boolean>>,
-  CreateIngress: React.FC<{
-    PopupIngress: boolean;
-    setPopupIngress: React.Dispatch<React.SetStateAction<boolean>>;
-  }>,
-  PopupEgress: boolean,
-  setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>,
-  CreateEgressStepper: React.FC<{
-    PopupEgress: boolean;
-    setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>;
-    handleResult: (result: string) => void;
-  }>,
-  handlerClickOpenEgress: () => void,
   // PopupContainingElement: boolean,
   // setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
   // CreateContainingElement: React.FC<{
@@ -55,8 +41,10 @@ export function CreateEndpoint(
   // handlerClickOpenContainingElement: () => void
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [PopupIngress, setPopupIngress] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
+  const [PopupEgress, setPopupEgress] = React.useState(false);
 
 
   const [result, setResult] = useState<string | null>(null);
@@ -66,6 +54,12 @@ export function CreateEndpoint(
   };
   const handlerClickOpenContainingElement = () => {
     setPopupContainingElement(true);
+  };
+  const handlerClickOpenIngress = () => {
+    setPopupIngress(true);
+  };
+  const handlerClickOpenEgress = () => {
+    setPopupEgress(true);
   };
   const handleResult = (result: string) => {
     console.log(`Result: ${result}`);
@@ -108,7 +102,7 @@ export function CreateEndpoint(
           <AddCircleOutline />
           Ingress
         </MenuItem>
-        {CreateIngress({ PopupIngress, setPopupIngress })}
+        {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
 
         <MenuItem onClick={handlerClickOpenEgress} disableRipple>
           <AddCircleOutline />
