@@ -91,7 +91,7 @@ const CreateIngressStepper: React.FC<Props> = ({
     };
 
     axios
-      .get("https://localhost:7033/api/Ingress", { headers })
+      .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress`, { headers })
       .then((response) => {
         console.log(response.data);
         setResult(response.data);
@@ -103,7 +103,7 @@ const CreateIngressStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
-    fetch("https://localhost:7033/api/Ingress?=", {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress?=`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

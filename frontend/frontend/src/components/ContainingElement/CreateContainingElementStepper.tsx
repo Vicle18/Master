@@ -100,7 +100,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     };
 
     axios
-      .get("https://localhost:7033/api/ContainingElement", { headers })
+      .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, { headers })
       .then((response) => {
         console.log(response.data);
         setResult(response.data);
@@ -112,7 +112,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
-    fetch("https://localhost:7033/api/ContainingElement?=", {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement?=`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
