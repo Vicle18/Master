@@ -17,7 +17,7 @@ public class CreateIngressDTO
 
     public string containingElement { get; set; }
     public string frequency { get; set; }
-    public string? changedFrequency { get; set; }
+   // public string? changedFrequency { get; set; }
     public string dataFormat { get; set; }
     public string? nodeName { get; set; }
 

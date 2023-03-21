@@ -16,6 +16,8 @@ builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddEnvironmentVariables();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IIngressRepository, IngressRepository>();
+builder.Services.AddSingleton<IEgressRepository, EgressRepository>();
+
 builder.Host.UseSerilog();
 
 

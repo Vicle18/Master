@@ -58,7 +58,9 @@ public class IngressRepository : IIngressRepository
                         id = Guid.NewGuid().ToString(),
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
-                        changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
+                       // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
+                        changedFrequency = Int32.Parse(value.frequency),
+
                         topic = new
                         {
                             create = new

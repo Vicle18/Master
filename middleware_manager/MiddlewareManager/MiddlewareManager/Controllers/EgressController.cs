@@ -4,6 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MiddlewareManager.DataModel;
+using MiddlewareManager.Repositories;
+using Newtonsoft.Json;
+using Serilog;
 
 namespace MiddlewareManager.Controllers
 {
@@ -11,6 +15,20 @@ namespace MiddlewareManager.Controllers
     [ApiController]
     public class EgressController : ControllerBase
     {
+        private readonly IConfiguration _config;
+        private readonly ILogger<IngressController> _logger;
+        private readonly IEgressRepository _egressRepo;
+
+        public EgressController(IConfiguration config, ILogger<IngressController> logger,
+            IEgressRepository egressRepo)
+        {
+            _config = config;
+            _logger = logger;
+            _egressRepo = egressRepo;
+            _logger.LogDebug("starting {controller}", "IngressController");
+        }
+
+
         // GET: api/Egress
         [HttpGet]
         public IEnumerable<string> Get()
@@ -27,8 +45,22 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDTO value)
         {
+            Log.Debug("test");
+            Log.Debug(value.ToString());
+            Log.Debug(JsonConvert.SerializeObject(value));
+            try
+            {
+                var connectionDetails = "connectionDetails";
+                var response = await _egressRepo.CreateObservableProperty(value, "topic",
+                    connectionDetails);
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT: api/Egress/5
