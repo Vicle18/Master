@@ -7,6 +7,7 @@ import Collapse from "@mui/material/Collapse";
 import { useSpring, animated } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useEffect, useState } from "react";
+import { Button } from "@mui/material";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -74,8 +75,6 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
   },
 }));
 
-
-
 interface TreeNode {
   name: string;
   [key: string]: any;
@@ -99,8 +98,24 @@ const renderTree = (nodes: TreeNode[], onItemClick: (data: any) => void) => {
       <StyledTreeItem
         key={node.name}
         nodeId={node.name}
-        label={node.name}
-        onClick={() => onItemClick(node.name)}
+        label={
+          node.name
+        // <>
+        //   <span>{node.name}</span>
+        //   <Button onClick={() => {
+        //     console.log('click');
+            
+        //     // stopPropagation(); // prevent the onClick of the parent item from firing
+        //     onItemClick(node.name);
+        //   }}>
+        //     Select
+        //   </Button>
+        // </>
+        }
+        onClick={(event) => {
+          onItemClick(node.name);
+        }}
+        
       >
         {childrenKey && renderTree(node[childrenKey], onItemClick)}
       </StyledTreeItem>
@@ -109,7 +124,6 @@ const renderTree = (nodes: TreeNode[], onItemClick: (data: any) => void) => {
 };
 
 function findMatchingNodes(nodes: TreeNode[], searchString: string) {
-
   const matchingNodes: TreeNode[] = [];
   if (nodes) {
     const traverse = (node: TreeNode, ancestors: TreeNode[]) => {
@@ -137,7 +151,6 @@ function findMatchingNodes(nodes: TreeNode[], searchString: string) {
   return matchingNodes;
 }
 
-
 interface TreeViewProps {
   data: any;
   onItemClick: (data: any) => void;
@@ -147,11 +160,9 @@ interface TreeViewProps {
 const CustomizedTreeView: React.FC<TreeViewProps> = ({
   onItemClick,
   searchString,
-  data
+  data,
 }) => {
   const [expanded, setExpanded] = useState<string[]>([]);
-
-  
 
   useEffect(() => {
     if (searchString) {
@@ -162,7 +173,7 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
   }, [data, searchString]);
 
   // if graphql error, return error message
-  
+
   // console.log(data);
   const handleToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
     setExpanded(nodeIds);
@@ -178,7 +189,7 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}
         onNodeToggle={handleToggle}
-        sx={{  flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+        sx={{ flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
       >
         {renderTree(data.companies, onItemClick)}
       </TreeView>

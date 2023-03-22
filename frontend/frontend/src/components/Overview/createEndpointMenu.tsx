@@ -1,64 +1,145 @@
 import * as React from "react";
-import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-import EditIcon from "@mui/icons-material/Edit";
 import Divider from "@mui/material/Divider";
-import ArchiveIcon from "@mui/icons-material/Archive";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { StyledMenu } from "./StyledMenu";
 import { AddBox, AddCircleOutline } from "@mui/icons-material";
+import { useState } from "react";
+import {
+  Alert,
+  Button,
+  Slide,
+  Snackbar,
+} from "@mui/material";
+import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
+import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
+import CreateIngressStepper from "../Ingress/createv2/CreateIngressStepper";
+export function CreateEndpoint(
+  open: boolean,
+  createClick: (event: React.MouseEvent<HTMLElement>) => void,
+  anchorEl: HTMLElement | null,
+  handleClose: (page: string) => void,
+  // PopupContainingElement: boolean,
+  // setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
+  // CreateContainingElement: React.FC<{
+  //   PopupContainingElement: boolean;
+  //   setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
+  //   handleResult: (result: string) => void;
+  // }>,
 
-export function createEndpoint(open: boolean, createClick: (event: React.MouseEvent<HTMLElement>) => void, anchorEl: HTMLElement | null, handleClose: (page: string) => void, handlerClickOpenIngress: () => void, CreateIngress: () => JSX.Element, handlerClickOpenEgress: () => void) {
-  return <div>
-    <Button
-      id="demo-customized-button"
-      aria-controls={open ? "demo-customized-menu" : undefined}
-      aria-haspopup="true"
-      aria-expanded={open ? "true" : undefined}
-      sx={{
-        color: "white",
-        backgroundColor: "primary",
-        marginLeft: 1,
-      }}
-      variant="contained"
-      disableElevation
-      onClick={createClick}
-      endIcon={<KeyboardArrowDownIcon />}
-    >
-      Create
-    </Button>
-    <StyledMenu
-      id="demo-customized-menu"
-      MenuListProps={{
-        "aria-labelledby": "demo-customized-button",
-      }}
-      anchorEl={anchorEl}
-      open={open}
-      onClose={handleClose}
-    >
-      <MenuItem onClick={handlerClickOpenIngress} disableRipple>
-        <AddCircleOutline />
-        Ingress
-      </MenuItem>
-      {CreateIngress()}
+  
+  // handlerClickOpenContainingElement: () => void
+) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [PopupIngress, setPopupIngress] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
+  const [PopupEgress, setPopupEgress] = React.useState(false);
 
-      <MenuItem onClick={handlerClickOpenEgress} disableRipple>
-        <AddCircleOutline />
-        Egress
-      </MenuItem>
-      {CreateIngress()}
 
-      <Divider sx={{ my: 0.5 }} />
+  const [result, setResult] = useState<string | null>(null);
+  const handleSubmit = (name: string, description: string) => {
+    // Send data to API
+    console.log(`Submitting ${name} and ${description} to API`);
+  };
+  const handlerClickOpenContainingElement = () => {
+    setPopupContainingElement(true);
+  };
+  const handlerClickOpenIngress = () => {
+    setPopupIngress(true);
+  };
+  const handlerClickOpenEgress = () => {
+    setPopupEgress(true);
+  };
+  const handleResult = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResult(result);
+  };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
 
-      <MenuItem
-        onClick={() => {
-          handleClose("/CreateEgressPage");
+  return (
+    <div>
+      <Button
+        id="demo-customized-button"
+        aria-controls={open ? "demo-customized-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        sx={{
+          color: "white",
+          backgroundColor: "primary",
+          marginLeft: 1,
         }}
-        disableRipple
+        variant="contained"
+        disableElevation
+        onClick={createClick}
+        endIcon={<KeyboardArrowDownIcon />}
       >
-        <AddBox />
-        Containing Element
-      </MenuItem>
-    </StyledMenu>
-  </div>;
+        Create
+      </Button>
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          "aria-labelledby": "demo-customized-button",
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem onClick={handlerClickOpenIngress} disableRipple>
+          <AddCircleOutline />
+          Ingress
+        </MenuItem>
+        {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
+
+        <MenuItem onClick={handlerClickOpenEgress} disableRipple>
+          <AddCircleOutline />
+          Egress
+        </MenuItem>
+        {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
+
+        <Divider sx={{ my: 0.5 }} />
+
+        <MenuItem
+          onClick={handlerClickOpenContainingElement}
+          disableRipple
+        >
+          <AddBox />
+          Containing Element
+        </MenuItem>
+        {CreateContainingElementStepper({ PopupContainingElement, setPopupContainingElement, handleResult })}
+
+      </StyledMenu>
+      {result && (
+        <Snackbar
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={3000}
+          TransitionComponent={Slide}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          message={result}
+        >
+          {result === "Network Error" ? (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {result}
+            </Alert>
+          ) : (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {result}
+            </Alert>
+          )}
+        </Snackbar>
+      )}
+    </div>
+  );
 }

@@ -37,7 +37,7 @@ public class MQTTIngressClient : IIngressClient
         Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs) );
     }
     
-    public void Initialize(Action<string, string> messageHandler)
+    public async Task<bool> Initialize(Action<string, string> messageHandler)
     {
         Task task = Task.Run(async () =>
         {
@@ -46,6 +46,8 @@ public class MQTTIngressClient : IIngressClient
             Log.Debug($"Finished initializing MQTT receiver");
             SubscribeToTopic("example");
         }, cts.Token);
+        await task;
+        return true;
     }
     
     private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId, Action<string, string> messageHandler)
