@@ -30,15 +30,12 @@ public class EgressRepository : IEgressRepository
         foreach (var observableProperty in value.observables)
         {
             Log.Debug("INSIDE LOOP");
+            Log.Debug(observableProperty.ToString());
+            Log.Debug(topicName);
             var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
             Log.Debug(response.ToString());
         }
-        /*value.observables.Select(async observableProperty =>
-        {
-            Log.Debug("INSIDE LOOP");
-            var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
-            Log.Debug(response.ToString());
-        });*/
+
         Log.Debug("SENDING THE REQUEST");
 
         return null;
@@ -55,11 +52,6 @@ public class EgressRepository : IEgressRepository
                       createObservableProperties(input: $input) {
                         observableProperties {
                           name
-                          propertyOf {
-                            ... on Machine {
-                              name
-                            }
-                          }
                           topic {
                             name
                           }
@@ -78,6 +70,7 @@ public class EgressRepository : IEgressRepository
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         frequency = observableProperty.frequency,
+                        changedFrequency = observableProperty.changedFrequency != null ? observableProperty.changedFrequency : observableProperty.frequency,
                         topic = new
                         {
                             create = new
@@ -90,28 +83,12 @@ public class EgressRepository : IEgressRepository
                                 }
                             }
                         },
-                        propertyOf = new
-                        {
-                            connect = new
-                            {
-                                where = new
-                                {
-                                    node = new
-                                    {
-                                        name = "containingElement"
-                                    }
-                                }
-                            }
-                        }
                     }
                 }
             }
         };
         var graphQLResponse = await graphQLClient.SendMutationAsync<CreateEgressResponse>(request);
-        
-        
-        Log.Debug(graphQLResponse.Data.ToString());
-        Log.Debug("SUCCESS?");
+
         return graphQLResponse.Data;
     }
 }

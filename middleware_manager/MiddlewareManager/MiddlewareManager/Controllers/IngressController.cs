@@ -55,7 +55,7 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Ingress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] r value)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDTO value)
         {
             _logger.LogDebug("creating ingress with values: {value}", value);
             try

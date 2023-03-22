@@ -7,6 +7,7 @@ public partial class ObservableProperty
     public string Name { get; set; }
     public PropertyOf? PropertyOf { get; set; }
     public int frequency { get; set; }
+    public int? changedFrequency { get; set; }
     public Topic topic { get; set; }
 }
 
