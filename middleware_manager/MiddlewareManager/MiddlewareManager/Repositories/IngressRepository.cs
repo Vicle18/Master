@@ -35,11 +35,7 @@ public class IngressRepository : IIngressRepository
                               createObservableProperties(input: $input) {
                                 observableProperties {
                                   name
-                                  propertyOf {
-                                    ... on Machine {
-                                      name
-                                    }
-                                  }
+                                  
                                   topic {
                                     name
                                   }

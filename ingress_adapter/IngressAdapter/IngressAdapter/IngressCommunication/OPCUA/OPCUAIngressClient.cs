@@ -22,11 +22,11 @@ public class OPCUAIngressClient : IIngressClient
         _opcuaConfig = new OPCUAConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_opcuaConfig);
     }
-    public void Initialize(Action<string, string> messageHandler)
+    public async Task<bool> Initialize(Action<string, string> messageHandler)
     {
         _messageHandler = messageHandler;
-        CreateClientSession(_opcuaConfig.SERVER_URL);
-        
+        await CreateClientSession(_opcuaConfig.SERVER_URL);
+        return true;
     }
 
     public void StartIngestion()

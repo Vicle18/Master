@@ -19,7 +19,7 @@ public class ConnectionDetailsFactory
                     {
                         HOST = value.host,
                         PORT = value.port,
-                        TRANSMISSION_PAIRS = $"[{value.topic} : {topicName}]",
+                        TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
                     }
                 };
             case "OPCUA":
