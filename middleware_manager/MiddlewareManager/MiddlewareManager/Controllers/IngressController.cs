@@ -55,7 +55,7 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Ingress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDTO value)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDto value)
         {
             _logger.LogDebug("creating ingress with values: {value}", value);
             try
@@ -80,7 +80,7 @@ namespace MiddlewareManager.Controllers
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-        private async Task ForwardsRequestToConfigurator(CreateIngressDTO value, string topicName,
+        private async Task ForwardsRequestToConfigurator(CreateIngressDto value, string topicName,
             string connectionDetails)
         {
             // Create the HTTP request message with the JSON string as the content
