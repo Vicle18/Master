@@ -46,6 +46,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const { loading, error, data } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
     variables: { where: { name: containingEntityId } },
+    fetchPolicy: "no-cache" 
   });
   if (loading) return <p>Loading...</p>;
   if (error) {

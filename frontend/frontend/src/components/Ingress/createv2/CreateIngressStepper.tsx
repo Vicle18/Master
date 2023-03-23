@@ -304,6 +304,54 @@ const CreateIngressStepper: React.FC<Props> = ({
                         )}
                       </Field>
                     )}
+                    <Field name="frequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={
+                            touched.frequency && Boolean(errors.frequency)
+                          }
+                          helperText={touched.frequency && errors.frequency}
+                        />
+                      )}
+                    </Field>
+                    <Field name="changedFrequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Changed Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={
+                            touched.changedFrequency && Boolean(errors.changedFrequency)
+                          }
+                          helperText={touched.changedFrequency && errors.changedFrequency}
+                        />
+                      )}
+                    </Field>
+                    <Field name="dataFormat">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Data Format"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={
+                            touched.dataFormat && Boolean(errors.dataFormat)
+                          }
+                          helperText={touched.dataFormat && errors.dataFormat}
+                        />
+                      )}
+                    </Field>
                   </>
                 )}
                 {activeStep === 1 && (
