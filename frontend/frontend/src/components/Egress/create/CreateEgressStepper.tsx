@@ -70,7 +70,10 @@ const CreateEgressStepper: React.FC<Props> = ({
     initialValues.ingressNodes as ingressNode[]
   );
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
-  const [selectedEgress, setSelectedEgress] = useState<string>("");
+  const [selectedEgress, setSelectedEgress] =
+    useState<string>("");
+  const [selectedDataFormat, setSelectedDataFormat] = useState<string>("string");
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -96,19 +99,23 @@ const CreateEgressStepper: React.FC<Props> = ({
       "Access-Control-Allow-Headers":
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
+    console.log("CREATE STEPPPER EGRESSS");
 
-    axios
-      .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress`, { headers })
-      .then((response) => {
-        console.log(response.data);
-        setResult(response.data);
-        handleResult(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        setResult(error.message);
-        handleResult(error.message);
-      });
+    console.log(JSON.stringify(values));
+
+    // axios
+    //   .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress`, { headers })
+    //   .then((response) => {
+    //     console.log(response.data);
+    //     setResult(response.data);
+    //     handleResult(response.data);
+    //   })
+    //   .catch((error) => {
+    //     console.error(error);
+    //     setResult(error.message);
+    //     handleResult(error.message);
+    //   });
+    console.log("POST");
 
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
@@ -244,6 +251,20 @@ const CreateEgressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+                    <FormControl variant="outlined" fullWidth margin="normal">
+                      <InputLabel id="dataFormat-label">Protocol</InputLabel>
+                      <Field
+                        as={Select}
+                        name="dataFormat"
+                        labelId="dataFormat-label"
+                        label="dataFormat"
+                        size="small"
+                      >
+                        <MenuItem value="string">String</MenuItem>
+                        <MenuItem value="raw">Raw</MenuItem>
+                        <MenuItem value="json">Json</MenuItem>
+                      </Field>
+                    </FormControl>
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field
