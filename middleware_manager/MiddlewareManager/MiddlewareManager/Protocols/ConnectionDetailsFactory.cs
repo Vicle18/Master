@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
 using MiddlewareManager.DataModel;
 using Newtonsoft.Json;
 using Serilog;
@@ -7,7 +9,9 @@ namespace MiddlewareManager.Protocols;
 
 public class ConnectionDetailsFactory
 {
-    public static IConnectionDetails Create(CreateIngressDTO value, string topicName)
+    private static int counter = 0;
+
+    public static IConnectionDetails Create(CreateIngressDto value, string topicName)
     {
         switch (value.protocol)
         {
@@ -19,7 +23,8 @@ public class ConnectionDetailsFactory
                     {
                         HOST = value.host,
                         PORT = value.port,
-                        TRANSMISSION_PAIRS = $"[{value.topic} : {topicName}]",
+                        TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
+
                     }
                 };
             case "OPCUA":
@@ -43,5 +48,66 @@ public class ConnectionDetailsFactory
             default:
                 throw new ArgumentException("Unsupported protocol");
         }
+    }
+
+
+    public static IConnectionDetails Create(CreateEgressDto value, string topicName, ObservableProperty observableProperty)
+    {
+        Log.Debug(value.protocol);
+        switch (value.protocol)
+        {
+            case "MQTT":
+                return new MQTTConnectionDetails
+                {
+                    PROTOCOL = value.protocol,
+                    PARAMETERS = new MQTTParameters
+                    {
+                        HOST = GenerateHost(),
+                        PORT = GeneratePort(),
+                        TRANSMISSION_PAIRS = $"[{observableProperty.topic}:{topicName}]" ?? GenerateTransmissionPairs(),
+                    }
+                };
+            case "OPCUA":
+                return new OPCUAConnectionDetails
+                {
+                    PROTOCOL = value.protocol,
+                    PARAMETERS = new OPCUAParameters
+                    {
+                        SERVER_URL = GenerateHost(),
+                        TRANSMISSION_PAIRS = JsonConvert.SerializeObject(new object[]
+                        {
+                            new
+                            {
+                                NODE_NAME = $"{value.nodeName}",
+                                VALUE_TYPE = $"{value.dataFormat}",
+                                ORIGIN_TOPIC = $"{observableProperty.topic}"
+                            }
+                        })
+                    }
+                };
+            default:
+                throw new ArgumentException("Unsupported protocol");
+        }
+    }
+
+
+    private static string GenerateTransmissionPairs()
+    {
+        throw new NotImplementedException();
+    }
+
+    private static string GeneratePort()
+    {
+        TcpListener
+            listener = new TcpListener(IPAddress.Loopback, 0); // use IPAddress.Any to listen on all network interfaces
+        listener.Start();
+        return ((IPEndPoint)listener.LocalEndpoint).Port.ToString();
+    }
+
+    private static string GenerateHost()
+    {
+        var uri = $"127.0.0.1/egress/adapter-{counter}";
+        counter++;
+        return uri;
     }
 }

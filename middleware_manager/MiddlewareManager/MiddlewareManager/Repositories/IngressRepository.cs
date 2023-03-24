@@ -25,7 +25,7 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName, string connectionDetails)
+    public async Task<Response> CreateObservableProperty(CreateIngressDto value, string topicName, string connectionDetails)
     {
         Log.Debug("BEFORE REQUEST");
         var request = new GraphQLRequest
@@ -35,11 +35,7 @@ public class IngressRepository : IIngressRepository
                               createObservableProperties(input: $input) {
                                 observableProperties {
                                   name
-                                  propertyOf {
-                                    ... on Machine {
-                                      name
-                                    }
-                                  }
+                                  
                                   topic {
                                     name
                                   }
@@ -58,7 +54,9 @@ public class IngressRepository : IIngressRepository
                         id = Guid.NewGuid().ToString(),
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
-                        changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
+                       // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
+                        changedFrequency = Int32.Parse(value.frequency),
+
                         topic = new
                         {
                             create = new

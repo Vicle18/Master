@@ -47,23 +47,23 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public void Post([FromBody] EndpointPayload data)
         {
-            ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
+            ContainerConfig config = new ContainerConfig("clemme/ingress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
-
+            _logger.LogDebug(config.ToString());
             _containerManager.StartContainer(config);
         }
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)
         {
             config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.Protocol);
-            config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___TRANSMISSION_PAIRS",
+            config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
                 data.Parameters["TRANSMISSION_PAIRS"]);
 
             switch (data.Protocol)
             {
                 case "MQTT":
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___HOST", data.Parameters["HOST"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___PORT", data.Parameters["PORT"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
                     break;
                 case "OPCUA":
                     config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",

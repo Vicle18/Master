@@ -34,12 +34,17 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
-import { Formik, Form, Field, FieldProps } from "formik";
+import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
 import * as Yup from "yup";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../../Ingress/IngressDetailed";
 import IngressOverviewLeft from "../../Ingress/IngressOverviewLeft";
-import { initialValues, validationSchema, FormData } from "./FormDefinition";
+import {
+  initialValues,
+  validationSchema,
+  FormData,
+  ingressNode,
+} from "./FormDefinition";
 
 interface Props {
   setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>;
@@ -47,7 +52,12 @@ interface Props {
   handleResult: (result: string) => void;
 }
 
-const steps = ["Setup Endpoint Information", "Add Observable Properties"];
+const steps = [
+  "Setup Endpoint Information",
+  "Add Observable Properties",
+  "Select Frequency",
+  "Access Information",
+];
 
 const CreateEgressStepper: React.FC<Props> = ({
   setPopupEgress,
@@ -56,8 +66,8 @@ const CreateEgressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [ingressNodes, setIngressNodes] = useState<string[]>(
-    initialValues.ingressNodes as string[]
+  const [ingressNodes, setIngressNodes] = useState<ingressNode[]>(
+    initialValues.ingressNodes as ingressNode[]
   );
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedEgress, setSelectedEgress] =
@@ -81,7 +91,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
-
+    values.ingressNodes = ingressNodes;
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -128,12 +138,11 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const handleSelectObservableProperty = (observableProperty: any) => {
     console.log("observable property", observableProperty);
-    setSelectedIngressNode(observableProperty.name);
-    setIngressNodes([...ingressNodes, observableProperty.name]);
+    setSelectedIngressNode(observableProperty);
+    setIngressNodes([...ingressNodes, observableProperty]);
   };
-  const handleDelete = (element: string) => {
-    setIngressNodes(ingressNodes.filter((node) => node !== element));
-
+  const handleDelete = (element: ingressNode) => {
+    setIngressNodes(ingressNodes.filter((node) => node.id !== element.id));
   };
   const handleStep = (step: number) => () => {
     setActiveStep(step);
@@ -145,8 +154,7 @@ const CreateEgressStepper: React.FC<Props> = ({
         onClose={handlerClose}
         scroll={"paper"}
         fullWidth={true}
-        maxWidth={'lg'}
-
+        maxWidth={"lg"}
         sx={
           {
             // width: "80vw",
@@ -181,13 +189,11 @@ const CreateEgressStepper: React.FC<Props> = ({
               </DialogContentText> */}
                 <Stepper nonLinear activeStep={activeStep}>
                   {steps.map((label, index) => {
-
                     return (
                       <Step key={label}>
                         <StepButton color="inherit" onClick={handleStep(index)}>
                           {label}
                         </StepButton>
-
                       </Step>
                     );
                   })}
@@ -323,11 +329,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
-                    <Grid2
-                      container
-                      spacing={2}
-                      sx={{ height: "60vh" }}
-                    >
+                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={2.5}
                         sx={{
@@ -351,7 +353,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         >
                           {ingressNodes.map((node) => (
                             <ListItemButton
-                              key={node}
+                              key={node.name}
                               sx={{
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
@@ -359,7 +361,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                               <ListItemIcon>
                                 <SensorsIcon />
                               </ListItemIcon>
-                              <ListItemText primary={node} />
+                              <ListItemText primary={node.name} />
                               <IconButton
                                 edge="end"
                                 onClick={() => handleDelete(node)}
@@ -380,9 +382,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <IngressOverviewLeft
-                          onItemClick={handleEgressClick}
-                        />
+                        <IngressOverviewLeft onItemClick={handleEgressClick} />
                       </Grid2>
                       <Grid2
                         xs={4.3}
@@ -402,6 +402,57 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
+                {activeStep === 2 && (
+                  <FieldArray
+                    name="data"
+                    render={(arrayHelpers) => (
+                      <>
+                        {ingressNodes.map(
+                          (data: ingressNode, index: number) => (
+                            <Grid2
+                              container
+                              spacing={2}
+                              key={data.id}
+                              sx={{ marginTop: "10px", marginBottom: "10px"}}
+                            >
+                              <Grid2 container xs={6}>
+                                <TextField
+                                  label="Name"
+                                  value={data.name}
+                                  disabled
+                                  size="small"
+
+                                />
+                              </Grid2>
+                              <Grid2 container xs={3}>
+                                <TextField
+                                  label="Original Frequency"
+                                  value={data.frequency}
+                                  disabled
+                                  size="small"
+
+                                />
+                              </Grid2>
+                              <Grid2 container xs={3}>
+                                <TextField
+                                  label="New Frequency"
+                                  // value={
+                                  //   ingressNodes[index].frequency
+                                  // }
+                                  onChange={(e) => {
+                                    ingressNodes[index].frequency = +e.target.value;
+                                  }}
+                                  size="small"
+                                  // name={`data[${index}].frequency`}
+                                />
+                              </Grid2>
+                            </Grid2>
+                          )
+                        )}
+                      </>
+                    )}
+                  />
+                )}
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -414,15 +465,6 @@ const CreateEgressStepper: React.FC<Props> = ({
                   </div>
                 )}
                 {errors.description && (
-                  <div>
-                    <Chip
-                      label={errors.description}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                 {errors.dataFormat && (
                   <div>
                     <Chip
                       label={errors.description}

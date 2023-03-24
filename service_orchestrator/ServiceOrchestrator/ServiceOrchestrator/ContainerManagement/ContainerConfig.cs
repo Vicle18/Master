@@ -30,4 +30,10 @@ public class ContainerConfig
         get { return _EnvironmentVariables; }
         set { _EnvironmentVariables = value; }
     }
+
+    public override string ToString()
+    {
+        return
+            $"container with image: {_ImageName} and variables: {string.Join(Environment.NewLine, EnvironmentVariables)}";
+    }
 }
