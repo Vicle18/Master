@@ -2,7 +2,9 @@ using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
 using MiddlewareManager.DataModel;
+using Newtonsoft.Json;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MiddlewareManager.Repositories;
 
@@ -24,22 +26,60 @@ public class EgressRepository : IEgressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDto value, string topicName,
+    public async Task<Response> CreateObservableProperty(CreateEgressDto value, string topicName,
         string connectionDetails, ObservableProperty observableProperty)
     {
-        Log.Debug("INSIDE LOOP");
         Log.Debug(observableProperty.ToString());
         Log.Debug(topicName);
         var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
         Log.Debug(response.ToString());
 
 
-        Log.Debug("SENDING THE REQUEST");
-
         return null;
     }
 
-    private async Task<CreateEgressResponse> CreateEgressObservable(CreateEgressDto value, string connectionDetails,
+    public async Task<List<ObservableProperty>> getIngressProperties(string[] valueIngressNodes)
+    {
+        List<ObservableProperty> observableProperties = new List<ObservableProperty>();
+        foreach (var ingressName in valueIngressNodes)
+        {
+            observableProperties.Add(await RequestObservableProperties(ingressName));
+        }
+
+        return observableProperties;
+    }
+
+    private async Task<ObservableProperty> RequestObservableProperties(string ingressName)
+    {
+        var query = @"
+            query ObservableProperties($where: ObservablePropertyWhere) {
+              observableProperties(where: $where) {
+                id
+                frequency
+                dataFormat
+                name
+                topic {
+                  id
+                  name
+                }
+              }
+            }";
+
+        var variables = new { where = new { name = ingressName } };
+
+        var request = new GraphQLRequest
+        {
+            Query = query,
+            Variables = variables
+        };
+
+        var response = await graphQLClient.SendQueryAsync<ObservablePropertyResponse>(request);
+        List<ObservableProperty> observableProperties = response.Data.ObservableProperties;
+
+        return observableProperties[0];
+    }
+
+    private async Task<Response> CreateEgressObservable(CreateEgressDto value, string connectionDetails,
         ObservableProperty observableProperty)
     {
         Log.Debug("BEFORE GRAPHQL REQUEST ");
@@ -87,17 +127,9 @@ public class EgressRepository : IEgressRepository
                 }
             }
         };
-        var graphQLResponse = await graphQLClient.SendMutationAsync<CreateEgressResponse>(request);
-
-        return graphQLResponse.Data;
+        var response = await graphQLClient.SendMutationAsync<Response>(request);
+        Log.Debug(JsonConvert.SerializeObject(response));
+        _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
+        return response.Data;
     }
-
-    public Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDto value, string topicName, string connectionDetails)
-    {
-        throw new NotImplementedException();
-    }
-}
-
-public class CreateEgressResponse
-{
 }
