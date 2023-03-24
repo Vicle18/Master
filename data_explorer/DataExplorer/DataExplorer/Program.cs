@@ -1,5 +1,6 @@
 using DataExplorer.BusCommunication;
 using DataExplorer.BusCommunication.KAFKA;
+using DataExplorer.Repository;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 
@@ -20,7 +21,7 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-
+builder.Services.AddSingleton<ITopicRepository, TopicRepository>();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ContractResolver = new DefaultContractResolver();
