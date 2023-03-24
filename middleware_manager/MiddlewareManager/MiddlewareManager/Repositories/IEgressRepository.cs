@@ -4,7 +4,8 @@ namespace MiddlewareManager.Repositories;
 
 public interface IEgressRepository
 {
-    public Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDto value, string topicName,
+    public Task<Response> CreateObservableProperty(CreateEgressDto value, string topicName,
         string connectionDetails, ObservableProperty observableProperty);
 
+    public Task<List<ObservableProperty>> getIngressProperties(string[] valueIngressNodes);
 }
