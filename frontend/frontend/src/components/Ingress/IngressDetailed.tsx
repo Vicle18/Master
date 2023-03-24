@@ -98,13 +98,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
             <Typography sx={{ width: "33%", flexShrink: 0 }}>
               {item.name}
             </Typography>
-            <Typography sx={{ color: "text.secondary" }}>
-              {item.topic.name}
-            </Typography>
             <Box sx={{ marginLeft: "auto" }}>
               <CurrentValue
-                // url={`http://localhost:5001/input/${item.topic.name}`}
-                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.topic.name}/1`}
+                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.id}/1`}
                 refreshInterval={10000}
               />
             </Box>

@@ -65,7 +65,7 @@ const optionss: ChartOptions<"line"> = {
 
 const DataChart: React.FC<ChartProps> = ({ chartMetadata, refreshInterval}) => {
   const [data, setData] = useState<DataPoint[]>([]);
-    const newUrl = `http://localhost:5292/api/DataRequest/amount/${chartMetadata?.topic}/10`
+    const newUrl = `${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${chartMetadata?.id}/10`
   useEffect(() => {
     const fetchData = async () => {
 
