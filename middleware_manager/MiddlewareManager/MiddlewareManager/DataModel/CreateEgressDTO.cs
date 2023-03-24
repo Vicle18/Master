@@ -1,6 +1,6 @@
 namespace MiddlewareManager.DataModel;
 
-public class CreateEgressDTO
+public class CreateEgressDto: CreateDTO
 {
     public string name { get; set; }
 

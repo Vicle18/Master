@@ -24,24 +24,22 @@ public class EgressRepository : IEgressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDTO value, string topicName,
-        string connectionDetails)
+    public async Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDto value, string topicName,
+        string connectionDetails, ObservableProperty observableProperty)
     {
-        foreach (var observableProperty in value.observables)
-        {
-            Log.Debug("INSIDE LOOP");
-            Log.Debug(observableProperty.ToString());
-            Log.Debug(topicName);
-            var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
-            Log.Debug(response.ToString());
-        }
+        Log.Debug("INSIDE LOOP");
+        Log.Debug(observableProperty.ToString());
+        Log.Debug(topicName);
+        var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
+        Log.Debug(response.ToString());
+
 
         Log.Debug("SENDING THE REQUEST");
 
         return null;
     }
 
-    private async Task<CreateEgressResponse> CreateEgressObservable(CreateEgressDTO value, string connectionDetails,
+    private async Task<CreateEgressResponse> CreateEgressObservable(CreateEgressDto value, string connectionDetails,
         ObservableProperty observableProperty)
     {
         Log.Debug("BEFORE GRAPHQL REQUEST ");
@@ -70,7 +68,9 @@ public class EgressRepository : IEgressRepository
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         frequency = observableProperty.frequency,
-                        changedFrequency = observableProperty.changedFrequency != null ? observableProperty.changedFrequency : observableProperty.frequency,
+                        changedFrequency = observableProperty.changedFrequency != null
+                            ? observableProperty.changedFrequency
+                            : observableProperty.frequency,
                         topic = new
                         {
                             create = new
@@ -90,6 +90,11 @@ public class EgressRepository : IEgressRepository
         var graphQLResponse = await graphQLClient.SendMutationAsync<CreateEgressResponse>(request);
 
         return graphQLResponse.Data;
+    }
+
+    public Task<CreateEgressResponse> CreateObservableProperty(CreateEgressDto value, string topicName, string connectionDetails)
+    {
+        throw new NotImplementedException();
     }
 }
 

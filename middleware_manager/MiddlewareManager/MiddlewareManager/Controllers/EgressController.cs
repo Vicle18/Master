@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MiddlewareManager.DataModel;
+using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Serilog;
 
 namespace MiddlewareManager.Controllers
@@ -49,16 +50,25 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDTO value)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
         {
             Log.Debug("test");
             Log.Debug(value.ToString());
-            Log.Debug(JsonConvert.SerializeObject(value));
             try
             {
-                var connectionDetails = "connectionDetails";
-                var response = await _egressRepo.CreateObservableProperty(value, "topic",
-                    connectionDetails);
+                CreateEgressResponse response = null;
+                var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
+                Log.Debug("after topicName");
+
+                foreach (var observableProperty in value.observables)
+                {
+                    Log.Debug("inside the foreach");
+                    var connectionDetails = ConnectionDetailsFactory.Create(value, topicName, observableProperty);
+                    response = await _egressRepo.CreateObservableProperty(value, "topic",
+                        JsonSerializer.Serialize(connectionDetails), observableProperty);
+                    await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
+                }
+                
                 return Ok(response);
             }
             catch (ArgumentException e)
@@ -66,11 +76,11 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
-        
+
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-        private async Task ForwardsRequestToConfigurator(CreateEgressDTO value, string topicName,
+        private async Task ForwardsRequestToConfigurator(CreateEgressDto value, string topicName,
             string connectionDetails)
         {
             // Create the HTTP request message with the JSON string as the content

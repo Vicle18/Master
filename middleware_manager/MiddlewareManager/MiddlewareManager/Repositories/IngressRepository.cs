@@ -25,7 +25,7 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(CreateIngressDTO value, string topicName, string connectionDetails)
+    public async Task<Response> CreateObservableProperty(CreateIngressDto value, string topicName, string connectionDetails)
     {
         Log.Debug("BEFORE REQUEST");
         var request = new GraphQLRequest
