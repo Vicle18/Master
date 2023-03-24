@@ -51,6 +51,8 @@ const CreateEgress: React.FC<Props> = ({
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedContainingElement, setSelectedContainingElement] =
     useState<string>("");
+  const [selectedDataFormat, setSelectedDataFormat] = useState<string>("string");
+
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -69,6 +71,8 @@ const CreateEgress: React.FC<Props> = ({
       "Access-Control-Allow-Headers":
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
+
+    console.log("CREATE EGRESSS")
 
     axios
       .get("https://localhost:7033/api/Egress", { headers })
@@ -191,6 +195,19 @@ const CreateEgress: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel id="data-format-select-label">Data Format</InputLabel>
+                      <Select
+                        labelId="data-format-select-label"
+                        id="data-format-select"
+                        value={selectedDataFormat}
+                        onChange={(event) => setSelectedDataFormat(event.target.value)}
+                        label="Data Format"
+                      >
+                        <MenuItem value="string">String</MenuItem>
+                        <MenuItem value="raw">Raw</MenuItem>
+                      </Select>
+                    </FormControl>
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field

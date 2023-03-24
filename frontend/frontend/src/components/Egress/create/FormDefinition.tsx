@@ -7,6 +7,7 @@ export interface FormData {
     port?: string;
     nodeId?: string;
     ingressNodes: (string | undefined)[];
+    dataFormat?: string;
   }
   
 export const initialValues: FormData = {
@@ -16,7 +17,8 @@ export const initialValues: FormData = {
     host: "23.23.23.23",
     port: "1883",
     nodeId: "",
-    ingressNodes: ["test", "test2"],
+    ingressNodes: ["nynyny"],
+    dataFormat: "string"
   };
   
  export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -42,4 +44,5 @@ export const initialValues: FormData = {
       .of(Yup.string())
       .min(1)
       .required("Ingress nodes are required"),
+    dataFormat: Yup.string().required("dataFormat is required")
   });
