@@ -66,8 +66,9 @@ const CreateEgressStepper: React.FC<Props> = ({
   PopupEgress,
   handleResult,
 }) => {
-  const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
+  const [createBroker, setCreateBroker] = React.useState<boolean>(false);
+
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>(
     initialValues.ingressNodes as ingressNode[]
   );
@@ -277,6 +278,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                               onChange={() =>{
                                 values.createBroker = !values.createBroker
                                 console.log(values.createBroker);
+                                setCreateBroker(values.createBroker);
                               }
                               
                               }
@@ -288,7 +290,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </Field>
                         </>)}
 
-                    {values.createBroker && values.protocol === "MQTT" && (
+                    {createBroker &&  values.protocol === "MQTT" && (
                       <>
                         
                         <Field name="host">
