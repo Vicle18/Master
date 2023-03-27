@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MiddlewareManager.DataModel;
+using MiddlewareManager.Repositories;
+using Newtonsoft.Json;
 
 namespace MiddlewareManager.Controllers
 {
@@ -11,6 +14,19 @@ namespace MiddlewareManager.Controllers
     [ApiController]
     public class ContainingElementController : ControllerBase
     {
+        private readonly IConfiguration _config;
+        private readonly ILogger<ContainingElementController> _logger;
+        private readonly IContainingElementRepository _containingElementRepo;
+        private readonly HttpClient _client;
+        public ContainingElementController(IConfiguration config, ILogger<ContainingElementController> logger,
+            IContainingElementRepository containingElementRepo)
+        {
+            _config = config;
+            _logger = logger;
+            _containingElementRepo = containingElementRepo;
+            _logger.LogDebug("starting {controller}", "IngressController");
+            _client = new HttpClient();
+        }
         // GET: api/ContainingElement
         [HttpGet]
         public IEnumerable<string> Get()
@@ -27,8 +43,20 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/ContainingElement
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<ActionResult<string>> Post([FromBody] CreateContainingElementDTO value)
         {
+            _logger.LogDebug("creating ingress with values: {value}", value);
+            try
+            {
+                
+                var response = await _containingElementRepo.CreateContainingElement(value);
+                //return Ok(response);
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         // PUT: api/ContainingElement/5

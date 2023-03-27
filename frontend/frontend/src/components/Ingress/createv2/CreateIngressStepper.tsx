@@ -399,9 +399,9 @@ const CreateIngressStepper: React.FC<Props> = ({
 
                         <Divider />
                         <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
-                            HandleIngressClick(parent);
-                            setSelectedParent(parent);
+                          onItemClick={(parent: any) => {
+                            HandleIngressClick(parent.name);
+                            setSelectedParent(parent.name);
                             console.log("parent", values.containingElement);
                           }}
                         />

@@ -17,7 +17,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
   const [selectedView, setSelectedView] = useState("");
 
   const handleItemClick = (data: any) => {
-    setSelectedItemData(data);
+    setSelectedItemData(data.name);
   };
 
   const handleOpenChart = (data: any) => {

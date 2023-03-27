@@ -108,6 +108,24 @@ CREATE (jointVibration2:ObservableProperty {
     frequency: 100
     })
 
+CREATE (:EgressEndpoint {
+    id: "egress1",
+    name: "Endpoint 1",
+    description: "This is the first egress endpoint",
+    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
+    frequency: 60,
+    dataFormat: "Raw"
+})
+
+CREATE (:EgressEndpoint {
+    id: "egress2",
+    name: "Endpoint 2",
+    description: "This is the second egress endpoint",
+    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
+    frequency: 30,
+    dataFormat: "Json"
+})
+
 
 // Create topics
 CREATE (topicA:Topic {name: 'TopicA'})

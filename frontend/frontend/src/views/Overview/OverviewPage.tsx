@@ -30,7 +30,7 @@ const Overview: FC<OverviewProps> = ({ title }) => {
 
   return (
     <>
-      <TopBar/>
+      <TopBar onNavMenuClick={handleIngressEgressButtonClick}/>
       {showIngressOverview && <IngressOverview />}
       {!showIngressOverview && <EgressOverview />}
       

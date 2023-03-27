@@ -1,52 +1,31 @@
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
-
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
-
 import { CreateEndpoint } from "./createEndpointMenu";
+import { useNavigate } from "react-router-dom";
 
+type TopBarProps = {
+  onNavMenuClick: (page: string) => void;
+};
 
 const pages = ["Ingress", "Egress"];
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-export const SelectorMenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 230,
-    },
-  },
-};
-
-function TopBar() {
-  
-
-  /**
-   * Create an endpoint based on the specified values
-   */
-  
-
-
+const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
-
-
-  const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = (page: any) => {
+    // navigate(page);
     setAnchorElNav(null);
+    onNavMenuClick(page);
   };
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  
-
   const createClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -59,45 +38,34 @@ function TopBar() {
       <AppBar position="static" color="secondary">
         <Container maxWidth="xl">
           <Toolbar disableGutters>
-            {addCreateDropDown(open, handleCloseNavMenu)}
-            {CreateEndpoint(
-              open,
-              createClick,
-              anchorEl,
-              handleClose,
-            )}
+            <React.Fragment>
+              {pages.map((page) => (
+                <Button
+                  id="ingress-egress-button"
+                  aria-controls={open ? "demo-customized-menu" : undefined}
+                  aria-haspopup="true"
+                  variant="contained"
+                  disableElevation
+                  key={page}
+                  onClick={() => handleCloseNavMenu(page)}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+                    backgroundColor: "primary",
+                    marginLeft: 1,
+                  }}
+                >
+                  {page}
+                </Button>
+              ))}
+            </React.Fragment>
+            {CreateEndpoint(open, createClick, anchorEl, handleClose)}
           </Toolbar>
         </Container>
       </AppBar>
     </ThemeProvider>
   );
-}
-export default TopBar;
+};
 
-function addCreateDropDown(open: boolean, handleCloseNavMenu: () => void) {
-  return (
-    <Box sx={{ display: "inline-flex" }}>
-      {pages.map((page) => (
-        <Button
-          id="ingress-egress-button"
-          aria-controls={open ? "demo-customized-menu" : undefined}
-          aria-haspopup="true"
-          variant="contained"
-          disableElevation
-          key={page}
-          onClick={handleCloseNavMenu}
-          sx={{
-            my: 2,
-            color: "white",
-            display: "block",
-            backgroundColor: "primary",
-            marginLeft: 1,
-          }}
-        >
-          {page}
-        </Button>
-      ))}
-      
-    </Box>
-  );
-}
+export default TopBar;

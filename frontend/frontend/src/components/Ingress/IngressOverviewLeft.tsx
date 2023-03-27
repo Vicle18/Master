@@ -7,21 +7,28 @@ import { useState } from "react";
 type Props = {
   onItemClick: (data: any) => void;
   selectedNode?: string;
+  filter?: string[]
 };
 
 const GET_LOCATIONS = gql`
   query GetAreas {
     companies {
+      id
       name
       plants {
+        id
         name
         areas {
+          id
           name
           lines {
+            id
             name
             cells {
+              id
               name
               machines {
+                id
                 name
               }
             }
@@ -33,6 +40,7 @@ const GET_LOCATIONS = gql`
 `;
 
 interface TreeNode {
+  id: string;
   name: string;
   [key: string]: any;
 }
@@ -69,7 +77,7 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
 };
 
 
-const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode}) => {
+const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode, filter}) => {
   const [searchString, setSearchString] = useState('');
 
 
@@ -86,7 +94,7 @@ const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode}) => {
   return (
     <>
       <SearchBar suggestions={extractNames(data)} onSearch={onSearchResultSelection}/>
-      <CustomizedTreeView onItemClick={onItemClick} searchString={searchString} data={data}/>
+      <CustomizedTreeView onItemClick={onItemClick} searchString={searchString} data={data} filter={filter ?? ["companies", "plants", "areas", "lines", "cells", "machines"]}/>
     </>
   );
 };
