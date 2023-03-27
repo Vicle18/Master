@@ -53,7 +53,10 @@ public class ConnectionDetailsFactory
 
     public static IConnectionDetails Create(CreateEgressDto value, string topicName, ObservableProperty observableProperty)
     {
+        Log.Debug("details");
         Log.Debug(value.protocol);
+        Log.Debug(observableProperty.topic.name.ToString());
+        Log.Debug(topicName);
         switch (value.protocol)
         {
             case "MQTT":
@@ -64,7 +67,7 @@ public class ConnectionDetailsFactory
                     {
                         HOST = value.host ?? GenerateHost(),
                         PORT = value.port ?? GeneratePort(),
-                        TRANSMISSION_PAIRS = $"[{observableProperty.topic}:{topicName}]" ?? GenerateTransmissionPairs(),
+                        TRANSMISSION_PAIRS = $"[{observableProperty.topic.name}:{topicName}]" ?? GenerateTransmissionPairs(),
                     }
                 };
             case "OPCUA":
@@ -80,7 +83,7 @@ public class ConnectionDetailsFactory
                             {
                                 NODE_NAME = $"{value.nodeName}",
                                 VALUE_TYPE = $"{value.dataFormat}",
-                                ORIGIN_TOPIC = $"{observableProperty.topic}"
+                                ORIGIN_TOPIC = $"{observableProperty.topic.name}"
                             }
                         })
                     }

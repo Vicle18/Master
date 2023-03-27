@@ -26,17 +26,6 @@ public class EgressRepository : IEgressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(CreateEgressDto value, string topicName,
-        string connectionDetails, ObservableProperty observableProperty)
-    {
-        Log.Debug(observableProperty.ToString());
-        Log.Debug(topicName);
-        var response = await CreateEgressObservable(value, connectionDetails, observableProperty);
-        Log.Debug(response.ToString());
-
-
-        return null;
-    }
 
     public async Task<List<ObservableProperty>> getIngressProperties(string[] valueIngressNodes)
     {
@@ -79,8 +68,8 @@ public class EgressRepository : IEgressRepository
         return observableProperties[0];
     }
 
-    private async Task<Response> CreateEgressObservable(CreateEgressDto value, string connectionDetails,
-        ObservableProperty observableProperty)
+    public async Task<Response> CreateEgressEndpoint(CreateEgressDto value, string connectionDetails,
+        ObservableProperty observableProperty, string egressGroupId)
     {
         Log.Debug("BEFORE GRAPHQL REQUEST ");
         var request = new GraphQLRequest
@@ -106,16 +95,30 @@ public class EgressRepository : IEgressRepository
                 {
                     new
                     {
-                        
                         id = Guid.NewGuid().ToString(),
                         name = value.name,
                         description = value.description,
                         dataFormat = value.dataFormat,
                         frequency = observableProperty.frequency,
                         connectionDetails = connectionDetails,
-                        changedFrequency = observableProperty.changedFrequency != null
-                            ? observableProperty.changedFrequency
-                            : observableProperty.frequency
+                        changedFrequency = observableProperty.changedFrequency ?? observableProperty.frequency,
+                        egressGroup = egressGroupId,
+                        accessTo = new
+                        {
+                            connect = new[]
+                            {
+                                new
+                                {
+                                    where = new
+                                    {
+                                        node = new
+                                        {
+                                            id = observableProperty.id
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
