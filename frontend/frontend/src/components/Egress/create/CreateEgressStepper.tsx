@@ -133,7 +133,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   };
 
   function handleEgressClick(data: any): void {
-    setSelectedEgress(data);
+    setSelectedEgress(data.name);
   }
 
   const handleSelectObservableProperty = (observableProperty: any) => {

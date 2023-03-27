@@ -63,15 +63,15 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
   const [ingressNodes, setIngressNodes] = useState<string[]>(
-    initialValues.ingressNodes as string[]
+    initialValues.observableProperties as string[]
   );
   const [children, setChildren] = useState<string[]>(
     initialValues.children as string[]
   );
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
-  const [selectedChild, setSelectedChild] = useState<string>("");
+  const [selectedChild, setSelectedChild] = useState<any>("");
 
-  const [selectedParent, setSelectedParent] = useState<string>("");
+  const [selectedParent, setSelectedParent] = useState<any>("");
   const [selectedContainingElement, setSelectedContainingElement] =
     useState<string>("");
   const theme = useTheme();
@@ -90,7 +90,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupContainingElement(false);
-
+    values.children = children;
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -99,20 +99,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
 
-    axios
-      .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, { headers })
-      .then((response) => {
-        console.log(response.data);
-        setResult(response.data);
-        handleResult(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        setResult(error.message);
-        handleResult(error.message);
-      });
-
-    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement?=`, {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -145,8 +132,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   };
 
   const handleSelectChild = (child: any) => {
-    console.log("observable property", child);
-    setChildren([...children, child]);
+    console.log("observable property", child.id);
+    setChildren([...children, child.id]);
   };
   const handleDeleteChild = (child: string) => {
     setChildren(children.filter((node) => node !== child));
@@ -154,6 +141,44 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
 
 
+  function getParentOptionsFilter(type: string): string[] | undefined {
+    switch (type) {
+      case "company":
+        return undefined;
+      case "plant":
+        return ["companies"];
+      case "area":
+        return ["companies", "plants"];
+      case "line":
+        return ["areas"];
+      case "cell":
+        return ["lines"];
+      case "machine":
+        return ["cells"];
+      default:
+        return undefined;
+    }
+  }
+
+
+  function getChildrenOptionsFilter(type: string): string[] | undefined {
+    switch (type) {
+      case "company":
+        return [ "plants"];
+      case "plant":
+        return ["areas"];
+      case "area":
+        return ["lines"];
+      case "line":
+        return ["cells"];
+      case "cell":
+        return ["machines"];
+      case "machine":
+        return [];
+      default:
+        return undefined;
+    }
+  }
 
   return (
     <div>
@@ -259,6 +284,24 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+                    <FormControl variant="outlined" fullWidth margin="normal">
+                      <InputLabel id="type-label">Type</InputLabel>
+                      <Field
+                        as={Select}
+                        name="type"
+                        labelId="type-label"
+                        label="Type"
+                        size="small"
+                      >
+                        <MenuItem value="company">Company</MenuItem>
+                        <MenuItem value="plant">Plant</MenuItem>
+                        <MenuItem value="area">Area</MenuItem>
+                        <MenuItem value="line">Line</MenuItem>
+                        <MenuItem value="cell">Cell</MenuItem>
+                        <MenuItem value="machine">Machine</MenuItem>
+
+                      </Field>
+                    </FormControl>
                   </>
                 )}
                 {activeStep === 1 && (
@@ -285,7 +328,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 maxWidth="100%"
                               >
                                 <Typography variant="body1">
-                                  Current Element: {selectedParent}
+                                  Current Element: {selectedParent.name}
                                 </Typography>
                               </Box>
                             </Grid2>
@@ -294,7 +337,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                  values.parent = selectedParent;
+                                  values.parent = selectedParent.id;
                                 }}
                               >
                                 SELECT
@@ -305,11 +348,13 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
                         <Divider />
                         <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
+                          onItemClick={(parent: any) => {
                             HandleContainingElementClick(parent);
                             setSelectedParent(parent);
                             console.log("parent", values.parent);
+                            console.log(values.type)
                           }}
+                          filter={getParentOptionsFilter(values.type)}
                         />
                       </Grid2>
                       <Grid2
@@ -361,7 +406,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 maxWidth="100%"
                               >
                                 <Typography variant="body1">
-                                  Current Element: {selectedChild}
+                                  Current Element: {selectedChild.name}
                                 </Typography>
                               </Box>
                             </Grid2>
@@ -370,7 +415,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                  handleSelectChild(selectedChild);
+                                  handleSelectChild(selectedChild.id);
                                 }}
                               >
                                 SELECT
@@ -381,11 +426,12 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
                         <Divider />
                         <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
-                            HandleContainingElementClick(parent);
-                            setSelectedChild(parent);
-                            console.log("parent", values.parent);
+                          onItemClick={(child: any) => {
+                            HandleContainingElementClick(child);
+                            setSelectedChild(child);
+                    
                           }}
+                          filter={getChildrenOptionsFilter(values.type)}
                         />
                       </Grid2>
                       <Grid2
@@ -448,10 +494,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         }}
                       >
                         <IngressOverviewLeft
-                          onItemClick={(parent: string) => {
-                            HandleContainingElementClick(parent);
-                            values.parent = parent;
-                            console.log("parent", values.parent);
+                          onItemClick={(containingElement: any) => {
+                            HandleContainingElementClick(containingElement.name);
                           }}
                         />
                       </Grid2>

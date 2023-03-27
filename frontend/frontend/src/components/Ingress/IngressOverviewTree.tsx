@@ -76,6 +76,7 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
 }));
 
 interface TreeNode {
+  id: string;
   name: string;
   [key: string]: any;
 }
@@ -91,37 +92,52 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
   return undefined;
 };
 
-const renderTree = (nodes: TreeNode[], onItemClick: (data: any) => void) => {
-  return nodes.map((node) => {
-    const childrenKey = findChildrenKey(node);
-    return (
-      <StyledTreeItem
-        key={node.name}
-        nodeId={node.name}
-        label={
-          node.name
-        // <>
-        //   <span>{node.name}</span>
-        //   <Button onClick={() => {
-        //     console.log('click');
-            
-        //     // stopPropagation(); // prevent the onClick of the parent item from firing
-        //     onItemClick(node.name);
-        //   }}>
-        //     Select
-        //   </Button>
-        // </>
-        }
-        onClick={(event) => {
-          onItemClick(node.name);
-        }}
-        
-      >
-        {childrenKey && renderTree(node[childrenKey], onItemClick)}
-      </StyledTreeItem>
-    );
-  });
+interface RenderTreeProps {
+  nodes: TreeNode[];
+  onItemClick: (data: any) => void;
+  clickable: boolean;
+  filter: string[];
+}
+
+const RenderTree: React.FC<RenderTreeProps> = ({ nodes, onItemClick, clickable, filter }) => {
+  return (
+    <>
+      {nodes.map((node) => {
+        const childrenKey = findChildrenKey(node);
+        const isClickable = clickable;
+
+        return (
+          <StyledTreeItem
+            key={node.id}
+            sx={{ color: isClickable ? "black" : "lightgrey" }}
+            nodeId={node.name}
+            label={node.name}
+            onClick={(event) => {
+              if (isClickable) {
+                onItemClick(node);
+                console.log("clickable");
+                
+              }
+            }}
+          >
+            {childrenKey &&
+              RenderTree({
+                nodes: node[childrenKey],
+                onItemClick,
+                clickable: filter.includes(childrenKey!),
+                filter,
+              })}
+          </StyledTreeItem>
+        );
+      })}
+    </>
+  );
 };
+
+
+
+
+
 
 function findMatchingNodes(nodes: TreeNode[], searchString: string) {
   const matchingNodes: TreeNode[] = [];
@@ -155,12 +171,14 @@ interface TreeViewProps {
   data: any;
   onItemClick: (data: any) => void;
   searchString?: string;
+  filter: string[];
 }
 
 const CustomizedTreeView: React.FC<TreeViewProps> = ({
   onItemClick,
   searchString,
   data,
+  filter,
 }) => {
   const [expanded, setExpanded] = useState<string[]>([]);
 
@@ -191,7 +209,7 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
         onNodeToggle={handleToggle}
         sx={{ flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
       >
-        {renderTree(data.companies, onItemClick)}
+        {RenderTree( {nodes: data.companies as TreeNode[], onItemClick, clickable: filter.includes("companies"), filter} )}
       </TreeView>
     </>
   );

@@ -103,7 +103,7 @@ const CreateEgress: React.FC<Props> = ({
   };
 
   function handleContainingElementClick(data: any): void {
-    setSelectedContainingElement(data);
+    setSelectedContainingElement(data.name);
   }
 
   const handleSelectObservableProperty = (observableProperty: any) => {
