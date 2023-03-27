@@ -27,7 +27,7 @@ export const initialValues: FormData = {
   nodeId: "",
   ingressNodes: [{
     id: "firstNode",
-    name: "nynyny",
+    name: "nynyny", 
     topic: "firstTopic",
     frequency: 30,
   }],
