@@ -11,9 +11,9 @@ export interface FormData {
   name: string;
   description: string;
   protocol: string;
+  createBroker: boolean | undefined;
   host?: string;
   port?: string;
-  nodeId?: string;
   ingressNodes?: (string | ingressNode | undefined)[];
   dataFormat?: string;
 }
@@ -22,9 +22,9 @@ export const initialValues: FormData = {
   name: "defaultName",
   description: "default Description",
   protocol: "MQTT",
-  host: "23.23.23.23",
+  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   port: "1883",
-  nodeId: "",
+  createBroker: false,
   ingressNodes: [{
     id: "firstNode",
     name: "nynyny",
@@ -38,19 +38,24 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
+  createBroker: Yup.boolean().when("protocol", {
+    is: (protococol: string) => protococol === "MQTT" || protococol === "OPCUA",
+    then: (schema) => schema.required("Create Broker is required"),
+    otherwise: (schema) => schema,
+  }),
   host: Yup.string().when("protocol", {
     is: (protococol: string) => protococol === "MQTT",
-    then: (schema) => schema.required("host is required"),
+    then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
   port: Yup.string().when("protocol", {
     is: (protococol: string) => protococol === "MQTT",
-    then: (schema) => schema.required("port is required"),
+    then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
   nodeId: Yup.string().when("protocol", {
     is: "OPCUA",
-    then: (schema) => schema.required("nodeid is required"),
+    then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
   ingressNodes: Yup.array()
