@@ -12,6 +12,7 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputLabel,
   List,
@@ -27,6 +28,7 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  Switch,
   TextField,
   Typography,
   useMediaQuery,
@@ -91,7 +93,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
-    values.ingressNodes = ingressNodes;
+    values.ingressNodes = ingressNodes.map((node: ingressNode) => node.id);
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -99,23 +101,9 @@ const CreateEgressStepper: React.FC<Props> = ({
       "Access-Control-Allow-Headers":
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
-    console.log("CREATE STEPPPER EGRESSS");
 
     console.log(JSON.stringify(values));
 
-    // axios
-    //   .get(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress`, { headers })
-    //   .then((response) => {
-    //     console.log(response.data);
-    //     setResult(response.data);
-    //     handleResult(response.data);
-    //   })
-    //   .catch((error) => {
-    //     console.error(error);
-    //     setResult(error.message);
-    //     handleResult(error.message);
-    //   });
-    console.log("POST");
 
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
@@ -278,8 +266,31 @@ const CreateEgressStepper: React.FC<Props> = ({
                         <MenuItem value="OPCUA">OPCUA</MenuItem>
                       </Field>
                     </FormControl>
-                    {values.protocol === "MQTT" ? (
+
+                    {(values.protocol === "MQTT" || values.protocol === "OPCUA") && (
                       <>
+                      <Field name="createBroker">
+                          {({ field }: FieldProps<FormData>) => (
+                            <FormControlLabel control={<Switch
+                              {...field}
+                              defaultChecked={values.createBroker}
+                              onChange={() =>{
+                                values.createBroker = !values.createBroker
+                                console.log(values.createBroker);
+                              }
+                              
+                              }
+                              disabled = {values.protocol === "OPCUA"}
+                              color="primary"
+                            />} label="Providing your own broker" />
+                            
+                          )}
+                        </Field>
+                        </>)}
+
+                    {values.createBroker && values.protocol === "MQTT" && (
+                      <>
+                        
                         <Field name="host">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -309,21 +320,6 @@ const CreateEgressStepper: React.FC<Props> = ({
                           )}
                         </Field>
                       </>
-                    ) : (
-                      <Field name="nodeId">
-                        {({ field }: FieldProps<FormData>) => (
-                          <TextField
-                            {...field}
-                            label="Node ID"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            error={touched.nodeId && Boolean(errors.nodeId)}
-                            helperText={touched.nodeId && errors.nodeId}
-                          />
-                        )}
-                      </Field>
                     )}
                   </>
                 )}
@@ -495,15 +491,6 @@ const CreateEgressStepper: React.FC<Props> = ({
                   <div>
                     <Chip
                       label={errors.port}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                {errors.nodeId && (
-                  <div>
-                    <Chip
-                      label={errors.nodeId}
                       color="error"
                       variant="outlined"
                     />
