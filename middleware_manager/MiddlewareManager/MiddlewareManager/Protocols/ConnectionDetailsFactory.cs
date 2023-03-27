@@ -62,8 +62,8 @@ public class ConnectionDetailsFactory
                     PROTOCOL = value.protocol,
                     PARAMETERS = new MQTTParameters
                     {
-                        HOST = GenerateHost(),
-                        PORT = GeneratePort(),
+                        HOST = value.host ?? GenerateHost(),
+                        PORT = value.port ?? GeneratePort(),
                         TRANSMISSION_PAIRS = $"[{observableProperty.topic}:{topicName}]" ?? GenerateTransmissionPairs(),
                     }
                 };

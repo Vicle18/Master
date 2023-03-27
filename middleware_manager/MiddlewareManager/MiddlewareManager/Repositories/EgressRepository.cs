@@ -49,31 +49,31 @@ public class EgressRepository : IEgressRepository
         return observableProperties;
     }
 
-    private async Task<ObservableProperty> RequestObservableProperties(string ingressName)
+    private async Task<ObservableProperty> RequestObservableProperties(string ingressId)
     {
         var query = @"
             query ObservableProperties($where: ObservablePropertyWhere) {
               observableProperties(where: $where) {
                 id
-                frequency
-                dataFormat
                 name
                 topic {
-                  id
                   name
                 }
               }
             }";
 
-        var variables = new { where = new { name = ingressName } };
+        var variables = new { where = new { id = ingressId } };
 
         var request = new GraphQLRequest
         {
             Query = query,
             Variables = variables
         };
-
+        Log.Debug("before Sendquery");
         var response = await graphQLClient.SendQueryAsync<ObservablePropertyResponse>(request);
+        Log.Debug("after Sendquery");
+        Log.Debug(JsonSerializer.Serialize(response.Data));
+
         List<ObservableProperty> observableProperties = response.Data.ObservableProperties;
 
         return observableProperties[0];
@@ -86,43 +86,36 @@ public class EgressRepository : IEgressRepository
         var request = new GraphQLRequest
         {
             Query = @"
-                    mutation Mutation($input: [ObservablePropertyCreateInput!]!) {
-                      createObservableProperties(input: $input) {
-                        observableProperties {
+                    mutation Mutation($input: [EgressEndpointCreateInput!]!) {
+                      createEgressEndpoints(input: $input) {
+                        egressEndpoints {
+                          id
                           name
-                          topic {
-                            name
-                          }
+                          description
+                          dataFormat
+                          frequency
+                          connectionDetails
+                          changedFrequency
                         }
                       }
-                    }",
+                    }
+                    ",
             Variables = new
             {
                 input = new[]
                 {
                     new
                     {
+                        
+                        id = Guid.NewGuid().ToString(),
                         name = value.name,
                         description = value.description,
-                        id = Guid.NewGuid().ToString(),
-                        connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         frequency = observableProperty.frequency,
+                        connectionDetails = connectionDetails,
                         changedFrequency = observableProperty.changedFrequency != null
                             ? observableProperty.changedFrequency
-                            : observableProperty.frequency,
-                        topic = new
-                        {
-                            create = new
-                            {
-                                node = new
-                                {
-                                    name = observableProperty.topic.name,
-                                    id = Guid.NewGuid().ToString(),
-                                    description = "topic description"
-                                }
-                            }
-                        },
+                            : observableProperty.frequency
                     }
                 }
             }
