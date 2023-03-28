@@ -1,16 +1,12 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   Box,
   Button,
   Chip,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  Divider,
   FormControl,
   FormControlLabel,
   IconButton,
@@ -22,22 +18,17 @@ import {
   ListSubheader,
   MenuItem,
   Select,
-  Snackbar,
   Step,
   StepButton,
-  StepContent,
-  StepLabel,
   Stepper,
   Switch,
   TextField,
-  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
-import * as Yup from "yup";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../../Ingress/IngressDetailed";
 import IngressOverviewLeft from "../../Ingress/IngressOverviewLeft";
@@ -69,9 +60,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [activeStep, setActiveStep] = React.useState(0);
   const [createBroker, setCreateBroker] = React.useState<boolean>(false);
 
-  const [ingressNodes, setIngressNodes] = useState<ingressNode[]>(
-    initialValues.ingressNodes as ingressNode[]
-  );
+  const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedEgress, setSelectedEgress] =
     useState<string>("");
@@ -94,7 +83,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
-    values.ingressNodes = ingressNodes.map((node: ingressNode) => node.id);
+    values.ingressIds = ingressNodes?.map((node: ingressNode) => node.id);
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -439,6 +428,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                                   // }
                                   onChange={(e) => {
                                     ingressNodes[index].frequency = +e.target.value;
+                                    values.frequency = "30"
                                   }}
                                   size="small"
                                   // name={`data[${index}].frequency`}

@@ -12,9 +12,10 @@ export interface FormData {
   description: string;
   protocol: string;
   createBroker: boolean | undefined;
+  frequency: string;
   host?: string;
   port?: string;
-  ingressNodes?: (string | ingressNode | undefined)[];
+  ingressIds?: (string | undefined)[];
   dataFormat?: string;
 }
 
@@ -25,12 +26,8 @@ export const initialValues: FormData = {
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   port: "1883",
   createBroker: false,
-  ingressNodes: [{
-    id: "firstNode",
-    name: "nynyny",
-    topic: "firstTopic",
-    frequency: 30,
-  }],
+  frequency: "30",
+  ingressIds: ["jointTemperature2"],
   dataFormat: "string",
 };
 
@@ -58,8 +55,9 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
-  ingressNodes: Yup.array()
-    .of(Yup.mixed<ingressNode>())
+  frequency: Yup.string().required("Frequency is required"),
+  ingressIds: Yup.array()
+    .of(Yup.mixed<string>())
     .min(1)
     .optional(),
 

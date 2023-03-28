@@ -28,7 +28,7 @@ export const initialValues: FormData = {
 };
   
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
   frequency: Yup.string().required("Frequency is required"),

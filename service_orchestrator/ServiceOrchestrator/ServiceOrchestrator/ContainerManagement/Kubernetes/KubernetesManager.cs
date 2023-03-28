@@ -1,5 +1,6 @@
 using k8s;
 using k8s.Models;
+using Serilog;
 
 namespace ServiceOrchestrator.ContainerManagement.Kubernetes;
 
@@ -50,7 +51,7 @@ public class KubernetesManager : IContainerManager
         {
             Metadata = new V1ObjectMeta
             {
-                Name = $"pod-{uniqueId}"
+                Name = $"pod-{config.ImageName.Split("/").Last().Split(":").First()}-{uniqueId}"
             },
             Spec = new V1PodSpec
             {

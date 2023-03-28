@@ -87,7 +87,7 @@ namespace MiddlewareManager.Controllers
             // Create the HTTP request message with the JSON string as the content
             var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Egress?=");
             request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
-
+            _logger.LogDebug("connectionDetails: {details}", connectionDetails);
             // Send the request and wait for the response
             var response = await _client.SendAsync(request);
 
