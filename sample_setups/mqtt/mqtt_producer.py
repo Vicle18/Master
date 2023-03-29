@@ -22,4 +22,3 @@ while True:
 
     # Sleep for 1 second.
     time.sleep(1)
-/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/Dockerfile

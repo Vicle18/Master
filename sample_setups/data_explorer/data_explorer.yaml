@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-explorer-service
+  namespace: sso
+spec:
+  selector:
+    app: data-explorer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-explorer-deployment
+  namespace: sso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-explorer
+  template:
+    metadata:
+      labels:
+        app: data-explorer
+    spec:
+      containers:
+      - name: data-explorer-container
+        image: clemme/data-explorer
+        env:
+        - name: BUS_CONFIG__PROTOCOL
+          value: "KAFKA"
+        - name: BUS_CONFIG__PARAMETERS__HOST
+          value: "my-cluster-kafka-brokers"
+        - name: BUS_CONFIG__PARAMETERS__PORT
+          value: "9092"
+        - name: GRAPHQL_URL
+          value: "http://meta-store-service:4000"
+        ports:
+        - containerPort: 80
+ 
+
