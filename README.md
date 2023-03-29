@@ -24,7 +24,6 @@ kubectl config set-context --current --namespace=sso
 ## Create user to access kubernetes api
 ```
 kubectl apply -f kubernetes/create_user.yaml
-kubectl create token service-orchestrator
 ```
 
 ## Deploy Strimzi Kafka on Kubernetes (cd to strimzi-0.32...)
@@ -65,6 +64,9 @@ helm install -f kafka/values.yaml kowl cloudhut/kowl -n sso
 export POD_NAME=$(kubectl get pods --namespace sso -l "app.kubernetes.io/name=kowl,app.kubernetes.io/instance=kowl" -o jsonpath="{.items[0].metadata.name}")
 echo "Visit http://127.0.0.1:8087 to use your application"
 kubectl --namespace sso port-forward $POD_NAME 8087:8080
+
+
+helm uninstall kowl
 ```
 
 ### Launch producer
@@ -82,12 +84,15 @@ kubectl run kafka-consumer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 
 kubectl apply -f sample_setups/ingress/ingress.yaml
 kubectl apply -f sample_setups/egress/egress.yaml
 
+kubectl apply -f sample_setups/data_explorer/data_explorer.yaml
+
 ```
 
 ## kill them again
 ```
 kubectl delete -f sample_setups/ingress/ingress.yaml
 kubectl delete -f sample_setups/egress/egress.yaml
+kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 ```
 
 # Neo4j deployment
@@ -122,4 +127,13 @@ kubectl delete -f sample_setups/neo4j/meta-store.yaml
 
 ```
 
+## Data explorer
+```
+kubectl apply -f sample_setups/data_explorer/data_explorer.yaml
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=data-explorer" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8086:80
+
+kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
+
+```
 

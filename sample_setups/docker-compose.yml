@@ -281,6 +281,7 @@ services:
     ports:
       - 29999:29999
       - 30004:30004
+      - 6080:6080
     profiles:
       - ur
     networks:

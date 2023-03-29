@@ -10,7 +10,7 @@ image:
   repository: cloudhut/kowl
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "master-59f68da"
 
 imagePullSecrets: []
 nameOverride: ""
