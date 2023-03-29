@@ -7,6 +7,8 @@ public class MQTTConfiguration
     public string TRANSMISSION_PAIRS { get; set; }
     
     public string TARGET_TOPIC { get; set; }
+    public string FREQUENCY { get; set; }
+    public string CHANGED_FREQUENCY { get; set; }
 
     public override string ToString()
     {

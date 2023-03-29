@@ -15,7 +15,9 @@ public class MQTTIngressClient : IIngressClient
     private readonly Dictionary<string, string> _transitionPairs;
     private static IMqttClient mqttClient;
     private MqttFactory factory;
-
+    private float _accumulatedValue = 0;
+    private float _messageCounter = 0;
+    private Action<string, string> _messageHandler;
     public MQTTIngressClient(IConfiguration config)
     {
         _config = config;
@@ -39,6 +41,7 @@ public class MQTTIngressClient : IIngressClient
     
     public async Task<bool> Initialize(Action<string, string> messageHandler)
     {
+        _messageHandler = messageHandler;
         Task task = Task.Run(async () =>
         {
             Log.Debug($"Starting initializing MQTT receiver");
@@ -99,6 +102,7 @@ public class MQTTIngressClient : IIngressClient
     private async Task StartHeartBeat(Action<string, string> messageHandler)
     {
         Log.Debug( "Starting heartbeat");
+        
         await Task.Run(async () =>
         {
             while (mqttClient.IsConnected)
@@ -137,7 +141,9 @@ public class MQTTIngressClient : IIngressClient
                 var topic = e.ApplicationMessage.Topic;
                 Log.Debug($"Received MQTT message:{message} on topic {topic}");
                 var targetTopic = _transitionPairs[topic];
-                messageHandler(targetTopic, message);
+                _accumulatedValue += Int32.Parse(message);
+                _messageCounter++;
+                //messageHandler(targetTopic, message);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -151,7 +157,26 @@ public class MQTTIngressClient : IIngressClient
 
     public void StartIngestion()
     {
+        var cts = new CancellationTokenSource();
         
+        var task = Task.Run(() =>
+        {
+            while (!cts.Token.IsCancellationRequested)
+            {
+                if (_messageCounter != 0)
+                {
+                    var value = _accumulatedValue / _messageCounter;
+                    _accumulatedValue = _messageCounter = 0;
+                    _messageHandler(_transitionPairs.Values.ElementAt(0), value.ToString());
+                    Task.Delay((int) (1000 / 0.5)).Wait();
+                }
+                else
+                {
+                    Log.Debug("No new messages on MQTT, not sending anything");
+                }
+               
+            }
+        }, CancellationToken.None);
     }
     
     public bool HasConnection()

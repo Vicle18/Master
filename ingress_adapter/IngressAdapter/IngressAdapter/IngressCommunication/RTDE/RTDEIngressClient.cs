@@ -81,7 +81,7 @@ public class RTDEIngressClient : IIngressClient
             dynamic outputObject = post;
             Log.Debug( $"{values}");
             // CHANGE FREQUENCY TO GENERIC ITEM!!
-            var initResponse = client.Setup_Ur_Outputs(values,30); 
+            var initResponse = client.Setup_Ur_Outputs(values, Int16.Parse(_rtdeConfig.CHANGED_FREQUENCY)); 
             
             Log.Debug( "Setting up outputs, received: {response}", initResponse);
             client.OnDataReceive += new EventHandler(OnDataReceive);
