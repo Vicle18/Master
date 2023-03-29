@@ -1,5 +1,6 @@
 using IngressAdapter.IngressCommunication.MQTT;
 using IngressAdapter.IngressCommunication.OPCUA;
+using IngressAdapter.IngressCommunication.RTDE;
 using Microsoft.Extensions.Configuration;
 
 namespace IngressAdapter.IngressCommunication;
@@ -21,6 +22,8 @@ public class IngressClientCreator : IIngressClientCreator
                 return new OPCUAIngressClient(_config);
             case "MQTT":
                 return new MQTTIngressClient(_config);
+            case "RTDE":
+                return new RTDEIngressClient(_config);
             default:
                 throw new ArgumentException($"Could not find client type: {clientType}");
         }

@@ -11,6 +11,7 @@ client.on_connect = on_connect
 
 host = os.environ.get('HOST') or "localhost"
 port = int(os.environ.get('PORT') or 1883)
+sleep_time = float(os.environ.get('SLEEP_TIME') or 1)
 # Connect to the broker.
 client.connect(host, port, 60)
 
@@ -21,4 +22,4 @@ while True:
     client.publish("example", str(num), qos=0)
 
     # Sleep for 1 second.
-    time.sleep(1)
+    time.sleep(sleep_time)

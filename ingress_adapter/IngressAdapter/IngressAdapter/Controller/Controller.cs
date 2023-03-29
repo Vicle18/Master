@@ -4,7 +4,9 @@ using IngressAdapter.IngressCommunication;
 using IngressAdapter.IngressCommunication.MQTT;
 using IngressAdapter.IngressCommunication.OPCUA;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
+using Opc.Ua.Gds.Client;
 using Serilog;
 
 namespace IngressAdapter.Controller;
@@ -13,13 +15,15 @@ public class Controller : IController
 {
     private readonly IConfiguration _config;
     private readonly IIngressClientCreator _clientCreator;
+    private readonly ILogger<Controller> _logger;
     private IBusClient _busClient;
     private IIngressClient _ingressClient;
     private CancellationTokenSource cts = new CancellationTokenSource();
-    public Controller(IConfiguration config, IIngressClientCreator clientCreator)
+    public Controller(IConfiguration config, IIngressClientCreator clientCreator, ILogger<Controller> logger)
     {
         _config = config;
         _clientCreator = clientCreator;
+        _logger = logger;
     }
 
     public async Task Initialize()
@@ -55,10 +59,23 @@ public class Controller : IController
     
     private async Task InitializeIngressCommunication()
     {
-        var clientType = _config.GetSection("INGRESS_CONFIG").GetValue<string>("PROTOCOL") ?? throw new ArgumentException();
-        _ingressClient = _clientCreator.CreateIngressClient(clientType);
-        await _ingressClient.Initialize(TransmitMessage);
-        _ingressClient.StartIngestion();
+        try
+        {
+            _logger.LogDebug("Initializing Ingress Communication");
+            var clientType = _config.GetSection("INGRESS_CONFIG").GetValue<string>("PROTOCOL") ?? throw new ArgumentException();
+            _ingressClient = _clientCreator.CreateIngressClient(clientType);
+            _logger.LogDebug("Initializing ingestion");
+
+            await _ingressClient.Initialize(TransmitMessage);
+            _logger.LogDebug("Starting ingestion");
+            _ingressClient.StartIngestion();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        
     }
 
     public void StartTransmission()

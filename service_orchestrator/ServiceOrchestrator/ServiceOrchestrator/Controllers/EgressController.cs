@@ -53,24 +53,25 @@ namespace ServiceOrchestrator.Controllers
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)
         {
-            config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.Protocol);
-            config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___TRANSMISSION_PAIRS",
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.Protocol);
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
                 data.Parameters["TRANSMISSION_PAIRS"]);
 
             if (data.Protocol == Protocol.MQTT.ToString())
             {
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___HOST", data.Parameters["HOST"]);
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETER___PORT", data.Parameters["PORT"]);
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
             }
             else if (data.Protocol == Protocol.OPCUA.ToString())
             {
-                config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__SERVER_URL",
                     data.Parameters["SERVER_URL"]);
             }
             else if (data.Protocol == Protocol.REST.ToString())
             {
                 Log.Error("REST IS NOT SUPPORTED YET");
             }
+            Log.Debug("config: {config}, data: {data}",JsonConvert.SerializeObject(config), JsonConvert.SerializeObject(data));
         }
 
         // POST: api/Egress

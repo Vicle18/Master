@@ -216,6 +216,7 @@ services:
     environment:
       - HOST=mosquitto
       - PORT=1883
+      - SLEEP_TIME=0.5
     profiles:
       - mqtt_producer
     networks:

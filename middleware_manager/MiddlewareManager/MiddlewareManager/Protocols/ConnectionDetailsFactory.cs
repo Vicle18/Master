@@ -67,7 +67,7 @@ public class ConnectionDetailsFactory
                     {
                         HOST = value.host ?? GenerateHost(),
                         PORT = value.port ?? GeneratePort(),
-                        TRANSMISSION_PAIRS = $"[{observableProperty.topic.name}:{topicName}]" ?? GenerateTransmissionPairs(),
+                        TRANSMISSION_PAIRS = $"{observableProperty.topic.name}:{topicName}" ?? GenerateTransmissionPairs(),
                     }
                 };
             case "OPCUA":

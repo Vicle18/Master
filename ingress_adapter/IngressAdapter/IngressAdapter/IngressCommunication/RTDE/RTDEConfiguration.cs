@@ -1,12 +1,10 @@
-namespace IngressAdapter.IngressCommunication.MQTT;
+namespace IngressAdapter.IngressCommunication.RTDE;
 
-public class MQTTConfiguration
+public class RTDEConfiguration
 {
     public string HOST { get; set; }
     public string PORT { get; set; }
     public string TRANSMISSION_PAIRS { get; set; }
-    
-    public string TARGET_TOPIC { get; set; }
     public string FREQUENCY { get; set; }
     public string CHANGED_FREQUENCY { get; set; }
 
