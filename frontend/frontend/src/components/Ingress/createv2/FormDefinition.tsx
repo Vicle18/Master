@@ -8,6 +8,7 @@ export interface FormData {
   host?: string;
   port?: string;
   topic?: string;
+  output?: string
   nodeId?: string;
   containingElement: string;
   dataFormat: string;
@@ -22,6 +23,7 @@ export const initialValues: FormData = {
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   topic: "example",
   port: "1883",
+  output: "timestamp",
   nodeId: "",
   containingElement: "Machine A",
   dataFormat: "JSON",
@@ -34,13 +36,18 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   frequency: Yup.string().required("Frequency is required"),
   changedFrequency: Yup.string().optional(),
   host: Yup.string().when("protocol", {
-    is: (protococol: string) => protococol === "MQTT",
+    is: (protocol: string) => protocol === "MQTT" || protocol === "RTDE",
     then: (schema) => schema.required("host is required"),
     otherwise: (schema) => schema,
   }),
   port: Yup.string().when("protocol", {
-    is: (protococol: string) => protococol === "MQTT",
+    is: (protocol: string) => protocol === "MQTT" || protocol === "RTDE",
     then: (schema) => schema.required("port is required"),
+    otherwise: (schema) => schema,
+  }),
+  output: Yup.string().when("protocol", {
+    is: (protococol: string) => protococol === "RTDE",
+    then: (schema) => schema.required("output is required"),
     otherwise: (schema) => schema,
   }),
   topic: Yup.string().when("protocol", {

@@ -60,7 +60,7 @@ namespace MiddlewareManager.Controllers
             _logger.LogDebug("creating ingress with values: {value}", value);
             try
             {
-                var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
+                var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
                 var connectionDetails =
                     ConnectionDetailsFactory.Create(value, topicName);
                 var response = await _ingressRepo.CreateObservableProperty(value, topicName,

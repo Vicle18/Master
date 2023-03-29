@@ -24,7 +24,22 @@ public class ConnectionDetailsFactory
                         HOST = value.host,
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
-
+                        FREQUENCY = value.frequency,
+                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
+                        
+                    }
+                };
+            case "RTDE":
+                return new RTDEConnectionDetails
+                {
+                    PROTOCOL = value.protocol,
+                    PARAMETERS = new RTDEParameters()
+                    {
+                        HOST = value.host,
+                        PORT = value.port,
+                        TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
+                        FREQUENCY = value.frequency,
+                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
                     }
                 };
             case "OPCUA":

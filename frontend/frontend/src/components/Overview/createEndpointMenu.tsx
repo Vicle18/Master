@@ -8,8 +8,15 @@ import { useState } from "react";
 import {
   Alert,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Menu,
   Slide,
   Snackbar,
+  TextField,
 } from "@mui/material";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
@@ -18,7 +25,7 @@ export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
   anchorEl: HTMLElement | null,
-  handleClose: (page: string) => void,
+  handleClose: (page: string) => void
   // PopupContainingElement: boolean,
   // setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>,
   // CreateContainingElement: React.FC<{
@@ -27,15 +34,14 @@ export function CreateEndpoint(
   //   handleResult: (result: string) => void;
   // }>,
 
-  
   // handlerClickOpenContainingElement: () => void
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [PopupIngress, setPopupIngress] = React.useState(false);
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
-  const [PopupContainingElement, setPopupContainingElement] = React.useState(false);
+  const [PopupContainingElement, setPopupContainingElement] =
+    React.useState(false);
   const [PopupEgress, setPopupEgress] = React.useState(false);
-
 
   const [result, setResult] = useState<string | null>(null);
   const handleSubmit = (name: string, description: string) => {
@@ -79,7 +85,8 @@ export function CreateEndpoint(
       >
         Create
       </Button>
-      <StyledMenu
+
+      <Menu
         id="demo-customized-menu"
         MenuListProps={{
           "aria-labelledby": "demo-customized-button",
@@ -92,26 +99,26 @@ export function CreateEndpoint(
           <AddCircleOutline />
           Ingress
         </MenuItem>
-        {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
 
-        <MenuItem onClick={handlerClickOpenEgress} disableRipple>
+        <MenuItem onClick={handlerClickOpenEgress}>
           <AddCircleOutline />
           Egress
         </MenuItem>
-        {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
 
         <Divider sx={{ my: 0.5 }} />
 
-        <MenuItem
-          onClick={handlerClickOpenContainingElement}
-          disableRipple
-        >
+        <MenuItem onClick={handlerClickOpenContainingElement} disableRipple>
           <AddBox />
           Containing Element
         </MenuItem>
-        {CreateContainingElementStepper({ PopupContainingElement, setPopupContainingElement, handleResult })}
-
-      </StyledMenu>
+      </Menu>
+      {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
+      {CreateContainingElementStepper({
+        PopupContainingElement,
+        setPopupContainingElement,
+        handleResult,
+      })}
+      {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
       {result && (
         <Snackbar
           open={openSnackbar}

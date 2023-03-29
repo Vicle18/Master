@@ -158,6 +158,7 @@ const CreateIngressStepper: React.FC<Props> = ({
           }) => (
             <Form onSubmit={handleSubmit}>
               <DialogTitle>Create a Containing Element</DialogTitle>
+
               <DialogContent
                 dividers={true}
                 sx={{ overflow: "auto", maxHeight: "calc(100vh - 250px)" }}
@@ -241,9 +242,11 @@ const CreateIngressStepper: React.FC<Props> = ({
                       >
                         <MenuItem value="MQTT">MQTT</MenuItem>
                         <MenuItem value="OPCUA">OPCUA</MenuItem>
+                        <MenuItem value="RTDE">RTDE</MenuItem>
                       </Field>
                     </FormControl>
-                    {values.protocol === "MQTT" ? (
+                    {(values.protocol === "MQTT" ||
+                      values.protocol === "RTDE") && (
                       <>
                         <Field name="host">
                           {({ field }: FieldProps<FormData>) => (
@@ -273,6 +276,10 @@ const CreateIngressStepper: React.FC<Props> = ({
                             />
                           )}
                         </Field>
+                      </>
+                    )}
+                    {values.protocol === "MQTT" && (
+                      <>
                         <Field name="topic">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -288,22 +295,51 @@ const CreateIngressStepper: React.FC<Props> = ({
                           )}
                         </Field>
                       </>
-                    ) : (
-                      <Field name="nodeId">
-                        {({ field }: FieldProps<FormData>) => (
-                          <TextField
-                            {...field}
-                            label="Node ID"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            error={touched.nodeId && Boolean(errors.nodeId)}
-                            helperText={touched.nodeId && errors.nodeId}
-                          />
-                        )}
-                      </Field>
                     )}
+                    {values.protocol === "RTDE" && (
+                      <>
+                        <FormControl
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                        >
+                          <InputLabel id="output-label">Output</InputLabel>
+                          <Field
+                            as={Select}
+                            name="output"
+                            labelId="output-label"
+                            label="Output"
+                            size="small"
+                          >
+                            <MenuItem value="timestamp">Timestamp</MenuItem>
+                            <MenuItem value="actual_q">Actual q</MenuItem>
+                            <MenuItem value="joint_temperatures">
+                              Joint Temperatures
+                            </MenuItem>
+                            <MenuItem value="robot_mode">Robot Mode</MenuItem>
+                          </Field>
+                        </FormControl>
+                      </>
+                    )}
+                    {values.protocol === "OPCUA" && (
+                      <>
+                        <Field name="nodeId">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Node ID"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.nodeId && Boolean(errors.nodeId)}
+                              helperText={touched.nodeId && errors.nodeId}
+                            />
+                          )}
+                        </Field>
+                      </>
+                    )}
+
                     <Field name="frequency">
                       {({ field }: FieldProps<FormData>) => (
                         <TextField
@@ -313,9 +349,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           fullWidth
                           margin="normal"
                           size="small"
-                          error={
-                            touched.frequency && Boolean(errors.frequency)
-                          }
+                          error={touched.frequency && Boolean(errors.frequency)}
                           helperText={touched.frequency && errors.frequency}
                         />
                       )}
@@ -330,9 +364,12 @@ const CreateIngressStepper: React.FC<Props> = ({
                           margin="normal"
                           size="small"
                           error={
-                            touched.changedFrequency && Boolean(errors.changedFrequency)
+                            touched.changedFrequency &&
+                            Boolean(errors.changedFrequency)
                           }
-                          helperText={touched.changedFrequency && errors.changedFrequency}
+                          helperText={
+                            touched.changedFrequency && errors.changedFrequency
+                          }
                         />
                       )}
                     </Field>

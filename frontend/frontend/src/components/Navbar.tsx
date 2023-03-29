@@ -19,6 +19,7 @@ import Integrate from "../views/Integrate/IntegratePage";
 import { To, useNavigate } from "react-router-dom";
 import { theme } from "./Theme";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
 const pages = ["Overview", "Favourites", "Integrate"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -50,6 +51,7 @@ function Navbar() {
   };
 
   return (
+   
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <Container maxWidth="xl">
@@ -110,6 +112,7 @@ function Navbar() {
                   </MenuItem>
                 ))}
               </Menu>
+              
             </Box>
             <StackedLineChartIcon
               sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
@@ -177,6 +180,7 @@ function Navbar() {
         </Container>
       </AppBar>
     </ThemeProvider>
+    
   );
 }
 export default Navbar;
