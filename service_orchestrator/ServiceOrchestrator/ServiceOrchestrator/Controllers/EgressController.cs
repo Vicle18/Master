@@ -48,11 +48,12 @@ namespace ServiceOrchestrator.Controllers
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
 
-            _containerManager.StartContainer(config);
+            _containerManager.StartContainer(data.Id, config);
         }
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)
         {
+            config.EnvironmentVariables.Add("ID", data.Id);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.Protocol);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
                 data.Parameters["TRANSMISSION_PAIRS"]);

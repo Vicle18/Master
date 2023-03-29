@@ -37,11 +37,11 @@ public class KubernetesManager : IContainerManager
     }
 
 
-    public void StartContainer(ContainerConfig config)
+    public async Task StartContainer(string id, ContainerConfig config)
     {
-        string uniqueId = Guid.NewGuid().ToString("N");
-        var pod = CreateV1Pod(config, uniqueId);
-        var createdPod = _client.CreateNamespacedPod(pod, "sso");
+        // string uniqueId = Guid.NewGuid().ToString("N");
+        var pod = CreateV1Pod(config, id);
+        var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
         _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
     }
 
@@ -51,7 +51,7 @@ public class KubernetesManager : IContainerManager
         {
             Metadata = new V1ObjectMeta
             {
-                Name = $"pod-{config.ImageName.Split("/").Last().Split(":").First()}-{uniqueId}"
+                Name = $"pod-{uniqueId}"
             },
             Spec = new V1PodSpec
             {
@@ -74,7 +74,11 @@ public class KubernetesManager : IContainerManager
         return pod;
     }
 
-    public void StopContainer(string id)
+    public async Task StopContainer(string id)
     {
+        await _client.DeleteNamespacedPodAsync(
+            name: $"pod-{id}",
+            namespaceParameter: "sso",
+            body: new V1DeleteOptions { PropagationPolicy = "Background" });
     }
 }

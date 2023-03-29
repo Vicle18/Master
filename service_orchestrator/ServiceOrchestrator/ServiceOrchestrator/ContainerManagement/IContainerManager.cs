@@ -2,6 +2,6 @@ namespace ServiceOrchestrator.ContainerManagement;
 
 public interface IContainerManager
 {
-    public void StartContainer(ContainerConfig config);
-    public void StopContainer(string id);
+    public Task StartContainer(string id, ContainerConfig config);
+    public Task StopContainer(string id);
 }

@@ -50,11 +50,12 @@ namespace ServiceOrchestrator.Controllers
             ContainerConfig config = new ContainerConfig("clemme/ingress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
             _logger.LogDebug(config.ToString());
-            _containerManager.StartContainer(config);
+            _containerManager.StartContainer(data.Id, config);
         }
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)
         {
+            config.EnvironmentVariables.Add("ID", data.Id);
             config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.Protocol);
             config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
                 data.Parameters["TRANSMISSION_PAIRS"]);
@@ -94,8 +95,9 @@ namespace ServiceOrchestrator.Controllers
 
         // DELETE: api/Ingress/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            _containerManager.StopContainer(id);
         }
     }
 }
