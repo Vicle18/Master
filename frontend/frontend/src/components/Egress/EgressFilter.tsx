@@ -13,13 +13,17 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import EgressSearchIngress from "./EgressFilterIngressSearch";
+import EgressFilterProtocol from "./EgressFilterProtocol";
 import EgressSearchBar from "./EgressFilterSearch";
+import { EgressSearchParameters } from "./EgressOverview";
 
 interface Props {
-  onSearch: (query: string) => void;
+  onSearch: (parameters: EgressSearchParameters) => void;
+  egressSearchParameters: EgressSearchParameters;
+  setEgressSearchParameters: (parameters: EgressSearchParameters) => void;
 }
 
-const EgressFilter: React.FC<Props> = ({ onSearch }) => {
+const EgressFilter: React.FC<Props> = ({ onSearch, egressSearchParameters, setEgressSearchParameters }) => {
   const [query, setQuery] = useState("");
   const [ingressFilter, setIngressFilter] = useState<string[]>([]);
   const [protocolFilter, setProtocolFilter] = useState<string[]>([]);
@@ -28,15 +32,17 @@ const EgressFilter: React.FC<Props> = ({ onSearch }) => {
 
   const handleOnSearch = (query: string) => {
     setQuery(query);
-    onSearch(query);
+    setEgressSearchParameters({...egressSearchParameters, keyword: query});
   };
 
   const handleOnApplyIngressSearch = (selected: string[]) => {
     setIngressFilter(selected);
+    setEgressSearchParameters({...egressSearchParameters, ingressEndpoints: selected});
   };
 
   const handleOnApplyProtocolSearch = (selected: string[]) => {
     setProtocolFilter(selected);
+    setEgressSearchParameters({...egressSearchParameters, protocols: selected});
   };
 
   return (
@@ -72,7 +78,7 @@ const EgressFilter: React.FC<Props> = ({ onSearch }) => {
           }}
         >
           Filter by Protocols
-          <EgressSearchIngress onApply={handleOnApplyProtocolSearch} />
+          <EgressFilterProtocol onApply={handleOnApplyProtocolSearch} />
         </Box>
         
       </Stack>

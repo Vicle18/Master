@@ -54,7 +54,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     setSearchTerm(event.target.value);
   };
 
-  const { loading, error, data } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
+  const { loading, error, data, refetch } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
     variables: { where: { name: containingEntityId } },
     fetchPolicy: "no-cache",
   });
@@ -88,6 +88,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
+        refetch();
         return response.json();
       })
       .then((data) => console.log("data: " + JSON.stringify(data)))
@@ -110,6 +111,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       </Stack>
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label="Observable Properties" />
+        <Button onClick={() => refetch()}>Refresh</Button>
       </Divider>
       <TextField
         label="Search..."
