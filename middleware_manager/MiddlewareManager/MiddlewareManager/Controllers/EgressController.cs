@@ -59,7 +59,6 @@ namespace MiddlewareManager.Controllers
                 Response response = null;
                 var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
                 var egressGroupId = Guid.NewGuid();
-                Log.Debug("after topicName");
                 List<ObservableProperty> observableProperties = await _egressRepo.getIngressProperties(value.ingressIds);
                 foreach (var observableProperty in observableProperties)
                 {
