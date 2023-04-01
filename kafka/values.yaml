@@ -10,7 +10,7 @@ image:
   repository: cloudhut/kowl
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "master-59f68da"
+  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -90,11 +90,10 @@ affinity: {}
 kowl:
   # Config.yaml is required for Kowl and Kowl Business.
   # See reference config: https://github.com/cloudhut/kowl/blob/master/docs/config/kowl.yaml)
-  config:
+  config: 
     kafka:
         brokers:
-          - my-cluster-kafka-brokers:9092
-  
+          - kafka-0.kafka-headless.kafka:9092
   # roles:
   # roleBindings:
 
