@@ -11,10 +11,12 @@ public class CreateIngressDto:CreateDTO
     public string? topic { get; set; }
 
     public string? port { get; set; }
+    
+    public string? output { get; set; }
 
     public string containingElement { get; set; }
     public string frequency { get; set; }
-   public string? changedFrequency { get; set; }
+    public string? changedFrequency { get; set; }
     public string dataFormat { get; set; }
     public string? nodeName { get; set; }
 

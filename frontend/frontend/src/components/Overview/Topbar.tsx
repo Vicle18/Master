@@ -37,8 +37,10 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
     <ThemeProvider theme={theme}>
       <AppBar position="static" color="secondary">
         <Container maxWidth="xl">
+          
           <Toolbar disableGutters>
             <React.Fragment>
+              
               {pages.map((page) => (
                 <Button
                   id="ingress-egress-button"

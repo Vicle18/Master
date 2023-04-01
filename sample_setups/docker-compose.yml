@@ -275,6 +275,17 @@ services:
       - opcua_producer
     networks:
       shared_network:
+## UR SIM
+  ur:
+    image: universalrobots/ursim_e-series
+    ports:
+      - 29999:29999
+      - 30004:30004
+      - 6080:6080
+    profiles:
+      - ur
+    networks:
+      shared_network:
 ## ingress
   ingress:
     # image: clemme/ingress:latest

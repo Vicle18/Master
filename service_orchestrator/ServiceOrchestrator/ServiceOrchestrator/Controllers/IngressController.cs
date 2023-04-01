@@ -64,6 +64,14 @@ namespace ServiceOrchestrator.Controllers
                 case "MQTT":
                     config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
                     config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.Parameters["FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.Parameters["CHANGED_FREQUENCY"]);
+                    break;
+                case "RTDE":
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.Parameters["FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.Parameters["CHANGED_FREQUENCY"]);
                     break;
                 case "OPCUA":
                     config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",

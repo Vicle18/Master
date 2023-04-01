@@ -1,13 +1,13 @@
 namespace MiddlewareManager.Protocols;
 
-public class MQTTConnectionDetails : IConnectionDetails
+public class RTDEConnectionDetails : IConnectionDetails
 {
     public string PROTOCOL { get; set; }
-    public MQTTParameters PARAMETERS { get; set; }
-    object IConnectionDetails.PARAMETERS { get => PARAMETERS; set => PARAMETERS = (MQTTParameters)value; }
+    public RTDEParameters PARAMETERS { get; set; }
+    object IConnectionDetails.PARAMETERS { get => PARAMETERS; set => PARAMETERS = (RTDEParameters)value; }
 }
 
-public class MQTTParameters
+public class RTDEParameters
 {
     public string FREQUENCY { get; set; }
     public string CHANGED_FREQUENCY { get; set; }

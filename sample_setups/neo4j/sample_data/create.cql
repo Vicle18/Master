@@ -1,33 +1,33 @@
 // Create the company
-CREATE (companyA:Company {name: 'Company A'})
+CREATE (companyA:Company {id: 'companyAID', name: 'Company A', description: 'company description'})
 
 // Create the plants
-CREATE (plantA:Plant {name: 'Plant A'})
-CREATE (plantB:Plant {name: 'Plant B'})
+CREATE (plantA:Plant {id: 'plantAID', name: 'Plant A', description: 'Plant description'})
+CREATE (plantB:Plant {id: 'plantBID', name: 'Plant B', description: 'Plant description'})
 
 CREATE (companyA)-[:has]->(plantA)
 CREATE (companyA)-[:has]->(plantB)
 // Create the areas
-CREATE (areaA:Area:ManufacturingFacility:Resource {name: 'Area A'})
-CREATE (areaB:Area:ManufacturingFacility:Resource {name: 'Area B'})
+CREATE (areaA:Area:ManufacturingFacility:Resource {id: 'areaAID', name: 'Area A', description: 'Area description'})
+CREATE (areaB:Area:ManufacturingFacility:Resource {id: 'areaBID', name: 'Area B', description: 'Area description'})
 
 
 // create relationships
 CREATE (plantA)-[:has]->(areaA)
 CREATE (plantB)-[:has]->(areaB)
 // Create the lines
-CREATE (lineA:Line:ManufacturingFacility:Resource {name: 'Line A'})
-CREATE (lineB:Line:ManufacturingFacility:Resource {name: 'Line B'})
+CREATE (lineA:Line:ManufacturingFacility:Resource {id: 'lineAID', name: 'Line A', description: 'Line description'})
+CREATE (lineB:Line:ManufacturingFacility:Resource {id: 'lineBID', name: 'Line B', description: 'Line description'})
 
 // create relationships
 CREATE (areaA)-[:has]->(lineA)
 CREATE (areaB)-[:has]->(lineB)
 
 // Create the cells
-CREATE (cellA:Cell:ManufacturingFacility:Resource {name: 'Cell A'})
-CREATE (cellB:Cell:ManufacturingFacility:Resource {name: 'Cell B'})
-CREATE (cellC:Cell:ManufacturingFacility:Resource {name: 'Cell C'})
-CREATE (cellD:Cell:ManufacturingFacility:Resource {name: 'Cell D'})
+CREATE (cellA:Cell:ManufacturingFacility:Resource {id: 'cellAID', name: 'Cell A', description: 'Cell description'})
+CREATE (cellB:Cell:ManufacturingFacility:Resource {id: 'cellBID', name: 'Cell B', description: 'Cell description'})
+CREATE (cellC:Cell:ManufacturingFacility:Resource {id: 'cellCID', name: 'Cell C', description: 'Cell description'})
+CREATE (cellD:Cell:ManufacturingFacility:Resource {id: 'cellDID', name: 'Cell D', description: 'Cell description'})
 
 // create relationships
 CREATE (lineA)-[:has]->(cellA)
@@ -36,12 +36,12 @@ CREATE (lineB)-[:has]->(cellC)
 CREATE (lineB)-[:has]->(cellD)
 
 // Create the machines
-CREATE (machineA:Machine:ManufacturingFacility:Resource {name: 'Machine A'})
-CREATE (machineB:Machine:ManufacturingFacility:Resource {name: 'Machine B'})
-CREATE (machineC:Machine:ManufacturingFacility:Resource {name: 'Machine C'})
-CREATE (machineD:Machine:ManufacturingFacility:Resource {name: 'Machine D'})
-CREATE (machineE:Machine:ManufacturingFacility:Resource {name: 'Machine E'})
-CREATE (machineF:Machine:ManufacturingFacility:Resource {name: 'Machine F'})
+CREATE (machineA:Machine:ManufacturingFacility:Resource {id: 'machineAID', name: 'Machine A', description: 'Machine description'})
+CREATE (machineB:Machine:ManufacturingFacility:Resource {id: 'machineBID', name: 'Machine B', description: 'Machine description'})
+CREATE (machineC:Machine:ManufacturingFacility:Resource {id: 'machineCID', name: 'Machine C', description: 'Machine description'})
+CREATE (machineD:Machine:ManufacturingFacility:Resource {id: 'machineDID', name: 'Machine D', description: 'Machine description'})
+CREATE (machineE:Machine:ManufacturingFacility:Resource {id: 'machineEID', name: 'Machine E', description: 'Machine description'})
+CREATE (machineF:Machine:ManufacturingFacility:Resource {id: 'machineFID', name: 'Machine F', description: 'Machine description'})
 
 // create relationships
 CREATE (cellA)-[:has]->(machineA)
@@ -53,11 +53,11 @@ CREATE (cellD)-[:has]->(machineF)
 
 
 // Create Staff
-CREATE (managerA:Staff:Resource {name: 'Manager A'})
-CREATE (operatorA:Staff:Resource {name: 'Operator A'})
-CREATE (operatorB:Staff:Resource {name: 'Operator B'})
-CREATE (researcherA:Staff:Resource {name: 'Researcher A'})
-CREATE (maintenanceA:Staff:Resource {name: 'Maintenance A'})
+CREATE (managerA:Staff:Resource {id: 'managerAID', name: 'Manager A', description: 'Manager description'})
+CREATE (operatorA:Staff:Resource {id: 'operatorAID', name: 'Operator A', description: 'Operator description'})
+CREATE (operatorB:Staff:Resource {id: 'operatorBID', name: 'Operator B', description: 'Operator description'})
+CREATE (researcherA:Staff:Resource {id: 'researcherAID', name: 'Researcher A', description: 'Researcher description'})
+CREATE (maintenanceA:Staff:Resource {id: 'maintenanceAID', name: 'Maintenance A', description: 'Maintenance description'})
 
 // Create relationships
 CREATE (plantA)-[:has]->(managerA)
@@ -80,32 +80,43 @@ CREATE (product:Product {name: 'Product'})
 CREATE (jointTemperature:ObservableProperty {
     id: 'jointTemperature',
     name: 'Joint Temperature',
-    frequency: 100
+    frequency: 100,
+        changedFrequency: 100
+
     })
 CREATE (jointTemperature2:ObservableProperty {
     id: 'jointTemperature2',
     name: 'Joint Temperature 2',
-    frequency: 100
+    frequency: 100,
+        changedFrequency: 100
+
     })
 CREATE (jointPressure:ObservableProperty {
     id: 'jointPressure',
     name: 'Joint Pressure',
-    frequency: 100
+    frequency: 100,
+        changedFrequency: 100
+
     })
 CREATE (jointPressure2:ObservableProperty {
     id: 'jointPressure2',
     name: 'Joint Pressure 2',
-    frequency: 100
+    frequency: 100,
+        changedFrequency: 100
+
     })
 CREATE (jointVibration:ObservableProperty {
     id: 'jointVibration',
     name: 'Joint Vibration',
-    frequency: 100
+    frequency: 100,
+        changedFrequency: 100
+
     })
 CREATE (jointVibration2:ObservableProperty {
     id: 'jointVibration2',
     name: 'Joint Vibration 2',
-    frequency: 100
+    frequency: 100,
+    changedFrequency: 100
     })
 
 CREATE (:EgressEndpoint {
