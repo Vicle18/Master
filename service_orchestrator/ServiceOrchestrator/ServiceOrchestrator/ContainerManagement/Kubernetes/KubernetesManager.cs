@@ -13,6 +13,7 @@ public class KubernetesManager : IContainerManager
     private readonly ILogger<KubernetesManager> _logger;
     private k8s.Kubernetes _client;
     private string uniqueId = "";
+    private bool isBrokerCreated = false;
 
     public KubernetesManager(IConfiguration config, ILogger<KubernetesManager> logger)
     {
@@ -92,9 +93,10 @@ public class KubernetesManager : IContainerManager
 
     public async void StartContainerBroker(ContainerConfig config, string protocol)
     {
-        var env = config.EnvironmentVariables;
         Log.Debug(protocol);
-        if (protocol == "MQTT")
+
+
+        if (protocol == "MQTT" && !isBrokerCreated)
         {
             Log.Debug("inside mqtt");
             MQTTBroker mqttBroker = new MQTTBroker();
@@ -102,7 +104,9 @@ public class KubernetesManager : IContainerManager
             V1Pod pod = mqttBroker.createPod(config, uniqueId);
             var podResult = _client.CreateNamespacedPod(pod, "sso");
             var serviceResult = _client.CreateNamespacedService(service, "sso");
+            isBrokerCreated = true;
         }
+        //TODO Create OPCUA broker and 
     }
 
 
