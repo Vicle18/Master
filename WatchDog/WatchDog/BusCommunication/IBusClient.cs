@@ -1,4 +1,4 @@
-namespace IngressAdapter.BusCommunication;
+namespace WatchDog.BusCommunication;
 
 public interface IBusClient
 {

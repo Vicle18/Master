@@ -2,16 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using WatchDog.ContainerManagement;
 
-namespace WatchDog.Controllers;
+namespace WatchDog.Controller;
 
 [Route("api/Controller")]
 [ApiController]
-public class Controller
+public class ControllerAPI
 {
     private readonly ILogger<Controller> _logger;
     private readonly IContainerManager _containerManager;
 
-    public Controller(ILogger<Controller> logger, IContainerManager containerManager)
+    public ControllerAPI(ILogger<Controller> logger, IContainerManager containerManager)
     {
         _logger = logger;
         _containerManager = containerManager;

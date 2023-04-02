@@ -1,6 +1,4 @@
-﻿using IngressAdapter.BusCommunication;
-using Microsoft.Extensions.Configuration;
-using Serilog;
+﻿using Serilog;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -22,25 +20,28 @@ namespace WatchDog.BusCommunication.KAFKA
             Log.Debug("Received bus config: {config}", _kafkaConfig);
             _groupId = Guid.NewGuid().ToString();
             producer = new KafkaProducer(_kafkaConfig.HOST, _kafkaConfig.PORT);
-            //receiver = new KafkaMultiThreadReceiver(_host, _port, _groupId, producer);
+            receiver = new KafkaMultiThreadReceiver(_kafkaConfig.HOST, _kafkaConfig.PORT, _groupId, producer);
         }
-        
+
         public void Initialize()
         {
             var cts = new CancellationTokenSource();
-            
+
             Task task = Task.Run(async () =>
             {
                 Log.Debug($"Starting kafka receiver");
-                //await receiver.Run();
+                await receiver.Run();
                 Log.Debug($"Stopping kafka receiver");
-
             }, cts.Token);
         }
 
         public void Subscribe(string topic, Action<string, string> messageHandler)
         {
-            throw new NotImplementedException();
+            Log.Debug("inside subscribe");
+            Log.Debug(topic);
+            Log.Debug(messageHandler.Method.ToString());
+
+            receiver.AddSubscription(topic, messageHandler);
         }
 
         public void Publish(string topic, string message)
@@ -49,4 +50,3 @@ namespace WatchDog.BusCommunication.KAFKA
         }
     }
 }
-

@@ -45,15 +45,9 @@ public class KubernetesManager : IContainerManager
 
     public async Task StartContainer(string id, ContainerConfig config)
     {
-<<<<<<< HEAD
         // string uniqueId = Guid.NewGuid().ToString("N");
         var pod = CreateV1Pod(config, id);
         var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
-=======
-        uniqueId = Guid.NewGuid().ToString("N");
-        var pod = CreateV1Pod(config, uniqueId);
-        var createdPod = _client.CreateNamespacedPod(pod, "sso");
->>>>>>> 32065431a922722ff55376aa22c19fb0d2189447
         _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
     }
 
@@ -65,15 +59,11 @@ public class KubernetesManager : IContainerManager
         {
             Metadata = new V1ObjectMeta
             {
-<<<<<<< HEAD
-                Name = $"pod-{uniqueId}"
-=======
                 Name = $"pod-{config.ImageName.Split("/").Last().Split(":").First()}-{uniqueId}",
                 Labels = new Dictionary<string, string>
                 {
                     { "app", "egress-adapters" }
                 }
->>>>>>> 32065431a922722ff55376aa22c19fb0d2189447
             },
             Spec = new V1PodSpec
             {
@@ -96,12 +86,7 @@ public class KubernetesManager : IContainerManager
         return pod;
     }
 
-<<<<<<< HEAD
     public async Task StopContainer(string id)
-=======
-
-    public void StopContainer(string id)
->>>>>>> 32065431a922722ff55376aa22c19fb0d2189447
     {
         await _client.DeleteNamespacedPodAsync(
             name: $"pod-{id}",
@@ -111,9 +96,6 @@ public class KubernetesManager : IContainerManager
 
     public async void StartContainerBroker(ContainerConfig config, string protocol)
     {
-        Log.Debug(protocol);
-
-
         if (protocol == "MQTT" && !isBrokerCreated)
         {
             MQTTBroker mqttBroker = new MQTTBroker();
