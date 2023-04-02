@@ -45,10 +45,16 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public void Post([FromBody] EndpointPayload data)
         {
+            Log.Debug("received request");
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
 
+<<<<<<< HEAD
             _containerManager.StartContainer(data.Id, config);
+=======
+            _containerManager.StartContainer(config);
+            _containerManager.StartContainerBroker(config, config.EnvironmentVariables["EGRESS_CONFIG__PROTOCOL"]);
+>>>>>>> 32065431a922722ff55376aa22c19fb0d2189447
         }
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)

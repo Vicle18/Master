@@ -106,7 +106,7 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
     onSelectConnectionDetails(connectionDetails);
   };
   function handleDeleteItem(item: any): void {
-    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -119,7 +119,7 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
-        refetch();
+        refetch();  
         return response.json();
       })
       .then((data) => console.log("data: " + JSON.stringify(data)))
@@ -238,12 +238,11 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
               </Grid2>
 
               <Stack direction="row" spacing={2}>
-                <Button variant="contained">Create new egress</Button>
                 <Button
                   variant="contained"
                   onClick={() => handleShowChart(item)}
                 >
-                  Show data
+                  Show Connection Details
                 </Button>
                 <Button
                   variant="outlined"
