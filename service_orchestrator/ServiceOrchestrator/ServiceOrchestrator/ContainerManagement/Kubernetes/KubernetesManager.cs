@@ -98,7 +98,6 @@ public class KubernetesManager : IContainerManager
 
         if (protocol == "MQTT" && !isBrokerCreated)
         {
-            Log.Debug("inside mqtt");
             MQTTBroker mqttBroker = new MQTTBroker();
             V1Service service = mqttBroker.createService(config, uniqueId);
             V1Pod pod = mqttBroker.createPod(config, uniqueId);
