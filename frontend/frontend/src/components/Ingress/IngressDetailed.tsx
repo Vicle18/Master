@@ -3,13 +3,22 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Icon, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Icon,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import Stack from "@mui/material/Stack";
 import CurrentValue from "./CurrentValue";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import Grid2 from "@mui/material/Unstable_Grid2";
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
   query GetDataForContainingEntity($where: ResourceWhere) {
     resources(where: $where) {
@@ -17,6 +26,7 @@ const GET_DATA_FOR_CONTAINING_ENTITY = gql`
       ObservableProperties {
         id
         name
+        description
         topic {
           name
         }
@@ -44,9 +54,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     setSearchTerm(event.target.value);
   };
 
-  const { loading, error, data } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
+  const { loading, error, data, refetch } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
     variables: { where: { name: containingEntityId } },
-    fetchPolicy: "no-cache" 
+    fetchPolicy: "no-cache",
   });
   if (loading) return <p>Loading...</p>;
   if (error) {
@@ -64,6 +74,27 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     };
     onOpenChart(newData);
   };
+  function handleDeleteItem(item: any): void {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        refetch();
+        return response.json();
+      })
+      .then((data) => console.log("data: " + JSON.stringify(data)))
+      .catch((error) => console.error(error));
+  }
+
   return (
     <>
       <Stack
@@ -80,6 +111,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       </Stack>
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label="Observable Properties" />
+        <Button onClick={() => refetch()}>Refresh</Button>
       </Divider>
       <TextField
         label="Search..."
@@ -95,7 +127,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       ).map((item: any, index: any) => (
         <Accordion key={index}>
           <AccordionSummary>
-            <Typography sx={{ width: "33%", flexShrink: 0 }}>
+            <Typography variant="overline" sx={{ width: "33%", flexShrink: 0 }}>
               {item.name}
             </Typography>
             <Box sx={{ marginLeft: "auto" }}>
@@ -108,7 +140,60 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
           <AccordionDetails>
             {withDetails && (
               <>
-                <Typography>"Some details"</Typography>
+                <Grid2 container spacing={2}>
+                  <Grid2
+                    xs={6}
+                    sx={{
+                      backgroundColor: "whitesmoke",
+                      marginBottom: "30px",
+                      marginLeft: "20px",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Description:
+                      </Box>{" "}
+                      {item.description}
+                    </Typography>
+                  </Grid2>
+                  <Grid2
+                    xs={4}
+                    sx={{
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      marginBottom: "30px",
+                      borderRadius: "10px",
+                      backgroundColor: "whitesmoke",
+                    }}
+                  >
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Id:
+                      </Box>{" "}
+                      {item.id}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Name:
+                      </Box>{" "}
+                      {item.name}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Topic:
+                      </Box>{" "}
+                      {item.topic.name}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Frequency:
+                      </Box>{" "}
+                      {item.frequency}
+                    </Typography>
+                  </Grid2>
+                </Grid2>
+
                 <Stack direction="row" spacing={2}>
                   <Button variant="contained">Create new egress</Button>
                   <Button
@@ -117,7 +202,11 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   >
                     Show data
                   </Button>
-                  <Button variant="outlined" color="error">
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteItem(item)}
+                  >
                     Delete
                   </Button>
                 </Stack>

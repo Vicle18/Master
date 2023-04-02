@@ -2,6 +2,7 @@ namespace MiddlewareManager.Protocols;
 
 public class MQTTConnectionDetails : IConnectionDetails
 {
+    public string ID { get; set; }
     public string PROTOCOL { get; set; }
     public MQTTParameters PARAMETERS { get; set; }
     object IConnectionDetails.PARAMETERS { get => PARAMETERS; set => PARAMETERS = (MQTTParameters)value; }

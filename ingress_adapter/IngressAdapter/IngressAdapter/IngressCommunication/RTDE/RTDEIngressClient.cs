@@ -80,7 +80,6 @@ public class RTDEIngressClient : IIngressClient
             var post = new DynamicEntity(values);
             dynamic outputObject = post;
             Log.Debug( $"{values}");
-            // CHANGE FREQUENCY TO GENERIC ITEM!!
             var initResponse = client.Setup_Ur_Outputs(values, Int16.Parse(_rtdeConfig.CHANGED_FREQUENCY)); 
             
             Log.Debug( "Setting up outputs, received: {response}", initResponse);
@@ -131,7 +130,7 @@ public class RTDEIngressClient : IIngressClient
     
     private void OnDataReceive(object sender, EventArgs e)
     {
-        JObject data = new JObject();
+        
         Console.WriteLine($"received {JsonConvert.SerializeObject(client.UrStructOuput)} via RTDE");
         Log.Debug("received {data} via RTDE", JsonConvert.SerializeObject(client.UrStructOuput));
 

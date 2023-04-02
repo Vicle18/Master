@@ -25,7 +25,7 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(CreateIngressDto value, string topicName,
+    public async Task<Response> CreateObservableProperty(string id, CreateIngressDto value, string topicName,
         string connectionDetails)
     {
         Log.Debug("BEFORE REQUEST");
@@ -52,7 +52,7 @@ public class IngressRepository : IIngressRepository
                         name = value.name,
                         description = value.description,
                         frequency = Int32.Parse(value.frequency),
-                        id = Guid.NewGuid().ToString(),
+                        id = id,
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
@@ -97,5 +97,33 @@ public class IngressRepository : IIngressRepository
         }
 
         return response.Data;
+    }
+
+    public async Task<string> DeleteObservableProperty(string id)
+    {
+        var request = new GraphQLRequest
+        {
+            Query = @"mutation Mutation($where: ObservablePropertyWhere) {
+                        deleteObservableProperties(where: $where) {
+                            nodesDeleted
+                      }
+                    }",
+            Variables = new
+            {
+                where= new
+                {
+                    id = id
+                }
+            }
+        };
+        var response = await graphQLClient.SendMutationAsync<Object>(request);
+        Log.Debug(JsonConvert.SerializeObject(response));
+        _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
+        if (response.Errors != null)
+        {
+            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
+        }
+
+        return JsonConvert.SerializeObject(response.Data);
     }
 }

@@ -57,14 +57,16 @@ namespace MiddlewareManager.Controllers
             try
             {
                 Response response = null;
+                var id = Guid.NewGuid().ToString();
+
                 var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
                 var egressGroupId = Guid.NewGuid();
                 List<ObservableProperty> observableProperties = await _egressRepo.getIngressProperties(value.ingressIds);
                 foreach (var observableProperty in observableProperties)
                 {
            
-                    var connectionDetails = ConnectionDetailsFactory.Create(value, topicName, observableProperty);
-                    response = await _egressRepo.CreateEgressEndpoint(value,
+                    var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
+                    response = await _egressRepo.CreateEgressEndpoint(id, value,
                        JsonSerializer.Serialize(connectionDetails), observableProperty, egressGroupId.ToString());
                     await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
                 }

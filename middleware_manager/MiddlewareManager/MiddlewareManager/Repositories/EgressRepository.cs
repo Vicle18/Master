@@ -68,7 +68,7 @@ public class EgressRepository : IEgressRepository
         return observableProperties[0];
     }
 
-    public async Task<Response> CreateEgressEndpoint(CreateEgressDto value, string connectionDetails,
+    public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, string connectionDetails,
         ObservableProperty observableProperty, string egressGroupId)
     {
         Log.Debug("BEFORE GRAPHQL REQUEST ");
@@ -95,7 +95,7 @@ public class EgressRepository : IEgressRepository
                 {
                     new
                     {
-                        id = Guid.NewGuid().ToString(),
+                        id = id,
                         name = value.name,
                         description = value.description,
                         dataFormat = value.dataFormat,

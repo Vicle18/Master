@@ -24,7 +24,11 @@ kubectl config set-context --current --namespace=sso
 ## Create user to access kubernetes api
 ```
 kubectl apply -f kubernetes/create_user.yaml
+<<<<<<< HEAD
+kubectl create token service-orchestrator --duration=720h  
+=======
 
+>>>>>>> 0afb162c2a4ad8be882bb7ecdb97f960b9d27448
 ```
 
 ## Deploy Strimzi Kafka on Kubernetes (cd to strimzi-0.32...)

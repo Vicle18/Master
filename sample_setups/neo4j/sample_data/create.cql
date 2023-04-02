@@ -125,7 +125,7 @@ CREATE (jointVibration2:ObservableProperty {
     changedFrequency: 100
     })
 
-CREATE (:EgressEndpoint {
+CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
@@ -134,7 +134,7 @@ CREATE (:EgressEndpoint {
     dataFormat: "Raw"
 })
 
-CREATE (:EgressEndpoint {
+CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
@@ -142,6 +142,25 @@ CREATE (:EgressEndpoint {
     frequency: 30,
     dataFormat: "Json"
 })
+
+CREATE (egress3:EgressEndpoint {
+    id: "egress3",
+    name: "Endpoint 3",
+    description: "This is the second egress endpoint",
+    connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
+    frequency: 30,
+    dataFormat: "Json"
+})
+
+CREATE (egress1)-[:accessVia]->(jointTemperature)
+CREATE (egress1)-[:accessVia]->(jointTemperature2)
+
+CREATE (egress2)-[:accessVia]->(jointVibration)
+CREATE (egress2)-[:accessVia]->(jointVibration2)
+
+CREATE (egress3)-[:accessVia]->(jointPressure)
+CREATE (egress3)-[:accessVia]->(jointPressure2)
+
 
 
 // Create topics

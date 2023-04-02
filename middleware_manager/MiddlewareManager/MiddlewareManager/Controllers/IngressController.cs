@@ -61,14 +61,14 @@ namespace MiddlewareManager.Controllers
             try
             {
                 var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
+                var id = Guid.NewGuid().ToString();
                 var connectionDetails =
-                    ConnectionDetailsFactory.Create(value, topicName);
-                var response = await _ingressRepo.CreateObservableProperty(value, topicName,
+                    ConnectionDetailsFactory.Create(id, value, topicName);
+                var response = await _ingressRepo.CreateObservableProperty(id, value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 
                 await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
 
-                //return Ok(response);
                 return Ok(response);
             }
             catch (ArgumentException e)
@@ -103,8 +103,26 @@ namespace MiddlewareManager.Controllers
 
         // DELETE: api/Ingress/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Delete(string id)
         {
+            _logger.LogDebug("deleting ingress with id: {id}", id);
+            try
+            {
+                var database_response = await _ingressRepo.DeleteObservableProperty(id);
+                var _baseAddress = "https://localhost:7033";
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseAddress}/api/Ingress/{id}");
+                var response = await _client.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException($"HTTP error {response.StatusCode}");
+                }
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
