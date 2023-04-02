@@ -80,6 +80,7 @@ CREATE (product:Product {name: 'Product'})
 CREATE (jointTemperature:ObservableProperty {
     id: 'jointTemperature',
     name: 'Joint Temperature',
+    description: 'Description of the Joint Temperature Observable Property',
     frequency: 100,
         changedFrequency: 100
 
@@ -87,6 +88,7 @@ CREATE (jointTemperature:ObservableProperty {
 CREATE (jointTemperature2:ObservableProperty {
     id: 'jointTemperature2',
     name: 'Joint Temperature 2',
+    description: 'Description of the Joint Temperature 2 Observable Property',
     frequency: 100,
         changedFrequency: 100
 
@@ -94,6 +96,7 @@ CREATE (jointTemperature2:ObservableProperty {
 CREATE (jointPressure:ObservableProperty {
     id: 'jointPressure',
     name: 'Joint Pressure',
+    description: 'Description of the Joint Pressure Observable Property',
     frequency: 100,
         changedFrequency: 100
 
@@ -101,6 +104,7 @@ CREATE (jointPressure:ObservableProperty {
 CREATE (jointPressure2:ObservableProperty {
     id: 'jointPressure2',
     name: 'Joint Pressure 2',
+    description: 'Description of the Joint Pressure 2 Observable Property',
     frequency: 100,
         changedFrequency: 100
 
@@ -108,6 +112,7 @@ CREATE (jointPressure2:ObservableProperty {
 CREATE (jointVibration:ObservableProperty {
     id: 'jointVibration',
     name: 'Joint Vibration',
+    description: 'Description of the Joint Vibration Observable Property',
     frequency: 100,
         changedFrequency: 100
 
@@ -115,6 +120,7 @@ CREATE (jointVibration:ObservableProperty {
 CREATE (jointVibration2:ObservableProperty {
     id: 'jointVibration2',
     name: 'Joint Vibration 2',
+    description: 'Description of the Joint Vibration 2 Observable Property',
     frequency: 100,
     changedFrequency: 100
     })
