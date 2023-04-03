@@ -46,7 +46,7 @@ public class Controller : IController
     {
         JObject msg = new JObject()
         {
-            ["id"]="TempID",
+            ["id"]=_config.GetValue<string>("ID"),
             ["available"]=true
         };
         _busClient.Publish("ingress_availability", msg.ToString());
@@ -91,10 +91,9 @@ public class Controller : IController
             {
                 ["id"]=_config.GetValue<string>("ID"),
                 ["timestamp"]=DateTime.Now
-                
             };
             _busClient.Publish("ingress_availability", msg.ToString());
-            Task.Delay(3000).Wait();
+            Task.Delay(5000).Wait();
         }
         Log.Debug("Stopping transmission");
     }
