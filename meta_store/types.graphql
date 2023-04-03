@@ -88,6 +88,7 @@ type EgressEndpoint{
     accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
     changedFrequency: Int!
     egressGroup: String!
+    status: String!
 }
 
 type Topic{
