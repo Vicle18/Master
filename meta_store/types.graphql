@@ -75,6 +75,7 @@ type ObservableProperty{
     accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
     dataFormat: String!
     changedFrequency: Int!
+    status: String!
 }
 
 type EgressEndpoint{
