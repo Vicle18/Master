@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using WatchDog.Models;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -32,6 +33,12 @@ namespace WatchDog.BusCommunication.KAFKA
             subscriptionHandlers.Add(topic, msgHandler);
             requestSubscriptionUpdate = true;
             _producer.ProduceMessage(topic, new JObject(){["test"]="test"}.ToString());
+        }
+
+
+        public void AddSubscription(string topic, Action<string, ReceivedBusMessage> msgHandler)
+        {
+            throw new NotImplementedException();
         }
 
         public void RemoveSubscription(string topic)

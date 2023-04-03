@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using WatchDog.Models;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -18,7 +19,7 @@ namespace WatchDog.BusCommunication.KAFKA
         /// Responsible for adding a new subscription to be listened to
         /// </summary>
         /// <param name="topic"></param>
-        public void AddSubscription(string topic, Action<string, string> msgHandler);
+        public void AddSubscription(string topic, Action<string, ReceivedBusMessage> msgHandler);
         /// <summary>
         /// Responsible for removing a previously subscribed to topic
         /// </summary>

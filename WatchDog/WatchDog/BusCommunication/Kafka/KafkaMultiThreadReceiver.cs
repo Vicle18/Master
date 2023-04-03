@@ -1,6 +1,9 @@
 ﻿using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
+using WatchDog.Models;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -16,6 +19,7 @@ namespace WatchDog.BusCommunication.KAFKA
         private string _port;
         private IKafkaProducer _producer;
         private string _groupId;
+
         public KafkaMultiThreadReceiver(string host, string port, string groupId, IKafkaProducer producer)
         {
             _host = host;
@@ -24,7 +28,8 @@ namespace WatchDog.BusCommunication.KAFKA
             _producer = producer;
             topicSubCancellationTokenSources = new Dictionary<string, CancellationTokenSource>();
         }
-        public void AddSubscription(string topic, Action<string, string> msgHandler)
+
+        public void AddSubscription(string topic, Action<string, ReceivedBusMessage> msgHandler)
         {
             var conf = new ConsumerConfig
             {
@@ -32,7 +37,7 @@ namespace WatchDog.BusCommunication.KAFKA
                 BootstrapServers = _host + ":" + _port,
                 AutoOffsetReset = AutoOffsetReset.Latest,
             };
-            Log.Debug( "subscribed to {topic}", topic);
+            Log.Debug("subscribed to {topic}", topic);
             var cts = new CancellationTokenSource();
             Task task = Task.Run(() =>
             {
@@ -48,25 +53,25 @@ namespace WatchDog.BusCommunication.KAFKA
                     {
                         while (true)
                         {
-
                             try
                             {
-                                if (cts.Token.IsCancellationRequested) throw new OperationCanceledException("cancelled externally");
+                                if (cts.Token.IsCancellationRequested)
+                                    throw new OperationCanceledException("cancelled externally");
                                 var consumeResult = consumer.Consume(CancellationToken.None);
-                                
-                                Log.Debug( $"Received Message from Kafka: {consumeResult.Message.Value}");
-                                // msgHandler(consumeResult.Topic, new ReceivedBusMessage()
-                                // {
-                                //     Topic = consumeResult.Topic,
-                                //     Message = JObject.Parse(consumeResult.Message.Value),
-                                //     TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
-                                //     Raw = JsonConvert.SerializeObject(consumeResult)
-                                // });
-                                
+
+                                Log.Debug($"Received Message from Kafka: {consumeResult.Message.Value}");
+
+                                msgHandler(consumeResult.Topic, new ReceivedBusMessage
+                                {
+                                    Topic = consumeResult.Topic,
+                                    Message = consumeResult.Message.Value,
+                                    TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
+                                    Raw = JsonConvert.SerializeObject(consumeResult)
+                                });
                             }
                             catch (ConsumeException e)
                             {
-                                Log.Error( "Error occured: {error}", e.Message);
+                                Log.Error("Error occured: {error}", e.Message);
                             }
                         }
                     }
@@ -88,13 +93,13 @@ namespace WatchDog.BusCommunication.KAFKA
             }
             else
             {
-                Log.Error( "could not find subscription to topic {topic}", topic);
+                Log.Error("could not find subscription to topic {topic}", topic);
             }
         }
 
         public async Task Run()
         {
-            await Task.Run(async() =>
+            await Task.Run(async () =>
             {
                 var cts = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, e) =>
@@ -105,10 +110,7 @@ namespace WatchDog.BusCommunication.KAFKA
                 while (!cts.Token.IsCancellationRequested)
                 {
                     Task _currentExecution = Task.Delay(5000, cts.Token);
-                    await _currentExecution.ContinueWith(task =>
-                    {
-                        Log.Debug( "Still running");
-                    });
+                    await _currentExecution.ContinueWith(task => { Log.Debug("Still running"); });
                 }
             });
         }
