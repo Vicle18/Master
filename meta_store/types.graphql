@@ -82,10 +82,10 @@ type EgressEndpoint{
     name: String!
     description: String!
     connectionDetails: [String!]!
-    frequency: Int!
+    frequency: [Int!]!
     dataFormat: String!
     accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
-    changedFrequency: Int!
+    changedFrequency: [Int!]!
     egressGroup: String!
 }
 
