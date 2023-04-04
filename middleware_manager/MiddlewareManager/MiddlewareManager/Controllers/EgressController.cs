@@ -21,6 +21,7 @@ namespace MiddlewareManager.Controllers
         private readonly ILogger<IngressController> _logger;
         private readonly IEgressRepository _egressRepo;
         private readonly HttpClient _client;
+        private List<string> _connectionDetails;
 
 
         public EgressController(IConfiguration config, ILogger<IngressController> logger,
@@ -29,6 +30,7 @@ namespace MiddlewareManager.Controllers
             _config = config;
             _logger = logger;
             _egressRepo = egressRepo;
+            _connectionDetails = new List<string>();
             _client = new HttpClient();
             _logger.LogDebug("starting {controller}", "IngressController");
         }
@@ -53,7 +55,7 @@ namespace MiddlewareManager.Controllers
         public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
         {
             Log.Debug("test");
-            Log.Debug(value.ToString());
+            Log.Debug(JsonSerializer.Serialize(value));
             try
             {
                 Response response = null;
@@ -64,12 +66,13 @@ namespace MiddlewareManager.Controllers
                 List<ObservableProperty> observableProperties = await _egressRepo.getIngressProperties(value.ingressIds);
                 foreach (var observableProperty in observableProperties)
                 {
-           
+                    Log.Debug(JsonSerializer.Serialize(observableProperty));
                     var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
-                    response = await _egressRepo.CreateEgressEndpoint(id, value,
-                       JsonSerializer.Serialize(connectionDetails), observableProperty, egressGroupId.ToString());
-                    await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
+                    _connectionDetails.Add(JsonSerializer.Serialize(connectionDetails));
+                    //await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
                 }
+                response = await _egressRepo.CreateEgressEndpoint(id, value,
+                    _connectionDetails, observableProperties, egressGroupId.ToString());
                 
                 return Ok(response);
             }
