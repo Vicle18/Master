@@ -8,13 +8,6 @@
 #     id: ID!
 #     name: String!
 # }
-
-
-# To change the type schema
-# Git add and git commit
-# git tag -a meta-store/v1.0.9 -m "my version 1.0.9"
-# git push origin meta-store/v1.0.9
-
 interface ContainingElement {
     observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
     id: ID!
@@ -82,20 +75,18 @@ type ObservableProperty{
     accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
     dataFormat: String!
     changedFrequency: Int!
-    status: String!
 }
 
 type EgressEndpoint{
     id: ID!
     name: String!
     description: String!
-    connectionDetails: String!
+    connectionDetails: [String!]!
     frequency: Int!
     dataFormat: String!
     accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
     changedFrequency: Int!
     egressGroup: String!
-    status: String!
 }
 
 type Topic{
