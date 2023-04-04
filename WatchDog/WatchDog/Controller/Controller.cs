@@ -1,5 +1,4 @@
 using System.Text.Json;
-
 using Newtonsoft.Json.Linq;
 using WatchDog.BusCommunication;
 using Serilog;
@@ -151,21 +150,17 @@ public class Controller : IController
 
     private void CheckObservableProperties(DateTime lastCheck)
     {
-        if (_receivedObservableBusMessages != null)
+        foreach (var receivedBusMessage in _receivedObservableBusMessages)
         {
-            foreach (var receivedBusMessage in _receivedObservableBusMessages)
+            if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
-                if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
-                {
-                    Log.Debug("You have run out of time");
-                    _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, false);
-                }
-                else
-                {
-                    Log.Debug("its active");
-                    _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, true
-                    );
-                }
+                _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, false, lastCheck.ToUniversalTime());
+            }
+            else
+            {
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, true, lastCheck.ToUniversalTime()
+                );
             }
         }
     }
@@ -173,21 +168,16 @@ public class Controller : IController
 
     private void CheckEgress(DateTime lastCheck)
     {
-        if (_receivedEgressBusMessages != null)
+        foreach (var receivedBusMessage in _receivedEgressBusMessages)
         {
-            foreach (var receivedBusMessage in _receivedEgressBusMessages)
+            if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
-                
-                if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
-                {
-                    Log.Debug("You have run out of time");
-                    _egressRepo.updateEgressStatus(receivedBusMessage.Topic, false);
-                }
-                else
-                {
-                    Log.Debug("its active");
-                    _egressRepo.updateEgressStatus(receivedBusMessage.Topic, true);
-                }
+                _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, false, lastCheck.ToUniversalTime());
+            }
+            else
+            {
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, true, lastCheck.ToUniversalTime());
             }
         }
     }

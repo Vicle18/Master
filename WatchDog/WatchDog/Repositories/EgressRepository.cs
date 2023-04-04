@@ -13,6 +13,7 @@ public class EgressRepository : IEgressRepository
     private readonly IConfiguration _config;
     private readonly ILogger<IngressRepository> _logger;
     private GraphQLHttpClient graphQLClient;
+    private bool _hasErrorOccured = false;
 
     public EgressRepository(IConfiguration config, ILogger<IngressRepository> logger)
     {
@@ -36,19 +37,14 @@ public class EgressRepository : IEgressRepository
             }"
         };
 
-        Log.Debug("before sending egress request");
         var response = await graphQLClient.SendQueryAsync<EgressEndpointResponse>(request);
-        Log.Debug(JsonSerializer.Serialize(response));
-        if (response.Errors != null && response.Errors.Any())
-        {
-            // Handle errors here
-        }
 
-        Log.Debug(JsonSerializer.Serialize(response.Data));
+        _logger.LogInformation("Received following query response {response}", JsonSerializer.Serialize(response.Data));
+
         return response.Data.EgressEndpoints.Select(op => op.id).ToList();
     }
 
-    public async Task<bool> updateEgressStatus(string id, bool active)
+    public async Task<bool> updateEgressStatus(string id, bool active, DateTime lastUpdatedAt)
     {
         var mutation = new GraphQLRequest
         {
@@ -58,6 +54,7 @@ public class EgressRepository : IEgressRepository
                         egressEndpoints {
                             id
                             status
+                            lastUpdatedAt
                         }
                     }
                 }
@@ -70,12 +67,43 @@ public class EgressRepository : IEgressRepository
                 },
                 update = new
                 {
-                    status = $"{active}"
+                    status = $"{active}", lastUpdatedAt = $"{lastUpdatedAt}"
                 }
             }
         };
+
+        if (!active && !_hasErrorOccured)
+        {
+            UpdateErrorAt(id, lastUpdatedAt);
+        }
+
+        var response = await graphQLClient.SendMutationAsync<EgressEndpoint>(mutation);
+        _logger.LogInformation("Received following mutation response {response}", JsonSerializer.Serialize(response.Data));
+        return true;
+    }
+
+    private async Task UpdateErrorAt(string id, DateTime lastUpdatedAt)
+    {
+        var variables = new
+        {
+            where = new { id = $"{id}" },
+            update = new { errorStateAt = $"{lastUpdatedAt}" }
+        };
+        var mutation = new GraphQLRequest
+        {
+            Query = @"
+              mutation($where: EgressEndpointWhere, $update: EgressEndpointUpdateInput) {
+                updateEgressEndpoints(where: $where, update: $update) {
+                  egressEndpoints {
+                    id
+                    errorStateAt
+                  }
+                }
+              }",
+            Variables = variables
+        };
         var response = await graphQLClient.SendMutationAsync<EgressEndpoint>(mutation);
         Log.Debug(JsonSerializer.Serialize(response));
-        return true;
+        _hasErrorOccured = true;
     }
 }

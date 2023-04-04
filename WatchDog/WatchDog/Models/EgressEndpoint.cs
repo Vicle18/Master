@@ -21,4 +21,8 @@ public class EgressEndpoint
     public string? egressGroup { get; set; }
 
     public string? status { get; set; }
+
+    public string? lastUpdateAt { get; set; }
+
+    public string? errorStateAt { get; set; }
 }
