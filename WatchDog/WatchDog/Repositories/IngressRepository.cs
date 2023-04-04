@@ -13,6 +13,7 @@ public class IngressRepository : IIngressRepository
     private readonly IConfiguration _config;
     private readonly ILogger<IngressRepository> _logger;
     private GraphQLHttpClient graphQLClient;
+    private bool _hasErrorOccured = false;
 
     public IngressRepository(IConfiguration config, ILogger<IngressRepository> logger)
     {
@@ -47,16 +48,15 @@ public class IngressRepository : IIngressRepository
 
         Log.Debug(JsonSerializer.Serialize(response.Data));
         return response.Data.ObservableProperties.Select(op => op.id).ToList();
-        ;
     }
 
-    public async Task<bool> updateObservableStatus(string id, bool active)
+    public async Task<bool> updateObservableStatus(string id, bool active, DateTime lastUpdatedAt)
     {
         Log.Debug("Updating");
         var variables = new
         {
             where = new { id = $"{id}" },
-            update = new { status = $"{active}" }
+            update = new { status = $"{active}", lastUpdatedAt = $"{lastUpdatedAt}" }
         };
 
         // Define the GraphQL mutation request
@@ -67,14 +67,46 @@ public class IngressRepository : IIngressRepository
                             observableProperties {
                                 id
                                 status
+                                lastUpdatedAt
                             }
                         }
                     }",
             Variables = variables
         };
-        
+
+        if (!active && !_hasErrorOccured)
+        {
+            UpdateErrorAt(id, lastUpdatedAt);
+        }
+
         var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
         Log.Debug(JsonSerializer.Serialize(response));
         return true;
+    }
+
+    private async Task UpdateErrorAt(string id, DateTime lastUpdatedAt)
+    {
+        var variables = new
+        {
+            where = new { id = $"{id}" },
+            update = new { errorStateAt = $"{lastUpdatedAt}" }
+        };
+
+        var mutation = new GraphQLRequest
+        {
+            Query = @"
+              mutation($where: ObservablePropertyWhere, $update: ObservablePropertyUpdateInput) {
+                updateObservableProperties(where: $where, update: $update) {
+                  observableProperties {
+                    id
+                    errorStateAt
+                  }
+                }
+              }",
+            Variables = variables
+        };
+        var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
+        Log.Debug(JsonSerializer.Serialize(response));
+        _hasErrorOccured = true;
     }
 }
