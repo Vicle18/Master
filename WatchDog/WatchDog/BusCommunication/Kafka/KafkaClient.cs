@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using WatchDog.Models;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -35,9 +36,8 @@ namespace WatchDog.BusCommunication.KAFKA
             }, cts.Token);
         }
 
-        public void Subscribe(string topic, Action<string, string> messageHandler)
+        public void Subscribe(string topic, Action<string, ReceivedBusMessage> messageHandler)
         {
-            Log.Debug("inside subscribe");
             Log.Debug(topic);
             Log.Debug(messageHandler.Method.ToString());
 

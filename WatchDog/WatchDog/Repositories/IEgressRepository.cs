@@ -2,7 +2,7 @@ namespace WatchDog.Repositories;
 
 public interface IEgressRepository
 {
-    public Task<string> getEgressProperties();
+    public Task<List<string>> getEgressEndpoints();
 
-    public Task<bool> updateEgressStatus(string id);
+    public Task<bool> updateEgressStatus(string id, bool active);
 }

@@ -16,6 +16,8 @@ public class IngressRepository : IIngressRepository
 
     public IngressRepository(IConfiguration config, ILogger<IngressRepository> logger)
     {
+        _config = config;
+        _logger = logger;
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
             EndPoint = new Uri("http://localhost:4000")
@@ -48,8 +50,31 @@ public class IngressRepository : IIngressRepository
         ;
     }
 
-    public Task<bool> updateObservableStatus(string id)
+    public async Task<bool> updateObservableStatus(string id, bool active)
     {
-        throw new NotImplementedException();
+        Log.Debug("Updating");
+        var variables = new
+        {
+            where = new { id = $"{id}" },
+            update = new { status = $"{active}" }
+        };
+
+        // Define the GraphQL mutation request
+        var mutation = new GraphQLRequest
+        {
+            Query = @"mutation Mutation($where: ObservablePropertyWhere, $update: ObservablePropertyUpdateInput) {
+                        updateObservableProperties(where: $where, update: $update) {
+                            observableProperties {
+                                id
+                                status
+                            }
+                        }
+                    }",
+            Variables = variables
+        };
+        
+        var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
+        Log.Debug(JsonSerializer.Serialize(response));
+        return true;
     }
 }
