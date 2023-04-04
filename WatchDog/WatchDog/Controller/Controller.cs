@@ -173,11 +173,11 @@ public class Controller : IController
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
                 _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, false);
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, false, lastCheck.ToUniversalTime());
             }
             else
             {
-                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, true);
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, true, lastCheck.ToUniversalTime());
             }
         }
     }
