@@ -83,6 +83,8 @@ type ObservableProperty{
     dataFormat: String!
     changedFrequency: Int!
     status: String!
+    lastUpdatedAt:String!
+    errorStateAt:String!
 }
 
 type EgressEndpoint{
@@ -96,6 +98,8 @@ type EgressEndpoint{
     changedFrequency: Int!
     egressGroup: String!
     status: String!
+    lastUpdatedAt:String!
+    errorStateAt:String!
 }
 
 type Topic{
