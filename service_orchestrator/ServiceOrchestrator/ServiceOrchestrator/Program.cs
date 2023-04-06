@@ -1,4 +1,3 @@
-
 using Serilog;
 using ServiceOrchestrator.ContainerManagement;
 using ServiceOrchestrator.ContainerManagement.Kubernetes;
@@ -13,7 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors();
 builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development"}.json", optional: true)
+    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Development"}.json",
+        optional: true)
     .AddEnvironmentVariables();
 builder.Services.AddControllers();
 
@@ -29,8 +29,8 @@ var app = builder.Build();
 
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 app.UseHttpsRedirection();

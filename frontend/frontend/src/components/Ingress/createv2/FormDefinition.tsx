@@ -28,13 +28,17 @@ export const initialValues: FormData = {
   containingElement: "Machine A",
   dataFormat: "JSON",
 };
-  
+
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
   frequency: Yup.string().required("Frequency is required"),
-  changedFrequency: Yup.string().optional(),
+  changedFrequency: Yup.string().test('lower-frequency', 'Changed frequency cannot be higher than frequency', function (changedFrequency) {
+    const { frequency } = this.parent;
+    if (!changedFrequency || !frequency) { return true; }
+    return parseInt(changedFrequency) <= parseInt(frequency); // check if changedFrequency is lower than or equal to frequency
+  }),
   host: Yup.string().when("protocol", {
     is: (protocol: string) => protocol === "MQTT" || protocol === "RTDE",
     then: (schema) => schema.required("host is required"),

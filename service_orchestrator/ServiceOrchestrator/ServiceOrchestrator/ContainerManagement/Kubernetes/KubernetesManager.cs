@@ -49,7 +49,6 @@ public class KubernetesManager : IContainerManager
         // string uniqueId = Guid.NewGuid().ToString("N");
         var pod = CreateV1Pod(config, id);
         var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
-
         _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
     }
 
@@ -91,7 +90,6 @@ public class KubernetesManager : IContainerManager
     }
 
     public async Task StopContainer(string id)
-
     {
         await _client.DeleteNamespacedPodAsync(
             name: $"pod-{id}",

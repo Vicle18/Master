@@ -45,9 +45,8 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public async Task Post([FromBody] EndpointPayload data)
         {
-            Log.Debug("received request");
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
-            ManagePayload(data, config);
+            AddingConfigurationData(data, config);
 
             if (data.CreateBroker)
             {
@@ -58,7 +57,7 @@ namespace ServiceOrchestrator.Controllers
             await _containerManager.StartContainer(data.ConnectionDetails.Id, config);
         }
 
-        private static void ManagePayload(EndpointPayload data, ContainerConfig config)
+        private static void AddingConfigurationData(EndpointPayload data, ContainerConfig config)
         {
             config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
@@ -82,13 +81,6 @@ namespace ServiceOrchestrator.Controllers
             Log.Debug("config: {config}, data: {data}",JsonConvert.SerializeObject(config), JsonConvert.SerializeObject(data));
         }
 
-        // POST: api/Egress
-        /*[HttpPost]
-        public void Post([FromBody] JObject data)
-        {
-            var value = data.ToString();
-            Log.Debug(value);
-        }*/
 
         // PUT: api/Egress/5
         [HttpPut("{id}")]
