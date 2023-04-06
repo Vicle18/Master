@@ -138,3 +138,8 @@ kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 
 ```
 
+## Kill port forward
+```
+ps -ef|grep port-forward
+kill
+```
