@@ -228,12 +228,12 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                     </Box>{" "}
                     {item.frequency}
                   </Typography>
-                  <Typography>
+                  {/* <Typography>
                     <Box component="span" fontWeight="bold">
                       Connection details:
                     </Box>{" "}
                     {item.connectionDetails}
-                  </Typography>
+                  </Typography> */}
                 </Grid2>
               </Grid2>
 

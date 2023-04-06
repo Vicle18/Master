@@ -25,10 +25,10 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(string id, CreateIngressDto value, string topicName,
+    public async Task<Response> CreateObservableProperty(string id, CreateIngressDtoBase value, string topicName,
         string connectionDetails)
     {
-        Log.Debug("BEFORE REQUEST");
+        
         var request = new GraphQLRequest
         {
             Query = @"
@@ -51,12 +51,12 @@ public class IngressRepository : IIngressRepository
                     {
                         name = value.name,
                         description = value.description,
-                        frequency = Int32.Parse(value.frequency),
+                        frequency = value.frequency,
                         id = id,
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
                         // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
-                        changedFrequency = Int32.Parse(value.frequency),
+                        changedFrequency = value.frequency,
 
                         topic = new
                         {
@@ -118,7 +118,7 @@ public class IngressRepository : IIngressRepository
         };
         var response = await graphQLClient.SendMutationAsync<Object>(request);
         Log.Debug(JsonConvert.SerializeObject(response));
-        _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
+        _logger.LogCritical("when deleting ingress, got feedback: {feedback}", response.Data);
         if (response.Errors != null)
         {
             throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");

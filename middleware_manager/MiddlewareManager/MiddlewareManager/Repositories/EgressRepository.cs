@@ -128,4 +128,34 @@ public class EgressRepository : IEgressRepository
         _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
         return response.Data;
     }
+
+    public async Task<string> DeleteEgressEndpoint(string id)
+    {
+        var request = new GraphQLRequest
+        {
+            Query = @"
+                mutation DeleteEgressEndpoints($where: EgressEndpointWhere) {
+                  deleteEgressEndpoints(where: $where) {
+                    nodesDeleted
+                  }
+                }",
+            Variables = new
+            {
+                where= new
+                {
+                    id = id
+                }
+            }
+        };
+        
+        var response = await graphQLClient.SendMutationAsync<Object>(request);
+        Log.Debug(JsonConvert.SerializeObject(response));
+        _logger.LogCritical("when deleting egress, got feedback: {feedback}", response.Data);
+        if (response.Errors != null)
+        {
+            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
+        }
+
+        return JsonConvert.SerializeObject(response.Data);
+    }
 }

@@ -25,8 +25,8 @@ public class ConnectionDetailsFactory
                         HOST = value.host,
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
-                        FREQUENCY = value.frequency,
-                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
+                        FREQUENCY = value.frequency.ToString(),
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
                         
                     }
                 };
@@ -40,8 +40,8 @@ public class ConnectionDetailsFactory
                         HOST = value.host,
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
-                        FREQUENCY = value.frequency,
-                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
+                        FREQUENCY = value.frequency.ToString(),
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
                     }
                 };
             case "OPCUA":

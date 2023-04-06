@@ -8,6 +8,9 @@
 #     id: ID!
 #     name: String!
 # }
+
+# union Resource = Company | Plant | Area | Line | Cell | Machine
+
 interface ContainingElement {
     observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
     id: ID!
@@ -15,8 +18,17 @@ interface ContainingElement {
     description: String!
 }
 
+interface Resource {
+    id: ID!
+    name: String!
+    description: String!
+}
+type Query {
+    resources(): [Resource]!
+}
+
 # Types
-type Company implements ContainingElement{
+type Company implements Resource{
     id: ID!
     name: String!
     description: String!
@@ -96,12 +108,13 @@ type Topic{
     topicOf: ObservableProperty! @relationship(type: "has", direction: IN)
 }
 
-type Resource{
-    id: ID!
-    name: String!
-    description: String!
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
-}
+
+# type Resource{
+#     id: ID!
+#     name: String!
+#     description: String!
+#     ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+# }
 
 
 

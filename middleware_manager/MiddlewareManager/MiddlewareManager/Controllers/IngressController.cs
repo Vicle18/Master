@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using GraphQL;
@@ -15,8 +14,11 @@ using MiddlewareManager.AdapterModel;
 using MiddlewareManager.DataModel;
 using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NuGet.Protocol;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MiddlewareManager.Controllers
 {
@@ -67,7 +69,32 @@ namespace MiddlewareManager.Controllers
                 var response = await _ingressRepo.CreateObservableProperty(id, value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 
-                await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
+                await ForwardsRequestToConfigurator( JsonSerializer.Serialize(connectionDetails));
+
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                _logger.LogError(e,"Error when receiving ingress post request: {message}", e.Message );
+                return BadRequest(e.Message);
+            }
+        }
+        
+        
+        [HttpPost("IngressFromFile")]
+        public async Task<ActionResult<CreateObservablePropertiesResult>> PostFromFile([FromBody] CreateIngressFromFileDTO file)
+        {
+            _logger.LogDebug("creating ingress with values: {value}", file);
+            try
+            {
+                var topicName = file.topic;
+               
+                var connectionDetails =
+                    file.connectionDetails;
+                var response = await _ingressRepo.CreateObservableProperty(file.id, file, topicName,
+                    JsonSerializer.Serialize(connectionDetails));
+
+                await ForwardsRequestToConfigurator(JsonSerializer.Serialize(connectionDetails));
 
                 return Ok(response);
             }
@@ -76,19 +103,29 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
+        
+        
 
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-        private async Task ForwardsRequestToConfigurator(CreateIngressDto value, string topicName,
+        private async Task ForwardsRequestToConfigurator(
             string connectionDetails)
         {
             // Create the HTTP request message with the JSON string as the content
             var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Ingress?=");
-            request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
-
-            // Send the request and wait for the response
+            var contentObject = new JObject()
+            {
+                ["CreateBroker"] = true,
+                ["ConnectionDetails"] = JsonConvert.DeserializeObject<JToken>(connectionDetails)
+            };
+            _logger.LogDebug("connectionDetails: {details}", contentObject.ToString());
+            Console.WriteLine($"connectionDetails: {contentObject}");
+            //request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
+            request.Content = new StringContent(contentObject.ToString(), Encoding.UTF8, "application/json");
+            
             var response = await _client.SendAsync(request);
+            request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
 
             // Get the response content
             var responseString = await response.Content.ReadAsStringAsync();

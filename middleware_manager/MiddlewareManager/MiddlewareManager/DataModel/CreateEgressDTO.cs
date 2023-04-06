@@ -10,5 +10,6 @@ public class CreateEgressDto : CreateDTO
     public string? port { get; set; }
     public string[] ingressIds { get; set; }
     public string? nodeId { get; set; }
+    public bool createBroker { get; set; }
     public string dataFormat { get; set; }
 }

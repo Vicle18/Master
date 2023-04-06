@@ -15,15 +15,15 @@ export interface FormData {
 }
 
 export const initialValues: FormData = {
-  name: "defaultName",
+  name: "Robot Mode" + Math.floor(Math.random() * 1000),
   description: "default Description",
-  protocol: "MQTT",
-  frequency: "30",
-  changedFrequency: "30",
+  protocol: "RTDE",
+  frequency: "1",
+  changedFrequency: "1",
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   topic: "example",
   port: "1883",
-  output: "timestamp",
+  output: "robot_mode",
   nodeId: "",
   containingElement: "Machine A",
   dataFormat: "JSON",

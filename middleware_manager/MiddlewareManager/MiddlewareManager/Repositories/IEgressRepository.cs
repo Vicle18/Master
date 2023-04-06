@@ -8,4 +8,6 @@ public interface IEgressRepository
         string connectionDetails, ObservableProperty observableProperty, string egressGroupId);
 
     public Task<List<ObservableProperty>> getIngressProperties(string[] valueIngressNodes);
+
+    public Task<string> DeleteEgressEndpoint(string id);
 }

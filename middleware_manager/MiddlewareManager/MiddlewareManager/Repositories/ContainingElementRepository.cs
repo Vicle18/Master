@@ -53,6 +53,60 @@ public class ContainingElementRepository : IContainingElementRepository
         }
     }
 
+    public async Task<string> AddMachineToCell(AddMachineToCellDto dto)
+    {
+        var request = new GraphQLRequest
+        {
+            Query = @"mutation UpdateCells($where: CellWhere, $update: CellUpdateInput) {
+                          updateCells(where: $where, update: $update) {
+                            cells {
+                              id
+                            }
+                          }
+                        }",
+            Variables = new
+            {
+                where = new
+                {
+                    id = dto.cellId
+                },
+                update = new
+                {
+                    machines = new[]
+                    {
+                        new
+                        {
+                            connect = new[]
+                            {
+                                new
+                                {
+                                    where = new
+                                    {
+                                        node = new
+                                        {
+                                            id = dto.machineId
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        var response = await graphQLClient.SendMutationAsync<object>(request);
+        _logger.LogDebug(JsonConvert.SerializeObject(response));
+        _logger.LogCritical("when creating containingElement, got feedback: {feedback}", response.Data);
+
+        if (response.Errors != null)
+        {
+            throw new ArgumentException($"Failed in creating plant, error: {response.Errors}");
+        }
+        
+        return dto.cellId;
+
+    }
+
 
     private async Task<string> CreateCompany(CreateContainingElementDTO value)
     {
@@ -410,7 +464,7 @@ public class ContainingElementRepository : IContainingElementRepository
     private async Task<string> CreateMachine(CreateContainingElementDTO value)
     {
         _logger.LogDebug("creating plant with information: {information}", JsonConvert.SerializeObject(value));
-        var id = Guid.NewGuid().ToString();
+        var id = value.id ?? Guid.NewGuid().ToString();
         var request = new GraphQLRequest
         {
             Query = @"
@@ -435,7 +489,22 @@ public class ContainingElementRepository : IContainingElementRepository
                         id = id,
                         name = value.name,
                         description = value.description,
-                        
+                        observableProperties = new
+                        {
+                            connect = new []
+                            {
+                                new
+                                {
+                                    where = new
+                                    {
+                                        node = new
+                                        {
+                                            id_IN = value.observableProperties
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 where = new
