@@ -5,7 +5,7 @@ public class CreateEgressDto : CreateDTO
     public string name { get; set; }
     public string description { get; set; }
     public string protocol { get; set; }
-    public int[] freqencies { get; set; }
+    public int[] frequencies { get; set; }
     
     public int[]? changedFrequencies { get; set; }
 

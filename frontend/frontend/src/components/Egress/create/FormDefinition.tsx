@@ -5,6 +5,7 @@ export interface ingressNode {
   name: string;
   topic: string;
   frequency: number;
+  changedFrequency: number;
 
 }
 export interface FormData {
@@ -13,6 +14,8 @@ export interface FormData {
   protocol: string;
   createBroker: boolean | undefined;
   frequency: string;
+  frequencies?:  (number | undefined)[];
+  changedFrequencies?: (number | undefined)[];
   host?: string;
   port?: string;
   ingressIds?: (string | undefined)[];
@@ -27,6 +30,8 @@ export const initialValues: FormData = {
   port: "1883",
   createBroker: false,
   frequency: "30",
+  frequencies: [30],
+  changedFrequencies: [30],
   ingressIds: ["jointTemperature2"],
   dataFormat: "string",
 };
@@ -56,6 +61,12 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     otherwise: (schema) => schema,
   }),
   frequency: Yup.string().required("Frequency is required"),
+  frequencies: Yup.array().of(Yup.mixed<number>())
+  .min(1)
+  .optional(),
+  changedFrequencies: Yup.array().of(Yup.mixed<number>())
+  .min(1)
+  .optional(),
   ingressIds: Yup.array()
     .of(Yup.mixed<string>())
     .min(1)

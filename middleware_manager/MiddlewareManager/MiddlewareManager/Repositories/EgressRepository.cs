@@ -113,9 +113,9 @@ public class EgressRepository : IEgressRepository
                         name = value.name,
                         description = value.description,
                         dataFormat = value.dataFormat,
-                        frequency = value.freqencies,
+                        frequency = value.frequencies,
                         connectionDetails = connectionDetails.ToArray(),
-                        changedFrequency = ManageFrequencies(value.changedFrequencies, value.freqencies),
+                        changedFrequency = ManageFrequencies(value.changedFrequencies, value.frequencies),
                         egressGroup = egressGroupId,
                         accessTo = new
                         {

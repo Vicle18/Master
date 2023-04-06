@@ -138,9 +138,9 @@ CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 60,
-    changedFrequency: 30,
+    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
     dataFormat: "Raw",
     egressGroup: "group1"
 
@@ -150,9 +150,9 @@ CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 30,
-    changedFrequency: 30,
+    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
     dataFormat: "Json",
     egressGroup: "group2"
 })
@@ -162,9 +162,9 @@ CREATE (egress3:EgressEndpoint {
     id: "egress3",
     name: "Endpoint 3",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 30,
-    changedFrequency: 30,
+    connectionDetails: ['{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
     dataFormat: "Json",
     egressGroup: "group3"
 

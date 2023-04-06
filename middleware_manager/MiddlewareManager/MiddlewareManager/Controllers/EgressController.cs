@@ -71,7 +71,7 @@ namespace MiddlewareManager.Controllers
                     Log.Debug(JsonSerializer.Serialize(observableProperty));
                     var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
                     _connectionDetails.Add(JsonSerializer.Serialize(connectionDetails));
-                    //await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
+                    await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
                 }
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
                     _connectionDetails, observableProperties, egressGroupId.ToString());
@@ -80,6 +80,7 @@ namespace MiddlewareManager.Controllers
             }
             catch (ArgumentException e)
             {
+                _logger.LogError(e, "got error: {message}", e.Message);
                 return BadRequest(e.Message);
             }
         }
