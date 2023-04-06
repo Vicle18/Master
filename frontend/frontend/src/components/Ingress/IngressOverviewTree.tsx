@@ -70,6 +70,7 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
   },
   [`& .${treeItemClasses.group}`]: {
     marginLeft: 15,
+    marginBottom: 15,
     paddingLeft: 18,
     borderLeft: `1px dashed ${alpha(theme.palette.text.primary, 0.4)}`,
   },
@@ -109,7 +110,7 @@ const RenderTree: React.FC<RenderTreeProps> = ({ nodes, onItemClick, clickable, 
         return (
           <StyledTreeItem
             key={node.id}
-            sx={{ color: isClickable ? "black" : "lightgrey" }}
+            sx={{ color: isClickable ? "black" : "grey" }}
             nodeId={node.name}
             label={node.name}
             onClick={(event) => {
@@ -207,6 +208,7 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
         defaultExpandIcon={<PlusSquare />}
         defaultEndIcon={<CloseSquare />}
         onNodeToggle={handleToggle}
+
         sx={{ flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
       >
         {RenderTree( {nodes: data.companies as TreeNode[], onItemClick, clickable: filter.includes("companies"), filter} )}

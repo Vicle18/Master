@@ -11,40 +11,43 @@ public class ConnectionDetailsFactory
 {
     private static int counter = 0;
 
-    public static IConnectionDetails Create(CreateIngressDto value, string topicName)
+    public static IConnectionDetails Create(string id, CreateIngressDto value, string topicName)
     {
         switch (value.protocol)
         {
             case "MQTT":
                 return new MQTTConnectionDetails
                 {
+                    ID = id,
                     PROTOCOL = value.protocol,
                     PARAMETERS = new MQTTParameters
                     {
                         HOST = value.host,
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
-                        FREQUENCY = value.frequency,
-                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
+                        FREQUENCY = value.frequency.ToString(),
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
                         
                     }
                 };
             case "RTDE":
                 return new RTDEConnectionDetails
                 {
+                    ID = id,
                     PROTOCOL = value.protocol,
                     PARAMETERS = new RTDEParameters()
                     {
                         HOST = value.host,
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
-                        FREQUENCY = value.frequency,
-                        CHANGED_FREQUENCY = value.changedFrequency ?? value.frequency
+                        FREQUENCY = value.frequency.ToString(),
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
                     }
                 };
             case "OPCUA":
                 return new OPCUAConnectionDetails
                 {
+                    ID = id,
                     PROTOCOL = value.protocol,
                     PARAMETERS = new OPCUAParameters
                     {
@@ -66,7 +69,7 @@ public class ConnectionDetailsFactory
     }
 
 
-    public static IConnectionDetails Create(CreateEgressDto value, string topicName, ObservableProperty observableProperty)
+    public static IConnectionDetails Create(string id, CreateEgressDto value, string topicName, ObservableProperty observableProperty)
     {
         Log.Debug("details");
         Log.Debug(value.protocol);
@@ -77,6 +80,7 @@ public class ConnectionDetailsFactory
             case "MQTT":
                 return new MQTTConnectionDetails
                 {
+                    ID = id,
                     PROTOCOL = value.protocol,
                     PARAMETERS = new MQTTParameters
                     {
@@ -88,6 +92,7 @@ public class ConnectionDetailsFactory
             case "OPCUA":
                 return new OPCUAConnectionDetails
                 {
+                    ID = id,
                     PROTOCOL = value.protocol,
                     PARAMETERS = new OPCUAParameters
                     {

@@ -29,6 +29,7 @@ spec:
       containers:
       - name: meta-store-container
         image: clemme/meta-store
+        imagePullPolicy: Always
         env:
         - name: NEO4J_USER
           value: "neo4j"

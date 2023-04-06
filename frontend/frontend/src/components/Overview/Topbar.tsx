@@ -7,6 +7,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../Theme";
 import { CreateEndpoint } from "./createEndpointMenu";
 import { useNavigate } from "react-router-dom";
+import ExportStepper from "../Export/ExportMenu";
 
 type TopBarProps = {
   onNavMenuClick: (page: string) => void;
@@ -63,6 +64,7 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
               ))}
             </React.Fragment>
             {CreateEndpoint(open, createClick, anchorEl, handleClose)}
+            <ExportStepper/>
           </Toolbar>
         </Container>
       </AppBar>

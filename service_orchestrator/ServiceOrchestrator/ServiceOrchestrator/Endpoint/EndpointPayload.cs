@@ -2,6 +2,6 @@ namespace ServiceOrchestrator.Endpoint;
 
 public class EndpointPayload
 {
-    public string Protocol { get; set; }
-    public Dictionary<string, string> Parameters { get; set; }
+    public bool CreateBroker { get; set; }
+    public ConnectionDetails ConnectionDetails { get; set; }
 }

@@ -15,26 +15,30 @@ export interface FormData {
 }
 
 export const initialValues: FormData = {
-  name: "defaultName",
+  name: "Robot Mode" + Math.floor(Math.random() * 1000),
   description: "default Description",
-  protocol: "MQTT",
-  frequency: "30",
-  changedFrequency: "30",
+  protocol: "RTDE",
+  frequency: "1",
+  changedFrequency: "1",
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   topic: "example",
   port: "1883",
-  output: "timestamp",
+  output: "robot_mode",
   nodeId: "",
   containingElement: "Machine A",
   dataFormat: "JSON",
 };
-  
+
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
   frequency: Yup.string().required("Frequency is required"),
-  changedFrequency: Yup.string().optional(),
+  changedFrequency: Yup.string().test('lower-frequency', 'Changed frequency cannot be higher than frequency', function (changedFrequency) {
+    const { frequency } = this.parent;
+    if (!changedFrequency || !frequency) { return true; }
+    return parseInt(changedFrequency) <= parseInt(frequency); // check if changedFrequency is lower than or equal to frequency
+  }),
   host: Yup.string().when("protocol", {
     is: (protocol: string) => protocol === "MQTT" || protocol === "RTDE",
     then: (schema) => schema.required("host is required"),

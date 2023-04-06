@@ -49,33 +49,38 @@ namespace ServiceOrchestrator.Controllers
         {
             ContainerConfig config = new ContainerConfig("clemme/ingress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
+            if (data.CreateBroker)
+            {
+                _logger.LogDebug("Creating new broker for {adapter}", "ingress");
+            }
             _logger.LogDebug(config.ToString());
-            _containerManager.StartContainer(config);
+            _containerManager.StartContainer(data.ConnectionDetails.Id, config);
         }
 
         private static void ManagePayload(EndpointPayload data, ContainerConfig config)
         {
-            config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.Protocol);
+            config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
+            config.EnvironmentVariables.Add("INGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
             config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
-                data.Parameters["TRANSMISSION_PAIRS"]);
+                data.ConnectionDetails.Parameters["TRANSMISSION_PAIRS"]);
 
-            switch (data.Protocol)
+            switch (data.ConnectionDetails.Protocol)
             {
                 case "MQTT":
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.Parameters["FREQUENCY"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.Parameters["CHANGED_FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.ConnectionDetails.Parameters["FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.ConnectionDetails.Parameters["CHANGED_FREQUENCY"]);
                     break;
                 case "RTDE":
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.Parameters["FREQUENCY"]);
-                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.Parameters["CHANGED_FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__FREQUENCY", data.ConnectionDetails.Parameters["FREQUENCY"]);
+                    config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__CHANGED_FREQUENCY", data.ConnectionDetails.Parameters["CHANGED_FREQUENCY"]);
                     break;
                 case "OPCUA":
                     config.EnvironmentVariables.Add("INGRESS_CONFIG__PARAMETERS__SERVER_URL",
-                        data.Parameters["SERVER_URL"]);
+                        data.ConnectionDetails.Parameters["SERVER_URL"]);
                     break;
                 case "REST":
                     Log.Error("REST IS NOT SUPPORTED YET");
@@ -94,8 +99,9 @@ namespace ServiceOrchestrator.Controllers
 
         // DELETE: api/Ingress/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            _containerManager.StopContainer(id);
         }
     }
 }

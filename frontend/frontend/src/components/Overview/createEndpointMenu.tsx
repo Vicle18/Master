@@ -21,6 +21,7 @@ import {
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 import CreateIngressStepper from "../Ingress/createv2/CreateIngressStepper";
+import ImportMenu from "../Import/ImportMenu";
 export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
@@ -38,10 +39,13 @@ export function CreateEndpoint(
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [PopupIngress, setPopupIngress] = React.useState(false);
+  
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [PopupContainingElement, setPopupContainingElement] =
     React.useState(false);
   const [PopupEgress, setPopupEgress] = React.useState(false);
+  const [PopupImport, setPopupImport] = React.useState(false);
+
 
   const [result, setResult] = useState<string | null>(null);
   const handleSubmit = (name: string, description: string) => {
@@ -56,6 +60,9 @@ export function CreateEndpoint(
   };
   const handlerClickOpenEgress = () => {
     setPopupEgress(true);
+  };
+  const handlerClickOpenImport = () => {
+    setPopupImport(true);
   };
   const handleResult = (result: string) => {
     console.log(`Result: ${result}`);
@@ -111,7 +118,14 @@ export function CreateEndpoint(
           <AddBox />
           Containing Element
         </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        
+        <MenuItem onClick={handlerClickOpenImport} disableRipple>
+          <AddBox />
+          Import Machine
+        </MenuItem>
       </Menu>
+      <ImportMenu PopupImport={PopupImport} setPopupImport={setPopupImport}/>
       {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
       {CreateContainingElementStepper({
         PopupContainingElement,

@@ -3,28 +3,137 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
-import { Box, Button, Icon, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  Icon,
+  List,
+  ListItem,
+  ListItemText,
+  TextField,
+} from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import Stack from "@mui/material/Stack";
 import CurrentValue from "./CurrentValue";
 import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
+import Grid2 from "@mui/material/Unstable_Grid2";
+import { log } from "console";
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
-  query GetDataForContainingEntity($where: ResourceWhere) {
-    resources(where: $where) {
+query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
+  areas(where: $where) {
+    id
+    name
+    description
+    observableProperties {
+      id
       name
-      ObservableProperties {
-        id
+      description
+      topic {
         name
-        topic {
-          name
-        }
-        frequency
       }
+      frequency
     }
   }
+  cells(where: $cellsWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  machines(where: $machinesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  companies(where: $companiesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  lines(where: $linesWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  plants(where: $plantsWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+}
 `;
+
+interface ObjectWithProperties {
+  id: string;
+  name: string;
+  description: string;
+  observableProperties: {
+    id: string;
+    name: string;
+    description: string;
+    topic: {
+      name: string;
+    };
+    frequency: number;
+  }[];
+}
+
+interface QueryResult {
+
+    areas: ObjectWithProperties[];
+    cells: ObjectWithProperties[];
+    machines: ObjectWithProperties[];
+    companies: ObjectWithProperties[];
+    lines: ObjectWithProperties[];
+    plants: ObjectWithProperties[];
+
+}
 
 interface IDetailedViewProps {
   containingEntityId: any;
@@ -44,17 +153,50 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     setSearchTerm(event.target.value);
   };
 
-  const { loading, error, data } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
-    variables: { where: { name: containingEntityId } },
-    fetchPolicy: "no-cache" 
+  const { loading, error, data: queryResult, refetch } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
+    variables: { 
+      "where": {
+        "id": containingEntityId
+      },
+      "cellsWhere2": {
+        "id": containingEntityId
+      },
+      "machinesWhere2": {
+        "name": containingEntityId
+      },
+      "companiesWhere2": {
+        "id": containingEntityId
+      },
+      "linesWhere2": {
+        "id": containingEntityId
+      },
+      "plantsWhere2": {
+        "id": containingEntityId
+      } 
+    },
+    fetchPolicy: "no-cache",
   });
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
     return <p>Error : {error.message}</p>;
   }
-  var properties = data.resources[0];
+  // console.log("queryResult: ", queryResult);
+  // function hasData<T extends ObjectWithProperties[]>(objects: T): objects is [T[number]] {
+  //   return objects.some(object => object.observableProperties.length > 0);
+  // }
+  
+  const dataObjects = [
+    ...queryResult?.areas || [],
+    ...queryResult?.cells || [],
+    ...queryResult?.machines || [],
+    ...queryResult?.companies || [],
+    ...queryResult?.lines || [],
+    ...queryResult?.plants || []
+  ];
 
+  var properties: ObjectWithProperties = dataObjects[0];
+  // console.log("properties: ", properties);
   const handleShowChart = (data: any) => {
     const newData = {
       id: data.id,
@@ -64,6 +206,27 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     };
     onOpenChart(newData);
   };
+  function handleDeleteItem(item: any): void {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        refetch();
+        return response.json();
+      })
+      .then((data) => console.log("data: " + JSON.stringify(data)))
+      .catch((error) => console.error(error));
+  }
+
   return (
     <>
       <Stack
@@ -80,6 +243,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       </Stack>
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label="Observable Properties" />
+        <Button onClick={() => refetch()}>Refresh</Button>
       </Divider>
       <TextField
         label="Search..."
@@ -90,12 +254,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         sx={{ marginBottom: "10px" }}
         fullWidth
       />
-      {properties?.ObservableProperties?.filter((item: any) =>
+      {properties?.observableProperties?.filter((item: any) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       ).map((item: any, index: any) => (
         <Accordion key={index}>
           <AccordionSummary>
-            <Typography sx={{ width: "33%", flexShrink: 0 }}>
+            <Typography variant="overline" sx={{ width: "33%", flexShrink: 0 }}>
               {item.name}
             </Typography>
             <Box sx={{ marginLeft: "auto" }}>
@@ -108,7 +272,60 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
           <AccordionDetails>
             {withDetails && (
               <>
-                <Typography>"Some details"</Typography>
+                <Grid2 container spacing={2}>
+                  <Grid2
+                    xs={6}
+                    sx={{
+                      backgroundColor: "whitesmoke",
+                      marginBottom: "30px",
+                      marginLeft: "20px",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Description:
+                      </Box>{" "}
+                      {item.description}
+                    </Typography>
+                  </Grid2>
+                  <Grid2
+                    xs={4}
+                    sx={{
+                      marginLeft: "20px",
+                      marginRight: "20px",
+                      marginBottom: "30px",
+                      borderRadius: "10px",
+                      backgroundColor: "whitesmoke",
+                    }}
+                  >
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Id:
+                      </Box>{" "}
+                      {item.id}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Name:
+                      </Box>{" "}
+                      {item.name}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Topic:
+                      </Box>{" "}
+                      {item.topic.name}
+                    </Typography>
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        Frequency:
+                      </Box>{" "}
+                      {item.frequency}
+                    </Typography>
+                  </Grid2>
+                </Grid2>
+
                 <Stack direction="row" spacing={2}>
                   <Button variant="contained">Create new egress</Button>
                   <Button
@@ -117,7 +334,11 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   >
                     Show data
                   </Button>
-                  <Button variant="outlined" color="error">
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteItem(item)}
+                  >
                     Delete
                   </Button>
                 </Stack>

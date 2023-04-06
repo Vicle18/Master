@@ -82,7 +82,9 @@ CREATE (jointTemperature:ObservableProperty {
     name: 'Joint Temperature',
     description: 'Description of the Joint Temperature Observable Property',
     frequency: 100,
-        changedFrequency: 100
+    changedFrequency: 100,
+    connectionDetails: "jointTemperatureConnectionDetails",
+    dataFormat: "RAW"
 
     })
 CREATE (jointTemperature2:ObservableProperty {
@@ -90,23 +92,27 @@ CREATE (jointTemperature2:ObservableProperty {
     name: 'Joint Temperature 2',
     description: 'Description of the Joint Temperature 2 Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: "jointTemperature2ConnectionDetails"
     })
 CREATE (jointPressure:ObservableProperty {
     id: 'jointPressure',
     name: 'Joint Pressure',
     description: 'Description of the Joint Pressure Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: "jointPressureConnectionDetails"
     })
 CREATE (jointPressure2:ObservableProperty {
     id: 'jointPressure2',
     name: 'Joint Pressure 2',
     description: 'Description of the Joint Pressure 2 Observable Property',
     frequency: 100,
-        changedFrequency: 100
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: "jointPressure2ConnectionDetails"
 
     })
 CREATE (jointVibration:ObservableProperty {
@@ -114,34 +120,65 @@ CREATE (jointVibration:ObservableProperty {
     name: 'Joint Vibration',
     description: 'Description of the Joint Vibration Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: "jointVibrationConnectionDetails"
     })
 CREATE (jointVibration2:ObservableProperty {
     id: 'jointVibration2',
     name: 'Joint Vibration 2',
     description: 'Description of the Joint Vibration 2 Observable Property',
     frequency: 100,
-    changedFrequency: 100
+    changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: "jointVibration2ConnectionDetails"
     })
 
-CREATE (:EgressEndpoint {
+CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
     connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
     frequency: 60,
-    dataFormat: "Raw"
+    changedFrequency: 30,
+    dataFormat: "Raw",
+    egressGroup: "group1"
+
 })
 
-CREATE (:EgressEndpoint {
+CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
     connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
     frequency: 30,
-    dataFormat: "Json"
+    changedFrequency: 30,
+    dataFormat: "Json",
+    egressGroup: "group2"
 })
+
+
+CREATE (egress3:EgressEndpoint {
+    id: "egress3",
+    name: "Endpoint 3",
+    description: "This is the second egress endpoint",
+    connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
+    frequency: 30,
+    changedFrequency: 30,
+    dataFormat: "Json",
+    egressGroup: "group3"
+
+})
+
+CREATE (egress1)-[:accessVia]->(jointTemperature)
+CREATE (egress1)-[:accessVia]->(jointTemperature2)
+
+CREATE (egress2)-[:accessVia]->(jointVibration)
+CREATE (egress2)-[:accessVia]->(jointVibration2)
+
+CREATE (egress3)-[:accessVia]->(jointPressure)
+CREATE (egress3)-[:accessVia]->(jointPressure2)
+
 
 
 // Create topics

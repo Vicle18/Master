@@ -14,6 +14,7 @@ public class KubernetesManager : IContainerManager
     private k8s.Kubernetes _client;
     private string uniqueId = "";
     private bool isBrokerCreated = false;
+    private string _mqttBrokerHost;
 
     public KubernetesManager(IConfiguration config, ILogger<KubernetesManager> logger)
     {
@@ -43,11 +44,11 @@ public class KubernetesManager : IContainerManager
     }
 
 
-    public void StartContainer(ContainerConfig config)
+    public async Task StartContainer(string id, ContainerConfig config)
     {
-        uniqueId = Guid.NewGuid().ToString("N");
-        var pod = CreateV1Pod(config, uniqueId);
-        var createdPod = _client.CreateNamespacedPod(pod, "sso");
+        // string uniqueId = Guid.NewGuid().ToString("N");
+        var pod = CreateV1Pod(config, id);
+        var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
         _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
     }
 
@@ -59,12 +60,14 @@ public class KubernetesManager : IContainerManager
         {
             Metadata = new V1ObjectMeta
             {
-                Name = $"pod-{config.ImageName.Split("/").Last().Split(":").First()}-{uniqueId}",
+
+                Name = $"pod-{uniqueId}",
+
                 Labels = new Dictionary<string, string>
                 {
                     { "app", "egress-adapters" }
                 }
-            },
+        },
             Spec = new V1PodSpec
             {
                 Containers = new List<V1Container>
@@ -86,26 +89,33 @@ public class KubernetesManager : IContainerManager
         return pod;
     }
 
-
-    public void StopContainer(string id)
+    public async Task StopContainer(string id)
     {
+        await _client.DeleteNamespacedPodAsync(
+            name: $"pod-{id}",
+            namespaceParameter: "sso",
+            body: new V1DeleteOptions { PropagationPolicy = "Background" });
     }
 
-    public async void StartContainerBroker(ContainerConfig config, string protocol)
+    public async Task<string> StartContainerBroker(string id, ContainerConfig config, string protocol)
     {
         Log.Debug(protocol);
 
 
-        if (protocol == "MQTT" && !isBrokerCreated)
+        if (protocol == "MQTT")
         {
+            if (isBrokerCreated) return _mqttBrokerHost;
             Log.Debug("inside mqtt");
             MQTTBroker mqttBroker = new MQTTBroker();
-            V1Service service = mqttBroker.createService(config, uniqueId);
-            V1Pod pod = mqttBroker.createPod(config, uniqueId);
-            var podResult = _client.CreateNamespacedPod(pod, "sso");
-            var serviceResult = _client.CreateNamespacedService(service, "sso");
+            V1Service service = mqttBroker.createService(config, id);
+            V1Pod pod = mqttBroker.createPod(config, id);
+            var podResult = await _client.CreateNamespacedPodAsync(pod, "sso");
+            var serviceResult = await _client.CreateNamespacedServiceAsync(service, "sso");
+            _mqttBrokerHost = pod.Metadata.Name;
             isBrokerCreated = true;
+            return pod.Metadata.Name;
         }
+        throw new ArgumentException($"We do not support the protocol {protocol}");
         //TODO Create OPCUA broker and 
     }
 

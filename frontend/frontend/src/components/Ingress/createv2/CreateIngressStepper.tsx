@@ -60,13 +60,13 @@ const CreateIngressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
-  const [selectedChild, setSelectedChild] = useState<string>("");
 
-  const [selectedContainingElement, setSelectedParent] = useState<string>("");
+
+  const [currentlySelectedParent, setCurrentlySelectedParent] = useState<string>("");
+  const [selectedParent, setSelectedParent] = useState<string>("");
+
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
     setPopupIngress(false);
   };
@@ -157,7 +157,7 @@ const CreateIngressStepper: React.FC<Props> = ({
             isValid,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <DialogTitle>Create a Containing Element</DialogTitle>
+              <DialogTitle>Create an observable property</DialogTitle>
 
               <DialogContent
                 dividers={true}
@@ -407,17 +407,17 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <Box mb={2}>
                           <Grid2 container alignItems="center" spacing={2}>
                             <Grid2 container xs={9}>
-                              <Box
+                              {/* <Box
                                 display="inline-block"
                                 borderRadius={3}
                                 border="2px solid black"
                                 padding={2}
                                 maxWidth="100%"
-                              >
-                                <Typography variant="body1">
-                                  Current Element: {selectedContainingElement}
+                              > */}
+                                <Typography variant="caption">
+                                  Current Element: {currentlySelectedParent}
                                 </Typography>
-                              </Box>
+                              {/* </Box> */}
                             </Grid2>
                             <Grid2 container xs={3}>
                               <Button
@@ -425,7 +425,8 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 color="primary"
                                 onClick={() => {
                                   values.containingElement =
-                                    selectedContainingElement;
+                                    currentlySelectedParent;
+                                  setSelectedParent(currentlySelectedParent)
                                 }}
                               >
                                 SELECT
@@ -438,7 +439,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <IngressOverviewLeft
                           onItemClick={(parent: any) => {
                             HandleIngressClick(parent.name);
-                            setSelectedParent(parent.name);
+                            setCurrentlySelectedParent(parent.name);
                             console.log("parent", values.containingElement);
                           }}
                         />
@@ -460,7 +461,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           maxWidth="100%"
                         >
                           <Typography variant="body1">
-                            Selected Element: {values.containingElement}
+                            Selected Element: {selectedParent}
                           </Typography>
                         </Box>
                       </Grid2>

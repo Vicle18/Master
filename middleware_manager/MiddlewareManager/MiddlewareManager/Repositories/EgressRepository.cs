@@ -68,9 +68,23 @@ public class EgressRepository : IEgressRepository
         return observableProperties[0];
     }
 
-    public async Task<Response> CreateEgressEndpoint(CreateEgressDto value, string connectionDetails,
-        ObservableProperty observableProperty, string egressGroupId)
+    public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, List<string> connectionDetails,
+         List<ObservableProperty> observableProperties, string egressGroupId)
     {
+        var accessToNodes = new List<dynamic>();
+        foreach(var observableProperty in observableProperties)
+        {
+            accessToNodes.Add(new
+            {
+                where = new
+                {
+                    node = new
+                    {
+                        id = observableProperty.id
+                    }
+                }
+            });
+        }
         Log.Debug("BEFORE GRAPHQL REQUEST ");
         var request = new GraphQLRequest
         {
@@ -95,29 +109,17 @@ public class EgressRepository : IEgressRepository
                 {
                     new
                     {
-                        id = Guid.NewGuid().ToString(),
+                        id = id,
                         name = value.name,
                         description = value.description,
                         dataFormat = value.dataFormat,
-                        frequency = observableProperty.frequency,
-                        connectionDetails = connectionDetails,
-                        changedFrequency = observableProperty.changedFrequency ?? observableProperty.frequency,
+                        frequency = value.freqencies,
+                        connectionDetails = connectionDetails.ToArray(),
+                        changedFrequency = ManageFrequencies(value.changedFrequencies, value.freqencies),
                         egressGroup = egressGroupId,
                         accessTo = new
                         {
-                            connect = new[]
-                            {
-                                new
-                                {
-                                    where = new
-                                    {
-                                        node = new
-                                        {
-                                            id = observableProperty.id
-                                        }
-                                    }
-                                }
-                            }
+                           connect = accessToNodes.ToArray()
                         }
                     }
                 }
@@ -125,7 +127,45 @@ public class EgressRepository : IEgressRepository
         };
         var response = await graphQLClient.SendMutationAsync<Response>(request);
         Log.Debug(JsonConvert.SerializeObject(response));
-        _logger.LogCritical("when creating ingress, got feedback: {feedback}", response.Data);
+        _logger.LogCritical("when creating egress, got feedback: {feedback}", response.Data);
         return response.Data;
+    }
+
+    public async Task<string> DeleteEgressEndpoint(string id)
+    {
+        var request = new GraphQLRequest
+        {
+            Query = @"
+                mutation DeleteEgressEndpoints($where: EgressEndpointWhere) {
+                  deleteEgressEndpoints(where: $where) {
+                    nodesDeleted
+                  }
+                }",
+            Variables = new
+            {
+                where= new
+                {
+                    id = id
+                }
+            }
+        };
+        
+        var response = await graphQLClient.SendMutationAsync<Object>(request);
+        Log.Debug(JsonConvert.SerializeObject(response));
+        _logger.LogCritical("when deleting egress, got feedback: {feedback}", response.Data);
+        if (response.Errors != null)
+        {
+            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
+        }
+
+        return JsonConvert.SerializeObject(response.Data);
+    }
+    
+    private Array ManageFrequencies(int[]? valueChangedFrequencies, int[] valueFreqencies)
+    {
+        Log.Debug(JsonSerializer.Serialize(valueChangedFrequencies));
+        Log.Debug(JsonSerializer.Serialize(valueFreqencies));
+        return valueChangedFrequencies.Zip(valueFreqencies, (changedFrequency, frequency) => changedFrequency == 0 ? frequency : changedFrequency).ToArray();
+
     }
 }

@@ -4,8 +4,6 @@ public abstract class CreateDTO
 {
     public string name { get; set; }
     public string description { get; set; }
-    public string protocol { get; set; }
-    public string dataFormat { get; set; }
 
     public string? host { get; set; }
 

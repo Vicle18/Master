@@ -8,6 +8,9 @@
 #     id: ID!
 #     name: String!
 # }
+
+# union Resource = Company | Plant | Area | Line | Cell | Machine
+
 interface ContainingElement {
     observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
     id: ID!
@@ -15,8 +18,17 @@ interface ContainingElement {
     description: String!
 }
 
+interface Resource {
+    id: ID!
+    name: String!
+    description: String!
+}
+type Query {
+    resources(): [Resource]!
+}
+
 # Types
-type Company implements ContainingElement{
+type Company implements Resource{
     id: ID!
     name: String!
     description: String!
@@ -75,18 +87,24 @@ type ObservableProperty{
     accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
     dataFormat: String!
     changedFrequency: Int!
+    status: String!
+    lastUpdatedAt:String!
+    errorStateAt:String!
 }
 
 type EgressEndpoint{
     id: ID!
     name: String!
     description: String!
-    connectionDetails: String!
-    frequency: Int!
+    connectionDetails: [String!]!
+    frequency: [Int!]!
     dataFormat: String!
     accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
-    changedFrequency: Int!
+    changedFrequency: [Int!]!
     egressGroup: String!
+    status: String!
+    lastUpdatedAt:String!
+    errorStateAt:String!
 }
 
 type Topic{
@@ -96,12 +114,13 @@ type Topic{
     topicOf: ObservableProperty! @relationship(type: "has", direction: IN)
 }
 
-type Resource{
-    id: ID!
-    name: String!
-    description: String!
-    ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
-}
+
+# type Resource{
+#     id: ID!
+#     name: String!
+#     description: String!
+#     ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
+# }
 
 
 
