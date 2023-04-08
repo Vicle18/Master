@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  StepLabel,
   TextField,
 } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
@@ -19,6 +20,10 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { initialValues } from "./createv2/FormDefinition";
+import EditIngressStepper from "./edit/EditIngressStepper";
+import { editIngressEndpoint } from "./edit/editIngressEndpoint";
+
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
   query GetDataForContainingEntity($where: ResourceWhere) {
     resources(where: $where) {
@@ -48,6 +53,73 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   withDetails,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [PopupIngress, setPopupIngress] = React.useState(false);
+  const [result, setResult] = React.useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [showEditEndpoint, setShowEditEndpoint] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
+  const [selectedIngress, setSelectedIngress] = React.useState<string>("");
+
+  // handle the close event
+  const handleClose = () => {
+    setPopupIngress(false);
+  };
+
+  // handle the back event
+  const handleBack = () => {
+    setActiveStep(activeStep - 1);
+  };
+
+  // handle the next event
+  const handleNext = () => {
+    setActiveStep(activeStep + 1);
+  };
+
+  // handle the finish event
+  const handleFinish = (values: any) => {
+    // handleResult();
+    console.log("Finish him")
+    handleClose();
+    console.log(values)
+
+
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+        "Access-Control-Allow-Headers":
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((response) => response.json())
+      .then((data) => console.log("data: " + data))
+      .catch((error) => console.error(error));
+  };
+
+  function handleIngressClick(data: any): void {
+    setSelectedIngress(data);
+    console.log("selected containing element", data);
+  }
+
+  const handleShowEdit = (data: any) => {
+    initialValues.name = data.name
+    initialValues.description = data.description
+    initialValues.frequency = data.frequency
+    initialValues.changedFrequency = data.changedFrequency
+    initialValues.host = data.host
+    initialValues.port = data.port
+    initialValues.dataFormat = data.dataFormat
+    initialValues.id = data.id
+    setShowEditEndpoint(true);
+    setPopupIngress(true);
+  
+  }
+
+  const steps = ["Step 1", "Step 2", "Step 3"];
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -74,6 +146,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     };
     onOpenChart(newData);
   };
+
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
       method: "DELETE",
@@ -194,16 +267,24 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   </Grid2>
                 </Grid2>
 
-                <Stack direction="row" spacing={2}>
-                  <Button variant="contained">Create new egress</Button>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
+                  <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
+                  {showEditEndpoint && (
+                    //EditIngress(PopupIngress, handleIngressClick, setSelectedParent, handleClose, activeStep, steps, handleFinish, handleBack, handleNext, selectedContainingElement)
+                    //EditIngressStepper({ PopupIngress, setPopupIngress, handleResult })
+                    editIngressEndpoint(PopupIngress, handleClose, handleFinish, activeStep, steps, handleNext, handleBack, selectedContainingElement, handleIngressClick, setSelectedParent)
+                  )}
                   <Button
                     variant="contained"
+                    style={{ fontSize: "12px" }}
                     onClick={() => handleShowChart(item)}
                   >
                     Show data
                   </Button>
                   <Button
                     variant="outlined"
+                    style={{ fontSize: "12px" }}
                     color="error"
                     onClick={() => handleDeleteItem(item)}
                   >
@@ -229,6 +310,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       ))}
     </>
   );
-};
+}
+
+
+
 
 export default DetailedView;
+
+
+

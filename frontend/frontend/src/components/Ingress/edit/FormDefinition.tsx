@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 export interface FormData {
-  id: string;
   name: string;
   description: string;
   protocol: string;
@@ -11,7 +10,6 @@ export interface FormData {
   topic?: string;
   output?: string
   nodeId?: string;
-  containingElement: string;
   dataFormat: string;
 }
 
@@ -21,18 +19,15 @@ export const initialValues: FormData = {
   protocol: "MQTT",
   frequency: "30",
   changedFrequency: "30",
-  host: "172.17.0.1",
+  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   topic: "example",
   port: "1883",
   output: "timestamp",
   nodeId: "",
-  containingElement: "Machine A",
   dataFormat: "JSON",
-  id: ""
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
-  id: Yup.string().required(),
   name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
@@ -67,6 +62,5 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.required("nodeid is required"),
     otherwise: (schema) => schema,
   }),
-  containingElement: Yup.string().required("Containing element is required"),
   dataFormat: Yup.string().required("Data format is required"),
 });

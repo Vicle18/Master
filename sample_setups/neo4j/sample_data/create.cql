@@ -178,6 +178,8 @@ CREATE (jointPressure)-[:has]->(topicC)
 CREATE (jointPressure2)-[:has]->(topicD)
 CREATE (jointVibration)-[:has]->(topicE)
 CREATE (jointVibration2)-[:has]->(topicF)
+CREATE (jointTemperature)-[:has]->(machineA)
+
 
 // Create relationships
 CREATE (machineA)-[:has{frequency:100}]->(jointTemperature)
