@@ -176,3 +176,4 @@
 /Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/Debug/net6.0/IngressAdapter.pdb
 /Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/Debug/net6.0/IngressAdapter.genruntimeconfig.cache
 /Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/IngressAdapter/obj/Debug/net6.0/ref/IngressAdapter.dll
+/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/bin/Debug/net6.0/appsettings.Development.json

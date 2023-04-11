@@ -42,7 +42,6 @@ namespace IngressAdapter
             
             var controller = ActivatorUtilities.GetServiceOrCreateInstance<IController>(host.Services);
             var config = ActivatorUtilities.GetServiceOrCreateInstance<IConfiguration>(host.Services);
-
             Log.Information("Ingress adapter {id} is starting", config.GetValue<string>("ID"));
             try
             {

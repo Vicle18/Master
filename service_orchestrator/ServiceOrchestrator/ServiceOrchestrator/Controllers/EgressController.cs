@@ -62,17 +62,17 @@ namespace ServiceOrchestrator.Controllers
             config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
-                data.ConnectionDetails.Parameters["TRANSMISSION_PAIRS"]);
+                data.ConnectionDetails.Parameters["TRANSMISSION_PAIRS"].GetString());
 
             if (data.ConnectionDetails.Protocol == Protocol.MQTT.ToString())
             {
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"]);
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"]);
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"].GetString());
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"].GetString());
             }
             else if (data.ConnectionDetails.Protocol == Protocol.OPCUA.ToString())
             {
                 config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__SERVER_URL",
-                    data.ConnectionDetails.Parameters["SERVER_URL"]);
+                    data.ConnectionDetails.Parameters["SERVER_URL"].GetString());
             }
             else if (data.ConnectionDetails.Protocol == Protocol.REST.ToString())
             {
