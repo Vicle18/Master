@@ -160,7 +160,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
   const [selectedIngress, setSelectedIngress] = React.useState<string>("");
 
-const steps = ["Step 1", "Step 2", "Step 3"];
+const steps = ["Step 1", "Step 2"];
 
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>

@@ -259,83 +259,9 @@ export function editIngressEndpoint(PopupIngress: boolean, handleClose: () => vo
                   </Field>
                 </>
               )}
-              {activeStep === 1 && (
-                <>
-                  <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                    <Grid2
-                      xs={5}
-                      sx={{
-                        marginTop: "30px",
-                        marginLeft: "20px",
-                        marginRight: "20px",
-                        borderRadius: "10px",
-                        backgroundColor: "whitesmoke",
-                      }}
-                    >
-                      <Box mb={2}>
-                        <Grid2 container alignItems="center" spacing={2}>
-                          <Grid2 container xs={9}>
-                            <Box
-                              display="inline-block"
-                              borderRadius={3}
-                              border="2px solid black"
-                              padding={2}
-                              maxWidth="100%"
-                            >
-                              <Typography variant="body1">
-                                Current Element: {selectedContainingElement}
-                              </Typography>
-                            </Box>
-                          </Grid2>
-                          <Grid2 container xs={3}>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() => {
-                                values.containingElement =
-                                  selectedContainingElement;
-                              }}
-                            >
-                              SELECT
-                            </Button>
-                          </Grid2>
-                        </Grid2>
-                      </Box>
+              
 
-                      <Divider />
-                      <IngressOverviewLeft
-                        onItemClick={(parent: any) => {
-                          handleIngressClick(parent.name);
-                          setSelectedParent(parent.name);
-                          console.log("parent", values.containingElement);
-                        }} />
-                    </Grid2>
-                    <Grid2
-                      xs={3}
-                      sx={{
-                        marginTop: "30px",
-                        marginLeft: "20px",
-                        marginRight: "20px",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      <Box
-                        display="inline-block"
-                        borderRadius={3}
-                        border="2px solid black"
-                        padding={2}
-                        maxWidth="100%"
-                      >
-                        <Typography variant="body1">
-                          Selected Element: {values.containingElement}
-                        </Typography>
-                      </Box>
-                    </Grid2>
-                  </Grid2>
-                </>
-              )}
-
-              {activeStep === 2 && ( //children
+              {activeStep === 1 && ( //children
                 <>
                   <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                     <Grid2
