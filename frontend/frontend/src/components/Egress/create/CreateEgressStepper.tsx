@@ -84,6 +84,9 @@ const CreateEgressStepper: React.FC<Props> = ({
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
     values.ingressIds = ingressNodes?.map((node: ingressNode) => node.id);
+    values.createBroker = !createBroker;
+    values.frequencies = ingressNodes.map((node: ingressNode) => node.frequency) || [];
+    values.changedFrequencies = ingressNodes.map((node: ingressNode) => node.changedFrequency) || [];
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -106,7 +109,7 @@ const CreateEgressStepper: React.FC<Props> = ({
       body: JSON.stringify(values),
     })
       .then((response) => response.json())
-      .then((data) => console.log("data: " + data))
+      .then((data) => console.log("data: " + JSON.stringify(data)))
       .catch((error) => console.error(error));
   };
 
@@ -427,8 +430,8 @@ const CreateEgressStepper: React.FC<Props> = ({
                                   //   ingressNodes[index].frequency
                                   // }
                                   onChange={(e) => {
-                                    ingressNodes[index].frequency = +e.target.value;
-                                    values.frequency = "30"
+                                    ingressNodes[index].changedFrequency = +e.target.value;
+
                                   }}
                                   size="small"
                                   // name={`data[${index}].frequency`}

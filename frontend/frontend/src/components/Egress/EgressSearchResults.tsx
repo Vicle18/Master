@@ -218,22 +218,22 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                       AccessTo:
                     </Box>{" "}
                     {/* {item.accessTo.map((item: any) => item.name + ", ")} */}
-                    {item.accessTo.map((item: any) => (
-                      <Chip label={`${item.name}`} color="success" />
-                    ))}
                   </Typography>
+                  {item.accessTo.map((item: any, index:any) => (
+                      <Chip key={index} label={`${item.name}`} color="success" />
+                    ))}
                   <Typography>
                     <Box component="span" fontWeight="bold">
                       Frequency:
                     </Box>{" "}
                     {item.frequency}
                   </Typography>
-                  <Typography>
+                  {/* <Typography>
                     <Box component="span" fontWeight="bold">
                       Connection details:
                     </Box>{" "}
                     {item.connectionDetails}
-                  </Typography>
+                  </Typography> */}
                 </Grid2>
               </Grid2>
 

@@ -5,6 +5,7 @@ using IngressAdapter.IngressCommunication.MQTT;
 using IngressAdapter.IngressCommunication.OPCUA;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Opc.Ua.Gds.Client;
 using Serilog;
@@ -100,7 +101,32 @@ public class Controller : IController
 
     private void TransmitMessage(string targetTopic, string value)
     {
-        _busClient.Publish(targetTopic, value);
-        Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
+        var dataFormat = _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").GetValue<string>("DATA_FORMAT") ?? throw new ArgumentException();
+        if (dataFormat == "RAW")
+        {
+            _busClient.Publish(targetTopic, value);
+            Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
+        }
+        else if (dataFormat == "WITH_METADATA")
+        {
+            var metadata = _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").GetSection("METADATA") ?? throw new ArgumentException();
+            var metadataObject = new JObject();
+            metadataObject["value"] = value;
+            if (metadata.GetValue<bool>("TIMESTAMP"))
+            {
+                metadataObject["timestamp"] = DateTime.Now.ToUniversalTime();
+            }
+            foreach (var item in metadata.GetChildren())
+            {
+                if (item.Key != "TIMESTAMP")
+                {
+                    metadataObject.Add(item.Key.ToLower(), item.Value);
+                }
+            }
+            _busClient.Publish(targetTopic, metadataObject.ToString());
+            Log.Debug("Transmitting message with metadata: {message} to topic: {topic}", metadataObject.ToString(), targetTopic);
+        }
+        // _busClient.Publish(targetTopic, value);
+        // Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
     }
 }

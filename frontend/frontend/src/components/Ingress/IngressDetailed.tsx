@@ -20,26 +20,124 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
-import EditIngressStepper from "./edit/EditIngressStepper";
 import { editIngressEndpoint } from "./edit/editIngressEndpoint";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
-  query GetDataForContainingEntity($where: ResourceWhere) {
-    resources(where: $where) {
+query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
+  areas(where: $where) {
+    id
+    name
+    description
+    observableProperties {
+      id
       name
-      ObservableProperties {
-        id
+      description
+      topic {
         name
-        description
-        topic {
-          name
-        }
-        frequency
       }
+      frequency
     }
   }
+  cells(where: $cellsWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  machines(where: $machinesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  companies(where: $companiesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  lines(where: $linesWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+  plants(where: $plantsWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+    }
+  }
+}
 `;
+
+interface ObjectWithProperties {
+  id: string;
+  name: string;
+  description: string;
+  observableProperties: {
+    id: string;
+    name: string;
+    description: string;
+    topic: {
+      name: string;
+    };
+    frequency: number;
+  }[];
+}
+
+interface QueryResult {
+
+    areas: ObjectWithProperties[];
+    cells: ObjectWithProperties[];
+    machines: ObjectWithProperties[];
+    companies: ObjectWithProperties[];
+    lines: ObjectWithProperties[];
+    plants: ObjectWithProperties[];
+
+}
 
 interface IDetailedViewProps {
   containingEntityId: any;
@@ -52,6 +150,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   onOpenChart,
   withDetails,
 }) => {
+  
   const [searchTerm, setSearchTerm] = React.useState("");
   const [PopupIngress, setPopupIngress] = React.useState(false);
   const [result, setResult] = React.useState<string | null>(null);
@@ -61,6 +160,55 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
   const [selectedIngress, setSelectedIngress] = React.useState<string>("");
 
+const steps = ["Step 1", "Step 2", "Step 3"];
+
+  const handleSearchTermChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const { loading, error, data: queryResult, refetch } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
+    variables: { 
+      "where": {
+        "id": containingEntityId
+      },
+      "cellsWhere2": {
+        "id": containingEntityId
+      },
+      "machinesWhere2": {
+        "name": containingEntityId
+      },
+      "companiesWhere2": {
+        "id": containingEntityId
+      },
+      "linesWhere2": {
+        "id": containingEntityId
+      },
+      "plantsWhere2": {
+        "id": containingEntityId
+      } 
+    },
+    fetchPolicy: "no-cache",
+  });
+  if (loading) return <p>Loading...</p>;
+  if (error) {
+    console.log("graph ", error);
+    return <p>Error : {error.message}</p>;
+  }
+
+  const dataObjects = [
+    ...queryResult?.areas || [],
+    ...queryResult?.cells || [],
+    ...queryResult?.machines || [],
+    ...queryResult?.companies || [],
+    ...queryResult?.lines || [],
+    ...queryResult?.plants || []
+  ];
+
+  var properties: ObjectWithProperties = dataObjects[0];
+
+  
   // handle the close event
   const handleClose = () => {
     setPopupIngress(false);
@@ -116,26 +264,10 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     initialValues.id = data.id
     setShowEditEndpoint(true);
     setPopupIngress(true);
+
+  }
+
   
-  }
-
-  const steps = ["Step 1", "Step 2", "Step 3"];
-  const handleSearchTermChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const { loading, error, data, refetch } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
-    variables: { where: { name: containingEntityId } },
-    fetchPolicy: "no-cache",
-  });
-  if (loading) return <p>Loading...</p>;
-  if (error) {
-    console.log("graph ", error);
-    return <p>Error : {error.message}</p>;
-  }
-  var properties = data.resources[0];
 
   const handleShowChart = (data: any) => {
     const newData = {
@@ -195,7 +327,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         sx={{ marginBottom: "10px" }}
         fullWidth
       />
-      {properties?.ObservableProperties?.filter((item: any) =>
+      {properties?.observableProperties?.filter((item: any) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       ).map((item: any, index: any) => (
         <Accordion key={index}>
@@ -271,8 +403,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
                   <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
                   {showEditEndpoint && (
-                    //EditIngress(PopupIngress, handleIngressClick, setSelectedParent, handleClose, activeStep, steps, handleFinish, handleBack, handleNext, selectedContainingElement)
-                    //EditIngressStepper({ PopupIngress, setPopupIngress, handleResult })
                     editIngressEndpoint(PopupIngress, handleClose, handleFinish, activeStep, steps, handleNext, handleBack, selectedContainingElement, handleIngressClick, setSelectedParent)
                   )}
                   <Button

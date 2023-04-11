@@ -43,34 +43,38 @@ namespace ServiceOrchestrator.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public void Post([FromBody] EndpointPayload data)
+        public async Task Post([FromBody] EndpointPayload data)
         {
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             AddingConfigurationData(data, config);
 
-            _containerManager.StartContainer(data.Id, config);
-
-            _containerManager.StartContainerBroker(config, config.EnvironmentVariables["EGRESS_CONFIG__PROTOCOL"]);
+            if (data.CreateBroker)
+            {
+                var host = await _containerManager.StartContainerBroker(data.ConnectionDetails.Id, config, data.ConnectionDetails.Protocol);
+                config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__HOST"] = host;
+                config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__PORT"] = "1883";
+            }
+            await _containerManager.StartContainer(data.ConnectionDetails.Id, config);
         }
 
         private static void AddingConfigurationData(EndpointPayload data, ContainerConfig config)
         {
-            config.EnvironmentVariables.Add("ID", data.Id);
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.Protocol);
+            config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
-                data.Parameters["TRANSMISSION_PAIRS"]);
+                data.ConnectionDetails.Parameters["TRANSMISSION_PAIRS"]);
 
-            if (data.Protocol == Protocol.MQTT.ToString())
+            if (data.ConnectionDetails.Protocol == Protocol.MQTT.ToString())
             {
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"]);
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"]);
             }
-            else if (data.Protocol == Protocol.OPCUA.ToString())
+            else if (data.ConnectionDetails.Protocol == Protocol.OPCUA.ToString())
             {
                 config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__SERVER_URL",
-                    data.Parameters["SERVER_URL"]);
+                    data.ConnectionDetails.Parameters["SERVER_URL"]);
             }
-            else if (data.Protocol == Protocol.REST.ToString())
+            else if (data.ConnectionDetails.Protocol == Protocol.REST.ToString())
             {
                 Log.Error("REST IS NOT SUPPORTED YET");
             }
