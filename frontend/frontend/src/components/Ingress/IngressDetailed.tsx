@@ -267,7 +267,18 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    var connectionDetails = data.connectionDetails.split(';')
+    var connectionDetails = ""
+    if (data.protocol == "MQTT") {
+      //data.connectionDetails.split(';')
+      // add to host
+      // add to port
+    } else if (data.protocol == "RTDE") {
+      //DO SAME 
+    } else if (data.protocol == "OPCUA") {
+      //DO THE SAME BUT WITH NODE_ID
+      // SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
+    }
+
     console.log(previousPropertyValues)
     initialValues.name = data.name
     initialValues.description = data.description
