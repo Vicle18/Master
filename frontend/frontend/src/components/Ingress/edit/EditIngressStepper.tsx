@@ -38,7 +38,7 @@ import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
 import Grid2 from "@mui/material/Unstable_Grid2";
 
-import { initialValues, validationSchema, FormData } from "./FormDefinition";
+import { initialValues, validationSchema, FormData } from "../createv2/FormDefinition";
 import IngressOverviewLeft from "../IngressOverviewLeft";
 
 interface Props {
@@ -53,7 +53,7 @@ const steps = [
   "Test Connection",
 ];
 
-const CreateIngressStepper: React.FC<Props> = ({
+const EditIngressStepper: React.FC<Props> = ({
   setPopupIngress,
   PopupIngress,
   handleResult,
@@ -529,4 +529,4 @@ const CreateIngressStepper: React.FC<Props> = ({
     </div>
   );
 };
-export default CreateIngressStepper;
+export default EditIngressStepper;

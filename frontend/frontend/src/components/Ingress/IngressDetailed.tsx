@@ -22,7 +22,8 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
-import { editIngressEndpoint } from "./edit/editIngressEndpoint";
+import { EditIngressEndpoint } from "./edit/EditIngressEndpoint";
+import CreateIngressStepper from "./createv2/CreateIngressStepper";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
@@ -38,6 +39,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
   cells(where: $cellsWhere2) {
@@ -52,6 +55,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
   machines(where: $machinesWhere2) {
@@ -66,6 +71,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
   companies(where: $companiesWhere2) {
@@ -80,6 +87,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
   lines(where: $linesWhere2) {
@@ -94,6 +103,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
   plants(where: $plantsWhere2) {
@@ -108,6 +119,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
     }
   }
 }
@@ -125,17 +138,19 @@ interface ObjectWithProperties {
       name: string;
     };
     frequency: number;
+    changedFrequency: number;
+    connectionDetails: string;
   }[];
 }
 
 interface QueryResult {
 
-    areas: ObjectWithProperties[];
-    cells: ObjectWithProperties[];
-    machines: ObjectWithProperties[];
-    companies: ObjectWithProperties[];
-    lines: ObjectWithProperties[];
-    plants: ObjectWithProperties[];
+  areas: ObjectWithProperties[];
+  cells: ObjectWithProperties[];
+  machines: ObjectWithProperties[];
+  companies: ObjectWithProperties[];
+  lines: ObjectWithProperties[];
+  plants: ObjectWithProperties[];
 
 }
 
@@ -150,17 +165,15 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   onOpenChart,
   withDetails,
 }) => {
-  
+
   const [searchTerm, setSearchTerm] = React.useState("");
   const [PopupIngress, setPopupIngress] = React.useState(false);
-  const [result, setResult] = React.useState<string | null>(null);
-  const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [showEditEndpoint, setShowEditEndpoint] = React.useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
-  const [selectedIngress, setSelectedIngress] = React.useState<string>("");
-
-const steps = ["Step 1", "Step 2"];
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [result, setResult] = React.useState<string | null>(null);
+  const steps = ["Change Property Values"];
 
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -169,7 +182,7 @@ const steps = ["Step 1", "Step 2"];
   };
 
   const { loading, error, data: queryResult, refetch } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
-    variables: { 
+    variables: {
       "where": {
         "id": containingEntityId
       },
@@ -187,7 +200,7 @@ const steps = ["Step 1", "Step 2"];
       },
       "plantsWhere2": {
         "id": containingEntityId
-      } 
+      }
     },
     fetchPolicy: "no-cache",
   });
@@ -208,7 +221,7 @@ const steps = ["Step 1", "Step 2"];
 
   var properties: ObjectWithProperties = dataObjects[0];
 
-  
+
   // handle the close event
   const handleClose = () => {
     setPopupIngress(false);
@@ -216,17 +229,22 @@ const steps = ["Step 1", "Step 2"];
 
   // handle the back event
   const handleBack = () => {
-    setActiveStep(activeStep - 1);
+    //setActiveStep(activeStep - 1);
   };
 
   // handle the next event
   const handleNext = () => {
-    setActiveStep(activeStep + 1);
+    //setActiveStep(activeStep + 1);
+  };
+
+  const handleResult = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResult(result);
   };
 
   // handle the finish event
   const handleFinish = (values: any) => {
-    // handleResult();
     console.log("Finish him")
     handleClose();
     console.log(values)
@@ -248,12 +266,9 @@ const steps = ["Step 1", "Step 2"];
       .catch((error) => console.error(error));
   };
 
-  function handleIngressClick(data: any): void {
-    setSelectedIngress(data);
-    console.log("selected containing element", data);
-  }
 
   const handleShowEdit = (data: any) => {
+    console.log(data)
     initialValues.name = data.name
     initialValues.description = data.description
     initialValues.frequency = data.frequency
@@ -266,8 +281,6 @@ const steps = ["Step 1", "Step 2"];
     setPopupIngress(true);
 
   }
-
-  
 
   const handleShowChart = (data: any) => {
     const newData = {
@@ -402,8 +415,8 @@ const steps = ["Step 1", "Step 2"];
                 <Stack direction="row" spacing={1}>
                   <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
                   <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
-                  {showEditEndpoint && (
-                    editIngressEndpoint(PopupIngress, handleClose, handleFinish, activeStep, steps, handleNext, handleBack, selectedContainingElement, handleIngressClick, setSelectedParent)
+                  {PopupIngress && (
+                    <CreateIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupIngress}></CreateIngressStepper>
                   )}
                   <Button
                     variant="contained"

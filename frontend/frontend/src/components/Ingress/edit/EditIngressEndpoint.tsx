@@ -18,9 +18,9 @@ import Chip from "@mui/material/Chip";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { initialValues, validationSchema } from "../createv2/FormDefinition";
 import { Field, FieldProps, Form, Formik } from "formik";
-import IngressOverviewLeft from "../IngressOverviewLeft";
 
-export function editIngressEndpoint(PopupIngress: boolean, handleClose: () => void, handleFinish: (values: any) => void, activeStep: number, steps: string[], handleNext: () => void, handleBack: () => void, selectedContainingElement: string, handleIngressClick: (data: any) => void, setSelectedParent: React.Dispatch<React.SetStateAction<string>>): React.ReactNode {
+export function EditIngressEndpoint(PopupIngress: boolean, handleClose: () => void, handleFinish: (values: any) => void, activeStep: number, steps: string[], handleNext: () => void, handleBack: () => void, selectedContainingElement: string): React.ReactNode {
+
   return <div>
     <Dialog
       open={PopupIngress}
@@ -259,7 +259,7 @@ export function editIngressEndpoint(PopupIngress: boolean, handleClose: () => vo
                   </Field>
                 </>
               )}
-              
+
 
               {activeStep === 1 && ( //children
                 <>
