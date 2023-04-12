@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  StepLabel,
   TextField,
 } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
@@ -20,6 +21,11 @@ import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { log } from "console";
+import { initialValues } from "./createv2/FormDefinition";
+import { EditIngressEndpoint } from "./edit/EditIngressEndpoint";
+import CreateIngressStepper from "./createv2/CreateIngressStepper";
+import EditIngressStepper from "./edit/EditIngressStepper";
+
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
   areas(where: $where) {
@@ -34,6 +40,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
   cells(where: $cellsWhere2) {
@@ -48,6 +57,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
   machines(where: $machinesWhere2) {
@@ -62,6 +74,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
   companies(where: $companiesWhere2) {
@@ -76,6 +91,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
   lines(where: $linesWhere2) {
@@ -90,6 +108,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
   plants(where: $plantsWhere2) {
@@ -104,6 +125,9 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
         name
       }
       frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
 }
@@ -121,17 +145,20 @@ interface ObjectWithProperties {
       name: string;
     };
     frequency: number;
+    changedFrequency: number;
+    connectionDetails: string;
+    dataFormat: string;
   }[];
 }
 
 interface QueryResult {
 
-    areas: ObjectWithProperties[];
-    cells: ObjectWithProperties[];
-    machines: ObjectWithProperties[];
-    companies: ObjectWithProperties[];
-    lines: ObjectWithProperties[];
-    plants: ObjectWithProperties[];
+  areas: ObjectWithProperties[];
+  cells: ObjectWithProperties[];
+  machines: ObjectWithProperties[];
+  companies: ObjectWithProperties[];
+  lines: ObjectWithProperties[];
+  plants: ObjectWithProperties[];
 
 }
 
@@ -140,13 +167,22 @@ interface IDetailedViewProps {
   onOpenChart: (data: any) => void;
   withDetails?: boolean;
 }
+export var previousPropertyValues: any = "";
 
 const DetailedView: React.FC<IDetailedViewProps> = ({
   containingEntityId,
   onOpenChart,
   withDetails,
 }) => {
+
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [PopupIngress, setPopupIngress] = React.useState(false);
+  const [showEditEndpoint, setShowEditEndpoint] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [result, setResult] = React.useState<string | null>(null);
+  const steps = ["Change Property Values"];
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -154,7 +190,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   };
 
   const { loading, error, data: queryResult, refetch } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
-    variables: { 
+    variables: {
       "where": {
         "id": containingEntityId
       },
@@ -172,7 +208,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       },
       "plantsWhere2": {
         "id": containingEntityId
-      } 
+      }
     },
     fetchPolicy: "no-cache",
   });
@@ -181,11 +217,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     console.log("graph ", error);
     return <p>Error : {error.message}</p>;
   }
-  // console.log("queryResult: ", queryResult);
-  // function hasData<T extends ObjectWithProperties[]>(objects: T): objects is [T[number]] {
-  //   return objects.some(object => object.observableProperties.length > 0);
-  // }
-  
+
   const dataObjects = [
     ...queryResult?.areas || [],
     ...queryResult?.cells || [],
@@ -196,7 +228,59 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   ];
 
   var properties: ObjectWithProperties = dataObjects[0];
-  // console.log("properties: ", properties);
+
+
+  // handle the close event
+  const handleClose = () => {
+    setPopupIngress(false);
+  };
+
+  const handleResult = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResult(result);
+  };
+
+  // handle the finish event
+  // const handleFinish = (values: any) => {
+  //   console.log("Finish him")
+  //   handleClose();
+  //   console.log(values)
+
+
+  //   fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+  //       "Access-Control-Allow-Headers":
+  //         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => console.log("data: " + data))
+  //     .catch((error) => console.error(error));
+  // };
+
+
+  const handleShowEdit = (data: any) => {
+    previousPropertyValues = data
+    var connectionDetails = data.connectionDetails.split(';')
+    console.log(previousPropertyValues)
+    initialValues.name = data.name
+    initialValues.description = data.description
+    initialValues.frequency = data.frequency
+    initialValues.changedFrequency = data.changedFrequency
+    initialValues.host = data.host
+    initialValues.port = data.port
+    initialValues.dataFormat = data.dataFormat
+    initialValues.id = data.id
+    setShowEditEndpoint(true);
+    setPopupIngress(true);
+  }
+
   const handleShowChart = (data: any) => {
     const newData = {
       id: data.id,
@@ -206,6 +290,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     };
     onOpenChart(newData);
   };
+
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
       method: "DELETE",
@@ -326,16 +411,22 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   </Grid2>
                 </Grid2>
 
-                <Stack direction="row" spacing={2}>
-                  <Button variant="contained">Create new egress</Button>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
+                  <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
+                  {PopupIngress && (
+                    <EditIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupIngress}></EditIngressStepper>
+                  )}
                   <Button
                     variant="contained"
+                    style={{ fontSize: "12px" }}
                     onClick={() => handleShowChart(item)}
                   >
                     Show data
                   </Button>
                   <Button
                     variant="outlined"
+                    style={{ fontSize: "12px" }}
                     color="error"
                     onClick={() => handleDeleteItem(item)}
                   >
@@ -361,6 +452,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       ))}
     </>
   );
-};
+}
+
+
+
 
 export default DetailedView;
+
+
+

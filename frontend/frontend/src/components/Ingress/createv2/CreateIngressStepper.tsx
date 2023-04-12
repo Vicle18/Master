@@ -280,37 +280,37 @@ const CreateIngressStepper: React.FC<Props> = ({
                     </FormControl>
                     {(values.protocol === "MQTT" ||
                       values.protocol === "RTDE") && (
-                      <>
-                        <Field name="host">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Host"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.host && Boolean(errors.host)}
-                              helperText={touched.host && errors.host}
-                            />
-                          )}
-                        </Field>
-                        <Field name="port">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Port"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.port && Boolean(errors.port)}
-                              helperText={touched.port && errors.port}
-                            />
-                          )}
-                        </Field>
-                      </>
-                    )}
+                        <>
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                        </>
+                      )}
                     {values.protocol === "MQTT" && (
                       <>
                         <Field name="topic">

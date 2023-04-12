@@ -1,10 +1,4 @@
 import * as Yup from "yup";
-interface Metadata {
-  timestamp?: boolean;
-  name?: string;
-  description?: string;
-  frequency?: string;
-}
 export interface FormData {
   id: string;
   name: string;
@@ -19,7 +13,6 @@ export interface FormData {
   nodeId?: string;
   containingElement: string;
   dataFormat: string;
-  metadata?: Metadata;
 }
 
 export const initialValues: FormData = {
@@ -34,7 +27,8 @@ export const initialValues: FormData = {
   output: "robot_mode",
   nodeId: "",
   containingElement: "Machine A",
-  dataFormat: "RAW",
+  dataFormat: "JSON",
+  id: ""
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -75,5 +69,4 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   }),
   containingElement: Yup.string().required("Containing element is required"),
   dataFormat: Yup.string().required("Data format is required"),
-  metadata: Yup.object().optional()
 });
