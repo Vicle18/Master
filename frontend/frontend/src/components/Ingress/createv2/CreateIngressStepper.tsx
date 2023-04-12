@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   Container,
   Dialog,
@@ -12,6 +13,8 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   InputLabel,
   List,
@@ -46,6 +49,9 @@ interface Props {
   PopupIngress: boolean;
   handleResult: (result: string) => void;
 }
+interface CheckBoxData {
+  [key: string]: boolean;
+}
 
 const steps = [
   "Define Ingress Endpoint",
@@ -61,11 +67,12 @@ const CreateIngressStepper: React.FC<Props> = ({
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
 
-
-  const [currentlySelectedParent, setCurrentlySelectedParent] = useState<string>("");
+  const [currentlySelectedParent, setCurrentlySelectedParent] =
+    useState<string>("");
   const [selectedParent, setSelectedParent] = useState<string>("");
-
+  const [selectedMetadata, setSelectedMetadata] = useState<string>("");
   const [selectedIngress, setSelectedIngress] = useState<string>("");
+  const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
   const theme = useTheme();
   const handlerClose = () => {
     setPopupIngress(false);
@@ -77,11 +84,37 @@ const CreateIngressStepper: React.FC<Props> = ({
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+  const handleChangeMetadata = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    console.log(name, checked);
+    console.log(JSON.stringify(checkBoxData));
+    setCheckBoxData({ ...checkBoxData, [name]: checked });
+  };
 
   const handleSubmit = (values: FormData) => {
     console.log("submit", values);
     setPopupIngress(false);
-
+    if (values.dataFormat === "WITH_METADATA") {
+      values.metadata = {};
+      for (const [key, value] of Object.entries(checkBoxData)) {
+        if (value) {
+          switch (key) {
+            case "timestamp":
+              values.metadata!.timestamp = true;
+              break;
+            case "name":
+              values.metadata!.name = values.name;
+              break;
+            case "description":
+              values.metadata!.description = values.description;
+              break;
+            case "frequency":
+              values.metadata!.frequency = values.frequency;
+              break;
+          }
+        }
+      }
+    }
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -373,22 +406,66 @@ const CreateIngressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
-                    <Field name="dataFormat">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Data Format"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={
-                            touched.dataFormat && Boolean(errors.dataFormat)
-                          }
-                          helperText={touched.dataFormat && errors.dataFormat}
-                        />
-                      )}
-                    </Field>
+                    <FormControl variant="outlined" fullWidth margin="normal">
+                      <InputLabel id="dataFormat-label">Data Format</InputLabel>
+                      <Field
+                        as={Select}
+                        name="dataFormat"
+                        labelId="dataFormat-label"
+                        label="Data Format"
+                        size="small"
+                      >
+                        <MenuItem value="RAW">Raw</MenuItem>
+                        <MenuItem value="WITH_METADATA">With Metadata</MenuItem>
+                        ={" "}
+                      </Field>
+                    </FormControl>
+                    {values.dataFormat === "WITH_METADATA" && (
+                      <>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.timestamp || false}
+                                onChange={handleChangeMetadata}
+                                name="timestamp"
+                              />
+                            }
+                            label="Timestamp"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.name || false}
+                                onChange={handleChangeMetadata}
+                                name="name"
+                              />
+                            }
+                            label="Name"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.description || false}
+                                onChange={handleChangeMetadata}
+                                name="description"
+                              />
+                            }
+                            label="Description"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.frequency || false}
+                                onChange={handleChangeMetadata}
+                                name="frequency"
+                              />
+                            }
+                            label="Frequency"
+                          />
+                        </FormGroup>
+                      </>
+                    )}
                   </>
                 )}
                 {activeStep === 1 && (
@@ -414,9 +491,9 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 padding={2}
                                 maxWidth="100%"
                               > */}
-                                <Typography variant="caption">
-                                  Current Element: {currentlySelectedParent}
-                                </Typography>
+                              <Typography variant="caption">
+                                Current Element: {currentlySelectedParent}
+                              </Typography>
                               {/* </Box> */}
                             </Grid2>
                             <Grid2 container xs={3}>
@@ -426,7 +503,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 onClick={() => {
                                   values.containingElement =
                                     currentlySelectedParent;
-                                  setSelectedParent(currentlySelectedParent)
+                                  setSelectedParent(currentlySelectedParent);
                                 }}
                               >
                                 SELECT

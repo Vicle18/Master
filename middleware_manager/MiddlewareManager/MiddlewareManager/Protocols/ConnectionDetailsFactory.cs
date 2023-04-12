@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using MiddlewareManager.DataModel;
 using Newtonsoft.Json;
+using NuGet.Packaging;
 using Serilog;
 
 namespace MiddlewareManager.Protocols;
@@ -13,6 +14,7 @@ public class ConnectionDetailsFactory
 
     public static IConnectionDetails Create(string id, CreateIngressDto value, string topicName)
     {
+
         switch (value.protocol)
         {
             case "MQTT":
@@ -26,8 +28,9 @@ public class ConnectionDetailsFactory
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
                         FREQUENCY = value.frequency.ToString(),
-                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
-                        
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
+                        DATA_FORMAT = value.dataFormat,
+                        METADATA = value.metadata
                     }
                 };
             case "RTDE":
@@ -41,7 +44,9 @@ public class ConnectionDetailsFactory
                         PORT = value.port,
                         TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
                         FREQUENCY = value.frequency.ToString(),
-                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString()
+                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
+                        DATA_FORMAT = value.dataFormat,
+                        METADATA = value.metadata
                     }
                 };
             case "OPCUA":
@@ -60,7 +65,9 @@ public class ConnectionDetailsFactory
                                 VALUE_TYPE = $"{value.dataFormat}",
                                 ORIGIN_TOPIC = $"{value.topic}"
                             }
-                        })
+                        }),
+                        DATA_FORMAT = value.dataFormat,
+                        METADATA = value.metadata
                     }
                 };
             default:

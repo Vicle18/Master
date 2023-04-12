@@ -66,6 +66,7 @@ namespace MiddlewareManager.Controllers
                 var id = Guid.NewGuid().ToString();
                 var connectionDetails =
                     ConnectionDetailsFactory.Create(id, value, topicName);
+                _logger.LogDebug("creating with connection details: {connectionDetails}", JsonSerializer.Serialize(connectionDetails));
                 var response = await _ingressRepo.CreateObservableProperty(id, value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 

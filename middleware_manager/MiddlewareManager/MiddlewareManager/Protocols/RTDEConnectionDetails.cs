@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace MiddlewareManager.Protocols;
 
 public class RTDEConnectionDetails : IConnectionDetails
@@ -15,4 +17,6 @@ public class RTDEParameters
     public string HOST { get; set; }
     public string PORT { get; set; }
     public string TRANSMISSION_PAIRS { get; set; }
+    public string DATA_FORMAT { get; set; }
+    public Dictionary<string, JsonElement>? METADATA { get; set; }
 }
