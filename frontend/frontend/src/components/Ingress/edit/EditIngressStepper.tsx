@@ -35,11 +35,9 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
-import * as Yup from "yup";
 import Grid2 from "@mui/material/Unstable_Grid2";
-
 import { initialValues, validationSchema, FormData } from "../createv2/FormDefinition";
-import IngressOverviewLeft from "../IngressOverviewLeft";
+import { previousPropertyValues } from "../IngressDetailed";
 
 interface Props {
   setPopupIngress: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,9 +46,8 @@ interface Props {
 }
 
 const steps = [
-  "Define Ingress Endpoint",
-  "Select Containing Element",
-  "Test Connection",
+  "Edit Ingress Endpoint Values",
+  "Inspect Changes",
 ];
 
 const EditIngressStepper: React.FC<Props> = ({
@@ -60,13 +57,9 @@ const EditIngressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-
-
-  const [currentlySelectedParent, setCurrentlySelectedParent] = useState<string>("");
-  const [selectedParent, setSelectedParent] = useState<string>("");
-
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const theme = useTheme();
+
   const handlerClose = () => {
     setPopupIngress(false);
   };
@@ -103,11 +96,12 @@ const EditIngressStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
-    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress?=`, {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
         "Access-Control-Allow-Headers":
           "Origin, Content-Type, X-Auth-Token, X-Requested-With",
       },
@@ -391,7 +385,7 @@ const EditIngressStepper: React.FC<Props> = ({
                     </Field>
                   </>
                 )}
-                {activeStep === 1 && (
+                {activeStep === 1 && ( //children
                   <>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
@@ -404,74 +398,223 @@ const EditIngressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <Box mb={2}>
-                          <Grid2 container alignItems="center" spacing={2}>
-                            <Grid2 container xs={9}>
-                              {/* <Box
-                                display="inline-block"
-                                borderRadius={3}
-                                border="2px solid black"
-                                padding={2}
-                                maxWidth="100%"
-                              > */}
-                              <Typography variant="caption">
-                                Current Element: {currentlySelectedParent}
-                              </Typography>
-                              {/* </Box> */}
-                            </Grid2>
-                            <Grid2 container xs={3}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  values.containingElement =
-                                    currentlySelectedParent;
-                                  setSelectedParent(currentlySelectedParent)
-                                }}
+                        <Typography variant="h6" gutterBottom textAlign={"center"} color={"grey"}>
+                          Previous Specifications
+                        </Typography>
+                        <Field name="name">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Name"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              value={previousPropertyValues.name}
+                              disabled
+                              error={touched.name && Boolean(errors.name)}
+                              helperText={touched.name && errors.name}
+                            />
+                          )}
+                        </Field>
+                        <Field name="description">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Description"
+                              variant="outlined"
+                              fullWidth
+                              multiline
+                              maxRows={4}
+                              margin="normal"
+                              size="small"
+                              value={previousPropertyValues.description}
+                              disabled
+                              error={
+                                touched.description && Boolean(errors.description)
+                              }
+                              helperText={touched.description && errors.description}
+                            />
+                          )}
+                        </Field>
+                        <FormControl variant="outlined" fullWidth margin="normal">
+                          <InputLabel id="protocol-label">Protocol</InputLabel>
+                          <Field
+                            as={Select}
+                            name="protocol"
+                            labelId="protocol-label"
+                            label="Protocol"
+                            size="small"
+                            disabled
+                            value={previousPropertyValues.protocol}
+                          >
+                            <MenuItem value="MQTT">MQTT</MenuItem>
+                            <MenuItem value="OPCUA">OPCUA</MenuItem>
+                            <MenuItem value="RTDE">RTDE</MenuItem>
+                          </Field>
+                        </FormControl>
+                        {(values.protocol === "MQTT" ||
+                          values.protocol === "RTDE") && (
+                            <>
+                              <Field name="host">
+                                {({ field }: FieldProps<FormData>) => (
+                                  <TextField
+                                    {...field}
+                                    label="Host"
+                                    variant="outlined"
+                                    fullWidth
+                                    disabled
+                                    value={previousPropertyValues.host}
+                                    margin="normal"
+                                    size="small"
+                                    error={touched.host && Boolean(errors.host)}
+                                    helperText={touched.host && errors.host}
+                                  />
+                                )}
+                              </Field>
+                              <Field name="port">
+                                {({ field }: FieldProps<FormData>) => (
+                                  <TextField
+                                    {...field}
+                                    label="Port"
+                                    variant="outlined"
+                                    fullWidth
+                                    disabled
+                                    value={previousPropertyValues.port}
+                                    margin="normal"
+                                    size="small"
+                                    error={touched.port && Boolean(errors.port)}
+                                    helperText={touched.port && errors.port}
+                                  />
+                                )}
+                              </Field>
+                            </>
+                          )}
+                        {values.protocol === "MQTT" && (
+                          <>
+                            <Field name="topic">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Topic"
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled
+                                  margin="normal"
+                                  size="small"
+                                  value={previousPropertyValues.topic}
+                                  error={touched.topic && Boolean(errors.topic)}
+                                  helperText={touched.topic && errors.topic}
+                                />
+                              )}
+                            </Field>
+                          </>
+                        )}
+                        {values.protocol === "RTDE" && (
+                          <>
+                            <FormControl
+                              variant="outlined"
+                              fullWidth
+                              disabled
+                              margin="normal"
+                            >
+                              <InputLabel id="output-label">Output</InputLabel>
+                              <Field
+                                as={Select}
+                                name="output"
+                                labelId="output-label"
+                                label="Output"
+                                disabled
+                                value={previousPropertyValues.output}
+                                size="small"
                               >
-                                SELECT
-                              </Button>
-                            </Grid2>
-                          </Grid2>
-                        </Box>
+                                <MenuItem value="timestamp">Timestamp</MenuItem>
+                                <MenuItem value="actual_q">Actual q</MenuItem>
+                                <MenuItem value="joint_temperatures">
+                                  Joint Temperatures
+                                </MenuItem>
+                                <MenuItem value="robot_mode">Robot Mode</MenuItem>
+                              </Field>
+                            </FormControl>
+                          </>
+                        )}
+                        {values.protocol === "OPCUA" && (
+                          <>
+                            <Field name="nodeId">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Node ID"
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled
+                                  value={previousPropertyValues.nodeId}
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.nodeId && Boolean(errors.nodeId)}
+                                  helperText={touched.nodeId && errors.nodeId}
+                                />
+                              )}
+                            </Field>
+                          </>
+                        )}
 
-                        <Divider />
-                        <IngressOverviewLeft
-                          onItemClick={(parent: any) => {
-                            HandleIngressClick(parent.name);
-                            setCurrentlySelectedParent(parent.name);
-                            console.log("parent", values.containingElement);
-                          }}
-                        />
+                        <Field name="frequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Frequency"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              value={previousPropertyValues.frequency}
+                              disabled
+                              error={touched.frequency && Boolean(errors.frequency)}
+                              helperText={touched.frequency && errors.frequency}
+                            />
+                          )}
+                        </Field>
+                        <Field name="changedFrequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Changed Frequency"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              value={previousPropertyValues.changedFrequency}
+                              disabled
+                              error={
+                                touched.changedFrequency &&
+                                Boolean(errors.changedFrequency)
+                              }
+                              helperText={
+                                touched.changedFrequency && errors.changedFrequency
+                              }
+                            />
+                          )}
+                        </Field>
+                        <Field name="dataFormat">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Data Format"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              value={previousPropertyValues.dataFormat}
+                              disabled
+                              error={
+                                touched.dataFormat && Boolean(errors.dataFormat)
+                              }
+                              helperText={touched.dataFormat && errors.dataFormat}
+                            />
+                          )}
+                        </Field>
                       </Grid2>
-                      <Grid2
-                        xs={3}
-                        sx={{
-                          marginTop: "30px",
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        <Box
-                          display="inline-block"
-                          borderRadius={3}
-                          border="2px solid black"
-                          padding={2}
-                          maxWidth="100%"
-                        >
-                          <Typography variant="body1">
-                            Selected Element: {selectedParent}
-                          </Typography>
-                        </Box>
-                      </Grid2>
-                    </Grid2>
-                  </>
-                )}
-
-                {activeStep === 2 && ( //children
-                  <>
-                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
                         sx={{
@@ -480,8 +623,213 @@ const EditIngressStepper: React.FC<Props> = ({
                           marginRight: "20px",
                           borderRadius: "10px",
                           backgroundColor: "whitesmoke",
-                        }}
-                      ></Grid2>
+                        }}>
+                        <Typography variant="h6" gutterBottom textAlign={"center"} color={"grey"}>
+                          Changed Specifications
+                        </Typography>
+                        <Field name="name">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Name"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              disabled
+                              error={touched.name && Boolean(errors.name)}
+                              helperText={touched.name && errors.name}
+                            />
+                          )}
+                        </Field>
+                        <Field name="description">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Description"
+                              variant="outlined"
+                              fullWidth
+                              multiline
+                              maxRows={4}
+                              margin="normal"
+                              size="small"
+                              disabled
+                              error={
+                                touched.description && Boolean(errors.description)
+                              }
+                              helperText={touched.description && errors.description}
+                            />
+                          )}
+                        </Field>
+                        <FormControl variant="outlined" fullWidth margin="normal">
+                          <InputLabel id="protocol-label">Protocol</InputLabel>
+                          <Field
+                            as={Select}
+                            name="protocol"
+                            labelId="protocol-label"
+                            label="Protocol"
+                            size="small"
+                            disabled
+                          >
+                            <MenuItem value="MQTT">MQTT</MenuItem>
+                            <MenuItem value="OPCUA">OPCUA</MenuItem>
+                            <MenuItem value="RTDE">RTDE</MenuItem>
+                          </Field>
+                        </FormControl>
+                        {(values.protocol === "MQTT" ||
+                          values.protocol === "RTDE") && (
+                            <>
+                              <Field name="host">
+                                {({ field }: FieldProps<FormData>) => (
+                                  <TextField
+                                    {...field}
+                                    label="Host"
+                                    variant="outlined"
+                                    fullWidth
+                                    disabled
+                                    margin="normal"
+                                    size="small"
+                                    error={touched.host && Boolean(errors.host)}
+                                    helperText={touched.host && errors.host}
+                                  />
+                                )}
+                              </Field>
+                              <Field name="port">
+                                {({ field }: FieldProps<FormData>) => (
+                                  <TextField
+                                    {...field}
+                                    label="Port"
+                                    variant="outlined"
+                                    fullWidth
+                                    disabled
+                                    margin="normal"
+                                    size="small"
+                                    error={touched.port && Boolean(errors.port)}
+                                    helperText={touched.port && errors.port}
+                                  />
+                                )}
+                              </Field>
+                            </>
+                          )}
+                        {values.protocol === "MQTT" && (
+                          <>
+                            <Field name="topic">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Topic"
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.topic && Boolean(errors.topic)}
+                                  helperText={touched.topic && errors.topic}
+                                />
+                              )}
+                            </Field>
+                          </>
+                        )}
+                        {values.protocol === "RTDE" && (
+                          <>
+                            <FormControl
+                              variant="outlined"
+                              fullWidth
+                              disabled
+                              margin="normal"
+                            >
+                              <InputLabel id="output-label">Output</InputLabel>
+                              <Field
+                                as={Select}
+                                name="output"
+                                labelId="output-label"
+                                label="Output"
+                                disabled
+                                size="small"
+                              >
+                                <MenuItem value="timestamp">Timestamp</MenuItem>
+                                <MenuItem value="actual_q">Actual q</MenuItem>
+                                <MenuItem value="joint_temperatures">
+                                  Joint Temperatures
+                                </MenuItem>
+                                <MenuItem value="robot_mode">Robot Mode</MenuItem>
+                              </Field>
+                            </FormControl>
+                          </>
+                        )}
+                        {values.protocol === "OPCUA" && (
+                          <>
+                            <Field name="nodeId">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Node ID"
+                                  variant="outlined"
+                                  fullWidth
+                                  disabled
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.nodeId && Boolean(errors.nodeId)}
+                                  helperText={touched.nodeId && errors.nodeId}
+                                />
+                              )}
+                            </Field>
+                          </>
+                        )}
+
+                        <Field name="frequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Frequency"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              disabled
+                              error={touched.frequency && Boolean(errors.frequency)}
+                              helperText={touched.frequency && errors.frequency}
+                            />
+                          )}
+                        </Field>
+                        <Field name="changedFrequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Changed Frequency"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              disabled
+                              error={
+                                touched.changedFrequency &&
+                                Boolean(errors.changedFrequency)
+                              }
+                              helperText={
+                                touched.changedFrequency && errors.changedFrequency
+                              }
+                            />
+                          )}
+                        </Field>
+                        <Field name="dataFormat">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Data Format"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              disabled
+                              error={
+                                touched.dataFormat && Boolean(errors.dataFormat)
+                              }
+                              helperText={touched.dataFormat && errors.dataFormat}
+                            />
+                          )}
+                        </Field>
+                      </Grid2>
                     </Grid2>
                   </>
                 )}
@@ -519,7 +867,7 @@ const EditIngressStepper: React.FC<Props> = ({
                   type="submit"
                   disabled={!isValid}
                 >
-                  Create
+                  Save
                 </Button>
               </DialogActions>
             </Form>

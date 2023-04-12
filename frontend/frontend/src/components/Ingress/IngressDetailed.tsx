@@ -24,6 +24,7 @@ import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
 import { EditIngressEndpoint } from "./edit/EditIngressEndpoint";
 import CreateIngressStepper from "./createv2/CreateIngressStepper";
+import EditIngressStepper from "./edit/EditIngressStepper";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
@@ -41,6 +42,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
   cells(where: $cellsWhere2) {
@@ -57,6 +59,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
   machines(where: $machinesWhere2) {
@@ -73,6 +76,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
   companies(where: $companiesWhere2) {
@@ -89,6 +93,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
   lines(where: $linesWhere2) {
@@ -105,6 +110,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
   plants(where: $plantsWhere2) {
@@ -121,6 +127,7 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       frequency
       connectionDetails
       changedFrequency
+      dataFormat
     }
   }
 }
@@ -140,6 +147,7 @@ interface ObjectWithProperties {
     frequency: number;
     changedFrequency: number;
     connectionDetails: string;
+    dataFormat: string;
   }[];
 }
 
@@ -159,6 +167,7 @@ interface IDetailedViewProps {
   onOpenChart: (data: any) => void;
   withDetails?: boolean;
 }
+export var previousPropertyValues: any = "";
 
 const DetailedView: React.FC<IDetailedViewProps> = ({
   containingEntityId,
@@ -174,7 +183,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [result, setResult] = React.useState<string | null>(null);
   const steps = ["Change Property Values"];
-
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -227,16 +235,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     setPopupIngress(false);
   };
 
-  // handle the back event
-  const handleBack = () => {
-    //setActiveStep(activeStep - 1);
-  };
-
-  // handle the next event
-  const handleNext = () => {
-    //setActiveStep(activeStep + 1);
-  };
-
   const handleResult = (result: string) => {
     console.log(`Result: ${result}`);
     setOpenSnackbar(true);
@@ -244,31 +242,33 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   };
 
   // handle the finish event
-  const handleFinish = (values: any) => {
-    console.log("Finish him")
-    handleClose();
-    console.log(values)
+  // const handleFinish = (values: any) => {
+  //   console.log("Finish him")
+  //   handleClose();
+  //   console.log(values)
 
 
-    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-        "Access-Control-Allow-Headers":
-          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
-      },
-      body: JSON.stringify(values),
-    })
-      .then((response) => response.json())
-      .then((data) => console.log("data: " + data))
-      .catch((error) => console.error(error));
-  };
+  //   fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+  //       "Access-Control-Allow-Headers":
+  //         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => console.log("data: " + data))
+  //     .catch((error) => console.error(error));
+  // };
 
 
   const handleShowEdit = (data: any) => {
-    console.log(data)
+    previousPropertyValues = data
+    var connectionDetails = data.connectionDetails.split(';')
+    console.log(previousPropertyValues)
     initialValues.name = data.name
     initialValues.description = data.description
     initialValues.frequency = data.frequency
@@ -279,7 +279,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     initialValues.id = data.id
     setShowEditEndpoint(true);
     setPopupIngress(true);
-
   }
 
   const handleShowChart = (data: any) => {
@@ -416,7 +415,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
                   <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
                   {PopupIngress && (
-                    <CreateIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupIngress}></CreateIngressStepper>
+                    <EditIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupIngress}></EditIngressStepper>
                   )}
                   <Button
                     variant="contained"
