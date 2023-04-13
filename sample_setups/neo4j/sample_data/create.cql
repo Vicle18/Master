@@ -83,10 +83,23 @@ CREATE (jointTemperature:ObservableProperty {
     description: 'Description of the Joint Temperature Observable Property',
     frequency: 100,
     changedFrequency: 100,
-    connectionDetails: "jointTemperatureConnectionDetails",
-    dataFormat: "RAW"
-
-    })
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 CREATE (jointTemperature2:ObservableProperty {
     id: 'jointTemperature2',
     name: 'Joint Temperature 2',
@@ -94,8 +107,22 @@ CREATE (jointTemperature2:ObservableProperty {
     frequency: 100,
         changedFrequency: 100,
     dataFormat: "RAW",
-    connectionDetails: "jointTemperature2ConnectionDetails"
-    })
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
+})
 CREATE (jointPressure:ObservableProperty {
     id: 'jointPressure',
     name: 'Joint Pressure',
@@ -103,23 +130,23 @@ CREATE (jointPressure:ObservableProperty {
     frequency: 100,
         changedFrequency: 100,
     dataFormat: "RAW",
-    "ConnectionDetails": {
-    "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
-    "PROTOCOL": "RTDE",
-    "PARAMETERS": {
-      "FREQUENCY": "1",
-      "CHANGED_FREQUENCY": "1",
-      "HOST": "172.17.0.1",
-      "PORT": "1883",
-      "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
-      "DATA_FORMAT": "WITH_METADATA",
-      "METADATA": {
-        "timestamp": true,
-        "frequency": "1"
-      }
-    }
-  }
-    })
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
+})
+
 CREATE (jointPressure2:ObservableProperty {
     id: 'jointPressure2',
     name: 'Joint Pressure 2',
@@ -127,7 +154,21 @@ CREATE (jointPressure2:ObservableProperty {
     frequency: 100,
         changedFrequency: 100,
     dataFormat: "RAW",
-    connectionDetails: "jointPressure2ConnectionDetails"
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
 
     })
 CREATE (jointVibration:ObservableProperty {
@@ -137,8 +178,22 @@ CREATE (jointVibration:ObservableProperty {
     frequency: 100,
         changedFrequency: 100,
     dataFormat: "RAW",
-    connectionDetails: "jointVibrationConnectionDetails"
-    })
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 CREATE (jointVibration2:ObservableProperty {
     id: 'jointVibration2',
     name: 'Joint Vibration 2',
@@ -146,8 +201,22 @@ CREATE (jointVibration2:ObservableProperty {
     frequency: 100,
     changedFrequency: 100,
     dataFormat: "RAW",
-    connectionDetails: "jointVibration2ConnectionDetails"
-    })
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 
 CREATE (egress1:EgressEndpoint {
     id: "egress1",

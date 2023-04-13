@@ -446,7 +446,7 @@ const EditIngressStepper: React.FC<Props> = ({
                             label="Protocol"
                             size="small"
                             disabled
-                            value={previousPropertyValues.protocol}
+                            value={JSON.parse(previousPropertyValues.connectionDetails).PROTOCOL}
                           >
                             <MenuItem value="MQTT">MQTT</MenuItem>
                             <MenuItem value="OPCUA">OPCUA</MenuItem>
@@ -464,7 +464,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                     variant="outlined"
                                     fullWidth
                                     disabled
-                                    value={previousPropertyValues.host}
+                                    value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.HOST}
                                     margin="normal"
                                     size="small"
                                     error={touched.host && Boolean(errors.host)}
@@ -480,7 +480,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                     variant="outlined"
                                     fullWidth
                                     disabled
-                                    value={previousPropertyValues.port}
+                                    value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.PORT}
                                     margin="normal"
                                     size="small"
                                     error={touched.port && Boolean(errors.port)}
@@ -547,8 +547,8 @@ const EditIngressStepper: React.FC<Props> = ({
                                   label="Node ID"
                                   variant="outlined"
                                   fullWidth
+                                  value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.NODEID}
                                   disabled
-                                  value={previousPropertyValues.nodeId}
                                   margin="normal"
                                   size="small"
                                   error={touched.nodeId && Boolean(errors.nodeId)}
