@@ -52,7 +52,7 @@ CREATE (lineC)-[:has]->(cellF)
 CREATE (lineD)-[:has]->(cellG)
 CREATE (lineD)-[:has]->(cellH)
 
-
+//NORDBORG
 CREATE (machine1A:Machine:ManufacturingFacility:Resource {id: 'Nordborg_Cell1_Machine1', name: 'CNC Milling Machine', description: 'Used for precision milling of metal components'})
 CREATE (machine1B:Machine:ManufacturingFacility:Resource {id: 'Nordborg_Cell1_Machine2', name: 'Lathe Machine', description: 'Used for turning and drilling of metal components'})
 CREATE (machine2A:Machine:ManufacturingFacility:Resource {id: 'Nordborg_Cell2_Machine1', name: 'Welding Robot', description: 'Used for automated welding of metal components'})
@@ -62,6 +62,7 @@ CREATE (machine3B:Machine:ManufacturingFacility:Resource {id: 'Graasten_Cell1_Ma
 CREATE (machine4A:Machine:ManufacturingFacility:Resource {id: 'Graasten_Cell2_Machine1', name: 'Assembly Robot', description: 'Used for automated assembly of components'})
 CREATE (machine4B:Machine:ManufacturingFacility:Resource {id: 'Graasten_Cell2_Machine2', name: 'Testing Station', description: 'Used for functional testing of assembled components'})
 
+//GRAASTEN
 CREATE (lathe1:Machine:ManufacturingFacility:Resource {id: 'lathe1ID', name: 'Lathe 1', description: 'High-precision CNC lathe for turning metal parts'})
 CREATE (milling1:Machine:ManufacturingFacility:Resource {id: 'milling1ID', name: 'Milling 1', description: 'Vertical milling machine for machining metal parts'})
 CREATE (grinder1:Machine:ManufacturingFacility:Resource {id: 'grinder1ID', name: 'Grinder 1', description: 'High-precision cylindrical grinder for grinding metal parts'})
@@ -70,6 +71,8 @@ CREATE (robot1:Machine:ManufacturingFacility:Resource {id: 'robot1ID', name: 'Ro
 CREATE (welder1:Machine:ManufacturingFacility:Resource {id: 'welder1ID', name: 'Welder 1', description: 'Automated welding machine for joining metal parts'})
 CREATE (press1:Machine:ManufacturingFacility:Resource {id: 'press1ID', name: 'Press 1', description: 'Hydraulic press for pressing metal components'})
 CREATE (rivet1:Machine:ManufacturingFacility:Resource {id: 'rivet1ID', name: 'Rivet 1', description: 'Pneumatic riveting machine for fastening metal parts'})
+
+
 
 CREATE (cellA)-[:has]->(machine1A)
 CREATE (cellA)-[:has]->(machine1B)
@@ -87,7 +90,6 @@ CREATE (cellG)-[:has]->(robot1)
 CREATE (cellG)-[:has]->(welder1)
 CREATE (cellH)-[:has]->(press1)
 CREATE (cellH)-[:has]->(rivet1)
-
 
 // Create Staff
 CREATE (managerA:Staff:Resource {id: 'managerAID', name: 'Manager A', description: 'Manager description'})
@@ -184,66 +186,310 @@ CREATE (machine1B)-[:has]->(cuttingForce)
 CREATE (machine2A)-[:has]->(temperature)
 CREATE (machine2A)-[:has]->(weldingVoltage)
 
-
-CREATE (machine2B)-[:has]->(vibration:ObservableProperty {
-    id: 'vibration',
-    name: 'Vibration',
-    description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
-    frequency: 50,
-    changedFrequency: 50,
-    connectionDetails: "vibrationConnectionDetails",
-    dataFormat: "WITH_METADATA"
+CREATE (vibration:ObservableProperty {
+id: 'vibration',
+name: 'Vibration',
+description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
+frequency: 50,
+changedFrequency: 25,
+connectionDetails: "vibrationConnectionDetails",
+dataFormat: "RAW"
 })
 
-CREATE (machine2B)-[:has]->(temperature:ObservableProperty {
-    id: 'temperature',
-    name: 'Temperature',
-    description: 'Observable Property for Temperature of Surface Grinder in Nordborg Machining Line Cell 2',
-    frequency: 75,
-    changedFrequency: 75,
-    connectionDetails: "temperatureConnectionDetails",
-    dataFormat: "RAW"
+CREATE (surfaceRoughness:ObservableProperty {
+id: 'surfaceRoughness',
+name: 'Surface Roughness',
+description: 'Observable Property for Surface Roughness of Surface Grinder in Nordborg Machining Line Cell 2',
+frequency: 75,
+changedFrequency: 50,
+connectionDetails: "surfaceRoughnessConnectionDetails",
+dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine3A)-[:has]->(position:ObservableProperty {
-    id: 'position',
-    name: 'Position',
-    description: 'Observable Property for Position of CNC Turning Center in Graasten Machining Line Cell 1',
-    frequency: 100,
-    changedFrequency: 50,
-    connectionDetails: "positionConnectionDetails",
-    dataFormat: "RAW"
+CREATE (machine2B)-[:has]->(vibration)
+CREATE (machine2B)-[:has]->(surfaceRoughness)
+
+CREATE (temperature:ObservableProperty {
+id: 'temperature',
+name: 'Temperature',
+description: 'Observable Property for Temperature of CNC Turning Center in Graasten Machining Line Cell 1',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "temperatureConnectionDetails",
+dataFormat: "RAW"
 })
 
-CREATE (machine3A)-[:has]->(pressure:ObservableProperty {
-    id: 'pressure',
-    name: 'Pressure',
-    description: 'Observable Property for Pressure of CNC Turning Center in Graasten Machining Line Cell 1',
-    frequency: 50,
-    changedFrequency: 50,
-    connectionDetails: "pressureConnectionDetails",
-    dataFormat: "WITH_METADATA"
+CREATE (toolLife:ObservableProperty {
+id: 'toolLife',
+name: 'Tool Life',
+description: 'Observable Property for Tool Life of CNC Turning Center in Graasten Machining Line Cell 1',
+frequency: 75,
+changedFrequency: 25,
+connectionDetails: "toolLifeConnectionDetails",
+dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine3B)-[:has]->(vibration:ObservableProperty {
-    id: 'vibration',
-    name: 'Vibration',
-    description: 'Observable Property for Vibration of Grinding Machine in Graasten Machining Line Cell 1',
-    frequency: 100,
-    changedFrequency: 50,
-    connectionDetails: "vibrationConnectionDetails",
-    dataFormat: "RAW"
+CREATE (machine3A)-[:has]->(temperature)
+CREATE (machine3A)-[:has]->(toolLife)
+
+CREATE (powerConsumption:ObservableProperty {
+id: 'powerConsumption',
+name: 'Power Consumption',
+description: 'Observable Property for Power Consumption of Grinding Machine in Graasten Machining Line Cell 1',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "powerConsumptionConnectionDetails",
+dataFormat: "RAW"
 })
 
-CREATE (machine3B)-[:has]->(temperature:ObservableProperty {
-    id: 'temperature',
-    name: 'Temperature',
-    description: 'Observable Property for Temperature of Grinding Machine in Graasten Machining Line Cell 1',
-    frequency: 75,
-    changedFrequency: 75,
-    connectionDetails: "temperatureConnectionDetails",
-    dataFormat: "WITH_METADATA"
+CREATE (grindingForce:ObservableProperty {
+id: 'grindingForce',
+name: 'Grinding Force',
+description: 'Observable Property for Grinding Force of Grinding Machine in Graasten Machining Line Cell 1',
+frequency: 75,
+changedFrequency: 25,
+connectionDetails: "grindingForceConnectionDetails",
+dataFormat: "WITH_METADATA"
 })
+
+CREATE (machine3B)-[:has]->(powerConsumption)
+CREATE (machine3B)-[:has]->(grindingForce)
+
+CREATE (robotPosition:ObservableProperty {
+  id: 'robotPosition',
+  name: 'Robot Position',
+  description: 'Observable Property for Position of Assembly Robot in Graasten Cell 2',
+  frequency: 1000,
+  changedFrequency: 500,
+  connectionDetails: "robotPositionConnectionDetails",
+  dataFormat: "RAW"
+})
+
+CREATE (robotStatus:ObservableProperty {
+  id: 'robotStatus',
+  name: 'Robot Status',
+  description: 'Observable Property for Status of Assembly Robot in Graasten Cell 2',
+  frequency: 100,
+  changedFrequency: 50,
+  connectionDetails: "robotStatusConnectionDetails",
+  dataFormat: "WITH_METADATA"
+})
+
+CREATE (machine4A)-[:has]->(robotPosition)
+CREATE (machine4A)-[:has]->(robotStatus)
+
+CREATE (testResult:ObservableProperty {
+  id: 'testResult',
+  name: 'Test Result',
+  description: 'Observable Property for Test Results of Testing Station in Graasten Cell 2',
+  frequency: 10,
+  changedFrequency: 5,
+  connectionDetails: "testResultConnectionDetails",
+  dataFormat: "WITH_METADATA"
+})
+
+CREATE (testStatus:ObservableProperty {
+  id: 'testStatus',
+  name: 'Test Status',
+  description: 'Observable Property for Status of Testing Station in Graasten Cell 2',
+  frequency: 50,
+  changedFrequency: 25,
+  connectionDetails: "testStatusConnectionDetails",
+  dataFormat: "WITH_METADATA"
+})
+
+CREATE (machine4B)-[:has]->(testResult)
+CREATE (machine4B)-[:has]->(testStatus)
+
+
+
+// GRAASTEN
+CREATE (vibration:ObservableProperty {
+id: 'vibration',
+name: 'Vibration',
+description: 'Observable Property for Vibration of Lathe 1 in the manufacturing facility',
+frequency: 50,
+changedFrequency: 50,
+connectionDetails: "vibrationConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (temperature:ObservableProperty {
+id: 'temperature',
+name: 'Temperature',
+description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
+frequency: 75,
+changedFrequency: 75,
+connectionDetails: "temperatureConnectionDetails",
+dataFormat: "WITH_METADATA"
+})
+
+CREATE (lathe1)-[:has]->(vibration)
+CREATE (lathe1)-[:has]->(temperature)
+
+CREATE (surfaceRoughness:ObservableProperty {
+id: 'surfaceRoughness',
+name: 'Surface Roughness',
+description: 'Observable Property for Surface Roughness of Milling 1 in the manufacturing facility',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "surfaceRoughnessConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (powerConsumption:ObservableProperty {
+id: 'powerConsumption',
+name: 'Power Consumption',
+description: 'Observable Property for Power Consumption of Milling 1 in the manufacturing facility',
+frequency: 75,
+changedFrequency: 25,
+connectionDetails: "powerConsumptionConnectionDetails",
+dataFormat: "WITH_METADATA"
+})
+
+CREATE (milling1)-[:has]->(surfaceRoughness)
+CREATE (milling1)-[:has]->(powerConsumption)
+
+CREATE (vibration:ObservableProperty {
+id: 'vibration',
+name: 'Vibration',
+description: 'Observable Property for Vibration of Grinder 1 in Graasten Machining Line Cell 1',
+frequency: 200,
+changedFrequency: 100,
+connectionDetails: "vibrationConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (temperature:ObservableProperty {
+id: 'temperature',
+name: 'Temperature',
+description: 'Observable Property for Temperature of Grinder 1 in Graasten Machining Line Cell 1',
+frequency: 60,
+changedFrequency: 30,
+connectionDetails: "temperatureConnectionDetails",
+dataFormat: "WITH_METADATA"
+})
+
+CREATE (grinder1)-[:has]->(vibration)
+CREATE (grinder1)-[:has]->(temperature)
+
+CREATE (rpm:ObservableProperty {
+id: 'rpm',
+name: 'RPM',
+description: 'Observable Property for RPM of Drill 1 in Graasten Machining Line Cell 1',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "rpmConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (depth:ObservableProperty {
+id: 'depth',
+name: 'Drilling Depth',
+description: 'Observable Property for Drilling Depth of Drill 1 in Graasten Machining Line Cell 1',
+frequency: 60,
+changedFrequency: 30,
+connectionDetails: "depthConnectionDetails",
+dataFormat: "WITH_METADATA"
+})
+
+CREATE (drill1)-[:has]->(rpm)
+CREATE (drill1)-[:has]->(depth)
+
+CREATE (robotStatus:ObservableProperty {
+id: 'robotStatus',
+name: 'Robot Status',
+description: 'Observable Property for Status of Robot 1 in Graasten Machining Line Cell 1',
+frequency: 50,
+changedFrequency: 25,
+connectionDetails: "robotStatusConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (powerConsumption:ObservableProperty {
+id: 'powerConsumption',
+name: 'Power Consumption',
+description: 'Observable Property for Power Consumption of Robot 1 in Graasten Machining Line Cell 1',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "powerConsumptionConnectionDetails",
+dataFormat: "WITH_METADATA"
+})
+
+CREATE (robot1)-[:has]->(robotStatus)
+CREATE (robot1)-[:has]->(powerConsumption)
+
+CREATE (voltage:ObservableProperty {
+id: 'voltage',
+name: 'Voltage',
+description: 'Observable Property for Voltage of Welder 1',
+frequency: 50,
+changedFrequency: 10,
+connectionDetails: "welder1VoltageConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (current:ObservableProperty {
+id: 'current',
+name: 'Current',
+description: 'Observable Property for Current of Welder 1',
+frequency: 50,
+changedFrequency: 10,
+connectionDetails: "welder1CurrentConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (welder1)-[:has]->(voltage)
+CREATE (welder1)-[:has]->(current)
+
+CREATE (force:ObservableProperty {
+id: 'force',
+name: 'Force',
+description: 'Observable Property for Force of Press 1',
+frequency: 100,
+changedFrequency: 20,
+connectionDetails: "press1ForceConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (temperature:ObservableProperty {
+id: 'temperature',
+name: 'Temperature',
+description: 'Observable Property for Temperature of Press 1',
+frequency: 10,
+changedFrequency: 5,
+connectionDetails: "press1TempConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (press1)-[:has]->(force)
+CREATE (press1)-[:has]->(temperature)
+
+CREATE (airPressure:ObservableProperty {
+id: 'airPressure',
+name: 'Air Pressure',
+description: 'Observable Property for Air Pressure of Rivet 1',
+frequency: 20,
+changedFrequency: 5,
+connectionDetails: "rivet1AirPressureConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (cycleTime:ObservableProperty {
+id: 'cycleTime',
+name: 'Cycle Time',
+description: 'Observable Property for Cycle Time of Rivet 1',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: "rivet1CycleTimeConnectionDetails",
+dataFormat: "RAW"
+})
+
+CREATE (rivet1)-[:has]->(airPressure)
+CREATE (rivet1)-[:has]->(cycleTime)
+
+
+
 
 
 
@@ -323,13 +569,13 @@ connectionDetails: "drill1LoadConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (cuttingSpeed:ObservableProperty {
-id: 'cuttingSpeed',
+CREATE (cuttingSpeed2:ObservableProperty {
+id: 'cuttingSpeed2',
 name: 'Cutting Speed',
 description: 'Observable Property for Cutting Speed of Machine A in Nordborg Machining Line Cell 1',
 frequency: 150,
 changedFrequency: 100,
-connectionDetails: "cuttingSpeedConnectionDetails",
+connectionDetails: "cuttingSpeed2ConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
@@ -353,8 +599,8 @@ connectionDetails: "assemblySpeedConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (vibration:ObservableProperty {
-id: 'vibration',
+CREATE (vibration2:ObservableProperty {
+id: 'vibration2',
 name: 'Vibration',
 description: 'Observable Property for Vibration of Machine B in Nordborg Assembly Line Cell 2',
 frequency: 100,
