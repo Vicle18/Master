@@ -525,7 +525,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                 labelId="output-label"
                                 label="Output"
                                 disabled
-                                value={previousPropertyValues.output}
+                                value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.OUTPUT}
                                 size="small"
                               >
                                 <MenuItem value="timestamp">Timestamp</MenuItem>
