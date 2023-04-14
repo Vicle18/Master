@@ -123,7 +123,7 @@ public class MQTTEgressClient : IEgressClient
     {
         if (mqttClient.IsConnected)
         {
-            Log.Debug("Publishing to MQTT {topic}", topic);
+            Log.Debug("Publishing message {message} to MQTT {topic}", value, topic);
             var publishMessage = new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(value)

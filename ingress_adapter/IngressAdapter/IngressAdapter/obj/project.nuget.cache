@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "VPZExKqC4uAgV2YSBUvifT1HGDJrhoKp3jnx6d9WMKFbg6fdnqJfH53nGgPqajHbr2uYMVs9MyKWHsK7fUdjiw==",
+  "dgSpecHash": "Gk/VBLitvgZgKgdy41KISxtXnTcyXndxbXFWPJagvOXQEAUrbHFmoXnoa/5BKbhDSqd8dVTVEurfjgVmuBf7bw==",
   "success": true,
   "projectFilePath": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/IngressAdapter/IngressAdapter.csproj",
   "expectedPackageFiles": [
@@ -63,6 +63,8 @@
     "/Users/bendesiewertsen/.nuget/packages/serilog/2.12.0/serilog.2.12.0.nupkg.sha512",
     "/Users/bendesiewertsen/.nuget/packages/serilog.extensions.hosting/5.0.1/serilog.extensions.hosting.5.0.1.nupkg.sha512",
     "/Users/bendesiewertsen/.nuget/packages/serilog.extensions.logging/3.1.0/serilog.extensions.logging.3.1.0.nupkg.sha512",
+    "/Users/bendesiewertsen/.nuget/packages/serilog.formatting.compact/1.1.0/serilog.formatting.compact.1.1.0.nupkg.sha512",
+    "/Users/bendesiewertsen/.nuget/packages/serilog.sinks.async/1.5.0/serilog.sinks.async.1.5.0.nupkg.sha512",
     "/Users/bendesiewertsen/.nuget/packages/serilog.sinks.console/4.1.0/serilog.sinks.console.4.1.0.nupkg.sha512",
     "/Users/bendesiewertsen/.nuget/packages/serilog.sinks.file/5.0.0/serilog.sinks.file.5.0.0.nupkg.sha512",
     "/Users/bendesiewertsen/.nuget/packages/system.collections/4.3.0/system.collections.4.3.0.nupkg.sha512",
