@@ -113,22 +113,30 @@ public class KubernetesManager : IContainerManager
     {
         Log.Debug(protocol);
 
-
-        if (protocol == "MQTT")
+        try
         {
-            if (isBrokerCreated) return _mqttBrokerHost;
-            Log.Debug("inside mqtt");
-            MQTTBroker mqttBroker = new MQTTBroker();
-            V1Service service = mqttBroker.createService(config, id);
-            V1Pod pod = mqttBroker.createPod(config, id);
-            var podResult = await _client.CreateNamespacedPodAsync(pod, "sso");
-            var serviceResult = await _client.CreateNamespacedServiceAsync(service, "sso");
-            _mqttBrokerHost = pod.Metadata.Name;
-            isBrokerCreated = true;
-            return pod.Metadata.Name;
+            if (protocol == "MQTT")
+            {
+                if (isBrokerCreated) return _mqttBrokerHost;
+                Log.Debug("inside mqtt");
+                MQTTBroker mqttBroker = new MQTTBroker();
+                V1Service service = mqttBroker.createService(config, id);
+                V1Pod pod = mqttBroker.createPod(config, id);
+                var podResult = await _client.CreateNamespacedPodAsync(pod, "sso");
+                var serviceResult = await _client.CreateNamespacedServiceAsync(service, "sso");
+                _mqttBrokerHost = pod.Metadata.Name;
+                isBrokerCreated = true;
+                return pod.Metadata.Name;
+            }
+            throw new ArgumentException($"We do not support the protocol {protocol}");
+
+            //TODO Create OPCUA broker and 
         }
-        throw new ArgumentException($"We do not support the protocol {protocol}");
-        //TODO Create OPCUA broker and 
+        catch (k8s.Autorest.HttpOperationException e)
+        {
+            _logger.LogDebug("Could not create broker, probably because broker already exists: {reason}", e.Response.Content);
+            return "error, but probably broker is already set up";
+        }
     }
 
 

@@ -19,6 +19,7 @@ namespace IngressAdapter
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {NewLine}{Exception}")
+                .WriteTo.File("log.txt", rollingInterval: RollingInterval.Day)
                 .MinimumLevel.Debug()
                 .CreateBootstrapLogger();
             

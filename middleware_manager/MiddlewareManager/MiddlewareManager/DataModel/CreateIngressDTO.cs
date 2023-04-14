@@ -15,7 +15,7 @@ public class CreateIngressDto:CreateIngressDtoBase
     public string? output { get; set; }
     public string? nodeName { get; set; }
     
-    public Dictionary<string, JsonElement> metadata { get; set; }
+    public Dictionary<string, JsonElement>? metadata { get; set; }
 
     public override string ToString()
     {
