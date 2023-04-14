@@ -267,14 +267,38 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    var connectionDetails = data.connectionDetails.split(';')
+    const connectionDetails = JSON.parse(data.connectionDetails)
+    console.log(connectionDetails)
+    console.log(connectionDetails.ID)
+    console.log(connectionDetails.PARAMETERS.HOST)
+
+    // var json = JSON.parse(data.connectionDetails)
+    // console.log(json)
+    if (connectionDetails.PROTOCOL == "MQTT") {
+      initialValues.port = connectionDetails.PARAMETERS.PORT
+      initialValues.host = connectionDetails.PARAMETERS.HOST
+      //data.connectionDetails.split(';')
+      // add to host
+      // add to port
+    } else if (connectionDetails.PROTOCOL == "RTDE") {
+      console.log("inside RTDE")
+      console.log(connectionDetails.PARAMETERS.PORT.toString())
+      console.log(connectionDetails.PARAMETERS.HOST.toString())
+
+      initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
+      initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
+      //DO SAME 
+    } else if (connectionDetails.PROTOCOL == "OPCUA") {
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
+      //DO THE SAME BUT WITH NODE_ID
+      // SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
+    }
+
     console.log(previousPropertyValues)
     initialValues.name = data.name
     initialValues.description = data.description
     initialValues.frequency = data.frequency
     initialValues.changedFrequency = data.changedFrequency
-    initialValues.host = data.host
-    initialValues.port = data.port
     initialValues.dataFormat = data.dataFormat
     initialValues.id = data.id
     setShowEditEndpoint(true);

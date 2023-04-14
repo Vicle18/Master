@@ -31,13 +31,14 @@ export const initialValues: FormData = {
   protocol: "RTDE",
   frequency: "1",
   changedFrequency: "1",
-  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
+  host: "172.17.0.1",
   topic: "example",
   port: "1883",
   output: "robot_mode",
   nodeId: "",
   containingElement: "Machine A",
   dataFormat: "RAW",
+  id: "123"
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
