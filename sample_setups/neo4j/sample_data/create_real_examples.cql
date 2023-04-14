@@ -22,8 +22,8 @@ CREATE (plantB)-[:has]->(areaD)
 // Create the lines
 CREATE (lineA:Line:ManufacturingFacility:Resource {id: 'lineAID', name: 'Machining Line 1', description: 'This line includes a series of computer-controlled machines that perform precision machining operations on metal components. It may include equipment such as lathes, milling machines, and grinders, and it requires skilled operators and engineers to ensure that components are produced accurately and efficiently. The line may be divided into sub-lines or cells, each with its own specialized equipment and processes.'})
 CREATE (lineB:Line:ManufacturingFacility:Resource {id: 'lineBID', name: 'Assembly Line 1', description: 'This line includes a series of workstations where operators assemble components into finished products. It may include equipment such as conveyors, lifts, and tooling, and it requires careful attention to detail to ensure that products are assembled correctly and that they meet quality standards. The line may be designed to accommodate different product types or variations, and it may incorporate quality control checkpoints to ensure that products meet specifications before they move to the next stage of production.'})
-CREATE (lineC:Line:ManufacturingFacility:Resource {id: 'lineAID', name: 'Machining Line 1', description: 'This line includes a series of computer-controlled machines that perform precision machining operations on metal components. It may include equipment such as CNC milling machines, lathes, and grinders, and it requires skilled operators and engineers to ensure that components are produced accurately and efficiently. The line may be designed to accommodate different product types or variations, and it may incorporate quality control checkpoints to ensure that components meet specifications before they move to the next stage of production.'})
-CREATE (lineD:Line:ManufacturingFacility:Resource {id: 'lineBID', name: 'Assembly Line 1', description: 'This line includes a series of workstations where operators assemble components into finished products. It may include equipment such as conveyors, lifts, and tooling, and it requires careful attention to detail to ensure that products are assembled correctly and that they meet quality standards. The line may be designed to accommodate different product types or variations, and it may incorporate quality control checkpoints to ensure that products meet specifications before they move to the next stage of production. The line may also include semi-automated or fully automated workstations to optimize efficiency and reduce labor costs.'})
+CREATE (lineC:Line:ManufacturingFacility:Resource {id: 'lineCID', name: 'Machining Line 1', description: 'This line includes a series of computer-controlled machines that perform precision machining operations on metal components. It may include equipment such as CNC milling machines, lathes, and grinders, and it requires skilled operators and engineers to ensure that components are produced accurately and efficiently. The line may be designed to accommodate different product types or variations, and it may incorporate quality control checkpoints to ensure that components meet specifications before they move to the next stage of production.'})
+CREATE (lineD:Line:ManufacturingFacility:Resource {id: 'lineDID', name: 'Assembly Line 1', description: 'This line includes a series of workstations where operators assemble components into finished products. It may include equipment such as conveyors, lifts, and tooling, and it requires careful attention to detail to ensure that products are assembled correctly and that they meet quality standards. The line may be designed to accommodate different product types or variations, and it may incorporate quality control checkpoints to ensure that products meet specifications before they move to the next stage of production. The line may also include semi-automated or fully automated workstations to optimize efficiency and reduce labor costs.'})
 
 // create relationships
 CREATE (areaA)-[:has]->(lineA)
@@ -141,7 +141,7 @@ CREATE (machine1A)-[:has]->(cuttingSpeed)
 CREATE (machine1A)-[:has]->(toolWear)
 
 
-CREATE (vibration:ObservableProperty {
+CREATE (vibration1:ObservableProperty {
 id: 'vibration',
 name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe Machine in Nordborg Machining Line Cell 1',
@@ -161,7 +161,7 @@ connectionDetails: "cuttingForceConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (temperature:ObservableProperty {
+CREATE (temperature1:ObservableProperty {
 id: 'temperature',
 name: 'Temperature',
 description: 'Observable Property for Temperature of Welding Robot in Nordborg Welding Line Cell 2',
@@ -181,12 +181,12 @@ connectionDetails: "weldingVoltageConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine1B)-[:has]->(vibration)
+CREATE (machine1B)-[:has]->(vibration1)
 CREATE (machine1B)-[:has]->(cuttingForce)
-CREATE (machine2A)-[:has]->(temperature)
+CREATE (machine2A)-[:has]->(temperature1)
 CREATE (machine2A)-[:has]->(weldingVoltage)
 
-CREATE (vibration:ObservableProperty {
+CREATE (vibration2:ObservableProperty {
 id: 'vibration',
 name: 'Vibration',
 description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
@@ -206,10 +206,10 @@ connectionDetails: "surfaceRoughnessConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine2B)-[:has]->(vibration)
+CREATE (machine2B)-[:has]->(vibration2)
 CREATE (machine2B)-[:has]->(surfaceRoughness)
 
-CREATE (temperature:ObservableProperty {
+CREATE (temperature2:ObservableProperty {
 id: 'temperature',
 name: 'Temperature',
 description: 'Observable Property for Temperature of CNC Turning Center in Graasten Machining Line Cell 1',
@@ -229,10 +229,10 @@ connectionDetails: "toolLifeConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine3A)-[:has]->(temperature)
+CREATE (machine3A)-[:has]->(temperature2)
 CREATE (machine3A)-[:has]->(toolLife)
 
-CREATE (powerConsumption:ObservableProperty {
+CREATE (powerConsumption1:ObservableProperty {
 id: 'powerConsumption',
 name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Grinding Machine in Graasten Machining Line Cell 1',
@@ -252,7 +252,7 @@ connectionDetails: "grindingForceConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (machine3B)-[:has]->(powerConsumption)
+CREATE (machine3B)-[:has]->(powerConsumption1)
 CREATE (machine3B)-[:has]->(grindingForce)
 
 CREATE (robotPosition:ObservableProperty {
@@ -304,7 +304,7 @@ CREATE (machine4B)-[:has]->(testStatus)
 
 
 // GRAASTEN
-CREATE (vibration:ObservableProperty {
+CREATE (vibration3:ObservableProperty {
 id: 'vibration',
 name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe 1 in the manufacturing facility',
@@ -314,7 +314,7 @@ connectionDetails: "vibrationConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (temperature:ObservableProperty {
+CREATE (temperature3:ObservableProperty {
 id: 'temperature',
 name: 'Temperature',
 description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
@@ -324,10 +324,10 @@ connectionDetails: "temperatureConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (lathe1)-[:has]->(vibration)
-CREATE (lathe1)-[:has]->(temperature)
+CREATE (lathe1)-[:has]->(vibration3)
+CREATE (lathe1)-[:has]->(temperature3)
 
-CREATE (surfaceRoughness:ObservableProperty {
+CREATE (surfaceRoughness2:ObservableProperty {
 id: 'surfaceRoughness',
 name: 'Surface Roughness',
 description: 'Observable Property for Surface Roughness of Milling 1 in the manufacturing facility',
@@ -337,7 +337,7 @@ connectionDetails: "surfaceRoughnessConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (powerConsumption:ObservableProperty {
+CREATE (powerConsumption2:ObservableProperty {
 id: 'powerConsumption',
 name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Milling 1 in the manufacturing facility',
@@ -347,10 +347,10 @@ connectionDetails: "powerConsumptionConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (milling1)-[:has]->(surfaceRoughness)
-CREATE (milling1)-[:has]->(powerConsumption)
+CREATE (milling1)-[:has]->(surfaceRoughness2)
+CREATE (milling1)-[:has]->(powerConsumption2)
 
-CREATE (vibration:ObservableProperty {
+CREATE (vibration4:ObservableProperty {
 id: 'vibration',
 name: 'Vibration',
 description: 'Observable Property for Vibration of Grinder 1 in Graasten Machining Line Cell 1',
@@ -360,7 +360,7 @@ connectionDetails: "vibrationConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (temperature:ObservableProperty {
+CREATE (temperature4:ObservableProperty {
 id: 'temperature',
 name: 'Temperature',
 description: 'Observable Property for Temperature of Grinder 1 in Graasten Machining Line Cell 1',
@@ -370,8 +370,8 @@ connectionDetails: "temperatureConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (grinder1)-[:has]->(vibration)
-CREATE (grinder1)-[:has]->(temperature)
+CREATE (grinder1)-[:has]->(vibration4)
+CREATE (grinder1)-[:has]->(temperature4)
 
 CREATE (rpm:ObservableProperty {
 id: 'rpm',
@@ -396,7 +396,7 @@ dataFormat: "WITH_METADATA"
 CREATE (drill1)-[:has]->(rpm)
 CREATE (drill1)-[:has]->(depth)
 
-CREATE (robotStatus:ObservableProperty {
+CREATE (robotStatus2:ObservableProperty {
 id: 'robotStatus',
 name: 'Robot Status',
 description: 'Observable Property for Status of Robot 1 in Graasten Machining Line Cell 1',
@@ -406,7 +406,7 @@ connectionDetails: "robotStatusConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (powerConsumption:ObservableProperty {
+CREATE (powerConsumption3:ObservableProperty {
 id: 'powerConsumption',
 name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Robot 1 in Graasten Machining Line Cell 1',
@@ -416,10 +416,10 @@ connectionDetails: "powerConsumptionConnectionDetails",
 dataFormat: "WITH_METADATA"
 })
 
-CREATE (robot1)-[:has]->(robotStatus)
-CREATE (robot1)-[:has]->(powerConsumption)
+CREATE (robot1)-[:has]->(robotStatus2)
+CREATE (robot1)-[:has]->(powerConsumption3)
 
-CREATE (voltage:ObservableProperty {
+CREATE (voltage2:ObservableProperty {
 id: 'voltage',
 name: 'Voltage',
 description: 'Observable Property for Voltage of Welder 1',
@@ -439,7 +439,7 @@ connectionDetails: "welder1CurrentConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (welder1)-[:has]->(voltage)
+CREATE (welder1)-[:has]->(voltage2)
 CREATE (welder1)-[:has]->(current)
 
 CREATE (force:ObservableProperty {
@@ -452,7 +452,7 @@ connectionDetails: "press1ForceConnectionDetails",
 dataFormat: "RAW"
 })
 
-CREATE (temperature:ObservableProperty {
+CREATE (temperature5:ObservableProperty {
 id: 'temperature',
 name: 'Temperature',
 description: 'Observable Property for Temperature of Press 1',
@@ -463,7 +463,7 @@ dataFormat: "RAW"
 })
 
 CREATE (press1)-[:has]->(force)
-CREATE (press1)-[:has]->(temperature)
+CREATE (press1)-[:has]->(temperature5)
 
 CREATE (airPressure:ObservableProperty {
 id: 'airPressure',
@@ -490,124 +490,84 @@ CREATE (rivet1)-[:has]->(cycleTime)
 
 
 
+CREATE (topicA:Topic {name: 'TopicA'})
+CREATE (topicB:Topic {name: 'TopicB'})
+CREATE (topicC:Topic {name: 'TopicC'})
+CREATE (topicD:Topic {name: 'TopicD'})
+CREATE (topicE:Topic {name: 'TopicE'})
+CREATE (topicF:Topic {name: 'TopicF'})
+CREATE (topicG:Topic {name: 'TopicG'})
+CREATE (topicH:Topic {name: 'TopicH'})
+CREATE (topicI:Topic {name: 'TopicI'})
+CREATE (topicJ:Topic {name: 'TopicJ'})
+CREATE (topicK:Topic {name: 'TopicK'})
+CREATE (topicL:Topic {name: 'TopicL'})
+CREATE (topicM:Topic {name: 'TopicM'})
+CREATE (topicN:Topic {name: 'TopicN'})
+CREATE (topicO:Topic {name: 'TopicO'})
+CREATE (topicP:Topic {name: 'TopicP'})
+CREATE (topicQ:Topic {name: 'TopicQ'})
+CREATE (topicR:Topic {name: 'TopicR'})
+CREATE (topicS:Topic {name: 'TopicS'})
+CREATE (topicT:Topic {name: 'TopicT'})
+CREATE (topicU:Topic {name: 'TopicU'})
+CREATE (topicV:Topic {name: 'TopicV'})
+CREATE (topicW:Topic {name: 'TopicW'})
+CREATE (topicX:Topic {name: 'TopicX'})
+CREATE (topicY:Topic {name: 'TopicY'})
+CREATE (topicZ:Topic {name: 'TopicZ'})
+CREATE (topicZA:Topic {name: 'TopicZA'})
+CREATE (topicZB:Topic {name: 'TopicZB'})
+CREATE (topicZC:Topic {name: 'TopicZC'})
+CREATE (topicZD:Topic {name: 'TopicZD'})
+CREATE (topicZE:Topic {name: 'TopicZE'})
+
+
+
+
+CREATE (cuttingSpeed)-[:has]->(topicA)
+CREATE (toolWear)-[:has]->(topicB)
+CREATE (vibration1)-[:has]->(topicC)
+CREATE (cuttingForce)-[:has]->(topicD)
+CREATE (temperature1)-[:has]->(topicE)
+
+CREATE (weldingVoltage)-[:has]->(topicF)
+CREATE (vibration2)-[:has]->(topicG)
+CREATE (surfaceRoughness)-[:has]->(topicH)
+CREATE (temperature2)-[:has]->(topicI)
+CREATE (powerConsumption1)-[:has]->(topicK)
+CREATE (grindingForce)-[:has]->(topicL)
+CREATE (robotPosition)-[:has]->(topicM)
+CREATE (robotStatus)-[:has]->(topicN)
+CREATE (testResult)-[:has]->(topicO)
+CREATE (testStatus)-[:has]->(topicP)
+CREATE (vibration3)-[:has]->(topicQ)
+CREATE (surfaceRoughness2)-[:has]->(topicR)
+CREATE (powerConsumption2)-[:has]->(topicS)
+CREATE (vibration4)-[:has]->(topicT)
+CREATE (temperature4)-[:has]->(topicU)
+CREATE (rpm)-[:has]->(topicV)
+CREATE (depth)-[:has]->(topicW)
+CREATE (robotStatus2)-[:has]->(topicX)
+CREATE (powerConsumption3)-[:has]->(topicY)
+CREATE (voltage2)-[:has]->(topicZ)
+CREATE (current)-[:has]->(topicZA)
+CREATE (force)-[:has]->(topicZB)
+CREATE (temperature5)-[:has]->(topicZC)
+CREATE (airPressure)-[:has]->(topicZD)
+CREATE (cycleTime)-[:has]->(topicZE)
 
 
 
 
 
-CREATE (lathe1Temp:ObservableProperty {
-id: 'lathe1Temp',
-name: 'Lathe 1 Temperature',
-description: 'Temperature of the Lathe 1 spindle',
-frequency: 50,
-changedFrequency: 50,
-connectionDetails: "lathe1TempConnectionDetails",
-dataFormat: "RAW"
-})
-CREATE (lathe1Vibration:ObservableProperty {
-id: 'lathe1Vibration',
-name: 'Lathe 1 Vibration',
-description: 'Vibration of the Lathe 1 spindle',
-frequency: 100,
-changedFrequency: 50,
-connectionDetails: "lathe1VibrationConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
 
-CREATE (milling1Temp:ObservableProperty {
-id: 'milling1Temp',
-name: 'Milling 1 Temperature',
-description: 'Temperature of the Milling 1 spindle',
-frequency: 75,
-changedFrequency: 50,
-connectionDetails: "milling1TempConnectionDetails",
-dataFormat: "RAW"
-})
-CREATE (milling1Load:ObservableProperty {
-id: 'milling1Load',
-name: 'Milling 1 Load',
-description: 'Load on the Milling 1 spindle',
-frequency: 150,
-changedFrequency: 75,
-connectionDetails: "milling1LoadConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
-CREATE (grinder1Temp:ObservableProperty {
-id: 'grinder1Temp',
-name: 'Grinder 1 Temperature',
-description: 'Temperature of the Grinder 1 spindle',
-frequency: 50,
-changedFrequency: 50,
-connectionDetails: "grinder1TempConnectionDetails",
-dataFormat: "RAW"
-})
-CREATE (grinder1Vibration:ObservableProperty {
-id: 'grinder1Vibration',
-name: 'Grinder 1 Vibration',
-description: 'Vibration of the Grinder 1 spindle',
-frequency: 100,
-changedFrequency: 50,
-connectionDetails: "grinder1VibrationConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
-CREATE (drill1Temp:ObservableProperty {
-id: 'drill1Temp',
-name: 'Drill 1 Temperature',
-description: 'Temperature of the Drill 1 motor',
-frequency: 75,
-changedFrequency: 50,
-connectionDetails: "drill1TempConnectionDetails",
-dataFormat: "RAW"
-})
-CREATE (drill1Load:ObservableProperty {
-id: 'drill1Load',
-name: 'Drill 1 Load',
-description: 'Load on the Drill 1 motor',
-frequency: 150,
-changedFrequency: 75,
-connectionDetails: "drill1LoadConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
 
-CREATE (cuttingSpeed2:ObservableProperty {
-id: 'cuttingSpeed2',
-name: 'Cutting Speed',
-description: 'Observable Property for Cutting Speed of Machine A in Nordborg Machining Line Cell 1',
-frequency: 150,
-changedFrequency: 100,
-connectionDetails: "cuttingSpeed2ConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
 
-CREATE (toolLife:ObservableProperty {
-id: 'toolLife',
-name: 'Tool Life',
-description: 'Observable Property for Tool Life of Machine A in Nordborg Machining Line Cell 1',
-frequency: 50,
-changedFrequency: 50,
-connectionDetails: "toolLifeConnectionDetails",
-dataFormat: "RAW"
-})
 
-CREATE (assemblySpeed:ObservableProperty {
-id: 'assemblySpeed',
-name: 'Assembly Speed',
-description: 'Observable Property for Assembly Speed of Machine B in Nordborg Assembly Line Cell 2',
-frequency: 75,
-changedFrequency: 50,
-connectionDetails: "assemblySpeedConnectionDetails",
-dataFormat: "WITH_METADATA"
-})
 
-CREATE (vibration2:ObservableProperty {
-id: 'vibration2',
-name: 'Vibration',
-description: 'Observable Property for Vibration of Machine B in Nordborg Assembly Line Cell 2',
-frequency: 100,
-changedFrequency: 75,
-connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW"
-})
+
+
 
 CREATE (egress1:EgressEndpoint {
     id: "egress1",
@@ -645,37 +605,11 @@ CREATE (egress3:EgressEndpoint {
 
 })
 
-CREATE (egress1)-[:accessVia]->(jointTemperature)
-CREATE (egress1)-[:accessVia]->(jointTemperature2)
+CREATE (egress1)-[:accessVia]->(rpm)
+CREATE (egress1)-[:accessVia]->(depth)
 
-CREATE (egress2)-[:accessVia]->(jointVibration)
-CREATE (egress2)-[:accessVia]->(jointVibration2)
+CREATE (egress2)-[:accessVia]->(vibration4)
+CREATE (egress2)-[:accessVia]->(temperature4)
 
-CREATE (egress3)-[:accessVia]->(jointPressure)
-CREATE (egress3)-[:accessVia]->(jointPressure2)
-
-
-
-// Create topics
-CREATE (topicA:Topic {name: 'TopicA'})
-CREATE (topicB:Topic {name: 'TopicB'})
-CREATE (topicC:Topic {name: 'TopicC'})
-CREATE (topicD:Topic {name: 'TopicD'})
-CREATE (topicE:Topic {name: 'TopicE'})
-CREATE (topicF:Topic {name: 'TopicF'})
-
-//create relationships
-CREATE (jointTemperature)-[:has]->(topicA)
-CREATE (jointTemperature2)-[:has]->(topicB)
-CREATE (jointPressure)-[:has]->(topicC)
-CREATE (jointPressure2)-[:has]->(topicD)
-CREATE (jointVibration)-[:has]->(topicE)
-CREATE (jointVibration2)-[:has]->(topicF)
-
-// Create relationships
-CREATE (machineA)-[:has]->(jointTemperature)
-CREATE (machineA)-[:has{frequency:100}]->(jointTemperature2)
-CREATE (machineC)-[:has{frequency:100}]->(jointPressure)
-CREATE (machineD)-[:has{frequency:100}]->(jointPressure2)
-CREATE (machineD)-[:has{frequency:100}]->(jointVibration)
-CREATE (machineF)-[:has{frequency:100}]->(jointVibration2)
+CREATE (egress3)-[:accessVia]->(surfaceRoughness2)
+CREATE (egress3)-[:accessVia]->(powerConsumption2)

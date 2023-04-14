@@ -18,7 +18,7 @@ function App() {
     <BrowserRouter>
       <Navbar /> {/* If actual page is Login/Register, do not display*/}
       <Routes>
-        <Route path="/" element={<HomePage title={"Home"} />}></Route>
+        <Route path="/" element={<OverviewPage title={"Overview"} />}></Route>
         <Route path="/Overview" element={<OverviewPage title={"Overview"} />} />
         <Route
           element={<FavouritesPage title={"Favourites"} />}

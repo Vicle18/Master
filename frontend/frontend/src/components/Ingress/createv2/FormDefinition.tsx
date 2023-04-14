@@ -38,7 +38,6 @@ export const initialValues: FormData = {
   nodeId: "",
   containingElement: "Machine A",
   dataFormat: "RAW",
-  id: "123"
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
