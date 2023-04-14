@@ -1,4 +1,5 @@
 import * as Yup from "yup";
+import { v4 as uuidv4 } from 'uuid';
 interface Metadata {
   timestamp?: boolean;
   name?: string;
@@ -23,6 +24,8 @@ export interface FormData {
 }
 
 export const initialValues: FormData = {
+  // id with random uuid generated based on uuidv4
+  id: uuidv4(),
   name: "Robot Mode" + Math.floor(Math.random() * 1000),
   description: "default Description",
   protocol: "RTDE",
