@@ -26,6 +26,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
@@ -262,29 +263,29 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     {(values.protocol === "MQTT" || values.protocol === "OPCUA") && (
                       <>
-                      <Field name="createBroker">
+                        <Field name="createBroker">
                           {({ field }: FieldProps<FormData>) => (
                             <FormControlLabel control={<Switch
                               {...field}
                               defaultChecked={values.createBroker}
-                              onChange={() =>{
+                              onChange={() => {
                                 values.createBroker = !values.createBroker
                                 console.log(values.createBroker);
                                 setCreateBroker(values.createBroker);
                               }
-                              
+
                               }
-                              disabled = {values.protocol === "OPCUA"}
+                              disabled={values.protocol === "OPCUA"}
                               color="primary"
                             />} label="Providing your own broker" />
-                            
+
                           )}
                         </Field>
-                        </>)}
+                      </>)}
 
-                    {createBroker &&  values.protocol === "MQTT" && (
+                    {createBroker && values.protocol === "MQTT" && (
                       <>
-                        
+
                         <Field name="host">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -319,6 +320,20 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box sx={{
+                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
+                      borderRadius: "10px",
+                      marginRight: "13px",
+                      color: "white",
+                      alignItems: "center",
+                      display: "flex",
+                      "& p": {
+                        marginLeft: "10px", // add some margin between the icon and the paragraph
+                      },
+                    }}>
+                      <InfoIcon />
+                      <p>Select the containing element in which you would like to store your Egress Endpoint.</p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={2.5}
@@ -403,7 +418,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                               container
                               spacing={2}
                               key={data.id}
-                              sx={{ marginTop: "10px", marginBottom: "10px"}}
+                              sx={{ marginTop: "10px", marginBottom: "10px" }}
                             >
                               <Grid2 container xs={6}>
                                 <TextField
@@ -434,7 +449,7 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                                   }}
                                   size="small"
-                                  // name={`data[${index}].frequency`}
+                                // name={`data[${index}].frequency`}
                                 />
                               </Grid2>
                             </Grid2>

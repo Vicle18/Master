@@ -22,8 +22,6 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
-import { EditIngressEndpoint } from "./edit/EditIngressEndpoint";
-import CreateIngressStepper from "./createv2/CreateIngressStepper";
 import EditIngressStepper from "./edit/EditIngressStepper";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`

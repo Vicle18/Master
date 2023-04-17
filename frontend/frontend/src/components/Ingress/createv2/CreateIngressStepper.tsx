@@ -36,6 +36,8 @@ import {
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from '@mui/icons-material/Info';
+
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -470,6 +472,20 @@ const CreateIngressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box sx={{
+                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
+                      borderRadius: "10px",
+                      marginRight: "13px",
+                      color: "white",
+                      alignItems: "center",
+                      display: "flex",
+                      "& p": {
+                        marginLeft: "10px", // add some margin between the icon and the paragraph
+                      },
+                    }}>
+                      <InfoIcon />
+                      <p>Select the containing element in which you would like to store your Ingress Endpoint.</p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
