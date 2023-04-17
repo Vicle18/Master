@@ -6,7 +6,13 @@ export interface ingressNode {
   topic: string;
   frequency: number;
   changedFrequency: number;
-
+  dataFormat: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 export interface FormData {
   name: string;
@@ -16,10 +22,17 @@ export interface FormData {
   frequency: string;
   frequencies?:  (number | undefined)[];
   changedFrequencies?: (number | undefined)[];
+  downSampling?: (string | undefined)[];
   host?: string;
   port?: string;
   ingressIds?: (string | undefined)[];
   dataFormat?: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 
 export const initialValues: FormData = {
@@ -33,7 +46,7 @@ export const initialValues: FormData = {
   frequencies: [30],
   changedFrequencies: [30],
   ingressIds: ["jointTemperature2"],
-  dataFormat: "string",
+  dataFormat: "RAW",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -67,10 +80,13 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   changedFrequencies: Yup.array().of(Yup.mixed<number>())
   .min(1)
   .optional(),
+  downSampling: Yup.array().of(Yup.mixed<string>()),
   ingressIds: Yup.array()
     .of(Yup.mixed<string>())
     .min(1)
     .optional(),
-
   dataFormat: Yup.string().required("dataFormat is required"),
+  metadata: Yup.object().optional(),
+
+
 });

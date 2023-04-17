@@ -167,10 +167,14 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                 {item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
-                {/* <CurrentValue
-                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.id}/1`}
-                refreshInterval={10000}
-              /> */}
+                {item.accessTo.length <= 0 && (
+                  <Chip
+                    label="No Ingress Endpoints"
+                    color="error"
+                    size="small"
+                    sx={{ marginRight: "10px" }}
+                  />
+                )}
               </Box>
             </AccordionSummary>
             <AccordionDetails>

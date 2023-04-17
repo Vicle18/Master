@@ -431,7 +431,6 @@ const CreateEgressStepper: React.FC<Props> = ({
                                   // }
                                   onChange={(e) => {
                                     ingressNodes[index].changedFrequency = +e.target.value;
-
                                   }}
                                   size="small"
                                   // name={`data[${index}].frequency`}

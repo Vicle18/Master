@@ -56,7 +56,7 @@ interface CheckBoxData {
 const steps = [
   "Define Ingress Endpoint",
   "Select Containing Element",
-  "Test Connection",
+  // "Test Connection",
 ];
 
 const CreateIngressStepper: React.FC<Props> = ({
@@ -69,8 +69,7 @@ const CreateIngressStepper: React.FC<Props> = ({
 
   const [currentlySelectedParent, setCurrentlySelectedParent] =
     useState<string>("");
-  const [selectedParent, setSelectedParent] = useState<string>("");
-  const [selectedMetadata, setSelectedMetadata] = useState<string>("");
+  const [selectedParent, setSelectedParent] = useState<string>(initialValues.containingElement ?? "");
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
   const theme = useTheme();

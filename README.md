@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a ingress/v1.4.3 -m "with metadata"
-git push origin ingress/v1.4.3
+git tag -a egress/v1.0.3 -m "with logging"
+git push origin egress/v1.0.3
 ### informatio about pipeline metadata
 https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)

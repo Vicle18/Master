@@ -168,7 +168,7 @@ public class MQTTIngressClient : IIngressClient
                     var value = _accumulatedValue / _messageCounter;
                     _accumulatedValue = _messageCounter = 0;
                     _messageHandler(_transitionPairs.Values.ElementAt(0), value.ToString());
-                    Task.Delay((int) (1000 / 0.5)).Wait();
+                    Task.Delay((int) (1000 / int.Parse(_mqttConfig.CHANGED_FREQUENCY))).Wait();
                 }
                 else
                 {
