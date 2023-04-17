@@ -9,4 +9,6 @@ public class ConnectionDetails
     public string Id { get; set; }
     public string Protocol { get; set; }
     public Dictionary<string, JsonElement> Parameters { get; set; }
+    public Dictionary<string, JsonElement> TransmissionDetails { get; set; }
+
 }
