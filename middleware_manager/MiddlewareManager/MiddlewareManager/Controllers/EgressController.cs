@@ -56,7 +56,7 @@ namespace MiddlewareManager.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
         {
-            Log.Debug("test");
+
             Log.Debug(JsonSerializer.Serialize(value));
             try
             {
@@ -65,16 +65,13 @@ namespace MiddlewareManager.Controllers
 
                 var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
                 var egressGroupId = Guid.NewGuid();
-                List<ObservableProperty> observableProperties = await _egressRepo.getIngressProperties(value.ingressIds);
-                foreach (var observableProperty in observableProperties)
-                {
-                    Log.Debug(JsonSerializer.Serialize(observableProperty));
-                    var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
-                    _connectionDetails.Add(JsonSerializer.Serialize(connectionDetails));
-                    await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
-                }
+                ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
+                var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
+                // _connectionDetails.Add(JsonSerializer.Serialize(connectionDetails));
+                
+                await ForwardsRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails));
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
-                    _connectionDetails, observableProperties, egressGroupId.ToString());
+                JsonSerializer.Serialize(connectionDetails), observableProperty, egressGroupId.ToString());
                 
                 return Ok(response);
             }
@@ -88,7 +85,7 @@ namespace MiddlewareManager.Controllers
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-        private async Task ForwardsRequestToConfigurator(CreateEgressDto value, string topicName,
+        private async Task ForwardsRequestToConfigurator(CreateEgressDto value,
             string connectionDetails)
         {
             try
@@ -98,7 +95,7 @@ namespace MiddlewareManager.Controllers
                 var contentObject = new JObject()
                 {
                     ["CreateBroker"] = value.createBroker,
-                    ["ConnectionDetails"] = JsonConvert.DeserializeObject<JToken>(connectionDetails)
+                    ["ConnectionDetails"] = JsonConvert.DeserializeObject<JToken>(connectionDetails),
                 };
                 _logger.LogDebug("connectionDetails: {details}", contentObject.ToString());
                 Console.WriteLine($"connectionDetails: {contentObject.ToString()}");

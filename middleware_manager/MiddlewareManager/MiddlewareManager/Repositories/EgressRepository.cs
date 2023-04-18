@@ -37,6 +37,11 @@ public class EgressRepository : IEgressRepository
 
         return observableProperties;
     }
+    
+    public async Task<ObservableProperty> getIngressProperty(string ingressName)
+    {
+        return await RequestObservableProperties(ingressName);
+    }
 
     private async Task<ObservableProperty> RequestObservableProperties(string ingressId)
     {
@@ -71,7 +76,7 @@ public class EgressRepository : IEgressRepository
     public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, List<string> connectionDetails,
          List<ObservableProperty> observableProperties, string egressGroupId)
     {
-        var accessToNodes = new List<dynamic>();
+        
         foreach(var observableProperty in observableProperties)
         {
             accessToNodes.Add(new

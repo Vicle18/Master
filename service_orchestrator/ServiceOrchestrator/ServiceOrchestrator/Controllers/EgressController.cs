@@ -63,7 +63,8 @@ namespace ServiceOrchestrator.Controllers
             config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_FORMAT", data.ConnectionDetails.TransmissionDetails["DATA_FORMAT"].GetString());
-            
+            config.EnvironmentVariables.Add("DOTNET_ENVIRONMENT", "Production");
+
             config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY", data.ConnectionDetails.TransmissionDetails["FREQUENCY"].GetString());
             config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY", data.ConnectionDetails.TransmissionDetails["CHANGED_FREQUENCY"].GetString());
             config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__ORIGIN_TOPIC", data.ConnectionDetails.TransmissionDetails["ORIGIN_TOPIC"].GetString());

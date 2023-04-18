@@ -14,7 +14,7 @@ public class ConnectionDetailsFactory
 
     public static IConnectionDetails Create(string id, CreateIngressDto value, string topicName)
     {
-
+        
         switch (value.protocol)
         {
             case "MQTT":
@@ -82,6 +82,15 @@ public class ConnectionDetailsFactory
         Log.Debug(value.protocol);
         Log.Debug(observableProperty.topic.name.ToString());
         Log.Debug(topicName);
+        string target = 
+        var transmissionDetails = new TransmissionDetails()
+        {
+            FREQUENCY = value.frequency.ToString(),
+            CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
+            DATA_FORMAT = value.dataFormat,
+            ORIGIN_TOPIC = topicName,
+            TARGET = value.protocol == 
+        }
         switch (value.protocol)
         {
             case "MQTT":
@@ -117,6 +126,15 @@ public class ConnectionDetailsFactory
                 };
             default:
                 throw new ArgumentException("Unsupported protocol");
+        }
+    }
+
+    private static string CreateEgressTarget(CreateEgressDto dto,ObservableProperty observableProperty )
+    {
+        switch (dto.protocol)
+        {
+            case "MQTT":
+                return $"{}"
         }
     }
 
