@@ -303,7 +303,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 />
                               )}
                             </Field>
-                            <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <Tooltip title="Please provide a valid host such as 127.0.0.1">
                               <IconButton sx={{ marginTop: "10px" }}>
                                 <HelpOutlineIcon />
                               </IconButton>
@@ -327,7 +327,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 />
                               )}
                             </Field>
-                            <Tooltip title="Insert a number e.g., 8080">
+                            <Tooltip title="Please provide a valid port number, such as 8080.">
                               <IconButton sx={{ marginTop: "10px" }}>
                                 <HelpOutlineIcon />
                               </IconButton>
@@ -355,7 +355,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                               />
                             )}
                           </Field>
-                          <Tooltip title="Insert a name for data uploads">
+                          <Tooltip title="Please provide a name for the location where data uploads will be stored.">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
                             </IconButton>
@@ -408,7 +408,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                               />
                             )}
                           </Field>
-                          <Tooltip title="Insert an id for the OPC UA broker">
+                          <Tooltip title="Please provide an ID for the OPC UA broker.">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
                             </IconButton>
@@ -434,7 +434,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           />
                         )}
                       </Field>
-                      <Tooltip title="Insert the data upload frequency as a number">
+                      <Tooltip title="Please provide the data upload frequency as a number">
                         <IconButton sx={{ marginTop: "10px" }}>
                           <HelpOutlineIcon />
                         </IconButton>
