@@ -3,7 +3,9 @@ import * as Yup from "yup";
 export interface ingressNode {
   id: string;
   name: string;
-  topic: string;
+  topic?: {
+    name: string;
+  }
   frequency: number;
   changedFrequency: number;
   dataFormat: string;
@@ -35,7 +37,7 @@ export interface FormData {
   };
 }
 
-export const initialValues: FormData = {
+export const egressInitialValues: FormData = {
   name: "defaultName",
   description: "default Description",
   protocol: "MQTT",

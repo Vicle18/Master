@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -25,11 +25,13 @@ import {
   Stepper,
   Switch,
   TextField,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
@@ -37,7 +39,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../../Ingress/IngressDetailed";
 import IngressOverviewLeft from "../../Ingress/IngressOverviewLeft";
 import {
-  initialValues,
+  egressInitialValues,
   validationSchema,
   FormData,
   ingressNode,
@@ -49,6 +51,7 @@ interface Props {
   setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>;
   PopupEgress: boolean;
   handleResult: (result: string) => void;
+  selectedIngress?: any;
 }
 interface CheckBoxData {
   [key: string]: boolean;
@@ -75,6 +78,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   setPopupEgress,
   PopupEgress,
   handleResult,
+  selectedIngress,
 }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [createBroker, setCreateBroker] = React.useState<boolean>(false);
@@ -90,6 +94,7 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
+  console.log("le ingress selected: ", selectedIngress);
 
   const handlerClose = () => {
     setPopupEgress(false);
@@ -163,9 +168,12 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const handleSelectObservableProperty = (observableProperty: any) => {
     console.log("observable property", observableProperty);
+    selectedIngress = null;
+    console.log("selectedINgress is null ", selectedIngress);
     setSelectedIngressNode(observableProperty);
     // setIngressNodes([...ingressNodes, observableProperty]);
   };
+
   const handleDelete = (element: ingressNode) => {
     setIngressNodes(ingressNodes.filter((node) => node.id !== element.id));
   };
@@ -188,7 +196,7 @@ const CreateEgressStepper: React.FC<Props> = ({
         }
       >
         <Formik
-          initialValues={initialValues}
+          initialValues={egressInitialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
         >
@@ -250,7 +258,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                           {...field}
                           label="Name"
                           variant="outlined"
-                          fullWidth
+                          style={{
+                            width: "calc(100% - 40px)",
+                            marginRight: "10px",
+                          }}
                           margin="normal"
                           size="small"
                           error={touched.name && Boolean(errors.name)}
@@ -264,7 +275,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                           {...field}
                           label="Description"
                           variant="outlined"
-                          fullWidth
+                          style={{
+                            width: "calc(100% - 40px)",
+                            marginRight: "10px",
+                          }}
                           multiline
                           maxRows={4}
                           margin="normal"
@@ -279,16 +293,31 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="dataFormat-label">Data Format</InputLabel>
-                      <Field
-                        as={Select}
-                        name="dataFormat"
-                        labelId="dataFormat-label"
-                        label="dataFormat"
-                        size="small"
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}
                       >
-                        <MenuItem value="RAW">Raw</MenuItem>
-                        <MenuItem value="WITH_METADATA">With Metadata</MenuItem>
-                      </Field>
+                        <Field
+                          as={Select}
+                          name="dataFormat"
+                          labelId="dataFormat-label"
+                          label="dataFormat"
+                          fullWidth
+                          size="small"
+                        >
+                          <MenuItem value="RAW">Raw</MenuItem>
+                          <MenuItem value="WITH_METADATA">
+                            With Metadata
+                          </MenuItem>
+                        </Field>
+                        <Tooltip title="Select which output format you wish to receive">
+                          <IconButton>
+                            <HelpOutlineIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
                     </FormControl>
                     {values.dataFormat === "WITH_METADATA" && (
                       <>
@@ -336,7 +365,6 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </FormGroup>
                       </>
                     )}
-
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field
@@ -344,6 +372,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                         name="protocol"
                         labelId="protocol-label"
                         label="Protocol"
+                        style={{
+                          width: "calc(100% - 40px)",
+                          marginRight: "10px",
+                        }}
                         size="small"
                       >
                         <MenuItem value="MQTT">MQTT</MenuItem>
@@ -379,38 +411,63 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
-                        <Field name="host">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Host"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.host && Boolean(errors.host)}
-                              helperText={touched.host && errors.host}
-                            />
-                          )}
-                        </Field>
-                        <Field name="port">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Port"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.port && Boolean(errors.port)}
-                              helperText={touched.port && errors.port}
-                            />
-                          )}
-                        </Field>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid port e.g., 8080">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </>
                     )}
                   </>
                 )}
+
                 {activeStep === 1 && (
                   <>
                     <Box
@@ -462,8 +519,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                           onOpenChart={(observableProperty: any) => {
                             handleSelectObservableProperty(observableProperty);
                             values.frequency = observableProperty.frequency;
-                            values.changedFrequency =
-                              observableProperty.frequency;
+                            values.changedFrequency = observableProperty.frequency;
                           }}
                           withDetails={false}
                         />
@@ -496,7 +552,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                           <Box component="span" fontWeight="bold">
                             Topic:
                           </Box>{" "}
-                          {selectedIngressNode?.topic}
+                          {selectedIngressNode?.topic?.name}
                         </Typography>
                         <Typography>
                           <Box component="span" fontWeight="bold">
@@ -566,11 +622,17 @@ const CreateEgressStepper: React.FC<Props> = ({
                           fullWidth
                           margin="normal"
                           size="small"
+                          disabled={true}
                           error={touched.frequency && Boolean(errors.frequency)}
                           helperText={touched.frequency && errors.frequency}
                         />
                       )}
                     </Field>
+                    <Tooltip title="Changed frequency helps you reduce the current frequency">
+                      <IconButton sx={{ marginTop: "10px" }}>
+                        <HelpOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
                     <Field name="changedFrequency">
                       {({ field }: FieldProps<FormData>) => (
                         <TextField
@@ -590,6 +652,11 @@ const CreateEgressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+                    <Tooltip title="Please provide the data upload frequency as a number">
+                      <IconButton>
+                        <HelpOutlineIcon />
+                      </IconButton>
+                    </Tooltip>
                     {values.changedFrequency &&
                       values.changedFrequency != values.frequency && (
                         <FormControl
