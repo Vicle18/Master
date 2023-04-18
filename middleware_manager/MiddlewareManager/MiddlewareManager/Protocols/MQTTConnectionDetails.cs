@@ -15,5 +15,14 @@ public class MQTTParameters
 {
     public string HOST { get; set; }
     public string PORT { get; set; }
+    
+    public string? TRANSMISSION_PAIRS { get; set; }
+    public string? FREQUENCY { get; set; }
+
+    public string? CHANGED_FREQUENCY { get; set; }
+
+    public string? DATA_FORMAT { get; set; }
+
+    public Dictionary<string, JsonElement>? METADATA { get; set; }
 
 }
