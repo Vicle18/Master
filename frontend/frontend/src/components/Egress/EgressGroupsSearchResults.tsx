@@ -7,11 +7,17 @@ import {
   Box,
   Button,
   Icon,
+  IconButton,
   List,
   ListItem,
+  ListItemButton,
+  ListItemIcon,
   ListItemText,
+  ListSubheader,
   TextField,
 } from "@mui/material";
+import SensorsIcon from "@mui/icons-material/Sensors";
+
 import { gql, useQuery } from "@apollo/client";
 import Stack from "@mui/material/Stack";
 // import CurrentValue from "./CurrentValue";
@@ -21,18 +27,25 @@ import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturi
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { EgressSearchParameters } from "./EgressOverview";
 const GET_ENDPOINTS = gql`
-  query EgressEndpoints($where: EgressEndpointWhere) {
-    egressEndpoints(where: $where) {
+  query Query($where: EgressGroupWhere) {
+    egressGroups(where: $where) {
       id
       name
       description
       accessTo {
         id
         name
+        description
+        accessTo {
+          id
+          name
+          description
+        }
+        frequency
+        dataFormat
+        connectionDetails
+        status
       }
-      frequency
-      dataFormat
-      connectionDetails
     }
   }
 `;
@@ -40,11 +53,13 @@ const GET_ENDPOINTS = gql`
 interface IEgressSearchResultProps {
   searchParameters: EgressSearchParameters;
   onSelectEgressId: (egressId: string) => void;
+  onSelectGroupId?: (groupId: string) => void;
 }
 
-const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
+const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
   onSelectEgressId,
+  onSelectGroupId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const handleSearchTermChange = (
@@ -56,18 +71,22 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
     variables: {
       where: {
-        ...(searchParameters.keyword?.length > 0 && {
-          name_CONTAINS: searchParameters.keyword,
-        }),
-        ...(searchParameters.ingressEndpoints?.length > 0 && {
-          accessTo_ALL: {
-            id_IN: searchParameters.ingressEndpoints,
+        ...(searchParameters && {
+          accessTo_SOME: {
+            ...(searchParameters.keyword?.length > 0 && {
+              name_CONTAINS: searchParameters.keyword,
+            }),
+            ...(searchParameters.ingressEndpoints?.length > 0 && {
+              accessTo_ALL: {
+                id_IN: searchParameters.ingressEndpoints,
+              },
+            }),
+            ...(searchParameters.protocols?.length > 0 && {
+              OR: searchParameters.protocols.map((protocol) => ({
+                connectionDetails_CONTAINS: protocol,
+              })),
+            }),
           },
-        }),
-        ...(searchParameters.protocols?.length > 0 && {
-          OR: searchParameters.protocols.map((protocol) => ({
-            connectionDetails_CONTAINS: protocol,
-          })),
         }),
       },
     },
@@ -78,10 +97,10 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
     console.log("graph ", error);
     return <p>Error : {error.message}</p>;
   }
-  var properties = data.egressEndpoints;
+  var properties = data.egressGroups;
 
   const handleShowChart = (data: any) => {
-    // console.log("data: ", data.connectionDetails);
+    console.log("data: ", JSON.stringify(data));
     // const connectionDetails: ConnectionDetails = JSON.parse(
     //   data.connectionDetails,
     //   (key, value) => {
@@ -99,6 +118,7 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
     //     return value;
     //   }
     // );
+    // connectionDetails.OBSERVABLE_PROPERTY = data.accessTo;
     // console.log("connectionDetails: ", connectionDetails);
 
     onSelectEgressId(data.id);
@@ -139,7 +159,7 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
         </Typography>
       </Stack>
       <Divider sx={{ marginBottom: "20px" }}>
-        <Chip label="External Data Endpoints" />
+        <Chip label="External Data Endpoints and Groups" />
         <Button onClick={() => refetch()}>Refresh</Button>
       </Divider>
       <TextField
@@ -203,60 +223,61 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography>
-                    <Box component="span" fontWeight="bold">
-                      Id:
-                    </Box>{" "}
-                    {item.id}
-                  </Typography>
-                  <Typography>
-                    <Box component="span" fontWeight="bold">
-                      Name:
-                    </Box>{" "}
-                    {item.name}
-                  </Typography>
-                  <Typography>
-                    <Box component="span" fontWeight="bold">
-                      AccessTo:
-                    </Box>{" "}
-                    {/* {item.accessTo.map((item: any) => item.name + ", ")} */}
-                  </Typography>
-
-                  <Chip
-                    key={index}
-                    label={`${item.accessTo.name}`}
-                    color="success"
-                  />
-                  <Typography>
-                    <Box component="span" fontWeight="bold">
-                      Frequency:
-                    </Box>{" "}
-                    {item.frequency}
-                  </Typography>
-                  {/* <Typography>
-                    <Box component="span" fontWeight="bold">
-                      Connection details:
-                    </Box>{" "}
-                    {item.connectionDetails}
-                  </Typography> */}
+                  <Box sx={{ maxHeight: "300px", overflow: "auto" }}>
+                    <List
+                      dense={true}
+                      sx={{
+                        width: "100%",
+                        maxWidth: 360,
+                        bgcolor: "background.paper",
+                      }}
+                      subheader={
+                        <ListSubheader>Egress Endpoints</ListSubheader>
+                      }
+                    >
+                      {item.accessTo.map((node: any) => (
+                        <ListItemButton
+                          key={node.id}
+                          sx={{
+                            "&:hover": { backgroundColor: "#f0f0f0" },
+                          }}
+                          onClick={() => handleShowChart(node)}
+                        >
+                          <ListItemIcon>
+                            <SensorsIcon />
+                          </ListItemIcon>
+                          <ListItemText primary={node.name} />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Box>
                 </Grid2>
               </Grid2>
-
-              <Stack direction="row" spacing={2}>
+              {onSelectGroupId && (
                 <Button
                   variant="contained"
-                  onClick={() => handleShowChart(item)}
+                  onClick={() => onSelectGroupId(item.id)}
                 >
-                  Show Connection Details
+                  Select
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleDeleteItem(item)}
-                >
-                  Delete
-                </Button>
-              </Stack>
+              )}
+              {!onSelectGroupId && (
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleShowChart(item)}
+                  >
+                    Show Connection Details
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteItem(item)}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              )}
             </AccordionDetails>
           </Accordion>
         ))}
@@ -264,4 +285,4 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   );
 };
 
-export default EgressSearchResults;
+export default EgressGroupsSearchResults;
