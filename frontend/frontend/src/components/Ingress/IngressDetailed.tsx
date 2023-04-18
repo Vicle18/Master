@@ -23,6 +23,8 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
 import EditIngressStepper from "./edit/EditIngressStepper";
+import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
+import { egressInitialValues } from "../Egress/create/FormDefinition";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
 query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
@@ -167,6 +169,7 @@ interface IDetailedViewProps {
 }
 export var previousPropertyValues: any = "";
 
+
 const DetailedView: React.FC<IDetailedViewProps> = ({
   containingEntityId,
   onOpenChart,
@@ -174,13 +177,16 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 }) => {
 
   const [searchTerm, setSearchTerm] = React.useState("");
-  const [PopupIngress, setPopupIngress] = React.useState(false);
+  const [PopupEditIngress, setPopupEditIngress] = React.useState(false);
+  const [PopupCreateEgress, setPopupCreateEgress] = React.useState(false);
   const [showEditEndpoint, setShowEditEndpoint] = React.useState(false);
   const [activeStep, setActiveStep] = React.useState(0);
   const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [result, setResult] = React.useState<string | null>(null);
   const steps = ["Change Property Values"];
+  const [selectedIngress, setSelectedIngress] = React.useState("")
+
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -230,7 +236,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   // handle the close event
   const handleClose = () => {
-    setPopupIngress(false);
+    setPopupEditIngress(false);
   };
 
   const handleResult = (result: string) => {
@@ -266,33 +272,17 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
     const connectionDetails = JSON.parse(data.connectionDetails)
-    console.log(connectionDetails)
-    console.log(connectionDetails.ID)
-    console.log(connectionDetails.PARAMETERS.HOST)
 
-    // var json = JSON.parse(data.connectionDetails)
-    // console.log(json)
     if (connectionDetails.PROTOCOL == "MQTT") {
       initialValues.port = connectionDetails.PARAMETERS.PORT
       initialValues.host = connectionDetails.PARAMETERS.HOST
-      //data.connectionDetails.split(';')
-      // add to host
-      // add to port
     } else if (connectionDetails.PROTOCOL == "RTDE") {
-      console.log("inside RTDE")
-      console.log(connectionDetails.PARAMETERS.PORT.toString())
-      console.log(connectionDetails.PARAMETERS.HOST.toString())
-
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
-      //DO SAME 
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
       initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
-      //DO THE SAME BUT WITH NODE_ID
-      // SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
+      // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
-
-    console.log(previousPropertyValues)
     initialValues.name = data.name
     initialValues.description = data.description
     initialValues.frequency = data.frequency
@@ -300,7 +290,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     initialValues.dataFormat = data.dataFormat
     initialValues.id = data.id
     setShowEditEndpoint(true);
-    setPopupIngress(true);
+    setPopupEditIngress(true);
   }
 
   const handleShowChart = (data: any) => {
@@ -332,6 +322,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       })
       .then((data) => console.log("data: " + JSON.stringify(data)))
       .catch((error) => console.error(error));
+  }
+
+  function handleCreateEgress(item: any) {
+    setSelectedIngress(item);
+    egressInitialValues.ingressId = item.id;
+    setPopupCreateEgress(true);
   }
 
   return (
@@ -434,10 +430,13 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                 </Grid2>
 
                 <Stack direction="row" spacing={1}>
-                  <Button variant="contained" style={{ fontSize: "12px" }}>Create Egress</Button>
+                  <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleCreateEgress(item) }}>Create Egress</Button>
+                  {PopupCreateEgress && (
+                    <CreateEgressStepper PopupEgress handleResult={handleResult} setPopupEgress={setPopupCreateEgress} selectedIngress={selectedIngress}></CreateEgressStepper>
+                  )}
                   <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
-                  {PopupIngress && (
-                    <EditIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupIngress}></EditIngressStepper>
+                  {PopupEditIngress && (
+                    <EditIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupEditIngress}></EditIngressStepper>
                   )}
                   <Button
                     variant="contained"
