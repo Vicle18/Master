@@ -26,6 +26,7 @@ export interface FormData {
   port?: string;
   ingressId: (string | undefined);
   dataFormat: string;
+  groupId: string;
   metadata?: {
     timestamp?: boolean;
     name?: string;
@@ -46,6 +47,7 @@ export const initialValues: FormData = {
   downSamplingMethod: "LATEST",
   ingressId: "jointTemperature2",
   dataFormat: "RAW",
+  groupId: "defaultEgressGroup",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -77,6 +79,7 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   downSamplingMethod: Yup.string().optional(),
   ingressId: Yup.string().required("Ingress is required"),
   dataFormat: Yup.string().required("dataFormat is required"),
+  groupId: Yup.string().required("dataFormat is required"),
   metadata: Yup.object().optional(),
 
 });

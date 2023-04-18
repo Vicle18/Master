@@ -5,7 +5,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { useEffect, useState } from "react";
 import EgressFilter from "./EgressFilter";
 import EgressSearchResults from "./EgressSearchResults";
-import ConnectionDetailsDisplay, { ConnectionDetails } from "./EgressConnectionDetails";
+import ConnectionDetailsDisplay from "./EgressConnectionDetails";
 import EgressGroupsSearchResults from "./EgressGroupsSearchResults";
 
 interface EgressOverviewProps {
@@ -40,10 +40,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
   const [selectedItemData, setSelectedItemData] = useState(null);
   const [selectedDataForChart, setSelectedDataForChart] = useState(null);
   const [selectedView, setSelectedView] = useState("");
-  const [selectedConnectionDetails, setSelectedConnectionDetails] = useState<ConnectionDetails>({
-    PROTOCOL: "No element selected",
-    PARAMETERS: [],
-  });
+  const [selectedEgressId, setSelectedEgressId] = useState<string>("");
   const [searchParameters, setSearchParameters] =
     useState<EgressSearchParameters>({
       keyword: "",
@@ -59,9 +56,9 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
     setSelectedItemData(data);
   };
 
-  const handleSelectConnectionDetails = (data: any) => {
+  const handleSelectEgressId = (data: any) => {
     console.log("handleSelectConnectionDetails", data);
-    setSelectedConnectionDetails(data);
+    setSelectedEgressId(data);
   };
 
   const handleSearchResult = (data: any) => {
@@ -99,7 +96,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            <EgressGroupsSearchResults searchParameters={searchParameters} onSelectConnectionDetails={handleSelectConnectionDetails} />
+            <EgressGroupsSearchResults searchParameters={searchParameters} onSelectEgressId={handleSelectEgressId} />
           </Grid2>
           <Grid2
             xs
@@ -110,7 +107,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            <ConnectionDetailsDisplay connectionDetails={selectedConnectionDetails} />
+            <ConnectionDetailsDisplay egressId={selectedEgressId}/>
           </Grid2>
         </Grid2>
       </Box>

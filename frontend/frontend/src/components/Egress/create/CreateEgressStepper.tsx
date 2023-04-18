@@ -42,6 +42,8 @@ import {
   FormData,
   ingressNode,
 } from "./FormDefinition";
+import EgressGroupsSearchResults from "../EgressGroupsSearchResults";
+import { gql, useQuery } from "@apollo/client";
 
 interface Props {
   setPopupEgress: React.Dispatch<React.SetStateAction<boolean>>;
@@ -59,6 +61,16 @@ const steps = [
   "Access Information",
 ];
 
+const GET_ENDPOINTS = gql`
+  query Query {
+    egressGroups {
+      id
+      name
+      description
+    }
+  }
+`;
+
 const CreateEgressStepper: React.FC<Props> = ({
   setPopupEgress,
   PopupEgress,
@@ -69,6 +81,8 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
 
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
+  const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>([]);
+
   const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>();
   const [selectedEgress, setSelectedEgress] = useState<string>("");
   const [selectedDataFormat, setSelectedDataFormat] =
@@ -80,6 +94,10 @@ const CreateEgressStepper: React.FC<Props> = ({
   const handlerClose = () => {
     setPopupEgress(false);
   };
+
+  const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
+    fetchPolicy: "no-cache",
+  });
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -603,7 +621,59 @@ const CreateEgressStepper: React.FC<Props> = ({
                   </>
                 )}
                 {activeStep === 3 && (
-                  <Typography variant="h6">Select Group</Typography>
+                  <>
+                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
+                      <Grid2
+                        xs={3.6}
+                        sx={{
+                          marginTop: "30px",
+                          marginRight: "20px",
+                          borderRadius: "10px",
+
+                          backgroundColor: "whitesmoke",
+                        }}
+                      >
+                        <List
+                          dense={true}
+                          sx={{
+                            width: "100%",
+                            maxWidth: 360,
+                            bgcolor: "background.paper",
+                          }}
+                          subheader={
+                            <ListSubheader>Endpoint Groups</ListSubheader>
+                          }
+                        >
+                          {data.egressGroups.map((node: any) => (
+                            <ListItemButton
+                              key={node.id}
+                              sx={{
+                                "&:hover": { backgroundColor: "#f0f0f0" },
+                              }}
+                              onClick={() => {
+                                console.log("clicked");
+                                setSelectedEgressGroup(node);
+                                values.groupId = node.id;
+                              }}
+                            >
+                              <ListItemText primary={node.name} />
+                            </ListItemButton>
+                          ))}
+                        </List>
+                      </Grid2>
+                      <Grid2
+                        xs={4.3}
+                        sx={{
+                          marginTop: "30px",
+                          marginRight: "20px",
+                          borderRadius: "10px",
+                          backgroundColor: "whitesmoke",
+                        }}
+                      >
+                        Selected Endpoint Group: {selectedEgressGroup?.name}
+                      </Grid2>
+                    </Grid2>
+                  </>
                 )}
                 {activeStep === 4 && <Typography variant="h6">Info</Typography>}
               </DialogContent>

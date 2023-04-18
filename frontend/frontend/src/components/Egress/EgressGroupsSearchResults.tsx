@@ -26,7 +26,6 @@ import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { EgressSearchParameters } from "./EgressOverview";
-import { ConnectionDetails } from "./EgressConnectionDetails";
 const GET_ENDPOINTS = gql`
   query Query($where: EgressGroupWhere) {
     egressGroups(where: $where) {
@@ -53,12 +52,14 @@ const GET_ENDPOINTS = gql`
 
 interface IEgressSearchResultProps {
   searchParameters: EgressSearchParameters;
-  onSelectConnectionDetails: (connectionDetails: ConnectionDetails) => void;
+  onSelectEgressId: (egressId: string) => void;
+  onSelectGroupId?: (groupId: string) => void;
 }
 
 const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
-  onSelectConnectionDetails,
+  onSelectEgressId,
+  onSelectGroupId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const handleSearchTermChange = (
@@ -99,28 +100,28 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   var properties = data.egressGroups;
 
   const handleShowChart = (data: any) => {
-    console.log("data: ", data.connectionDetails);
-    const connectionDetails: ConnectionDetails = JSON.parse(
-      data.connectionDetails,
-      (key, value) => {
-        if (key === "PROTOCOL") {
-          return value;
-        } else if (key === "PARAMETERS") {
-          return Object.entries(value).reduce<Record<string, any>>(
-            (acc, [key, value]) => {
-              acc[key.toLowerCase()] = value;
-              return acc;
-            },
-            {}
-          );
-        }
-        return value;
-      }
-    );
-    connectionDetails.OBSERVABLE_PROPERTY = data.accessTo;
-    console.log("connectionDetails: ", connectionDetails);
+    console.log("data: ", JSON.stringify(data));
+    // const connectionDetails: ConnectionDetails = JSON.parse(
+    //   data.connectionDetails,
+    //   (key, value) => {
+    //     if (key === "PROTOCOL") {
+    //       return value;
+    //     } else if (key === "PARAMETERS") {
+    //       return Object.entries(value).reduce<Record<string, any>>(
+    //         (acc, [key, value]) => {
+    //           acc[key.toLowerCase()] = value;
+    //           return acc;
+    //         },
+    //         {}
+    //       );
+    //     }
+    //     return value;
+    //   }
+    // );
+    // connectionDetails.OBSERVABLE_PROPERTY = data.accessTo;
+    // console.log("connectionDetails: ", connectionDetails);
 
-    onSelectConnectionDetails(connectionDetails);
+    onSelectEgressId(data.id);
   };
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {
@@ -252,22 +253,31 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                   </Box>
                 </Grid2>
               </Grid2>
-
-              <Stack direction="row" spacing={2}>
+              {onSelectGroupId && (
                 <Button
                   variant="contained"
-                  onClick={() => handleShowChart(item)}
+                  onClick={() => onSelectGroupId(item.id)}
                 >
-                  Show Connection Details
+                  Select
                 </Button>
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleDeleteItem(item)}
-                >
-                  Delete
-                </Button>
-              </Stack>
+              )}
+              {!onSelectGroupId && (
+                <Stack direction="row" spacing={2}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleShowChart(item)}
+                  >
+                    Show Connection Details
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={() => handleDeleteItem(item)}
+                  >
+                    Delete
+                  </Button>
+                </Stack>
+              )}
             </AccordionDetails>
           </Accordion>
         ))}

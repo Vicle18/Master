@@ -20,7 +20,6 @@ import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { EgressSearchParameters } from "./EgressOverview";
-import { ConnectionDetails } from "./EgressConnectionDetails";
 const GET_ENDPOINTS = gql`
   query EgressEndpoints($where: EgressEndpointWhere) {
     egressEndpoints(where: $where) {
@@ -40,12 +39,12 @@ const GET_ENDPOINTS = gql`
 
 interface IEgressSearchResultProps {
   searchParameters: EgressSearchParameters;
-  onSelectConnectionDetails: (connectionDetails: ConnectionDetails) => void;
+  onSelectEgressId: (egressId: string) => void;
 }
 
 const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
-  onSelectConnectionDetails,
+  onSelectEgressId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const handleSearchTermChange = (
@@ -82,27 +81,27 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   var properties = data.egressEndpoints;
 
   const handleShowChart = (data: any) => {
-    console.log("data: ", data.connectionDetails);
-    const connectionDetails: ConnectionDetails = JSON.parse(
-      data.connectionDetails,
-      (key, value) => {
-        if (key === "PROTOCOL") {
-          return value;
-        } else if (key === "PARAMETERS") {
-          return Object.entries(value).reduce<Record<string, any>>(
-            (acc, [key, value]) => {
-              acc[key.toLowerCase()] = value;
-              return acc;
-            },
-            {}
-          );
-        }
-        return value;
-      }
-    );
-    console.log("connectionDetails: ", connectionDetails);
+    // console.log("data: ", data.connectionDetails);
+    // const connectionDetails: ConnectionDetails = JSON.parse(
+    //   data.connectionDetails,
+    //   (key, value) => {
+    //     if (key === "PROTOCOL") {
+    //       return value;
+    //     } else if (key === "PARAMETERS") {
+    //       return Object.entries(value).reduce<Record<string, any>>(
+    //         (acc, [key, value]) => {
+    //           acc[key.toLowerCase()] = value;
+    //           return acc;
+    //         },
+    //         {}
+    //       );
+    //     }
+    //     return value;
+    //   }
+    // );
+    // console.log("connectionDetails: ", connectionDetails);
 
-    onSelectConnectionDetails(connectionDetails);
+    onSelectEgressId(data.id);
   };
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {
