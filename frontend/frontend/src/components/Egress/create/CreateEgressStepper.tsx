@@ -23,10 +23,12 @@ import {
   Stepper,
   Switch,
   TextField,
+  Tooltip,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import InfoIcon from '@mui/icons-material/Info';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
@@ -88,13 +90,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     values.createBroker = !createBroker;
     values.frequencies = ingressNodes.map((node: ingressNode) => node.frequency) || [];
     values.changedFrequencies = ingressNodes.map((node: ingressNode) => node.changedFrequency) || [];
-    const headers = {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
-      "Access-Control-Allow-Headers":
-        "Origin, Content-Type, X-Auth-Token, X-Requested-With",
-    };
+
 
     console.log(JSON.stringify(values));
 
@@ -207,7 +203,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                           {...field}
                           label="Name"
                           variant="outlined"
-                          fullWidth
+                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           margin="normal"
                           size="small"
                           error={touched.name && Boolean(errors.name)}
@@ -221,7 +217,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                           {...field}
                           label="Description"
                           variant="outlined"
-                          fullWidth
+                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           multiline
                           maxRows={4}
                           margin="normal"
@@ -234,18 +230,29 @@ const CreateEgressStepper: React.FC<Props> = ({
                       )}
                     </Field>
                     <FormControl variant="outlined" fullWidth margin="normal">
-                      <InputLabel id="dataFormat-label">Protocol</InputLabel>
-                      <Field
-                        as={Select}
-                        name="dataFormat"
-                        labelId="dataFormat-label"
-                        label="dataFormat"
-                        size="small"
-                      >
-                        <MenuItem value="string">String</MenuItem>
-                        <MenuItem value="raw">Raw</MenuItem>
-                        <MenuItem value="json">Json</MenuItem>
-                      </Field>
+                      <InputLabel id="dataFormat-label">Data Format</InputLabel>
+                      <Box sx={{
+                        alignItems: "center",
+                        display: "flex",
+                      }}>
+                        <Field
+                          as={Select}
+                          name="dataFormat"
+                          labelId="dataFormat-label"
+                          label="dataFormat"
+                          fullWidth
+                          size="small"
+                        >
+                          <MenuItem value="string">String</MenuItem>
+                          <MenuItem value="raw">Raw</MenuItem>
+                          <MenuItem value="json">Json</MenuItem>
+                        </Field>
+                        <Tooltip title="Select which output format you wish to receive">
+                          <IconButton>
+                            <HelpOutlineIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
                     </FormControl>
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
@@ -254,6 +261,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         name="protocol"
                         labelId="protocol-label"
                         label="Protocol"
+                        style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                         size="small"
                       >
                         <MenuItem value="MQTT">MQTT</MenuItem>
@@ -285,35 +293,54 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
-
-                        <Field name="host">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Host"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.host && Boolean(errors.host)}
-                              helperText={touched.host && errors.host}
-                            />
-                          )}
-                        </Field>
-                        <Field name="port">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Port"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.port && Boolean(errors.port)}
-                              helperText={touched.port && errors.port}
-                            />
-                          )}
-                        </Field>
+                        <Box sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}>
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}>
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid port e.g., 8080">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </>
                     )}
                   </>
