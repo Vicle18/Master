@@ -390,27 +390,29 @@ const CreateEgressStepper: React.FC<Props> = ({
                       <>
                         <Field name="createBroker">
                           {({ field }: FieldProps<FormData>) => (
-                            <FormControlLabel control={<Switch
-                              {...field}
-                              defaultChecked={values.createBroker}
-                              onChange={() => {
-                                values.createBroker = !values.createBroker
-                                console.log(values.createBroker);
-                                setCreateBroker(values.createBroker);
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  {...field}
+                                  defaultChecked={values.createBroker}
+                                  onChange={() => {
+                                    values.createBroker = !values.createBroker;
+                                    console.log(values.createBroker);
+                                    setCreateBroker(values.createBroker);
+                                  }}
+                                  disabled={values.protocol === "OPCUA"}
+                                  color="primary"
+                                />
                               }
-
-                              }
-                              disabled={values.protocol === "OPCUA"}
-                              color="primary"
-                            />} label="Providing your own broker" />
-
+                              label="Providing your own broker"
+                            />
                           )}
                         </Field>
-                      </>)}
+                      </>
+                    )}
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
-
                         <Field name="host">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -528,56 +530,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                   </>
                 )}
                 {activeStep === 2 && (
-                  <FieldArray
-                    name="data"
-                    render={(arrayHelpers) => (
-                      <>
-                        {ingressNodes.map(
-                          (data: ingressNode, index: number) => (
-                            <Grid2
-                              container
-                              spacing={2}
-                              key={data.id}
-                              sx={{ marginTop: "10px", marginBottom: "10px" }}
-                            >
-                              <Grid2 container xs={6}>
-                                <TextField
-                                  label="Name"
-                                  value={data.name}
-                                  disabled
-                                  size="small"
-
-                                />
-                              </Grid2>
-                              <Grid2 container xs={3}>
-                                <TextField
-                                  label="Original Frequency"
-                                  value={data.frequency}
-                                  disabled
-                                  size="small"
-
-                                />
-                              </Grid2>
-                              <Grid2 container xs={3}>
-                                <TextField
-                                  label="New Frequency"
-                                  // value={
-                                  //   ingressNodes[index].frequency
-                                  // }
-                                  onChange={(e) => {
-                                    ingressNodes[index].changedFrequency = +e.target.value;
-
-                                  }}
-                                  size="small"
-                                // name={`data[${index}].frequency`}
-                                />
-                              </Grid2>
-                            </Grid2>
-                          )
-                        )}
-                      </>
-                    )}
-                  />
+                   <Typography variant="h6">
+                   Info
+                 </Typography>
                 )}
               </DialogContent>
               <DialogActions>
