@@ -9,6 +9,7 @@ export interface ConnectionDetails {
   PROTOCOL: string;
   PARAMETERS: Record<string, any>;
   TRANSMISSION_DETAILS?: Record<string, any>;
+  OBSERVABLE_PROPERTY?: string;
 }
 
 const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
@@ -24,7 +25,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
         <Box component="span" fontWeight="bold">
           Protocol:
         </Box>{" "}
-        {connectionDetails.PROTOCOL}
+        {connectionDetails?.PROTOCOL?.toUpperCase()}
       </Typography>
       {Object.entries(connectionDetails.PARAMETERS).map(
         ([key, value]) =>

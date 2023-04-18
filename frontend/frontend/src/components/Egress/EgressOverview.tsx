@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import EgressFilter from "./EgressFilter";
 import EgressSearchResults from "./EgressSearchResults";
 import ConnectionDetailsDisplay, { ConnectionDetails } from "./EgressConnectionDetails";
+import EgressGroupsSearchResults from "./EgressGroupsSearchResults";
 
 interface EgressOverviewProps {
   //onItemClick: (data: any) => void;
@@ -98,7 +99,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            <EgressSearchResults searchParameters={searchParameters} onSelectConnectionDetails={handleSelectConnectionDetails} />
+            <EgressGroupsSearchResults searchParameters={searchParameters} onSelectConnectionDetails={handleSelectConnectionDetails} />
           </Grid2>
           <Grid2
             xs

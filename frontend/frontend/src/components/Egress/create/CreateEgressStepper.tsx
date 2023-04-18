@@ -29,7 +29,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
@@ -54,7 +54,9 @@ interface CheckBoxData {
 const steps = [
   "Setup Endpoint Information",
   "Add Observable Properties",
-    "Access Information",
+  "Select Frequency",
+  "Select Endpoint Group",
+  "Access Information",
 ];
 
 const CreateEgressStepper: React.FC<Props> = ({
@@ -316,61 +318,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </FormGroup>
                       </>
                     )}
-                    <Field name="frequency">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Frequency"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={touched.frequency && Boolean(errors.frequency)}
-                          helperText={touched.frequency && errors.frequency}
-                        />
-                      )}
-                    </Field>
-                    <Field name="changedFrequency">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Changed Frequency"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={
-                            touched.changedFrequency &&
-                            Boolean(errors.changedFrequency)
-                          }
-                          helperText={
-                            touched.changedFrequency && errors.changedFrequency
-                          }
-                        />
-                      )}
-                    </Field>
-                    {values.changedFrequency &&
-                      values.changedFrequency != values.frequency && (
-                        <FormControl
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                        >
-                          <InputLabel id="protocol-label">Down Sampling Method</InputLabel>
-                          <Field
-                            as={Select}
-                            name="downSamplingMethod"
-                            labelId="downSamplingMethod-label"
-                            label="downSamplingMethod"
-                            size="small"
-                          >
-                            <MenuItem value="AVERAGE">Average Value - only for numbers</MenuItem>
-                            <MenuItem value="LATEST">Use latest value</MenuItem>
-                            <MenuItem value="MEDIAN">Median</MenuItem>
-                            <MenuItem value="ACCUMULATED">Accumulate strings - comma separated</MenuItem>
-                          </Field>
-                        </FormControl>
-                      )}
+
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field
@@ -447,19 +395,27 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
-                    <Box sx={{
-                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
-                      borderRadius: "10px",
-                      marginRight: "13px",
-                      color: "white",
-                      alignItems: "center",
-                      display: "flex",
-                      "& p": {
-                        marginLeft: "10px", // add some margin between the icon and the paragraph
-                      },
-                    }}>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
                       <InfoIcon />
-                      <p>Select the containing element in which you would like to store your Egress Endpoint.</p>
+                      <p>
+                        Select the containing element in which you would like to
+                        store your Egress Endpoint.
+                      </p>
                     </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
@@ -485,7 +441,12 @@ const CreateEgressStepper: React.FC<Props> = ({
                       >
                         <DetailedView
                           containingEntityId={selectedEgress}
-                          onOpenChart={handleSelectObservableProperty}
+                          onOpenChart={(observableProperty: any) => {
+                            handleSelectObservableProperty(observableProperty);
+                            values.frequency = observableProperty.frequency;
+                            values.changedFrequency =
+                              observableProperty.frequency;
+                          }}
                           withDetails={false}
                         />
                       </Grid2>
@@ -529,11 +490,122 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
-                {activeStep === 2 && (
-                   <Typography variant="h6">
-                   Info
-                 </Typography>
+                {activeStep === 2 && !selectedIngressNode && (
+                  <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(255, 0, 0, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>Please select an Observable Property first</p>
+                    </Box>
+                  </>
                 )}
+                {activeStep === 2 && selectedIngressNode && (
+                  <>
+                    <>
+                      <Box
+                        sx={{
+                          backgroundColor: "rgba(24, 85, 184, 0.9)",
+                          border: "1px solid white",
+                          p: 2,
+                          marginLeft: "13px",
+                          borderRadius: "10px",
+                          marginRight: "13px",
+                          color: "white",
+                          alignItems: "center",
+                          display: "flex",
+                          "& p": {
+                            marginLeft: "10px", // add some margin between the icon and the paragraph
+                          },
+                        }}
+                      >
+                        <InfoIcon />
+                        <p>
+                          Here you can choose to reduce the frequency of the
+                          data and select how they should be reduced.
+                        </p>
+                      </Box>
+                    </>
+                    <Field name="frequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Original Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={touched.frequency && Boolean(errors.frequency)}
+                          helperText={touched.frequency && errors.frequency}
+                        />
+                      )}
+                    </Field>
+                    <Field name="changedFrequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="New Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={
+                            touched.changedFrequency &&
+                            Boolean(errors.changedFrequency)
+                          }
+                          helperText={
+                            touched.changedFrequency && errors.changedFrequency
+                          }
+                        />
+                      )}
+                    </Field>
+                    {values.changedFrequency &&
+                      values.changedFrequency != values.frequency && (
+                        <FormControl
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                        >
+                          <InputLabel id="protocol-label">
+                            Down Sampling Method
+                          </InputLabel>
+                          <Field
+                            as={Select}
+                            name="downSamplingMethod"
+                            labelId="downSamplingMethod-label"
+                            label="downSamplingMethod"
+                            size="small"
+                          >
+                            <MenuItem value="AVERAGE">
+                              Average Value - only for numbers
+                            </MenuItem>
+                            <MenuItem value="LATEST">Use latest value</MenuItem>
+                            <MenuItem value="MEDIAN">Median</MenuItem>
+                            <MenuItem value="ACCUMULATED">
+                              Accumulate strings - comma separated
+                            </MenuItem>
+                          </Field>
+                        </FormControl>
+                      )}
+                  </>
+                )}
+                {activeStep === 3 && (
+                  <Typography variant="h6">Select Group</Typography>
+                )}
+                {activeStep === 4 && <Typography variant="h6">Info</Typography>}
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -563,10 +635,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                     />
                   </div>
                 )}
-                {ingressNodes.length < 1 && (
+                {!selectedIngressNode && (
                   <div>
                     <Chip
-                      label={"At least one observable property is required"}
+                      label={"An observable property is required"}
                       color="error"
                       variant="outlined"
                     />
@@ -593,7 +665,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!(isValid && ingressNodes.length > 0)}
+                  disabled={!(isValid && selectedIngressNode)}
                 >
                   Create
                 </Button>
