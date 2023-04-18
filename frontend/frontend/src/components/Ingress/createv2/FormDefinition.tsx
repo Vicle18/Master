@@ -36,7 +36,7 @@ export const initialValues: FormData = {
   port: "1883",
   output: "robot_mode",
   nodeId: "",
-  containingElement: "Machine A",
+  containingElement: "Robot 1",
   dataFormat: "RAW",
 };
 

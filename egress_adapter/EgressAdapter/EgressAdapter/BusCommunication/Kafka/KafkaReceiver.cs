@@ -76,12 +76,17 @@ namespace EgressAdapter.BusCommunication.KAFKA
             Log.Debug($"Received Message from Kafka: {result.Message.Value}");
             if (subscriptionHandlers.ContainsKey(result.Topic))
             {
-                Log.Debug("Executing Task {number}", 5);
-                Log.Debug("Executing Task {number}", 6);
                 Log.Debug($"Received Message from Kafka: {result.Message.Value}");
-
-                subscriptionHandlers[result.Topic](result.Topic, result.Message.Value);
-                Log.Debug("Executing Task {number}", 7);
+                try
+                {
+                    
+                    subscriptionHandlers[result.Topic](result.Topic, result.Message.Value);
+                    
+                }
+                catch (ArgumentException e)
+                {
+                    Log.Error(e, "Could not transmit received message {receivedMessage}, {error}", result.Message.Value, e.Message);
+                }
             }
         }
 
@@ -103,7 +108,6 @@ namespace EgressAdapter.BusCommunication.KAFKA
                     {
                         while (true)
                         {
-                            Log.Debug("waiting");
                             UpdateSubscriptions(consumer);
                             try
                             {

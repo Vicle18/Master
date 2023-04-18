@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Text.Json;
 using MiddlewareManager.DataModel;
 using Newtonsoft.Json;
 using NuGet.Packaging;
@@ -14,7 +15,7 @@ public class ConnectionDetailsFactory
 
     public static IConnectionDetails Create(string id, CreateIngressDto value, string topicName)
     {
-
+        
         switch (value.protocol)
         {
             case "MQTT":
@@ -76,12 +77,21 @@ public class ConnectionDetailsFactory
     }
 
 
-    public static IConnectionDetails Create(string id, CreateEgressDto value, string topicName, ObservableProperty observableProperty)
+    public static IConnectionDetails Create(string id, CreateEgressDto value, ObservableProperty property)
     {
         Log.Debug("details");
         Log.Debug(value.protocol);
-        Log.Debug(observableProperty.topic.name.ToString());
-        Log.Debug(topicName);
+        var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
+        var transmissionDetails = new TransmissionDetails()
+        {
+            FREQUENCY = value.frequency.ToString(),
+            CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
+            DATA_FORMAT = value.dataFormat,
+            ORIGIN_TOPIC = property.topic.name,
+            TARGET = CreateEgressTarget(value),
+            DOWN_SAMPLING_METHOD = value.downSamplingMethod,
+            METADATA = value.metadata
+        };
         switch (value.protocol)
         {
             case "MQTT":
@@ -93,8 +103,8 @@ public class ConnectionDetailsFactory
                     {
                         HOST = value.host ?? GenerateHost(),
                         PORT = value.port ?? GeneratePort(),
-                        TRANSMISSION_PAIRS = $"{observableProperty.topic.name}:{topicName}" ?? GenerateTransmissionPairs(),
-                    }
+                    },
+                    TRANSMISSION_DETAILS = transmissionDetails
                 };
             case "OPCUA":
                 return new OPCUAConnectionDetails
@@ -104,27 +114,35 @@ public class ConnectionDetailsFactory
                     PARAMETERS = new OPCUAParameters
                     {
                         SERVER_URL = GenerateHost(),
-                        TRANSMISSION_PAIRS = JsonConvert.SerializeObject(new object[]
-                        {
-                            new
-                            {
-                                NODE_NAME = $"{value.nodeName}",
-                                VALUE_TYPE = $"{value.dataFormat}",
-                                ORIGIN_TOPIC = $"{observableProperty.topic.name}"
-                            }
-                        })
-                    }
+                    },
+                    TRANSMISSION_DETAILS = transmissionDetails
                 };
             default:
                 throw new ArgumentException("Unsupported protocol");
         }
     }
 
-
-    private static string GenerateTransmissionPairs()
+    private static string CreateEgressTarget(CreateEgressDto dto)
     {
-        throw new NotImplementedException();
+        switch (dto.protocol)
+        {
+            case "MQTT":
+                return $"{dto.name}-{Guid.NewGuid().ToString()}";
+            case "OPCUA":
+                return JsonConvert.SerializeObject(new object[]
+                {
+                    new
+                    {
+                        NODE_NAME = $"{dto.nodeId}",
+                        VALUE_TYPE = $"{dto.datatype}",
+                    }
+                });
+            default:
+                throw new ArgumentException("Could not create egress target for protocol: {protocol}", dto.protocol);
+        }
     }
+    
+    
 
     private static string GeneratePort()
     {

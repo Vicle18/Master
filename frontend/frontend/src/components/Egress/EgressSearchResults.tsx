@@ -167,10 +167,14 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                 {item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
-                {/* <CurrentValue
-                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.id}/1`}
-                refreshInterval={10000}
-              /> */}
+                {item.accessTo.length <= 0 && (
+                  <Chip
+                    label="No Ingress Endpoints"
+                    color="error"
+                    size="small"
+                    sx={{ marginRight: "10px" }}
+                  />
+                )}
               </Box>
             </AccordionSummary>
             <AccordionDetails>
@@ -219,9 +223,8 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                     </Box>{" "}
                     {/* {item.accessTo.map((item: any) => item.name + ", ")} */}
                   </Typography>
-                  {item.accessTo.map((item: any, index:any) => (
-                      <Chip key={index} label={`${item.name}`} color="success" />
-                    ))}
+                  
+                      <Chip key={index} label={`${item.accessTo.name}`} color="success" />
                   <Typography>
                     <Box component="span" fontWeight="bold">
                       Frequency:

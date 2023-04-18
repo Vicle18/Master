@@ -564,8 +564,19 @@ CREATE (cycleTime)-[:has]->(topicZE)
 
 
 
+CREATE (egressVisual:EgressGroup {
+  id: "egressVisual",
+  name: "Visual",
+  description: "Visual Egress Group"
+})
 
 
+
+CREATE (egressAnalysis:EgressGroup {
+  id: "egressAnalysis",
+  name: "Analysis",
+  description: "Analysis Egress Group"
+})
 
 
 
@@ -573,11 +584,31 @@ CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
-    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
-    frequency: [30],
-    changedFrequency: [30],
-    dataFormat: "Raw",
-    egressGroup: "group1"
+    connectionDetails: '{ "id":"postman-pod1",
+        "protocol":"MQTT",
+        "parameters":{
+            "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
+            "PORT":"1883"
+        },
+        "transmissionDetails":{
+            "ORIGIN_TOPIC":"example",
+            "FREQUENCY":"1",
+            "TARGET":"exampleMQTT",
+            "CHANGED_FREQUENCY":"1",
+            "DOWN_SAMPLING_METHOD":"LATEST",
+            "DATA_FORMAT": "WITH_METADATA",
+            "METADATA": {
+                "TIMESTAMP": false,
+                "NAME": "postman",
+                "FREQUENCY": 30
+            }
+        }',
+    frequency: 30,
+    changedFrequency: 30,
+    dataFormat: "RAW",
+    status: "ACTIVE",
+    lastUpdatedAt: "2020-05-01T12:00:00.000Z",
+    errorStateAt: "2020-05-01T12:00:00.000Z"
 
 })
 
@@ -585,31 +616,76 @@ CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
-    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
-    frequency: [30],
-    changedFrequency: [30],
-    dataFormat: "Json",
-    egressGroup: "group2"
+    connectionDetails: '{ "id":"postman-pod1",
+        "protocol":"MQTT",
+        "parameters":{
+            "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
+            "PORT":"1883"
+        },
+        "transmissionDetails":{
+            "ORIGIN_TOPIC":"example",
+            "FREQUENCY":"1",
+            "TARGET":"exampleMQTT",
+            "CHANGED_FREQUENCY":"1",
+            "DOWN_SAMPLING_METHOD":"LATEST",
+            "DATA_FORMAT": "WITH_METADATA",
+            "METADATA": {
+                "TIMESTAMP": false,
+                "NAME": "postman",
+                "FREQUENCY": 30
+            }
+        }',
+    frequency: 30,
+    changedFrequency: 30,
+    dataFormat: "WITH_METADATA",
+    status: "ACTIVE",
+    lastUpdatedAt: "2020-05-01T12:00:00.000Z",
+    errorStateAt: "2020-05-01T12:00:00.000Z"
+
 })
 
 
 CREATE (egress3:EgressEndpoint {
     id: "egress3",
     name: "Endpoint 3",
-    description: "This is the second egress endpoint",
-    connectionDetails: ['{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
-    frequency: [30],
-    changedFrequency: [30],
-    dataFormat: "Json",
-    egressGroup: "group3"
+    description: "This is the third egress endpoint",
+    connectionDetails: '{ "id":"postman-pod1",
+        "protocol":"MQTT",
+        "parameters":{
+            "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
+            "PORT":"1883"
+        },
+        "transmissionDetails":{
+            "ORIGIN_TOPIC":"example",
+            "FREQUENCY":"1",
+            "TARGET":"exampleMQTT",
+            "CHANGED_FREQUENCY":"1",
+            "DOWN_SAMPLING_METHOD":"LATEST",
+            "DATA_FORMAT": "WITH_METADATA",
+            "METADATA": {
+                "TIMESTAMP": false,
+                "NAME": "postman",
+                "FREQUENCY": 30
+            }
+        }',
+    frequency: 30,
+    changedFrequency: 30,
+    dataFormat: "WITH_METADATA",
+    status: "ACTIVE",
+    lastUpdatedAt: "2020-05-01T12:00:00.000Z",
+    errorStateAt: "2020-05-01T12:00:00.000Z"
 
 })
 
-CREATE (egress1)-[:accessVia]->(rpm)
-CREATE (egress1)-[:accessVia]->(depth)
+CREATE (egressVisual)-[:has]->(egress1)
+CREATE (egressVisual)-[:has]->(egress2)
+CREATE (egressAnalysis)-[:has]->(egress3)
 
-CREATE (egress2)-[:accessVia]->(vibration4)
-CREATE (egress2)-[:accessVia]->(temperature4)
+CREATE (egress1)-[:accessTo]->(rpm)
+CREATE (egress1)-[:accessTo]->(depth)
 
-CREATE (egress3)-[:accessVia]->(surfaceRoughness2)
-CREATE (egress3)-[:accessVia]->(powerConsumption2)
+CREATE (egress2)-[:accessTo]->(vibration4)
+CREATE (egress2)-[:accessTo]->(temperature4)
+
+CREATE (egress3)-[:accessTo]->(surfaceRoughness2)
+CREATE (egress3)-[:accessTo]->(powerConsumption2)

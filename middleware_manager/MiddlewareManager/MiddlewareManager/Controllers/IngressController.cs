@@ -39,6 +39,7 @@ namespace MiddlewareManager.Controllers
             _ingressRepo = ingressRepo;
             _logger.LogDebug("starting {controller}", "IngressController");
             _client = new HttpClient();
+            
         }
 
         // GET: api/Ingress

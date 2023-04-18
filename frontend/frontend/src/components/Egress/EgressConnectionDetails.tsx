@@ -8,6 +8,7 @@ interface ConnectionDetailsProps {
 export interface ConnectionDetails {
   PROTOCOL: string;
   PARAMETERS: Record<string, any>;
+  TRANSMISSION_DETAILS?: Record<string, any>;
 }
 
 const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
@@ -25,14 +26,34 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
         </Box>{" "}
         {connectionDetails.PROTOCOL}
       </Typography>
-      {Object.entries(connectionDetails.PARAMETERS).map(([key, value]) => (
-        <Typography>
-          <Box component="span" fontWeight="bold">
-            {key}:
-          </Box>{" "}
-          {JSON.stringify(value)}
-        </Typography>
-      ))}
+      {Object.entries(connectionDetails.PARAMETERS).map(
+        ([key, value]) =>
+          value != null && (
+            <Typography>
+              <Box component="span" fontWeight="bold">
+                {key}:
+              </Box>{" "}
+              {JSON.stringify(value)}
+            </Typography>
+          )
+      )}
+      {connectionDetails.TRANSMISSION_DETAILS && (
+        <>
+          <Typography variant="h5">Transmission Details</Typography>
+          <Divider />
+          {Object.entries(connectionDetails.TRANSMISSION_DETAILS).map(
+            ([key, value]) =>
+              value != null && (
+                <Typography>
+                  <Box component="span" fontWeight="bold">
+                    {key}:
+                  </Box>{" "}
+                  {JSON.stringify(value)}
+                </Typography>
+              )
+          )}
+        </>
+      )}
     </Box>
   );
 };

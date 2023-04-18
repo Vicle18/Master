@@ -53,7 +53,7 @@ namespace ServiceOrchestrator.Controllers
 
             ContainerConfig config = new ContainerConfig("clemme/ingress:latest", new Dictionary<string, string>());
             ManagePayload(data, config);
-            if (data.CreateBroker)
+            if (data.CreateBroker?? false)
             {
                 _logger.LogDebug("Creating new broker for {adapter}", "ingress");
             }

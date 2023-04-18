@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   Dialog,
   DialogActions,
@@ -9,6 +10,7 @@ import {
   DialogTitle,
   FormControl,
   FormControlLabel,
+  FormGroup,
   IconButton,
   InputLabel,
   List,
@@ -24,6 +26,7 @@ import {
   Switch,
   TextField,
   Tooltip,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -47,11 +50,12 @@ interface Props {
   PopupEgress: boolean;
   handleResult: (result: string) => void;
 }
-
+interface CheckBoxData {
+  [key: string]: boolean;
+}
 const steps = [
   "Setup Endpoint Information",
   "Add Observable Properties",
-  "Select Frequency",
   "Access Information",
 ];
 
@@ -62,12 +66,13 @@ const CreateEgressStepper: React.FC<Props> = ({
 }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [createBroker, setCreateBroker] = React.useState<boolean>(false);
+  const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
 
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
-  const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
-  const [selectedEgress, setSelectedEgress] =
-    useState<string>("");
-  const [selectedDataFormat, setSelectedDataFormat] = useState<string>("string");
+  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>();
+  const [selectedEgress, setSelectedEgress] = useState<string>("");
+  const [selectedDataFormat, setSelectedDataFormat] =
+    useState<string>("string");
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -83,17 +88,41 @@ const CreateEgressStepper: React.FC<Props> = ({
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleChangeMetadata = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    console.log(name, checked);
+    console.log(JSON.stringify(checkBoxData));
+    setCheckBoxData({ ...checkBoxData, [name]: checked });
+  };
+
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
-    values.ingressIds = ingressNodes?.map((node: ingressNode) => node.id);
+    values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
-    values.frequencies = ingressNodes.map((node: ingressNode) => node.frequency) || [];
-    values.changedFrequencies = ingressNodes.map((node: ingressNode) => node.changedFrequency) || [];
+    if (values.dataFormat === "WITH_METADATA") {
+      values.metadata = {};
+      for (const [key, value] of Object.entries(checkBoxData)) {
+        if (value) {
+          switch (key) {
+            case "timestamp":
+              values.metadata!.timestamp = true;
+              break;
+            case "name":
+              values.metadata!.name = values.name;
+              break;
+            case "description":
+              values.metadata!.description = values.description;
+              break;
+            case "frequency":
+              values.metadata!.frequency = values.frequency.toString();
+              break;
+          }
+        }
+      }
+    }
 
-
-    console.log(JSON.stringify(values));
-
+    console.log("submitting:", JSON.stringify(values));
 
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
@@ -107,7 +136,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     })
       .then((response) => response.json())
       .then((data) => console.log("data: " + JSON.stringify(data)))
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error.message));
   };
 
   function handleEgressClick(data: any): void {
@@ -117,7 +146,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const handleSelectObservableProperty = (observableProperty: any) => {
     console.log("observable property", observableProperty);
     setSelectedIngressNode(observableProperty);
-    setIngressNodes([...ingressNodes, observableProperty]);
+    // setIngressNodes([...ingressNodes, observableProperty]);
   };
   const handleDelete = (element: ingressNode) => {
     setIngressNodes(ingressNodes.filter((node) => node.id !== element.id));
@@ -229,6 +258,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
+
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="dataFormat-label">Data Format</InputLabel>
                       <Box sx={{
@@ -243,9 +273,8 @@ const CreateEgressStepper: React.FC<Props> = ({
                           fullWidth
                           size="small"
                         >
-                          <MenuItem value="string">String</MenuItem>
-                          <MenuItem value="raw">Raw</MenuItem>
-                          <MenuItem value="json">Json</MenuItem>
+                          <MenuItem value="RAW">Raw</MenuItem>
+                          <MenuItem value="WITH_METADATA">With Metadata</MenuItem>
                         </Field>
                         <Tooltip title="Select which output format you wish to receive">
                           <IconButton>
@@ -254,6 +283,107 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </Tooltip>
                       </Box>
                     </FormControl>
+                    {values.dataFormat === "WITH_METADATA" && (
+                      <>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.timestamp || false}
+                                onChange={handleChangeMetadata}
+                                name="timestamp"
+                              />
+                            }
+                            label="Timestamp"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.name || false}
+                                onChange={handleChangeMetadata}
+                                name="name"
+                              />
+                            }
+                            label="Name"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.description || false}
+                                onChange={handleChangeMetadata}
+                                name="description"
+                              />
+                            }
+                            label="Description"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={checkBoxData.frequency || false}
+                                onChange={handleChangeMetadata}
+                                name="frequency"
+                              />
+                            }
+                            label="Frequency"
+                          />
+                        </FormGroup>
+                      </>
+                    )}
+                    <Field name="frequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={touched.frequency && Boolean(errors.frequency)}
+                          helperText={touched.frequency && errors.frequency}
+                        />
+                      )}
+                    </Field>
+                    <Field name="changedFrequency">
+                      {({ field }: FieldProps<FormData>) => (
+                        <TextField
+                          {...field}
+                          label="Changed Frequency"
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                          size="small"
+                          error={
+                            touched.changedFrequency &&
+                            Boolean(errors.changedFrequency)
+                          }
+                          helperText={
+                            touched.changedFrequency && errors.changedFrequency
+                          }
+                        />
+                      )}
+                    </Field>
+                    {values.changedFrequency &&
+                      values.changedFrequency != values.frequency && (
+                        <FormControl
+                          variant="outlined"
+                          fullWidth
+                          margin="normal"
+                        >
+                          <InputLabel id="protocol-label">Down Sampling Method</InputLabel>
+                          <Field
+                            as={Select}
+                            name="downSamplingMethod"
+                            labelId="downSamplingMethod-label"
+                            label="downSamplingMethod"
+                            size="small"
+                          >
+                            <MenuItem value="AVERAGE">Average Value - only for numbers</MenuItem>
+                            <MenuItem value="LATEST">Use latest value</MenuItem>
+                            <MenuItem value="MEDIAN">Median</MenuItem>
+                            <MenuItem value="ACCUMULATED">Accumulate strings - comma separated</MenuItem>
+                          </Field>
+                        </FormControl>
+                      )}
                     <FormControl variant="outlined" fullWidth margin="normal">
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field
@@ -269,27 +399,31 @@ const CreateEgressStepper: React.FC<Props> = ({
                       </Field>
                     </FormControl>
 
-                    {(values.protocol === "MQTT" || values.protocol === "OPCUA") && (
-                      <>
-                        <Field name="createBroker">
-                          {({ field }: FieldProps<FormData>) => (
-                            <FormControlLabel control={<Switch
-                              {...field}
-                              defaultChecked={values.createBroker}
-                              onChange={() => {
-                                values.createBroker = !values.createBroker
-                                console.log(values.createBroker);
-                                setCreateBroker(values.createBroker);
-                              }
-
-                              }
-                              disabled={values.protocol === "OPCUA"}
-                              color="primary"
-                            />} label="Providing your own broker" />
-
-                          )}
-                        </Field>
-                      </>)}
+                    {(values.protocol === "MQTT" ||
+                      values.protocol === "OPCUA") && (
+                        <>
+                          <Field name="createBroker">
+                            {({ field }: FieldProps<FormData>) => (
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    {...field}
+                                    defaultChecked={values.createBroker}
+                                    onChange={() => {
+                                      values.createBroker = !values.createBroker;
+                                      console.log(values.createBroker);
+                                      setCreateBroker(values.createBroker);
+                                    }}
+                                    disabled={values.protocol === "OPCUA"}
+                                    color="primary"
+                                  />
+                                }
+                                label="Providing your own broker"
+                              />
+                            )}
+                          </Field>
+                        </>
+                      )}
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
@@ -298,19 +432,19 @@ const CreateEgressStepper: React.FC<Props> = ({
                           display: "flex",
                         }}>
                           <Field name="host">
-                            {({ field }: FieldProps<FormData>) => (
-                              <TextField
-                                {...field}
-                                label="Host"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                error={touched.host && Boolean(errors.host)}
-                                helperText={touched.host && errors.host}
-                              />
-                            )}
-                          </Field>
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Host"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.host && Boolean(errors.host)}
+                              helperText={touched.host && errors.host}
+                            />
+                          )}
+                        </Field>
                           <Tooltip title="Insert a valid host e.g., 127.0.0.1">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
@@ -322,19 +456,19 @@ const CreateEgressStepper: React.FC<Props> = ({
                           display: "flex",
                         }}>
                           <Field name="port">
-                            {({ field }: FieldProps<FormData>) => (
-                              <TextField
-                                {...field}
-                                label="Port"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                error={touched.port && Boolean(errors.port)}
-                                helperText={touched.port && errors.port}
-                              />
-                            )}
-                          </Field>
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Port"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={touched.port && Boolean(errors.port)}
+                              helperText={touched.port && errors.port}
+                            />
+                          )}
+                        </Field>
                           <Tooltip title="Insert a valid port e.g., 8080">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
@@ -345,216 +479,168 @@ const CreateEgressStepper: React.FC<Props> = ({
                     )}
                   </>
                 )}
-                {activeStep === 1 && (
-                  <>
-                    <Box sx={{
-                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
-                      borderRadius: "10px",
-                      marginRight: "13px",
-                      color: "white",
-                      alignItems: "center",
-                      display: "flex",
-                      "& p": {
-                        marginLeft: "10px", // add some margin between the icon and the paragraph
-                      },
-                    }}>
-                      <InfoIcon />
-                      <p>Select the containing element in which you would like to store your Egress Endpoint.</p>
-                    </Box>
-                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      <Grid2
-                        xs={2.5}
-                        sx={{
-                          marginTop: "30px",
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <List
-                          dense={true}
-                          sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                          }}
-                          subheader={
-                            <ListSubheader>Observable Properties</ListSubheader>
-                          }
-                        >
-                          {ingressNodes.map((node) => (
-                            <ListItemButton
-                              key={node.name}
-                              sx={{
-                                "&:hover": { backgroundColor: "#f0f0f0" },
-                              }}
-                            >
-                              <ListItemIcon>
-                                <SensorsIcon />
-                              </ListItemIcon>
-                              <ListItemText primary={node.name} />
-                              <IconButton
-                                edge="end"
-                                onClick={() => handleDelete(node)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Grid2>
-                      <Grid2
-                        xs={3.6}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
+{
+  activeStep === 1 && (
+    <>
+      <Box sx={{
+        backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
+        borderRadius: "10px",
+        marginRight: "13px",
+        color: "white",
+        alignItems: "center",
+        display: "flex",
+        "& p": {
+          marginLeft: "10px", // add some margin between the icon and the paragraph
+        },
+      }}>
+        <InfoIcon />
+        <p>Select the containing element in which you would like to store your Egress Endpoint.</p>
+      </Box>
+      <Grid2 container spacing={2} sx={{ height: "60vh" }}>
+        <Grid2
+          xs={3.6}
+          sx={{
+            marginTop: "30px",
+            marginRight: "20px",
+            borderRadius: "10px",
 
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <IngressOverviewLeft onItemClick={handleEgressClick} />
-                      </Grid2>
-                      <Grid2
-                        xs={4.3}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "50px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <DetailedView
-                          containingEntityId={selectedEgress}
-                          onOpenChart={handleSelectObservableProperty}
-                          withDetails={false}
-                        />
-                      </Grid2>
-                    </Grid2>
-                  </>
-                )}
-                {activeStep === 2 && (
-                  <FieldArray
-                    name="data"
-                    render={(arrayHelpers) => (
-                      <>
-                        {ingressNodes.map(
-                          (data: ingressNode, index: number) => (
-                            <Grid2
-                              container
-                              spacing={2}
-                              key={data.id}
-                              sx={{ marginTop: "10px", marginBottom: "10px" }}
-                            >
-                              <Grid2 container xs={6}>
-                                <TextField
-                                  label="Name"
-                                  value={data.name}
-                                  disabled
-                                  size="small"
+            backgroundColor: "whitesmoke",
+          }}
+        >
+          <IngressOverviewLeft onItemClick={handleEgressClick} />
+        </Grid2>
+        <Grid2
+          xs={4.3}
+          sx={{
+            marginTop: "30px",
+            marginRight: "20px",
+            borderRadius: "10px",
+            backgroundColor: "whitesmoke",
+          }}
+        >
+          <DetailedView
+            containingEntityId={selectedEgress}
+            onOpenChart={handleSelectObservableProperty}
+            withDetails={false}
+          />
+        </Grid2>
+        <Grid2
+          xs={2.5}
+          sx={{
+            marginTop: "30px",
+            marginRight: "20px",
+            borderRadius: "10px",
+            backgroundColor: "whitesmoke",
+          }}
+        >
+          <Typography variant="h6">
+            Selected Element: {selectedIngressNode?.name}
+          </Typography>
+          <Typography>
+            <Box component="span" fontWeight="bold">
+              Id:
+            </Box>{" "}
+            {selectedIngressNode?.id}
+          </Typography>
+          <Typography>
+            <Box component="span" fontWeight="bold">
+              Name:
+            </Box>{" "}
+            {selectedIngressNode?.name}
+          </Typography>
+          <Typography>
+            <Box component="span" fontWeight="bold">
+              Topic:
+            </Box>{" "}
+            {selectedIngressNode?.topic}
+          </Typography>
+          <Typography>
+            <Box component="span" fontWeight="bold">
+              Frequency:
+            </Box>{" "}
+            {selectedIngressNode?.frequency}
+          </Typography>
+        </Grid2>
+      </Grid2>
+    </>
+  )
+}
+{
+  activeStep === 2 && (
+    <Typography variant="h6">
+      Info
+    </Typography>
+  )
+}
+              </DialogContent >
+  <DialogActions>
+    {errors.name && (
+      <div>
+        <Chip
+          label={errors.name}
+          color="error"
+          variant="outlined"
+        />
+      </div>
+    )}
+    {errors.description && (
+      <div>
+        <Chip
+          label={errors.description}
+          color="error"
+          variant="outlined"
+        />
+      </div>
+    )}
+    {errors.host && (
+      <div>
+        <Chip
+          label={errors.host}
+          color="error"
+          variant="outlined"
+        />
+      </div>
+    )}
+    {ingressNodes.length < 1 && (
+      <div>
+        <Chip
+          label={"At least one observable property is required"}
+          color="error"
+          variant="outlined"
+        />
+      </div>
+    )}
+    {errors.port && (
+      <div>
+        <Chip
+          label={errors.port}
+          color="error"
+          variant="outlined"
+        />
+      </div>
+    )}
 
-                                />
-                              </Grid2>
-                              <Grid2 container xs={3}>
-                                <TextField
-                                  label="Original Frequency"
-                                  value={data.frequency}
-                                  disabled
-                                  size="small"
-
-                                />
-                              </Grid2>
-                              <Grid2 container xs={3}>
-                                <TextField
-                                  label="New Frequency"
-                                  // value={
-                                  //   ingressNodes[index].frequency
-                                  // }
-                                  onChange={(e) => {
-                                    ingressNodes[index].changedFrequency = +e.target.value;
-
-                                  }}
-                                  size="small"
-                                // name={`data[${index}].frequency`}
-                                />
-                              </Grid2>
-                            </Grid2>
-                          )
-                        )}
-                      </>
-                    )}
-                  />
-                )}
-              </DialogContent>
-              <DialogActions>
-                {errors.name && (
-                  <div>
-                    <Chip
-                      label={errors.name}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                {errors.description && (
-                  <div>
-                    <Chip
-                      label={errors.description}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                {errors.host && (
-                  <div>
-                    <Chip
-                      label={errors.host}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                {ingressNodes.length < 1 && (
-                  <div>
-                    <Chip
-                      label={"At least one observable property is required"}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-                {errors.port && (
-                  <div>
-                    <Chip
-                      label={errors.port}
-                      color="error"
-                      variant="outlined"
-                    />
-                  </div>
-                )}
-
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handlerClose}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  disabled={!(isValid && ingressNodes.length > 0)}
-                >
-                  Create
-                </Button>
-              </DialogActions>
-            </Form>
+    <Button
+      variant="outlined"
+      color="primary"
+      onClick={handlerClose}
+    >
+      Cancel
+    </Button>
+    <Button
+      variant="contained"
+      color="success"
+      type="submit"
+      disabled={!(isValid && ingressNodes.length > 0)}
+    >
+      Create
+    </Button>
+  </DialogActions>
+            </Form >
           )}
-        </Formik>
-      </Dialog>
-    </div>
+        </Formik >
+      </Dialog >
+    </div >
   );
 };
 export default CreateEgressStepper;

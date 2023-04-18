@@ -37,6 +37,11 @@ public class EgressRepository : IEgressRepository
 
         return observableProperties;
     }
+    
+    public async Task<ObservableProperty> GetIngressProperty(string ingressName)
+    {
+        return await RequestObservableProperties(ingressName);
+    }
 
     private async Task<ObservableProperty> RequestObservableProperties(string ingressId)
     {
@@ -68,23 +73,9 @@ public class EgressRepository : IEgressRepository
         return observableProperties[0];
     }
 
-    public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, List<string> connectionDetails,
-         List<ObservableProperty> observableProperties, string egressGroupId)
+    public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, string connectionDetails)
     {
-        var accessToNodes = new List<dynamic>();
-        foreach(var observableProperty in observableProperties)
-        {
-            accessToNodes.Add(new
-            {
-                where = new
-                {
-                    node = new
-                    {
-                        id = observableProperty.id
-                    }
-                }
-            });
-        }
+        
         Log.Debug("BEFORE GRAPHQL REQUEST ");
         var request = new GraphQLRequest
         {
@@ -113,13 +104,37 @@ public class EgressRepository : IEgressRepository
                         name = value.name,
                         description = value.description,
                         dataFormat = value.dataFormat,
-                        frequency = value.frequencies,
-                        connectionDetails = connectionDetails.ToArray(),
-                        changedFrequency = ManageFrequencies(value.changedFrequencies, value.frequencies),
-                        egressGroup = egressGroupId,
+                        frequency = value.frequency,
+                        connectionDetails = connectionDetails,
+                        changedFrequency = value.changedFrequency ?? value.frequency,
                         accessTo = new
                         {
-                           connect = accessToNodes.ToArray()
+                           connect = new
+                           {
+                               where = new
+                               {
+                                   node = new
+                                   {
+                                       id = value.ingressId
+                                   }
+                               }
+                           }
+                        },
+                        egressGroup = new
+                        {
+                            connect = new []
+                            {
+                                new
+                                {
+                                    where = new
+                                    {
+                                        node = new
+                                        {
+                                            id = value.groupId
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

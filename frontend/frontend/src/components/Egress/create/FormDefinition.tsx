@@ -6,20 +6,32 @@ export interface ingressNode {
   topic: string;
   frequency: number;
   changedFrequency: number;
-
+  dataFormat: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 export interface FormData {
   name: string;
   description: string;
   protocol: string;
   createBroker: boolean | undefined;
-  frequency: string;
-  frequencies?:  (number | undefined)[];
-  changedFrequencies?: (number | undefined)[];
+  frequency: number;
+  changedFrequency?: (number | undefined);
+  downSamplingMethod?: (string | undefined);
   host?: string;
   port?: string;
-  ingressIds?: (string | undefined)[];
-  dataFormat?: string;
+  ingressId: (string | undefined);
+  dataFormat: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 
 export const initialValues: FormData = {
@@ -29,11 +41,11 @@ export const initialValues: FormData = {
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   port: "1883",
   createBroker: false,
-  frequency: "30",
-  frequencies: [30],
-  changedFrequencies: [30],
-  ingressIds: ["jointTemperature2"],
-  dataFormat: "string",
+  frequency: 30,
+  changedFrequency: 30,
+  downSamplingMethod: "LATEST",
+  ingressId: "jointTemperature2",
+  dataFormat: "RAW",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -60,17 +72,11 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
-  frequency: Yup.string().required("Frequency is required"),
-  frequencies: Yup.array().of(Yup.mixed<number>())
-  .min(1)
-  .optional(),
-  changedFrequencies: Yup.array().of(Yup.mixed<number>())
-  .min(1)
-  .optional(),
-  ingressIds: Yup.array()
-    .of(Yup.mixed<string>())
-    .min(1)
-    .optional(),
-
+  frequency: Yup.number().required("Frequency is required"),
+  changedFrequency: Yup.number().optional(),
+  downSamplingMethod: Yup.string().optional(),
+  ingressId: Yup.string().required("Ingress is required"),
   dataFormat: Yup.string().required("dataFormat is required"),
+  metadata: Yup.object().optional(),
+
 });
