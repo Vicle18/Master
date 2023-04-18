@@ -77,7 +77,7 @@ public class ConnectionDetailsFactory
     }
 
 
-    public static IConnectionDetails Create(string id, CreateEgressDto value)
+    public static IConnectionDetails Create(string id, CreateEgressDto value, ObservableProperty property)
     {
         Log.Debug("details");
         Log.Debug(value.protocol);
@@ -87,7 +87,7 @@ public class ConnectionDetailsFactory
             FREQUENCY = value.frequency.ToString(),
             CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
             DATA_FORMAT = value.dataFormat,
-            ORIGIN_TOPIC = topicName,
+            ORIGIN_TOPIC = property.topic.name,
             TARGET = CreateEgressTarget(value),
             DOWN_SAMPLING_METHOD = value.downSamplingMethod,
             METADATA = value.metadata

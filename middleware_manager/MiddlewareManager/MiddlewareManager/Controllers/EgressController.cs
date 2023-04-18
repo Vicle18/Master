@@ -64,10 +64,10 @@ namespace MiddlewareManager.Controllers
                 var id = Guid.NewGuid().ToString();
 
                 
-                // ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
-                var connectionDetails = ConnectionDetailsFactory.Create(id, value);
+                ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
+                var connectionDetails = ConnectionDetailsFactory.Create(id, value, observableProperty);
                 _logger.LogDebug("creating new egress with connection details: {details}", JsonSerializer.Serialize(connectionDetails));
-                // await ForwardsRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails));
+                await ForwardsRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails));
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
                 JsonSerializer.Serialize(connectionDetails));
                 

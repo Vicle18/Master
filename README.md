@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a meta-store/v1.1.6 -m "now with egress groups"
-git push origin meta-store/v1.1.6
+git tag -a meta-store/v1.1.7 -m "now with optional status"
+git push origin meta-store/v1.1.7
 ### informatio about pipeline metadata
 https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)

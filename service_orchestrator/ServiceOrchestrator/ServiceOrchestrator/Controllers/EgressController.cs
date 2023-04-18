@@ -49,7 +49,7 @@ namespace ServiceOrchestrator.Controllers
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             AddingConfigurationData(data, config);
 
-            if (data.CreateBroker)
+            if (data.CreateBroker ?? false)
             {
                 var host = await _containerManager.StartContainerBroker(data.ConnectionDetails.Id, config, data.ConnectionDetails.Protocol);
                 config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__HOST"] = host;
@@ -62,17 +62,17 @@ namespace ServiceOrchestrator.Controllers
         {
             config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
             config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_FORMAT", data.ConnectionDetails.TransmissionDetails["DATA_FORMAT"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_FORMAT", data.ConnectionDetails.Transmission_Details["DATA_FORMAT"].GetString());
             config.EnvironmentVariables.Add("DOTNET_ENVIRONMENT", "Production");
 
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY", data.ConnectionDetails.TransmissionDetails["FREQUENCY"].GetString());
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY", data.ConnectionDetails.TransmissionDetails["CHANGED_FREQUENCY"].GetString());
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__ORIGIN_TOPIC", data.ConnectionDetails.TransmissionDetails["ORIGIN_TOPIC"].GetString());
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__TARGET", data.ConnectionDetails.TransmissionDetails["TARGET"].GetString());
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DOWN_SAMPLING_METHOD", data.ConnectionDetails.TransmissionDetails["DOWN_SAMPLING_METHOD"].GetString());
-            if (data.ConnectionDetails.TransmissionDetails["DATA_FORMAT"].GetString() == "WITH_METADATA")
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY", data.ConnectionDetails.Transmission_Details["FREQUENCY"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY", data.ConnectionDetails.Transmission_Details["CHANGED_FREQUENCY"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__ORIGIN_TOPIC", data.ConnectionDetails.Transmission_Details["ORIGIN_TOPIC"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__TARGET", data.ConnectionDetails.Transmission_Details["TARGET"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DOWN_SAMPLING_METHOD", data.ConnectionDetails.Transmission_Details["DOWN_SAMPLING_METHOD"].GetString());
+            if (data.ConnectionDetails.Transmission_Details["DATA_FORMAT"].GetString() == "WITH_METADATA")
             {
-                var metadata = data.ConnectionDetails.TransmissionDetails["METADATA"];
+                var metadata = data.ConnectionDetails.Transmission_Details["METADATA"];
                 foreach (JsonProperty property in metadata.EnumerateObject())
                 {
                     if (property.Name != "TIMESTAMP")
