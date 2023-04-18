@@ -29,6 +29,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import InfoIcon from '@mui/icons-material/Info';
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, FieldArray } from "formik";
@@ -389,29 +390,27 @@ const CreateEgressStepper: React.FC<Props> = ({
                       <>
                         <Field name="createBroker">
                           {({ field }: FieldProps<FormData>) => (
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  {...field}
-                                  defaultChecked={values.createBroker}
-                                  onChange={() => {
-                                    values.createBroker = !values.createBroker;
-                                    console.log(values.createBroker);
-                                    setCreateBroker(values.createBroker);
-                                  }}
-                                  disabled={values.protocol === "OPCUA"}
-                                  color="primary"
-                                />
+                            <FormControlLabel control={<Switch
+                              {...field}
+                              defaultChecked={values.createBroker}
+                              onChange={() => {
+                                values.createBroker = !values.createBroker
+                                console.log(values.createBroker);
+                                setCreateBroker(values.createBroker);
                               }
-                              label="Providing your own broker"
-                            />
+
+                              }
+                              disabled={values.protocol === "OPCUA"}
+                              color="primary"
+                            />} label="Providing your own broker" />
+
                           )}
                         </Field>
-                      </>
-                    )}
+                      </>)}
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
+
                         <Field name="host">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -446,6 +445,20 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box sx={{
+                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
+                      borderRadius: "10px",
+                      marginRight: "13px",
+                      color: "white",
+                      alignItems: "center",
+                      display: "flex",
+                      "& p": {
+                        marginLeft: "10px", // add some margin between the icon and the paragraph
+                      },
+                    }}>
+                      <InfoIcon />
+                      <p>Select the containing element in which you would like to store your Egress Endpoint.</p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={3.6}
@@ -515,9 +528,56 @@ const CreateEgressStepper: React.FC<Props> = ({
                   </>
                 )}
                 {activeStep === 2 && (
-                   <Typography variant="h6">
-                   Info
-                 </Typography>
+                  <FieldArray
+                    name="data"
+                    render={(arrayHelpers) => (
+                      <>
+                        {ingressNodes.map(
+                          (data: ingressNode, index: number) => (
+                            <Grid2
+                              container
+                              spacing={2}
+                              key={data.id}
+                              sx={{ marginTop: "10px", marginBottom: "10px" }}
+                            >
+                              <Grid2 container xs={6}>
+                                <TextField
+                                  label="Name"
+                                  value={data.name}
+                                  disabled
+                                  size="small"
+
+                                />
+                              </Grid2>
+                              <Grid2 container xs={3}>
+                                <TextField
+                                  label="Original Frequency"
+                                  value={data.frequency}
+                                  disabled
+                                  size="small"
+
+                                />
+                              </Grid2>
+                              <Grid2 container xs={3}>
+                                <TextField
+                                  label="New Frequency"
+                                  // value={
+                                  //   ingressNodes[index].frequency
+                                  // }
+                                  onChange={(e) => {
+                                    ingressNodes[index].changedFrequency = +e.target.value;
+
+                                  }}
+                                  size="small"
+                                // name={`data[${index}].frequency`}
+                                />
+                              </Grid2>
+                            </Grid2>
+                          )
+                        )}
+                      </>
+                    )}
+                  />
                 )}
               </DialogContent>
               <DialogActions>
