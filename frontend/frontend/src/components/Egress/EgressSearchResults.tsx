@@ -223,9 +223,8 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                     </Box>{" "}
                     {/* {item.accessTo.map((item: any) => item.name + ", ")} */}
                   </Typography>
-                  {item.accessTo.map((item: any, index:any) => (
-                      <Chip key={index} label={`${item.name}`} color="success" />
-                    ))}
+                  
+                      <Chip key={index} label={`${item.accessTo.name}`} color="success" />
                   <Typography>
                     <Box component="span" fontWeight="bold">
                       Frequency:
