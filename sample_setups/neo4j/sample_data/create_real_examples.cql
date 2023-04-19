@@ -236,8 +236,24 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 75,
 changedFrequency: 75,
-connectionDetails: "temperatureConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -248,8 +264,24 @@ name: 'Welding Voltage',
 description: 'Observable Property for Welding Voltage of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "weldingVoltageConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -265,8 +297,24 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
 frequency: 50,
 changedFrequency: 25,
-connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
