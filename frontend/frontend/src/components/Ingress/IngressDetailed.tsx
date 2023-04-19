@@ -271,7 +271,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    console.log(data)
+    console.log(data.connectionDetails)
 
     const connectionDetails = JSON.parse(data.connectionDetails)
     if (connectionDetails.PROTOCOL == "MQTT") {

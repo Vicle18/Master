@@ -110,7 +110,7 @@ const RenderTree: React.FC<RenderTreeProps> = ({ nodes, onItemClick, clickable, 
           <StyledTreeItem
             key={node.id}
             sx={{ color: isClickable ? "black" : "grey" }}
-            nodeId={node.name}
+            nodeId={node.id}
             label={node.name}
             disabled={false}
             onClick={(event) => {
