@@ -58,6 +58,22 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
+        
+        [HttpPost("AddMachineToCell")]
+        public async Task<ActionResult<string>> Post([FromBody] AddMachineToCellDto value)
+        {
+            _logger.LogDebug("creating ingress with values: {value}", value);
+            try
+            {
+                
+                var response = await _containingElementRepo.AddMachineToCell(value);
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         // PUT: api/ContainingElement/5
         [HttpPut("{id}")]

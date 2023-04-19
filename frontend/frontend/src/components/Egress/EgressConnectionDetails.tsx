@@ -1,39 +1,221 @@
-import { Box, Divider, Typography } from "@mui/material";
-import { FC } from "react";
+import { gql, useQuery } from "@apollo/client";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Chip,
+  Divider,
+  Typography,
+} from "@mui/material";
+import { FC, useEffect, useState } from "react";
+import InfoIcon from "@mui/icons-material/Info";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import axios from "axios";
 
 interface ConnectionDetailsProps {
-  connectionDetails: ConnectionDetails;
+  egressId: string;
 }
 
-export interface ConnectionDetails {
-  PROTOCOL: string;
-  PARAMETERS: Record<string, any>;
-}
+const GET_ENDPOINTS = gql`
+  query EgressEndpoints($where: EgressEndpointWhere) {
+    egressEndpoints(where: $where) {
+      id
+      name
+      description
+      accessTo {
+        id
+        name
+        changedFrequency
+        connectionDetails
+        errorStateAt
+        dataFormat
+        description
+        frequency
+        lastUpdatedAt
+        propertyOf {
+          id
+          name
+          description
+        }
+        status
+        topic {
+          name
+        }
+      }
+      frequency
+      dataFormat
+      connectionDetails
+      changedFrequency
+      egressGroup {
+        id
+        name
+        description
+      }
+      lastUpdatedAt
+      status
+    }
+  }
+`;
 
-const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
-  connectionDetails,
-}) => {
-  console.log("ConnectionDetailsDisplay", connectionDetails);
+const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({ egressId }) => {
+  const [currentValueOfIngress, setCurrentValueOfIngress] = useState<any>("not found");
+  const [fetchingCurrentValue, setFetchingCurrentValue] =
+    useState<boolean>(true);
+  const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
+    variables: {
+      where: {
+        id: egressId,
+      },
+    },
+    fetchPolicy: "no-cache",
+  });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      console.log("sending request");
+      if (data?.egressEndpoints[0]?.accessTo?.id) {
+        var url = `${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${data?.egressEndpoints[0]?.accessTo.id}/1`;
+        setFetchingCurrentValue(true);
+        try {
+          const response = await axios.get(url);
+          setCurrentValueOfIngress(response.data);
+          setFetchingCurrentValue(false);
+        } catch (error) {
+          console.log(error);
+          setFetchingCurrentValue(false);
+        }
+      }
+    };
+
+    const intervalId = setInterval(fetchData, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) {
+    console.log("graph ", error);
+    return <p>Error : {error.message}</p>;
+  }
+  if (data.egressEndpoints.length <= 0)
+    return (
+      <Box
+        sx={{
+          backgroundColor: "rgba(255, 165, 0, 0.9)",
+          border: "1px solid white",
+          p: 2,
+          marginLeft: "13px",
+          borderRadius: "10px",
+          marginRight: "13px",
+          color: "white",
+          alignItems: "center",
+          display: "flex",
+          "& p": {
+            marginLeft: "10px", // add some margin between the icon and the paragraph
+          },
+        }}
+      >
+        <InfoIcon />
+        <p>Please select an egress endpoint to view connection details.</p>
+      </Box>
+    );
+
+  var endpoint = data.egressEndpoints[0];
+  var connectionDetails = JSON.parse(endpoint.connectionDetails);
   return (
-    <Box display="flex" flexDirection="column" alignItems="flex-start">
-      <Typography variant="h5">Connection Details</Typography>
-      <Divider />
-      <Typography>
-        <Box component="span" fontWeight="bold">
-          Protocol:
-        </Box>{" "}
-        {connectionDetails.PROTOCOL}
-      </Typography>
-      {Object.entries(connectionDetails.PARAMETERS).map(([key, value]) => (
-        <Typography>
+    <div>
+      <Typography variant="h5"></Typography>
+      <Divider sx={{ marginBottom: "20px" }}>
+        <Chip label={"Detailed information for " + endpoint.name} />
+      </Divider>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>What data do I get?</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          The data you get from the egress endpoint{" "}
           <Box component="span" fontWeight="bold">
-            {key}:
+            {endpoint.name}
           </Box>{" "}
-          {JSON.stringify(value)}
-        </Typography>
-      ))}
-    </Box>
+          is in called{" "}
+          <Box component="span" fontWeight="bold">
+            {endpoint.accessTo.name}
+          </Box>{" "}
+          and comming from the machine{" "}
+          <Box component="span" fontWeight="bold">
+            {endpoint.accessTo.propertyOf.name}
+          </Box>{" "}
+          . The current value of the data is {currentValueOfIngress}
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>How do I connect?</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography>
+            To connect to the egress endpoint {endpoint.name} with the protocol{" "}
+            {connectionDetails.PROTOCOL}, you can use the following details to
+            connect:
+          </Typography>
+          {Object.entries(connectionDetails.PARAMETERS).map(
+            ([key, value]) =>
+              value != null && (
+                <Typography>
+                  <Box component="span" fontWeight="bold">
+                    {key}:
+                  </Box>{" "}
+                  {JSON.stringify(value)}
+                </Typography>
+              )
+          )}
+          <Typography>
+            And since you are using the {connectionDetails.PROTOCOL} protocol,
+            you use the{" "}
+            {connectionDetails.PROTOCOL == "MQTT" ? "MQTT Topic" : "NodeID"}:{" "}
+            {connectionDetails.TRANSMISSION_DETAILS.TARGET} to extract
+            information
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>More Details</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {connectionDetails.TRANSMISSION_DETAILS && (
+            <>
+              Here you can see more details about the data, i.e. the frequency,
+              the data format, etc.
+              {Object.entries(connectionDetails.TRANSMISSION_DETAILS).map(
+                ([key, value]) =>
+                  value != null && (
+                    <Typography>
+                      <Box component="span" fontWeight="bold">
+                        {key}:
+                      </Box>{" "}
+                      {JSON.stringify(value)}
+                    </Typography>
+                  )
+              )}
+            </>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </div>
   );
 };
 

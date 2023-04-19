@@ -82,31 +82,93 @@ CREATE (jointTemperature:ObservableProperty {
     name: 'Joint Temperature',
     description: 'Description of the Joint Temperature Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
-    })
+    changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 CREATE (jointTemperature2:ObservableProperty {
     id: 'jointTemperature2',
     name: 'Joint Temperature 2',
     description: 'Description of the Joint Temperature 2 Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
-    })
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
+})
 CREATE (jointPressure:ObservableProperty {
     id: 'jointPressure',
     name: 'Joint Pressure',
     description: 'Description of the Joint Pressure Observable Property',
     frequency: 100,
-        changedFrequency: 100
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
+})
 
-    })
 CREATE (jointPressure2:ObservableProperty {
     id: 'jointPressure2',
     name: 'Joint Pressure 2',
     description: 'Description of the Joint Pressure 2 Observable Property',
     frequency: 100,
-        changedFrequency: 100
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }
+        }}'
 
     })
 CREATE (jointVibration:ObservableProperty {
@@ -114,42 +176,82 @@ CREATE (jointVibration:ObservableProperty {
     name: 'Joint Vibration',
     description: 'Description of the Joint Vibration Observable Property',
     frequency: 100,
-        changedFrequency: 100
-
-    })
+        changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 CREATE (jointVibration2:ObservableProperty {
     id: 'jointVibration2',
     name: 'Joint Vibration 2',
     description: 'Description of the Joint Vibration 2 Observable Property',
     frequency: 100,
-    changedFrequency: 100
-    })
+    changedFrequency: 100,
+    dataFormat: "RAW",
+    connectionDetails: '{
+        "ID": "a0a80ae6-c48e-44b2-afef-25fb44a40b04",
+        "PROTOCOL": "RTDE",
+        "PARAMETERS": {
+        "FREQUENCY": "1",
+        "CHANGED_FREQUENCY": "1",
+        "HOST": "172.17.0.1",
+        "PORT": "1883",
+        "TRANSMISSION_PAIRS": "robot_mode:RobotMode412-bdec4094-7176-44b0-bae8-6e4bd78e3b3b",
+        "DATA_FORMAT": "WITH_METADATA",
+        "METADATA": {
+            "timestamp": true,
+            "frequency": "1"
+        }}
+    }'
+})
 
 CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 60,
-    dataFormat: "Raw"
+    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
+    dataFormat: "Raw",
+    egressGroup: "group1"
+
 })
 
 CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 30,
-    dataFormat: "Json"
+    connectionDetails: ['{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
+    dataFormat: "Json",
+    egressGroup: "group2"
 })
+
 
 CREATE (egress3:EgressEndpoint {
     id: "egress3",
     name: "Endpoint 3",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }',
-    frequency: 30,
-    dataFormat: "Json"
+    connectionDetails: ['{ "PROTOCOL": "OPCUA", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temp2:motor_temperature" } }'],
+    frequency: [30],
+    changedFrequency: [30],
+    dataFormat: "Json",
+    egressGroup: "group3"
+
 })
 
 CREATE (egress1)-[:accessVia]->(jointTemperature)
@@ -178,6 +280,8 @@ CREATE (jointPressure)-[:has]->(topicC)
 CREATE (jointPressure2)-[:has]->(topicD)
 CREATE (jointVibration)-[:has]->(topicE)
 CREATE (jointVibration2)-[:has]->(topicF)
+CREATE (jointTemperature)-[:has]->(machineA)
+
 
 // Create relationships
 CREATE (machineA)-[:has{frequency:100}]->(jointTemperature)

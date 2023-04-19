@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  StepLabel,
   TextField,
 } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
@@ -19,43 +20,200 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
+import { log } from "console";
+import { initialValues } from "./createv2/FormDefinition";
+import EditIngressStepper from "./edit/EditIngressStepper";
+import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
+import { egressInitialValues } from "../Egress/create/FormDefinition";
+
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
-  query GetDataForContainingEntity($where: ResourceWhere) {
-    resources(where: $where) {
+query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: MachineWhere, $companiesWhere2: CompanyWhere, $observablePropertiesWhere2: ObservablePropertyWhere, $linesWhere2: LineWhere, $plantsWhere2: PlantWhere) {
+  areas(where: $where) {
+    id
+    name
+    description
+    observableProperties {
+      id
       name
-      ObservableProperties {
-        id
+      description
+      topic {
         name
-        description
-        topic {
-          name
-        }
-        frequency
       }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
     }
   }
+  cells(where: $cellsWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
+    }
+  }
+  machines(where: $machinesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
+    }
+  }
+  companies(where: $companiesWhere2) {
+    id
+    name
+    description
+    observableProperties {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
+    }
+  }
+  lines(where: $linesWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
+    }
+  }
+  plants(where: $plantsWhere2) {
+    id
+    name
+    description
+    observableProperties(where: $observablePropertiesWhere2) {
+      id
+      name
+      description
+      topic {
+        name
+      }
+      frequency
+      connectionDetails
+      changedFrequency
+      dataFormat
+    }
+  }
+}
 `;
+
+interface ObjectWithProperties {
+  id: string;
+  name: string;
+  description: string;
+  observableProperties: {
+    id: string;
+    name: string;
+    description: string;
+    topic: {
+      name: string;
+    };
+    frequency: number;
+    changedFrequency: number;
+    connectionDetails: JSON;
+    dataFormat: string;
+  }[];
+}
+
+interface QueryResult {
+
+  areas: ObjectWithProperties[];
+  cells: ObjectWithProperties[];
+  machines: ObjectWithProperties[];
+  companies: ObjectWithProperties[];
+  lines: ObjectWithProperties[];
+  plants: ObjectWithProperties[];
+
+}
 
 interface IDetailedViewProps {
   containingEntityId: any;
   onOpenChart: (data: any) => void;
   withDetails?: boolean;
 }
+export var previousPropertyValues: any = "";
+
 
 const DetailedView: React.FC<IDetailedViewProps> = ({
   containingEntityId,
   onOpenChart,
   withDetails,
 }) => {
+
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [PopupEditIngress, setPopupEditIngress] = React.useState(false);
+  const [PopupCreateEgress, setPopupCreateEgress] = React.useState(false);
+  const [showEditEndpoint, setShowEditEndpoint] = React.useState(false);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [selectedContainingElement, setSelectedParent] = React.useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [result, setResult] = React.useState<string | null>(null);
+  const steps = ["Change Property Values"];
+  const [selectedIngress, setSelectedIngress] = React.useState("")
+
   const handleSearchTermChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setSearchTerm(event.target.value);
   };
 
-  const { loading, error, data, refetch } = useQuery(GET_DATA_FOR_CONTAINING_ENTITY, {
-    variables: { where: { name: containingEntityId } },
+  const { loading, error, data: queryResult, refetch } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
+    variables: {
+      "where": {
+        "id": containingEntityId
+      },
+      "cellsWhere2": {
+        "id": containingEntityId
+      },
+      "machinesWhere2": {
+        "name": containingEntityId
+      },
+      "companiesWhere2": {
+        "id": containingEntityId
+      },
+      "linesWhere2": {
+        "id": containingEntityId
+      },
+      "plantsWhere2": {
+        "id": containingEntityId
+      }
+    },
     fetchPolicy: "no-cache",
   });
   if (loading) return <p>Loading...</p>;
@@ -63,7 +221,78 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     console.log("graph ", error);
     return <p>Error : {error.message}</p>;
   }
-  var properties = data.resources[0];
+
+  const dataObjects = [
+    ...queryResult?.areas || [],
+    ...queryResult?.cells || [],
+    ...queryResult?.machines || [],
+    ...queryResult?.companies || [],
+    ...queryResult?.lines || [],
+    ...queryResult?.plants || []
+  ];
+
+  var properties: ObjectWithProperties = dataObjects[0];
+
+
+  // handle the close event
+  const handleClose = () => {
+    setPopupEditIngress(false);
+  };
+
+  const handleResult = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResult(result);
+  };
+
+  // handle the finish event
+  // const handleFinish = (values: any) => {
+  //   console.log("Finish him")
+  //   handleClose();
+  //   console.log(values)
+
+
+  //   fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Access-Control-Allow-Origin": "*",
+  //       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+  //       "Access-Control-Allow-Headers":
+  //         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+  //     },
+  //     body: JSON.stringify(values),
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => console.log("data: " + data))
+  //     .catch((error) => console.error(error));
+  // };
+
+
+  const handleShowEdit = (data: any) => {
+    previousPropertyValues = data
+    console.log(data)
+
+    const connectionDetails = JSON.parse(data.connectionDetails)
+    if (connectionDetails.PROTOCOL == "MQTT") {
+      initialValues.port = connectionDetails.PARAMETERS.PORT
+      initialValues.host = connectionDetails.PARAMETERS.HOST
+    } else if (connectionDetails.PROTOCOL == "RTDE") {
+      initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
+      initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
+    } else if (connectionDetails.PROTOCOL == "OPCUA") {
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
+      // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
+    }
+    initialValues.name = data.name
+    initialValues.description = data.description
+    initialValues.frequency = data.frequency
+    initialValues.changedFrequency = data.changedFrequency
+    initialValues.dataFormat = data.dataFormat
+    initialValues.id = data.id
+    setShowEditEndpoint(true);
+    setPopupEditIngress(true);
+  }
 
   const handleShowChart = (data: any) => {
     const newData = {
@@ -74,6 +303,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     };
     onOpenChart(newData);
   };
+
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${item.id}`, {
       method: "DELETE",
@@ -93,6 +323,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       })
       .then((data) => console.log("data: " + JSON.stringify(data)))
       .catch((error) => console.error(error));
+  }
+
+  function handleCreateEgress(item: any) {
+    setSelectedIngress(item);
+    egressInitialValues.ingressId = item.id;
+    setPopupCreateEgress(true);
   }
 
   return (
@@ -122,7 +358,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         sx={{ marginBottom: "10px" }}
         fullWidth
       />
-      {properties?.ObservableProperties?.filter((item: any) =>
+      {properties?.observableProperties?.filter((item: any) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       ).map((item: any, index: any) => (
         <Accordion key={index}>
@@ -194,16 +430,25 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   </Grid2>
                 </Grid2>
 
-                <Stack direction="row" spacing={2}>
-                  <Button variant="contained">Create new egress</Button>
+                <Stack direction="row" spacing={1}>
+                  <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleCreateEgress(item) }}>Create Egress</Button>
+                  {PopupCreateEgress && (
+                    <CreateEgressStepper PopupEgress handleResult={handleResult} setPopupEgress={setPopupCreateEgress} selectedIngress={selectedIngress}></CreateEgressStepper>
+                  )}
+                  <Button variant="contained" style={{ fontSize: "12px" }} onClick={() => { handleShowEdit(item) }}>Edit Endpoint</Button>
+                  {PopupEditIngress && (
+                    <EditIngressStepper PopupIngress handleResult={handleResult} setPopupIngress={setPopupEditIngress}></EditIngressStepper>
+                  )}
                   <Button
                     variant="contained"
+                    style={{ fontSize: "12px" }}
                     onClick={() => handleShowChart(item)}
                   >
                     Show data
                   </Button>
                   <Button
                     variant="outlined"
+                    style={{ fontSize: "12px" }}
                     color="error"
                     onClick={() => handleDeleteItem(item)}
                   >
@@ -229,6 +474,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       ))}
     </>
   );
-};
+}
+
+
+
 
 export default DetailedView;
+
+
+

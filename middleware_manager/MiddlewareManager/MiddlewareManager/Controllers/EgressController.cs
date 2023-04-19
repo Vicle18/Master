@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using MiddlewareManager.DataModel;
 using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
-using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MiddlewareManager.Controllers
 {
@@ -54,30 +56,27 @@ namespace MiddlewareManager.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
         {
-            Log.Debug("test");
+
             Log.Debug(JsonSerializer.Serialize(value));
             try
             {
                 Response response = null;
                 var id = Guid.NewGuid().ToString();
 
-                var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
-                var egressGroupId = Guid.NewGuid();
-                List<ObservableProperty> observableProperties = await _egressRepo.getIngressProperties(value.ingressIds);
-                foreach (var observableProperty in observableProperties)
-                {
-                    Log.Debug(JsonSerializer.Serialize(observableProperty));
-                    var connectionDetails = ConnectionDetailsFactory.Create(id, value, topicName, observableProperty);
-                    _connectionDetails.Add(JsonSerializer.Serialize(connectionDetails));
-                    await ForwardsRequestToConfigurator(value, topicName, JsonSerializer.Serialize(connectionDetails));
-                }
+
+                
+                ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
+                var connectionDetails = ConnectionDetailsFactory.Create(id, value, observableProperty);
+                _logger.LogDebug("creating new egress with connection details: {details}", JsonSerializer.Serialize(connectionDetails));
+                await ForwardsRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails));
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
-                    _connectionDetails, observableProperties, egressGroupId.ToString());
+                JsonSerializer.Serialize(connectionDetails));
                 
                 return Ok(response);
             }
             catch (ArgumentException e)
             {
+                _logger.LogError(e, "got error: {message}", e.Message);
                 return BadRequest(e.Message);
             }
         }
@@ -85,19 +84,36 @@ namespace MiddlewareManager.Controllers
         /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-        private async Task ForwardsRequestToConfigurator(CreateEgressDto value, string topicName,
+        private async Task ForwardsRequestToConfigurator(CreateEgressDto value,
             string connectionDetails)
         {
-            // Create the HTTP request message with the JSON string as the content
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Egress?=");
-            request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
-            _logger.LogDebug("connectionDetails: {details}", connectionDetails);
-            // Send the request and wait for the response
-            var response = await _client.SendAsync(request);
+            try
+            {
+                // Create the HTTP request message with the JSON string as the content
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Egress?=");
+                var contentObject = new JObject()
+                {
+                    ["CreateBroker"] = value.createBroker,
+                    ["ConnectionDetails"] = JsonConvert.DeserializeObject<JToken>(connectionDetails),
+                };
+                _logger.LogDebug("connectionDetails: {details}", contentObject.ToString());
+                Console.WriteLine($"connectionDetails: {contentObject.ToString()}");
+                //request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
+                request.Content = new StringContent(contentObject.ToString(), Encoding.UTF8, "application/json");
+                // Send the request and wait for the response
+                var response = await _client.SendAsync(request);
 
-            // Get the response content
-            var responseString = await response.Content.ReadAsStringAsync();
-            _logger.LogDebug("Received ServiceConfigurator Response: {responseString}", responseString);
+                // Get the response content
+                var responseString = await response.Content.ReadAsStringAsync();
+                _logger.LogDebug("Received ServiceConfigurator Response: {responseString}", responseString);
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new ArgumentException($"Could not forward request: {e.Message}", e);
+            }
+            
         }
 
         // PUT: api/Egress/5
@@ -108,8 +124,26 @@ namespace MiddlewareManager.Controllers
 
         // DELETE: api/Egress/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Delete(string id)
         {
+            _logger.LogDebug("deleting ingress with id: {id}", id);
+            try
+            {
+                var database_response = await _egressRepo.DeleteEgressEndpoint(id);
+                var _baseAddress = "https://localhost:7033";
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseAddress}/api/Ingress/{id}");
+                var response = await _client.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new HttpRequestException($"HTTP error {response.StatusCode}");
+                }
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

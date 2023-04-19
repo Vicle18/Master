@@ -20,14 +20,12 @@ import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { EgressSearchParameters } from "./EgressOverview";
-import { ConnectionDetails } from "./EgressConnectionDetails";
 const GET_ENDPOINTS = gql`
   query EgressEndpoints($where: EgressEndpointWhere) {
     egressEndpoints(where: $where) {
       id
       name
       description
-
       accessTo {
         id
         name
@@ -41,12 +39,12 @@ const GET_ENDPOINTS = gql`
 
 interface IEgressSearchResultProps {
   searchParameters: EgressSearchParameters;
-  onSelectConnectionDetails: (connectionDetails: ConnectionDetails) => void;
+  onSelectEgressId: (egressId: string) => void;
 }
 
 const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
-  onSelectConnectionDetails,
+  onSelectEgressId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
   const handleSearchTermChange = (
@@ -83,27 +81,27 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
   var properties = data.egressEndpoints;
 
   const handleShowChart = (data: any) => {
-    console.log("data: ", data.connectionDetails);
-    const connectionDetails: ConnectionDetails = JSON.parse(
-      data.connectionDetails,
-      (key, value) => {
-        if (key === "PROTOCOL") {
-          return value;
-        } else if (key === "PARAMETERS") {
-          return Object.entries(value).reduce<Record<string, any>>(
-            (acc, [key, value]) => {
-              acc[key.toLowerCase()] = value;
-              return acc;
-            },
-            {}
-          );
-        }
-        return value;
-      }
-    );
-    console.log("connectionDetails: ", connectionDetails);
+    // console.log("data: ", data.connectionDetails);
+    // const connectionDetails: ConnectionDetails = JSON.parse(
+    //   data.connectionDetails,
+    //   (key, value) => {
+    //     if (key === "PROTOCOL") {
+    //       return value;
+    //     } else if (key === "PARAMETERS") {
+    //       return Object.entries(value).reduce<Record<string, any>>(
+    //         (acc, [key, value]) => {
+    //           acc[key.toLowerCase()] = value;
+    //           return acc;
+    //         },
+    //         {}
+    //       );
+    //     }
+    //     return value;
+    //   }
+    // );
+    // console.log("connectionDetails: ", connectionDetails);
 
-    onSelectConnectionDetails(connectionDetails);
+    onSelectEgressId(data.id);
   };
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {
@@ -119,7 +117,7 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
         }
-        refetch();  
+        refetch();
         return response.json();
       })
       .then((data) => console.log("data: " + JSON.stringify(data)))
@@ -167,10 +165,14 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                 {item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
-                {/* <CurrentValue
-                url={`${process.env.REACT_APP_DATAEXPLORER_URL}/api/DataRequest/amount/${item.id}/1`}
-                refreshInterval={10000}
-              /> */}
+                {item.accessTo.length <= 0 && (
+                  <Chip
+                    label="No Ingress Endpoints"
+                    color="error"
+                    size="small"
+                    sx={{ marginRight: "10px" }}
+                  />
+                )}
               </Box>
             </AccordionSummary>
             <AccordionDetails>
@@ -218,22 +220,25 @@ const EgressSearchResults: React.FC<IEgressSearchResultProps> = ({
                       AccessTo:
                     </Box>{" "}
                     {/* {item.accessTo.map((item: any) => item.name + ", ")} */}
-                    {item.accessTo.map((item: any) => (
-                      <Chip label={`${item.name}`} color="success" />
-                    ))}
                   </Typography>
+
+                  <Chip
+                    key={index}
+                    label={`${item.accessTo.name}`}
+                    color="success"
+                  />
                   <Typography>
                     <Box component="span" fontWeight="bold">
                       Frequency:
                     </Box>{" "}
                     {item.frequency}
                   </Typography>
-                  <Typography>
+                  {/* <Typography>
                     <Box component="span" fontWeight="bold">
                       Connection details:
                     </Box>{" "}
                     {item.connectionDetails}
-                  </Typography>
+                  </Typography> */}
                 </Grid2>
               </Grid2>
 

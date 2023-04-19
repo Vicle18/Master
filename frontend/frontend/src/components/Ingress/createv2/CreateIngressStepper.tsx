@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
 import {
   Box,
   Button,
+  Checkbox,
   Chip,
   Container,
   Dialog,
@@ -12,6 +13,9 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
   IconButton,
   InputLabel,
   List,
@@ -20,6 +24,7 @@ import {
   ListItemText,
   ListSubheader,
   MenuItem,
+  Radio,
   Select,
   Snackbar,
   Step,
@@ -28,11 +33,16 @@ import {
   StepLabel,
   Stepper,
   TextField,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import InfoIcon from '@mui/icons-material/Info';
+import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
+
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -46,11 +56,14 @@ interface Props {
   PopupIngress: boolean;
   handleResult: (result: string) => void;
 }
+interface CheckBoxData {
+  [key: string]: boolean;
+}
 
 const steps = [
   "Define Ingress Endpoint",
   "Select Containing Element",
-  "Test Connection",
+  // "Test Connection",
 ];
 
 const CreateIngressStepper: React.FC<Props> = ({
@@ -60,13 +73,13 @@ const CreateIngressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
-  const [selectedChild, setSelectedChild] = useState<string>("");
-
-  const [selectedContainingElement, setSelectedParent] = useState<string>("");
+  const [radioValue, setRadioValue] = useState('');
+  const [currentlySelectedParent, setCurrentlySelectedParent] =
+    useState<string>("");
+  const [selectedParent, setSelectedParent] = useState<string>(initialValues.containingElement ?? "");
   const [selectedIngress, setSelectedIngress] = useState<string>("");
+  const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
   const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
     setPopupIngress(false);
   };
@@ -77,11 +90,37 @@ const CreateIngressStepper: React.FC<Props> = ({
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
+  const handleChangeMetadata = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = event.target;
+    console.log(name, checked);
+    console.log(JSON.stringify(checkBoxData));
+    setCheckBoxData({ ...checkBoxData, [name]: checked });
+  };
 
   const handleSubmit = (values: FormData) => {
     console.log("submit", values);
     setPopupIngress(false);
-
+    if (values.dataFormat === "WITH_METADATA") {
+      values.metadata = {};
+      for (const [key, value] of Object.entries(checkBoxData)) {
+        if (value) {
+          switch (key) {
+            case "timestamp":
+              values.metadata!.timestamp = true;
+              break;
+            case "name":
+              values.metadata!.name = values.name;
+              break;
+            case "description":
+              values.metadata!.description = values.description;
+              break;
+            case "frequency":
+              values.metadata!.frequency = values.frequency;
+              break;
+          }
+        }
+      }
+    }
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -126,6 +165,10 @@ const CreateIngressStepper: React.FC<Props> = ({
     setActiveStep(step);
   };
 
+  function handleRadioButtonChange(event: ChangeEvent<HTMLInputElement>, value: string): void {
+    setRadioValue(event.target.value);
+  }
+
   return (
     <div>
       <Dialog
@@ -157,7 +200,7 @@ const CreateIngressStepper: React.FC<Props> = ({
             isValid,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <DialogTitle>Create a Containing Element</DialogTitle>
+              <DialogTitle>Create an observable property</DialogTitle>
 
               <DialogContent
                 dividers={true}
@@ -205,7 +248,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           {...field}
                           label="Name"
                           variant="outlined"
-                          fullWidth
+                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           margin="normal"
                           size="small"
                           error={touched.name && Boolean(errors.name)}
@@ -219,7 +262,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           {...field}
                           label="Description"
                           variant="outlined"
-                          fullWidth
+                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           multiline
                           maxRows={4}
                           margin="normal"
@@ -231,7 +274,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
-                    <FormControl variant="outlined" fullWidth margin="normal">
+                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
                       <InputLabel id="protocol-label">Protocol</InputLabel>
                       <Field
                         as={Select}
@@ -247,60 +290,90 @@ const CreateIngressStepper: React.FC<Props> = ({
                     </FormControl>
                     {(values.protocol === "MQTT" ||
                       values.protocol === "RTDE") && (
-                      <>
-                        <Field name="host">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Host"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.host && Boolean(errors.host)}
-                              helperText={touched.host && errors.host}
-                            />
-                          )}
-                        </Field>
-                        <Field name="port">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Port"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.port && Boolean(errors.port)}
-                              helperText={touched.port && errors.port}
-                            />
-                          )}
-                        </Field>
-                      </>
-                    )}
+                        <>
+                          <Box sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}>
+                            <Field name="host">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Host"
+                                  variant="outlined"
+                                  fullWidth
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.host && Boolean(errors.host)}
+                                  helperText={touched.host && errors.host}
+                                />
+                              )}
+                            </Field>
+                            <Tooltip title="Please provide a valid host such as 127.0.0.1">
+                              <IconButton sx={{ marginTop: "10px" }}>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                          <Box sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}>
+                            <Field name="port">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Port"
+                                  variant="outlined"
+                                  fullWidth
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.port && Boolean(errors.port)}
+                                  helperText={touched.port && errors.port}
+                                />
+                              )}
+                            </Field>
+                            <Tooltip title="Please provide a valid port number, such as 8080.">
+                              <IconButton sx={{ marginTop: "10px" }}>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </>
+                      )}
                     {values.protocol === "MQTT" && (
                       <>
-                        <Field name="topic">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Topic"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.topic && Boolean(errors.topic)}
-                              helperText={touched.topic && errors.topic}
-                            />
-                          )}
-                        </Field>
+                        <Box sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}>
+                          <Field name="topic">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Topic"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.topic && Boolean(errors.topic)}
+                                helperText={touched.topic && errors.topic}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Please provide a name for the location where data uploads will be stored.">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </>
                     )}
                     {values.protocol === "RTDE" && (
                       <>
                         <FormControl
                           variant="outlined"
-                          fullWidth
+                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           margin="normal"
                         >
                           <InputLabel id="output-label">Output</InputLabel>
@@ -323,76 +396,179 @@ const CreateIngressStepper: React.FC<Props> = ({
                     )}
                     {values.protocol === "OPCUA" && (
                       <>
-                        <Field name="nodeId">
-                          {({ field }: FieldProps<FormData>) => (
-                            <TextField
-                              {...field}
-                              label="Node ID"
-                              variant="outlined"
-                              fullWidth
-                              margin="normal"
-                              size="small"
-                              error={touched.nodeId && Boolean(errors.nodeId)}
-                              helperText={touched.nodeId && errors.nodeId}
-                            />
-                          )}
-                        </Field>
+                        <Box sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}>
+                          <Field name="nodeId">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Node ID"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.nodeId && Boolean(errors.nodeId)}
+                                helperText={touched.nodeId && errors.nodeId}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Please provide an ID for the OPC UA broker.">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
                       </>
                     )}
+                    <Box sx={{
+                      alignItems: "center",
+                      display: "flex",
+                    }}>
+                      <Field name="frequency">
+                        {({ field }: FieldProps<FormData>) => (
+                          <TextField
+                            {...field}
+                            label="Frequency (Hz)"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            error={touched.frequency && Boolean(errors.frequency)}
+                            helperText={touched.frequency && errors.frequency}
+                          />
+                        )}
+                      </Field>
+                      <Tooltip title="Please provide the data upload frequency as a number">
+                        <IconButton sx={{ marginTop: "10px" }}>
+                          <HelpOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
 
-                    <Field name="frequency">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Frequency"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={touched.frequency && Boolean(errors.frequency)}
-                          helperText={touched.frequency && errors.frequency}
-                        />
+                    <Box
+                      sx={{
+                        alignItems: "center",
+                        display: "flex",
+                      }}>
+                      <Field name="changedFrequency">
+                        {({ field }: FieldProps<FormData>) => (
+                          <TextField
+                            {...field}
+                            label="Changed Frequency (Hz)"
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            size="small"
+                            error={
+                              touched.changedFrequency &&
+                              Boolean(errors.changedFrequency)
+                            }
+                            helperText={
+                              touched.changedFrequency && errors.changedFrequency
+                            }
+                          />
+                        )}
+                      </Field>
+                      <Tooltip title="Changed frequency helps you reduce the current frequency">
+                        <IconButton sx={{ marginTop: "10px" }}>
+                          <HelpOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
+                      <InputLabel id="datatype-label">Data Type</InputLabel>
+                      <Field
+                        as={Select}
+                        name="datatype"
+                        labelId="datatype-label"
+                        label="datatype"
+                        size="small"
+                      >
+                        <MenuItem value="Number">NUMBER</MenuItem>
+                        <MenuItem value="String">STRING</MenuItem>
+                        <MenuItem value="Array">ARRAY</MenuItem>
+                      </Field>
+                    </FormControl>
+                    {(values.datatype === "Number" &&
+                      values.frequency != values?.changedFrequency) && (
+                        <>
+                          <FormControl variant="outlined" margin="normal" fullWidth>
+                            <Box sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}>
+                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                <MenuItem value="AVERAGE">Average</MenuItem>
+                                <MenuItem value="MEDIAN">Median</MenuItem>
+                                <MenuItem value="LAST">Last Value</MenuItem>
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
+                        </>
                       )}
-                    </Field>
-                    <Field name="changedFrequency">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Changed Frequency"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={
-                            touched.changedFrequency &&
-                            Boolean(errors.changedFrequency)
-                          }
-                          helperText={
-                            touched.changedFrequency && errors.changedFrequency
-                          }
-                        />
+                    {(values.datatype === "String" || values.datatype === "Array" &&
+                      values.frequency != values?.changedFrequency) && (
+                        <>
+                          <FormControl variant="outlined" margin="normal" fullWidth>
+                            <Box sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}>
+                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                <MenuItem value="FIRST">First Value</MenuItem>
+                                <MenuItem value="LAST">Last Value</MenuItem>
+                                <MenuItem value="RANDOM">Random Selection</MenuItem>
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
+                        </>
                       )}
-                    </Field>
-                    <Field name="dataFormat">
-                      {({ field }: FieldProps<FormData>) => (
-                        <TextField
-                          {...field}
-                          label="Data Format"
-                          variant="outlined"
-                          fullWidth
-                          margin="normal"
-                          size="small"
-                          error={
-                            touched.dataFormat && Boolean(errors.dataFormat)
-                          }
-                          helperText={touched.dataFormat && errors.dataFormat}
-                        />
-                      )}
-                    </Field>
                   </>
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box sx={{
+                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
+                      borderRadius: "10px",
+                      marginRight: "13px",
+                      color: "white",
+                      alignItems: "center",
+                      display: "flex",
+                      "& p": {
+                        marginLeft: "10px", // add some margin between the icon and the paragraph
+                      },
+                    }}>
+                      <InfoIcon />
+                      <p>Select the containing element in which you would like to store your Ingress Endpoint.</p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -407,17 +583,17 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <Box mb={2}>
                           <Grid2 container alignItems="center" spacing={2}>
                             <Grid2 container xs={9}>
-                              <Box
+                              {/* <Box
                                 display="inline-block"
                                 borderRadius={3}
                                 border="2px solid black"
                                 padding={2}
                                 maxWidth="100%"
-                              >
-                                <Typography variant="body1">
-                                  Current Element: {selectedContainingElement}
-                                </Typography>
-                              </Box>
+                              > */}
+                              <Typography variant="caption">
+                                Current Element: {currentlySelectedParent}
+                              </Typography>
+                              {/* </Box> */}
                             </Grid2>
                             <Grid2 container xs={3}>
                               <Button
@@ -425,7 +601,8 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 color="primary"
                                 onClick={() => {
                                   values.containingElement =
-                                    selectedContainingElement;
+                                    currentlySelectedParent;
+                                  setSelectedParent(currentlySelectedParent);
                                 }}
                               >
                                 SELECT
@@ -438,7 +615,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <IngressOverviewLeft
                           onItemClick={(parent: any) => {
                             HandleIngressClick(parent.name);
-                            setSelectedParent(parent.name);
+                            setCurrentlySelectedParent(parent.name);
                             console.log("parent", values.containingElement);
                           }}
                         />
@@ -460,7 +637,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           maxWidth="100%"
                         >
                           <Typography variant="body1">
-                            Selected Element: {values.containingElement}
+                            Selected Element: {selectedParent}
                           </Typography>
                         </Box>
                       </Grid2>

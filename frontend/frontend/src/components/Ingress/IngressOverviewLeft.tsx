@@ -8,6 +8,7 @@ type Props = {
   onItemClick: (data: any) => void;
   selectedNode?: string;
   filter?: string[]
+  initialSearchString?: string;
 };
 
 const GET_LOCATIONS = gql`
@@ -77,14 +78,14 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
 };
 
 
-const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode, filter}) => {
+const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode, filter, initialSearchString}) => {
   const [searchString, setSearchString] = useState('');
 
 
   const { loading, error, data } = useQuery(GET_LOCATIONS);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
-
+  if(initialSearchString) setSearchString(initialSearchString);
 
   function onSearchResultSelection(searchString: string) {
     setSearchString(searchString);

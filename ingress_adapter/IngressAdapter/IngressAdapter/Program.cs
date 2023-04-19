@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Formatting.Compact;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace IngressAdapter
@@ -19,6 +20,7 @@ namespace IngressAdapter
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {NewLine}{Exception}")
+                .WriteTo.Async(a => a.File(new CompactJsonFormatter(), "Logs/log.txt", rollingInterval: RollingInterval.Day))
                 .MinimumLevel.Debug()
                 .CreateBootstrapLogger();
             
@@ -42,7 +44,6 @@ namespace IngressAdapter
             
             var controller = ActivatorUtilities.GetServiceOrCreateInstance<IController>(host.Services);
             var config = ActivatorUtilities.GetServiceOrCreateInstance<IConfiguration>(host.Services);
-
             Log.Information("Ingress adapter {id} is starting", config.GetValue<string>("ID"));
             try
             {

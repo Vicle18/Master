@@ -3,32 +3,53 @@ import * as Yup from "yup";
 export interface ingressNode {
   id: string;
   name: string;
-  topic: string;
+  topic?: {
+    name: string;
+  }
   frequency: number;
-
+  changedFrequency: number;
+  dataFormat: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 export interface FormData {
   name: string;
   description: string;
   protocol: string;
   createBroker: boolean | undefined;
-  frequency: string;
+  frequency: number;
+  changedFrequency?: (number | undefined);
+  downSamplingMethod?: (string | undefined);
   host?: string;
   port?: string;
-  ingressIds?: (string | undefined)[];
-  dataFormat?: string;
+  ingressId: (string | undefined);
+  dataFormat: string;
+  groupId: string;
+  metadata?: {
+    timestamp?: boolean;
+    name?: string;
+    description?: string;
+    frequency?: string;
+  };
 }
 
-export const initialValues: FormData = {
+export const egressInitialValues: FormData = {
   name: "defaultName",
   description: "default Description",
   protocol: "MQTT",
   host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
   port: "1883",
   createBroker: false,
-  frequency: "30",
-  ingressIds: ["jointTemperature2"],
-  dataFormat: "string",
+  frequency: 30,
+  changedFrequency: 30,
+  downSamplingMethod: "LATEST",
+  ingressId: "jointTemperature2",
+  dataFormat: "RAW",
+  groupId: "defaultEgressGroup",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -55,11 +76,12 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.optional(),
     otherwise: (schema) => schema,
   }),
-  frequency: Yup.string().required("Frequency is required"),
-  ingressIds: Yup.array()
-    .of(Yup.mixed<string>())
-    .min(1)
-    .optional(),
-
+  frequency: Yup.number().required("Frequency is required"),
+  changedFrequency: Yup.number().optional(),
+  downSamplingMethod: Yup.string().optional(),
+  ingressId: Yup.string().required("Ingress is required"),
   dataFormat: Yup.string().required("dataFormat is required"),
+  groupId: Yup.string().required("dataFormat is required"),
+  metadata: Yup.object().optional(),
+
 });

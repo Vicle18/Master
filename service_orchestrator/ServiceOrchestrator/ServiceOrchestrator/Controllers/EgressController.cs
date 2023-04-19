@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -43,34 +44,55 @@ namespace ServiceOrchestrator.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public void Post([FromBody] EndpointPayload data)
+        public async Task Post([FromBody] EndpointPayload data)
         {
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             AddingConfigurationData(data, config);
 
-            _containerManager.StartContainer(data.Id, config);
-
-            _containerManager.StartContainerBroker(config, config.EnvironmentVariables["EGRESS_CONFIG__PROTOCOL"]);
+            if (data.CreateBroker ?? false)
+            {
+                var host = await _containerManager.StartContainerBroker(data.ConnectionDetails.Id, config, data.ConnectionDetails.Protocol);
+                config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__HOST"] = host;
+                config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__PORT"] = "1883";
+            }
+            await _containerManager.StartContainer(data.ConnectionDetails.Id, config);
         }
 
         private static void AddingConfigurationData(EndpointPayload data, ContainerConfig config)
         {
-            config.EnvironmentVariables.Add("ID", data.Id);
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.Protocol);
-            config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS",
-                data.Parameters["TRANSMISSION_PAIRS"]);
+            config.EnvironmentVariables.Add("ID", data.ConnectionDetails.Id);
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__PROTOCOL", data.ConnectionDetails.Protocol);
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_FORMAT", data.ConnectionDetails.Transmission_Details["DATA_FORMAT"].GetString());
+            config.EnvironmentVariables.Add("DOTNET_ENVIRONMENT", "Production");
 
-            if (data.Protocol == Protocol.MQTT.ToString())
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY", data.ConnectionDetails.Transmission_Details["FREQUENCY"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY", data.ConnectionDetails.Transmission_Details["CHANGED_FREQUENCY"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__ORIGIN_TOPIC", data.ConnectionDetails.Transmission_Details["ORIGIN_TOPIC"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__TARGET", data.ConnectionDetails.Transmission_Details["TARGET"].GetString());
+            config.EnvironmentVariables.Add("EGRESS_CONFIG__TRANSMISSION_DETAILS__DOWN_SAMPLING_METHOD", data.ConnectionDetails.Transmission_Details["DOWN_SAMPLING_METHOD"].GetString());
+            if (data.ConnectionDetails.Transmission_Details["DATA_FORMAT"].GetString() == "WITH_METADATA")
             {
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.Parameters["HOST"]);
-                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.Parameters["PORT"]);
+                var metadata = data.ConnectionDetails.Transmission_Details["METADATA"];
+                foreach (JsonProperty property in metadata.EnumerateObject())
+                {
+                    if (property.Name != "TIMESTAMP")
+                    {
+                        config.EnvironmentVariables.Add($"EGRESS_CONFIG__TRANSMISSION_DETAILS__METADATA__{property.Name.ToUpper()}", property.Value.ToString());
+
+                    }
+                }
             }
-            else if (data.Protocol == Protocol.OPCUA.ToString())
+            if (data.ConnectionDetails.Protocol == Protocol.MQTT.ToString())
+            {
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__HOST", data.ConnectionDetails.Parameters["HOST"].GetString());
+                config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__PORT", data.ConnectionDetails.Parameters["PORT"].GetString());
+            }
+            else if (data.ConnectionDetails.Protocol == Protocol.OPCUA.ToString())
             {
                 config.EnvironmentVariables.Add("EGRESS_CONFIG__PARAMETERS__SERVER_URL",
-                    data.Parameters["SERVER_URL"]);
+                    data.ConnectionDetails.Parameters["SERVER_URL"].GetString());
             }
-            else if (data.Protocol == Protocol.REST.ToString())
+            else if (data.ConnectionDetails.Protocol == Protocol.REST.ToString())
             {
                 Log.Error("REST IS NOT SUPPORTED YET");
             }
