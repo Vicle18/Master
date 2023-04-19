@@ -591,7 +591,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!(isValid)}
+                  disabled={!(isValid) || activeStep != 3}
                 >
                   Create
                 </Button>

@@ -304,7 +304,7 @@ const CreateEgressGroupStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!isValid}
+                  disabled={!isValid || activeStep !== steps.length - 1}
                 >
                   Create
                 </Button>

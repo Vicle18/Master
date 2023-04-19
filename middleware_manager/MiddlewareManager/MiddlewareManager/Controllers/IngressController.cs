@@ -61,6 +61,7 @@ namespace MiddlewareManager.Controllers
         public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateIngressDto value)
         {
             _logger.LogDebug("creating ingress with values: {value}", value);
+            Log.Debug(value.protocol);
             try
             {
                 var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
@@ -84,7 +85,7 @@ namespace MiddlewareManager.Controllers
         
         
         [HttpPost("IngressFromFile")]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> PostFromFile([FromBody] CreateIngressFromFileDTO file)
+        public async Task<ActionResult<CreateObservablePropertiesResult>> PostFromFile([FromBody] IngressFromFileDto file)
         {
             _logger.LogDebug("creating ingress with values: {value}", file);
             try
@@ -113,7 +114,11 @@ namespace MiddlewareManager.Controllers
             _logger.LogDebug("updating ingress with values: {value}", value);
             try
             {
-                var response = await _ingressRepo.UpdateObservableProperty(value);
+                var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
+                var id = Guid.NewGuid().ToString();
+                var connectionDetails =
+                    ConnectionDetailsFactory.Create(id, value, topicName);
+                var response = await _ingressRepo.UpdateObservableProperty(value, JsonSerializer.Serialize(connectionDetails));
                 return Ok(response);
             }
             catch (ArgumentException e)

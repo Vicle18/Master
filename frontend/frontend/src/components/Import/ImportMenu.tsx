@@ -301,31 +301,11 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Box mb={2}>
-                    <Grid2 container alignItems="center" spacing={2}>
-                      <Grid2 container xs={9}>
-                        <Typography variant="caption">
-                          Current Element: {currentlySelectedContainer?.name}
-                        </Typography>
-                      </Grid2>
-                      <Grid2 container xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedContainer(currentlySelectedContainer);
-                          }}
-                        >
-                          Select
-                        </Button>
-                      </Grid2>
-                    </Grid2>
-                  </Box>
 
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
-                      setCurrentlySelectedContainer(parent);
+                      setSelectedContainer(parent);
                     }}
                     filter={["cells"]}
                     initialSearchString={""}
@@ -499,7 +479,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
             color="success"
             type="submit"
             onClick={handlerClose}
-            // disabled={!isValid}
+            disabled={activeStep !== steps.length - 1}
           >
             Finished
           </Button>

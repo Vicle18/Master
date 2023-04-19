@@ -243,16 +243,17 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 </Button>
               )}
               {!onSelectGroupId && (
-                <Stack direction="row" spacing={2}>
-                  <Button
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                  {/* <Button
                     variant="contained"
                     onClick={() => handleShowChart(item)}
                   >
                     Show Connection Details
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="outlined"
                     color="error"
+
                     onClick={() => handleDeleteItem(item)}
                   >
                     Delete
