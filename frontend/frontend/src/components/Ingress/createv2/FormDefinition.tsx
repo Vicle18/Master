@@ -19,9 +19,9 @@ export interface FormData {
   topic?: string;
   output?: string
   nodeId?: string;
-  containingElement: string;
-  dataFormat: string;
-  downsampleMethod:string;
+  containingElement?: string;
+  dataFormat?: string;
+  downsampleMethod?:string;
   metadata?: Metadata;
 }
 
@@ -39,9 +39,10 @@ export const initialValues: FormData = {
   output: "",
   nodeId: "",
   containingElement: "",
-  dataFormat: "",
   dataType: "",
-  downsampleMethod: ""
+  dataFormat: "RAW",
+  downsampleMethod: "Average"
+
 };
 
 // export const initialValues: FormData = {
@@ -75,7 +76,7 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     if (!changedFrequency || !frequency) { return true; }
     return parseInt(changedFrequency) <= parseInt(frequency); // check if changedFrequency is lower than or equal to frequency
   }),
-  downsampleMethod: Yup.string().required("Downsample method is required"),
+  downsampleMethod: Yup.string().optional(),
   // downsampleMethod: Yup.string().when(datatype, {
   //   is:(datatype:string) => datatype === "AVERAGE" || datatype === ""
   // })
@@ -104,7 +105,7 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.required("nodeid is required"),
     otherwise: (schema) => schema,
   }),
-  containingElement: Yup.string().required("Containing element is required"),
-  dataFormat: Yup.string().required("Data format is required"),
+  containingElement: Yup.string().optional(),
+  dataFormat: Yup.string().optional(),
   metadata: Yup.object().optional()
 });

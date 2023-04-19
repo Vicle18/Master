@@ -56,6 +56,7 @@ namespace ServiceOrchestrator.Controllers
                 config.EnvironmentVariables["EGRESS_CONFIG__PARAMETERS__PORT"] = "1883";
             }
             await _containerManager.StartContainer(data.ConnectionDetails.Id, config);
+            
         }
 
         private static void AddingConfigurationData(EndpointPayload data, ContainerConfig config)

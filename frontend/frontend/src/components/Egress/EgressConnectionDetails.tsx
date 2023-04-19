@@ -131,7 +131,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
   var connectionDetails = JSON.parse(endpoint.connectionDetails);
   function handleDelete(): void {
     fetch(
-      `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/${endpoint.id}`,
+      `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${endpoint.id}`,
       {
         method: "DELETE",
         headers: {
