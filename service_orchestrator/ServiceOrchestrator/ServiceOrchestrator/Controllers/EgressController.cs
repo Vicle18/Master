@@ -108,8 +108,9 @@ namespace ServiceOrchestrator.Controllers
 
         // DELETE: api/Egress/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            _containerManager.StopContainer(id);
         }
     }
 }

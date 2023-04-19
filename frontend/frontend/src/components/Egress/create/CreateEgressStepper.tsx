@@ -880,7 +880,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     variant="contained"
                     color="success"
                     type="submit"
-                    disabled={!isValid || activeStep != 1}
+                    disabled={!isValid}
                   >
                     Create
                   </Button>

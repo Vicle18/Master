@@ -126,12 +126,12 @@ namespace MiddlewareManager.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<CreateObservablePropertiesResult>> Delete(string id)
         {
-            _logger.LogDebug("deleting ingress with id: {id}", id);
+            _logger.LogDebug("deleting Egress with id: {id}", id);
             try
             {
-                var database_response = await _egressRepo.DeleteEgressEndpoint(id);
-                var _baseAddress = "https://localhost:7033";
-                var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseAddress}/api/Ingress/{id}");
+                var databaseResponse = await _egressRepo.DeleteEgressEndpoint(id);
+                var baseAddress = "https://localhost:7033";
+                var request = new HttpRequestMessage(HttpMethod.Delete, $"{baseAddress}/api/Egress/{id}");
                 var response = await _client.SendAsync(request);
 
                 if (!response.IsSuccessStatusCode)
