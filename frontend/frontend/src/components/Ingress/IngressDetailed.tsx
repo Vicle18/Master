@@ -271,17 +271,23 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    console.log(data)
-
+    console.log(data.connectionDetails)
     const connectionDetails = JSON.parse(data.connectionDetails)
+    initialValues.protocol = connectionDetails.PROTOCOL
+
     if (connectionDetails.PROTOCOL == "MQTT") {
+      console.log("inside mqtt")
       initialValues.port = connectionDetails.PARAMETERS.PORT
       initialValues.host = connectionDetails.PARAMETERS.HOST
     } else if (connectionDetails.PROTOCOL == "RTDE") {
+      console.log("inside rtde")
+
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
+      console.log("inside opcua")
+
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODENAME
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
     initialValues.name = data.name

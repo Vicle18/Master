@@ -97,6 +97,8 @@ const EditIngressStepper: React.FC<Props> = ({
         handleResult(error.message);
       });
 
+    console.log(values)
+    console.log(JSON.stringify(values))
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/update?=`, {
       method: "POST",
       headers: {
