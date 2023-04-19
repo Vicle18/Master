@@ -62,7 +62,7 @@ public class ConnectionDetailsFactory
                         {
                             new
                             {
-                                NODE_NAME = $"{value.nodeName}",
+                                NODE_NAME = $"{value.nodeId}",
                                 VALUE_TYPE = $"{value.dataFormat}",
                                 ORIGIN_TOPIC = $"{value.topic}"
                             }

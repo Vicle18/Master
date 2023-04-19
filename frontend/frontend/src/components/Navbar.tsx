@@ -21,7 +21,7 @@ import { theme } from "./Theme";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 
-const pages = ["Overview", "Favourites", "Integrate"];
+const pages = ["Overview", "Favourites"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {

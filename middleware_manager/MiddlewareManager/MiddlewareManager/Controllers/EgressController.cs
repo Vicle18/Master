@@ -63,6 +63,7 @@ namespace MiddlewareManager.Controllers
                 Response response = null;
                 var id = Guid.NewGuid().ToString();
 
+
                 
                 ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
                 var connectionDetails = ConnectionDetailsFactory.Create(id, value, observableProperty);

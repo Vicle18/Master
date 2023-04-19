@@ -185,10 +185,9 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
 
   useEffect(() => {
     if (searchString) {
-      console.log("searching for " + searchString)
       // find the first matching label and its ancestors
       const matchingNodes = findMatchingNodes(data?.companies, searchString);
-      setExpanded(matchingNodes.map((node) => node.name));
+      setExpanded(matchingNodes.map((node) => node.id));
     }
   }, [data, searchString]);
 
@@ -196,7 +195,6 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
 
   // console.log(data);
   const handleToggle = (event: React.ChangeEvent<{}>, nodeNames: string[]) => {
-    console.log(nodeNames);
     setExpanded(nodeNames);
   };
 
