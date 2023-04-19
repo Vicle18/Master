@@ -518,22 +518,23 @@ description: 'Observable Property for Power Consumption of Milling 1 in the manu
 frequency: 75,
 changedFrequency: 25,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',
 dataFormat: "WITH_METADATA"
 })
 
@@ -573,22 +574,14 @@ description: 'Observable Property for Temperature of Grinder 1 in Graasten Machi
 frequency: 60,
 changedFrequency: 30,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "OPCUA",
+    "PARAMETERS": {
+      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
+      "VALUE_TYPE": "int",
+      "TARGET_TOPIC": "testOPCUA"
+    }
+}',
 dataFormat: "WITH_METADATA"
 })
 
@@ -628,22 +621,23 @@ description: 'Observable Property for Drilling Depth of Drill 1 in Graasten Mach
 frequency: 60,
 changedFrequency: 30,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',
 dataFormat: "WITH_METADATA"
 })
 
@@ -712,22 +706,14 @@ description: 'Observable Property for Voltage of Welder 1',
 frequency: 50,
 changedFrequency: 10,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "OPCUA",
+    "PARAMETERS": {
+      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
+      "VALUE_TYPE": "int",
+      "TARGET_TOPIC": "testOPCUA"
+    }
+}',
 dataFormat: "RAW"
 })
 
@@ -793,22 +779,14 @@ description: 'Observable Property for Temperature of Press 1',
 frequency: 10,
 changedFrequency: 5,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "OPCUA",
+    "PARAMETERS": {
+      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
+      "VALUE_TYPE": "int",
+      "TARGET_TOPIC": "testOPCUA"
+    }
+}',
 dataFormat: "RAW"
 })
 
@@ -822,22 +800,23 @@ description: 'Observable Property for Air Pressure of Rivet 1',
 frequency: 20,
 changedFrequency: 5,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "localhost",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "actual_q:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',
 dataFormat: "RAW"
 })
 
@@ -848,22 +827,14 @@ description: 'Observable Property for Cycle Time of Rivet 1',
 frequency: 100,
 changedFrequency: 50,
 connectionDetails: '{
-    "PROTOCOL": "MQTT",
-        "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
-        "FREQUENCY": 30,
-        "CHANGED_FREQUENCY": 0.5,
-        "DATA_FORMAT": "WITH_METADATA",
-        "METADATA": {
-            "TIMESTAMP": true,
-            "NAME": "DefaultName",
-            "DESCRIPTION": "Default Description",
-            "FREQUENCY": 30
-        }
-        }
-    }',
+  "PROTOCOL": "OPCUA",
+    "PARAMETERS": {
+      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
+      "VALUE_TYPE": "int",
+      "TARGET_TOPIC": "testOPCUA"
+    }
+}',
 dataFormat: "RAW"
 })
 
