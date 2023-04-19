@@ -407,6 +407,27 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
                 {activeStep === 2 && ( //children
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Select which subelements should be stored in your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}

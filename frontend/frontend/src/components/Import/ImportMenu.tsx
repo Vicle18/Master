@@ -28,6 +28,7 @@ import {
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
+import InfoIcon from "@mui/icons-material/Info";
 import React, { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Grid2 from "@mui/material/Unstable_Grid2";
@@ -164,7 +165,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
       observableProperty.topic = observableProperty.topic.name;
       observableProperty.dataFormat = "RAW";
-      console.log("creating",  JSON.stringify(observableProperty));
+      console.log("creating", JSON.stringify(observableProperty));
 
       fetch(
         `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/IngressFromFile?=`,
@@ -205,7 +206,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         children: [],
         observableProperties: propertyIds,
       };
-  
+
       fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, {
         method: "POST",
         headers: {
@@ -219,7 +220,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("created machine: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-  
+
       var UpdateCelldto = {
         machineId: json?.machines?.[0]?.id,
         cellId: selectedContainer.id,
@@ -290,6 +291,27 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           </React.Fragment>
           {activeStep === 0 && (
             <>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(24, 85, 184, 0.9)",
+                  border: "1px solid white",
+                  p: 2,
+                  marginLeft: "13px",
+                  borderRadius: "10px",
+                  marginRight: "13px",
+                  color: "white",
+                  alignItems: "center",
+                  display: "flex",
+                  "& p": {
+                    marginLeft: "10px", // add some margin between the icon and the paragraph
+                  },
+                }}
+              >
+                <InfoIcon />
+                <p>
+                  Select the parent element in which you want to store your import machines
+                </p>
+              </Box>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                 <Grid2
                   xs={5}
@@ -499,7 +521,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
             color="success"
             type="submit"
             onClick={handlerClose}
-            // disabled={!isValid}
+          // disabled={!isValid}
           >
             Finished
           </Button>
