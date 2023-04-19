@@ -178,8 +178,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
     observablePropertiesToCreate?.forEach((observableProperty: any) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
-      observableProperty.topic = observableProperty.topic.name;
-      console.log(observableProperty)
+      observableProperty.topic = observableProperty.topic;
       observableProperty.dataFormat = "RAW";
       console.log("creating", JSON.stringify(observableProperty));
 
@@ -295,18 +294,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           </Stepper>
           <React.Fragment>
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {activeStep !== steps.length - 1 && (
-                <Button onClick={handleNext}>{"Next"}</Button>
-              )}
+              <Box sx={{ flex: "1 1 auto" }} />       
             </Box>
           </React.Fragment>
           {activeStep === 0 && (
@@ -525,6 +513,31 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           {/* <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button> */}
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handlerClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+
+          {activeStep !== steps.length - 1 && (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleNext}
+            >
+              {"Next"}
+            </Button>
+          )}
           <Button
             variant="contained"
             color="success"

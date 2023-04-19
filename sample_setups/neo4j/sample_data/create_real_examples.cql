@@ -123,8 +123,23 @@ name: 'Cutting Speed',
 description: 'Observable Property for Cutting Speed of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingSpeedConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "localhost",
+      "PORT": 1883,
+      "TRANSMISSION_PAIRS": "example:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -135,8 +150,23 @@ name: 'Tool Wear',
 description: 'Observable Property for Tool Wear of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "toolWearConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "localhost",
+      "PORT": 1883,
+      "TRANSMISSION_PAIRS": "example:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -151,8 +181,24 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "localhost",
+      "PORT": 1883,
+      "TRANSMISSION_PAIRS": "example:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',
+  dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -163,8 +209,23 @@ name: 'Cutting Force',
 description: 'Observable Property for Cutting Force of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingForceConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "localhost",
+      "PORT": 1883,
+      "TRANSMISSION_PAIRS": "example:example",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })

@@ -228,7 +228,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                 </Stepper>
                 {/* Here we create some vertical space */}
                 <Box sx={{ height: "20px" }} />
-                
+
                 {activeStep === 0 && (
                   <>
                     <Field name="name">
@@ -278,10 +278,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                       <FormControl
                         variant="outlined"
                         margin="normal"
-                        style={{
-                          width: "calc(100% - 40px)",
-                          marginRight: "10px",
-                        }}
+                        fullWidth
                       >
                         <InputLabel id="protocol-label">Protocol</InputLabel>
                         <Field
@@ -304,61 +301,61 @@ const CreateIngressStepper: React.FC<Props> = ({
                     </Box>
                     {(values.protocol === "MQTT" ||
                       values.protocol === "RTDE") && (
-                      <>
-                        <Box
-                          sx={{
-                            alignItems: "center",
-                            display: "flex",
-                          }}
-                        >
-                          <Field name="host">
-                            {({ field }: FieldProps<FormData>) => (
-                              <TextField
-                                {...field}
-                                label="Host"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                error={touched.host && Boolean(errors.host)}
-                                helperText={touched.host && errors.host}
-                              />
-                            )}
-                          </Field>
-                          <Tooltip title="Please provide a valid host such as 127.0.0.1">
-                            <IconButton sx={{ marginTop: "10px" }}>
-                              <HelpOutlineIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                        <Box
-                          sx={{
-                            alignItems: "center",
-                            display: "flex",
-                          }}
-                        >
-                          <Field name="port">
-                            {({ field }: FieldProps<FormData>) => (
-                              <TextField
-                                {...field}
-                                label="Port"
-                                variant="outlined"
-                                fullWidth
-                                margin="normal"
-                                size="small"
-                                error={touched.port && Boolean(errors.port)}
-                                helperText={touched.port && errors.port}
-                              />
-                            )}
-                          </Field>
-                          <Tooltip title="Please provide a valid port number, such as 8080.">
-                            <IconButton sx={{ marginTop: "10px" }}>
-                              <HelpOutlineIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-                      </>
-                    )}
+                        <>
+                          <Box
+                            sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}
+                          >
+                            <Field name="host">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Host"
+                                  variant="outlined"
+                                  fullWidth
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.host && Boolean(errors.host)}
+                                  helperText={touched.host && errors.host}
+                                />
+                              )}
+                            </Field>
+                            <Tooltip title="Please provide a valid host such as 127.0.0.1">
+                              <IconButton sx={{ marginTop: "10px" }}>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                          <Box
+                            sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}
+                          >
+                            <Field name="port">
+                              {({ field }: FieldProps<FormData>) => (
+                                <TextField
+                                  {...field}
+                                  label="Port"
+                                  variant="outlined"
+                                  fullWidth
+                                  margin="normal"
+                                  size="small"
+                                  error={touched.port && Boolean(errors.port)}
+                                  helperText={touched.port && errors.port}
+                                />
+                              )}
+                            </Field>
+                            <Tooltip title="Please provide a valid port number, such as 8080.">
+                              <IconButton sx={{ marginTop: "10px" }}>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </>
+                      )}
                     {values.protocol === "MQTT" && (
                       <>
                         <Box
@@ -517,10 +514,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                       <FormControl
                         variant="outlined"
                         margin="normal"
-                        style={{
-                          width: "calc(100% - 40px)",
-                          marginRight: "10px",
-                        }}
+                        fullWidth
                       >
                         <InputLabel id="datatype-label">Data Type</InputLabel>
                         <Field
@@ -544,53 +538,40 @@ const CreateIngressStepper: React.FC<Props> = ({
                     {values?.changedFrequency &&
                       values.frequency > values?.changedFrequency && (
                         <>
-                          <FormControl
-                            variant="outlined"
-                            margin="normal"
-                            fullWidth
-                          >
-                            <Box
-                              sx={{
-                                alignItems: "center",
-                                display: "flex",
-                              }}
+                          <FormControl variant="outlined" margin="normal" fullWidth>
+                          <Box sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}>
+                            <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                            <Field
+                              as={Select}
+                              name="downsampleMethod"
+                              fullWidth
+                              labelId="downsampleMethod-label"
+                              label="downsampleMethod"
+                              size="small"
                             >
-                              <InputLabel id="downsampleMethod-label">
-                                Downsample Method
-                              </InputLabel>
-                              <Field
-                                as={Select}
-                                name="downsampleMethod"
-                                fullWidth
-                                labelId="downsampleMethod-label"
-                                label="downsampleMethod"
-                                size="small"
-                              >
-                                {(values.dataType === "String" ||
-                                  values.dataType === "Array") && (
-                                  <MenuItem value="ACCUMULATED">
-                                    Accumulated
-                                  </MenuItem>
-                                )}
-                                {(values.dataType === "String" ||
-                                  values.dataType === "Array" ||
-                                  values.dataType === "Number") && (
-                                  <MenuItem value="LATEST">Latest</MenuItem>
-                                )}
-                                {values.dataType === "Number" && (
-                                  <MenuItem value="AVERAGE">Average</MenuItem>
-                                )}
-                                {values.dataType === "Number" && (
-                                  <MenuItem value="MEDIAN">Median</MenuItem>
-                                )}
-                              </Field>
-                              <Tooltip title="Please specify how you wish to downsample the data">
-                                <IconButton>
-                                  <HelpOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </Box>
-                          </FormControl>
+                              {(values.dataType === "STRING" || values.dataType === "ARRAY") && (
+                                <MenuItem value="Accumulated">Accumulated</MenuItem>
+                              )}
+                              {(values.dataType === "STRING" || values.dataType === "ARRAY" || values.dataType === "NUMBER") && (
+                                <MenuItem value="Latest">Latest</MenuItem>
+                              )}
+                              {(values.dataType === "NUMBER") && (
+                                <MenuItem value="Average">Average</MenuItem>
+                              )}
+                              {(values.dataType === "NUMBER") && (
+                                <MenuItem value="Median">Median</MenuItem>
+                              )}
+                            </Field>
+                            <Tooltip title="Please specify how you wish to downsample the data">
+                              <IconButton>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </FormControl>
                         </>
                       )}
                   </>

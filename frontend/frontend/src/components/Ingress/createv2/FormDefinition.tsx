@@ -28,21 +28,40 @@ export interface FormData {
 export const initialValues: FormData = {
   // id with random uuid generated based on uuidv4
   id: uuidv4(),
-  name: "Robot Mode" + Math.floor(Math.random() * 1000),
-  description: "default Description",
-  protocol: "RTDE",
-  frequency: "1",
-  changedFrequency: "1",
-  host: "172.17.0.1",
-  topic: "example",
-  port: "1883",
-  output: "robot_mode",
+  name: "",
+  description: "",
+  protocol: "",
+  frequency: "",
+  changedFrequency: "",
+  host: "",
+  topic: "",
+  port: "",
+  output: "",
   nodeId: "",
-  containingElement: "Robot 1",
-  dataFormat: "RAW",
-  dataType: "NUMBER",
-  downsampleMethod: "Average"
+  containingElement: "",
+  dataFormat: "",
+  dataType: "",
+  downsampleMethod: ""
 };
+
+// export const initialValues: FormData = {
+//   // id with random uuid generated based on uuidv4
+//   id: uuidv4(),
+//   name: "Robot Mode" + Math.floor(Math.random() * 1000),
+//   description: "default Description",
+//   protocol: "RTDE",
+//   frequency: "1",
+//   changedFrequency: "1",
+//   host: "172.17.0.1",
+//   topic: "example",
+//   port: "1883",
+//   output: "robot_mode",
+//   nodeId: "",
+//   containingElement: "Robot 1",
+//   dataFormat: "RAW",
+//   dataType: "NUMBER",
+//   downsampleMethod: "Average"
+// };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   id: Yup.string().required(),
