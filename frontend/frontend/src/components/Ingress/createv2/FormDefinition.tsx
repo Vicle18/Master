@@ -40,8 +40,8 @@ export const initialValues: FormData = {
   nodeId: "",
   containingElement: "Robot 1",
   dataFormat: "RAW",
-  dataType: "String",
-  downsampleMethod: "AVERAGE"
+  dataType: "NUMBER",
+  downsampleMethod: "Average"
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({

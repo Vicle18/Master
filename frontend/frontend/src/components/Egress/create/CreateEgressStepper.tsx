@@ -61,7 +61,7 @@ const steps = [
   "Add Observable Properties",
   "Select Frequency",
   "Select Endpoint Group",
-  "Access Information",
+  // "Access Information",
 ];
 
 const GET_ENDPOINTS = gql`
@@ -87,7 +87,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
   const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>([]);
 
-  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>();
+  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>(selectedIngress);
   const [selectedEgress, setSelectedEgress] = useState<string>("");
   const [selectedDataFormat, setSelectedDataFormat] =
     useState<string>("string");
@@ -738,7 +738,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
-                {activeStep === 4 && <Typography variant="h6">Info</Typography>}
+                {/* {activeStep === 4 && <Typography variant="h6">Info</Typography>} */}
               </DialogContent>
               <DialogActions>
                 {errors.name && (

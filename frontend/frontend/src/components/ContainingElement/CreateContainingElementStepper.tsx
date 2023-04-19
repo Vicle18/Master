@@ -33,6 +33,8 @@ import {
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -164,7 +166,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   function getChildrenOptionsFilter(type: string): string[] | undefined {
     switch (type) {
       case "company":
-        return [ "plants"];
+        return ["plants"];
       case "plant":
         return ["areas"];
       case "area":
@@ -306,6 +308,27 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Here you can select where to store your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -429,7 +452,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           onItemClick={(child: any) => {
                             HandleContainingElementClick(child);
                             setSelectedChild(child);
-                    
+
                           }}
                           filter={getChildrenOptionsFilter(values.type)}
                         />
@@ -482,7 +505,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                 {activeStep === 3 && (
                   <>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      
+
                       <Grid2
                         xs={3.6}
                         sx={{
