@@ -4,7 +4,36 @@ namespace MiddlewareManager.DataModel;
 
 public class UpdateIngressDto
 {
-    public string id { get; set; }
+    public string? id { get; set; }
+
+    public string? containingElement { get; set; }
+
+    public string? dataFormat { get; set; }
+
+    public int? frequency { get; set; }
+
+    public int? changedFrequency { get; set; }
+
+    public string? protocol { get; set; }
+
+    public string? name { get; set; }
+
+    public string? downsampleMethod { get; set; }
+    public string? description { get; set; }
+
+    public string? host { get; set; }
+
+    public int? port { get; set; }
+
+    public string? output { get; set; }
+
+    public string? topic { get; set; }
+
+    public string? nodeId { get; set; }
+
+    public string? datatype { get; set; }
+    
+    /*public string id { get; set; }
 
     [Microsoft.Build.Framework.Required] 
     public string containingElement { get; set; }
@@ -39,6 +68,9 @@ public class UpdateIngressDto
     [Microsoft.Build.Framework.Required] public string topic { get; set; }
 
     public string? nodeId { get; set; }
+
+
+    public string? datatype { get; set; }*/
 
     public override string ToString()
     {

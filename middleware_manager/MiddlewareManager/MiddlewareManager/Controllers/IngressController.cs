@@ -113,6 +113,7 @@ namespace MiddlewareManager.Controllers
             _logger.LogDebug("updating ingress with values: {value}", value);
             try
             {
+                
                 var response = await _ingressRepo.UpdateObservableProperty(value);
                 return Ok(response);
             }

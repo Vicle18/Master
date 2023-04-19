@@ -29,7 +29,6 @@ public class IngressRepository : IIngressRepository
     public async Task<Response> CreateObservableProperty(string id, CreateIngressDtoBase value, string topicName,
         string connectionDetails)
     {
-        
         var request = new GraphQLRequest
         {
             Query = @"
@@ -132,11 +131,10 @@ public class IngressRepository : IIngressRepository
     {
         Log.Debug("BEFORE UPDATING");
         Log.Debug(value.id);
-        try
+        
+        var request = new GraphQLRequest
         {
-            var request = new GraphQLRequest
-            {
-                Query = @"
+            Query = @"
                 mutation UpdateObservableProperties($update: ObservablePropertyUpdateInput, $where: ObservablePropertyWhere) {
                   updateObservableProperties(update: $update, where: $where) {
                     observableProperties {
@@ -145,38 +143,37 @@ public class IngressRepository : IIngressRepository
                   }
                 }
             ",
-                Variables = new
+            Variables = new
+            {
+                update = new
                 {
-                    update = new
+                    name = value.name,
+                    frequency = value.frequency,
+                    description = value.description,
+                    dataFormat = value.dataFormat,
+                    changedFrequency = value.changedFrequency,
+                    topic = new
                     {
-                        name = value.name,
-                        frequency = value.frequency,
-                        description = value.description,
-                        dataFormat = value.dataFormat,
-                        changedFrequency = value.changedFrequency,
-                        topic = new
+                        update = new
                         {
-                            update = new
+                            node = new
                             {
-                                node = new
-                                {
-                                    name = value.topic
-                                }
+                                name = value.topic
                             }
                         }
-                    },
-                    where = new
-                    {
-                        id = value.id
                     }
                 },
-            };
-            Log.Debug(JsonSerializer.Serialize(request));
-            var response = await graphQLClient.SendMutationAsync<Object>(request);
-        }
-        catch (Exception e)
+                where = new
+                {
+                    id = value.id
+                }
+            },
+        };
+        Log.Debug(JsonSerializer.Serialize(request));
+        var response = await graphQLClient.SendMutationAsync<Object>(request);
+        if (response.Errors != null)
         {
-            Console.Error.WriteLine($"An error occurred: {e.Message}");
+            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
         }
 
         Log.Debug("Response:");
