@@ -6,21 +6,6 @@ public class UpdateIngressDto: IngressDTOBase
 {
     
     public string? id { get; set; }
-
-
-
-
-
-
-
-    public string? downsampleMethod { get; set; }
-
-
-
-
-
-
-    public string? datatype { get; set; }
     
     public override string ToString()
     {
