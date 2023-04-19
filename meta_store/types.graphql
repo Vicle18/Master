@@ -79,6 +79,8 @@ type ObservableProperty{
     status: String
     lastUpdatedAt: String
     errorStateAt: String
+    dataType: String!
+    downsampleMethod: String!
 }
 
 type EgressEndpoint{
