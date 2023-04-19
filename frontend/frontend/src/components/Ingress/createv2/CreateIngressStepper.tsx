@@ -714,11 +714,13 @@ const CreateIngressStepper: React.FC<Props> = ({
                     variant="contained"
                     color="success"
                     type="submit"
-                    disabled={!isValid || activeStep != 1}
+                    disabled={!isValid || activeStep != 1 || selectedParent.length == 0}
                   >
                     Create
                   </Button>
+                  
                 )}
+                
               </DialogActions>
             </Form>
           )}

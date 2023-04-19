@@ -61,7 +61,6 @@ const steps = [
   "Add Observable Properties",
   "Select Frequency",
   "Select Endpoint Group",
-  // "Access Information",
 ];
 
 const GET_ENDPOINTS = gql`
@@ -85,7 +84,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
 
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
-  const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>([]);
+  const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>();
 
   const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>(selectedIngress);
   const [selectedEgress, setSelectedEgress] = useState<string>("");
@@ -122,6 +121,10 @@ const CreateEgressStepper: React.FC<Props> = ({
     setPopupEgress(false);
     values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
+    if(!values.createBroker && values.protocol === "MQTT"){
+      values.host = "localhost";
+      values.port = "8088";
+    }
     if (values.dataFormat === "WITH_METADATA") {
       values.metadata = {};
       for (const [key, value] of Object.entries(checkBoxData)) {
@@ -554,6 +557,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                         <DetailedView
                           containingEntityId={selectedEgress}
                           onOpenChart={(observableProperty: any) => {
+                            values.ingressId = observableProperty.id;
                             handleSelectObservableProperty(observableProperty);
                             values.frequency = observableProperty.frequency;
                             values.changedFrequency =
@@ -777,9 +781,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
                               onClick={() => {
+                                values.groupId = node.id;
+
                                 console.log("clicked");
                                 setSelectedEgressGroup(node);
-                                values.groupId = node.id;
                               }}
                             >
                               <ListItemText primary={node.name} />
@@ -801,7 +806,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
-                {/* {activeStep === 4 && <Typography variant="h6">Info</Typography>} */}
+                
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -880,8 +885,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                     variant="contained"
                     color="success"
                     type="submit"
-                    disabled={!isValid || activeStep != 1}
+                    disabled={(!isValid || (selectedIngressNode == undefined || selectedEgressGroup == undefined))}
                   >
+                    
                     Create
                   </Button>
                 )}

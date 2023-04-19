@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Chip,
   Divider,
   Typography,
@@ -128,6 +129,34 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
   var endpoint = data.egressEndpoints[0];
 
   var connectionDetails = JSON.parse(endpoint.connectionDetails);
+  function handleDelete(): void {
+    fetch(
+      `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${endpoint.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Headers":
+            "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+        },
+      }
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error ${response.status}`);
+        }
+        refetch();
+        return response.json();
+      })
+      .then((data) => console.log("data: " + JSON.stringify(data)))
+      .catch((error) => console.error(error));
+  }
+
+  function handleEdit(): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <div>
       <Typography variant="h5"></Typography>
@@ -225,6 +254,17 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
           )}
         </AccordionDetails>
       </Accordion>
+      <Box sx={{ height: "20px" }} />
+
+      <Divider sx={{ marginBottom: "20px" }}>
+        <Chip label={"Manage " + endpoint.name} />
+      </Divider>
+      <Button color="error" variant="contained" onClick={handleDelete}>
+        Delete
+      </Button>
+      <Button color="primary" variant="contained" onClick={handleEdit}>
+        Edit
+      </Button>
     </div>
   );
 };

@@ -29,9 +29,9 @@ export interface FormData {
   serverUrl?:string;
   nodeId?: string;
   nodeType?: string;
-  ingressId: (string | undefined);
+  ingressId?: (string | undefined);
   dataFormat: string;
-  groupId: string;
+  groupId?: string;
   metadata?: {
     timestamp?: boolean;
     name?: string;
@@ -82,9 +82,9 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   frequency: Yup.number().required("Frequency is required"),
   changedFrequency: Yup.number().optional(),
   downSamplingMethod: Yup.string().optional(),
-  ingressId: Yup.string().required("Ingress is required"),
+  ingressId: Yup.string().optional(),
   dataFormat: Yup.string().required("dataFormat is required"),
-  groupId: Yup.string().required("dataFormat is required"),
+  groupId: Yup.string().optional(),
   metadata: Yup.object().optional(),
   serverUrl: Yup.string().when("protocol", {
     is: "OPCUA",
