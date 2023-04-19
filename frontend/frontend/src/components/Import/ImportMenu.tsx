@@ -24,9 +24,9 @@ import {
   FormLabel,
   Switch,
   Checkbox,
-  Snackbar,
   Alert
 } from "@mui/material";
+import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -43,6 +43,10 @@ import { create } from "domain";
 interface Props {
   setPopupImport: React.Dispatch<React.SetStateAction<boolean>>;
   PopupImport: boolean;
+}
+
+export interface State extends SnackbarOrigin {
+  open: boolean;
 }
 
 const steps = [
@@ -72,7 +76,13 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     useState<any>();
   const [selectedContainer, setSelectedContainer] = useState<any>();
   const [json, setJson] = useState<any>();
-  const [finished, setFinished] = useState(false);
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = state;
+
 
   const { loading, error, data, refetch } = useQuery(
     GET_OBSERVABLE_PROPERTIES,
@@ -156,10 +166,9 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     }
   };
 
-  const createObservableProperties = () => {
+  const createObservableProperties = (newState: SnackbarOrigin) => () => {
     console.log("creating");
-    setFinished(true)
-    console.log(finished)
+    setState({ open: true, ...newState });
     setCreationStarted(true);
     const observablePropertiesToCreate =
       json?.machines?.[0]?.observableProperties?.filter(
@@ -254,8 +263,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     }
   };
 
-  const handleSnackbarClose = () => {
-    setFinished(false);
+  const handleClose = () => {
+    setState({ ...state, open: false });
   };
 
   return (
@@ -453,19 +462,20 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     }}
                     variant="outlined"
                     disableElevation
-                    onClick={() => {
-                      createObservableProperties();
-                    }}
+                    onClick={createObservableProperties({
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    })}
                   >
                     Create Observable Properties
                   </Button>
-                  {finished && (
-                    <Snackbar autoHideDuration={3000} onClose={handleSnackbarClose}>
-                      <Alert onClose={handleSnackbarClose} severity="info">
-                        Observable properties created!
-                      </Alert>
-                    </Snackbar>
-                  )}
+                  <Snackbar
+                    anchorOrigin={{ vertical, horizontal }}
+                    open={open}
+                    onClose={handleClose}
+                    message="Created observable properties"
+                    key={vertical + horizontal}
+                  />
 
                 </Grid2>
                 <Grid2
