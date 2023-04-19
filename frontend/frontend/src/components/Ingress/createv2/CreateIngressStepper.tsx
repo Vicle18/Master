@@ -521,7 +521,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                           </FormControl>
                         </>
                       )}
-                    {(values.datatype === "String" || values.datatype === "Array" &&
+                    {((values.datatype === "String" || values.datatype === "Array") &&
                       values.frequency != values?.changedFrequency) && (
                         <>
                           <FormControl variant="outlined" margin="normal" fullWidth>
