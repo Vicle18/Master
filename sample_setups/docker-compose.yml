@@ -144,6 +144,7 @@ services:
       - meta_store_neo4j
     networks:
       shared_network:
+
 ## MQTT
   mosquitto:
     image: eclipse-mosquitto

@@ -2,6 +2,7 @@ namespace MiddlewareManager.DataModel;
 
 public class CreateIngressDto:CreateDTO
 {
+    public string? id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
     public string protocol { get; set; }
@@ -14,11 +15,11 @@ public class CreateIngressDto:CreateDTO
     
     public string? output { get; set; }
 
-    public string containingElement { get; set; }
+    public string? containingElement { get; set; }
     public string frequency { get; set; }
     public string? changedFrequency { get; set; }
     public string dataFormat { get; set; }
-    public string? nodeName { get; set; }
+    public string? nodeId { get; set; }
 
     public override string ToString()
     {

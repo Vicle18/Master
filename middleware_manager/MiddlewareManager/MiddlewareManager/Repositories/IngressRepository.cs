@@ -4,6 +4,7 @@ using GraphQL.Client.Serializer.SystemTextJson;
 using MiddlewareManager.DataModel;
 using Newtonsoft.Json;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MiddlewareManager.Repositories;
 
@@ -110,7 +111,7 @@ public class IngressRepository : IIngressRepository
                     }",
             Variables = new
             {
-                where= new
+                where = new
                 {
                     id = id
                 }
@@ -125,5 +126,61 @@ public class IngressRepository : IIngressRepository
         }
 
         return JsonConvert.SerializeObject(response.Data);
+    }
+
+    public async Task<string> UpdateObservableProperty(UpdateIngressDto value)
+    {
+        Log.Debug("BEFORE UPDATING");
+        Log.Debug(value.id);
+        try
+        {
+            var request = new GraphQLRequest
+            {
+                Query = @"
+                mutation UpdateObservableProperties($update: ObservablePropertyUpdateInput, $where: ObservablePropertyWhere) {
+                  updateObservableProperties(update: $update, where: $where) {
+                    observableProperties {
+                      id
+                    }
+                  }
+                }
+            ",
+                Variables = new
+                {
+                    update = new
+                    {
+                        name = value.name,
+                        frequency = value.frequency,
+                        description = value.description,
+                        dataFormat = value.dataFormat,
+                        changedFrequency = value.changedFrequency,
+                        topic = new
+                        {
+                            update = new
+                            {
+                                node = new
+                                {
+                                    name = value.topic
+                                }
+                            }
+                        }
+                    },
+                    where = new
+                    {
+                        id = value.id
+                    }
+                },
+            };
+            Log.Debug(JsonSerializer.Serialize(request));
+            var response = await graphQLClient.SendMutationAsync<Object>(request);
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine($"An error occurred: {e.Message}");
+        }
+
+        Log.Debug("Response:");
+        //Log.Debug(JsonSerializer.Serialize(response));
+        return null;
     }
 }

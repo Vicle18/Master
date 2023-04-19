@@ -76,6 +76,22 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
+        
+        // POST: api/Ingress/update
+        [HttpPost("update")]
+        public async Task<ActionResult<CreateObservablePropertiesResult>> Update([FromBody] UpdateIngressDto value)
+        {
+            _logger.LogDebug("updating ingress with values: {value}", value);
+            try
+            {
+                var response = await _ingressRepo.UpdateObservableProperty(value);
+                return Ok(response);
+            }
+            catch (ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         /**
          * Creates an HTTP request to the ServiceConfigurator
