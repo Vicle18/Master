@@ -41,19 +41,18 @@ export interface FormData {
 }
 
 export const egressInitialValues: FormData = {
-  name: "defaultName",
-  description: "default Description",
-  protocol: "MQTT",
-  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
-  port: "1883",
+  name: "",
+  description: "",
+  protocol: "",
+  host: "", //172.17.0.1 is the default host for the mosquitto container on the docker network
+  port: "",
   createBroker: false,
-  frequency: 30,
-  changedFrequency: 30,
-  downSamplingMethod: "LATEST",
-  ingressId: "jointTemperature2",
-  dataFormat: "RAW",
-  groupId: "defaultEgressGroup",
-
+  frequency: 0,
+  changedFrequency: 0,
+  downSamplingMethod: "",
+  ingressId: "",
+  dataFormat: "",
+  groupId: "",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({

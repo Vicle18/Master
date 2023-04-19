@@ -337,7 +337,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
-          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+        "Origin, Content-Type, X-Auth-Token, X-Requested-With",
       },
     })
       .then((response) => {
