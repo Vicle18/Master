@@ -491,66 +491,46 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <MenuItem value="Array">ARRAY</MenuItem>
                       </Field>
                     </FormControl>
-                    {(values.datatype === "Number" &&
-                      values.frequency != values?.changedFrequency) && (
-                        <>
-                          <FormControl variant="outlined" margin="normal" fullWidth>
-                            <Box sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}>
-                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
-                              <Field
-                                as={Select}
-                                name="downsampleMethod"
-                                fullWidth
-                                labelId="downsampleMethod-label"
-                                label="downsampleMethod"
-                                size="small"
-                              >
+                    {values?.changedFrequency && (values.frequency > values?.changedFrequency) && (
+                      <>
+                        <FormControl variant="outlined" margin="normal" fullWidth>
+                          <Box sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}>
+                            <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                            <Field
+                              as={Select}
+                              name="downsampleMethod"
+                              fullWidth
+                              labelId="downsampleMethod-label"
+                              label="downsampleMethod"
+                              size="small"
+                            >
+                              {(values.datatype === "String" || values.datatype === "Array") && (
+                                <MenuItem value="ACCUMULATED">Accumulated</MenuItem>
+                              )}
+                              {(values.datatype === "String" || values.datatype === "Array" || values.datatype === "Number") && (
+                                <MenuItem value="LATEST">Latest</MenuItem>
+                              )}
+                              {(values.datatype === "Number") && (
                                 <MenuItem value="AVERAGE">Average</MenuItem>
+                              )}
+                              {(values.datatype === "Number") && (
                                 <MenuItem value="MEDIAN">Median</MenuItem>
-                                <MenuItem value="LAST">Last Value</MenuItem>
-                              </Field>
-                              <Tooltip title="Please specify how you wish to downsample the data">
-                                <IconButton>
-                                  <HelpOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </Box>
-                          </FormControl>
-                        </>
-                      )}
-                    {((values.datatype === "String" || values.datatype === "Array") &&
-                      values.frequency != values?.changedFrequency) && (
-                        <>
-                          <FormControl variant="outlined" margin="normal" fullWidth>
-                            <Box sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}>
-                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
-                              <Field
-                                as={Select}
-                                name="downsampleMethod"
-                                fullWidth
-                                labelId="downsampleMethod-label"
-                                label="downsampleMethod"
-                                size="small"
-                              >
-                                <MenuItem value="FIRST">First Value</MenuItem>
-                                <MenuItem value="LAST">Last Value</MenuItem>
-                                <MenuItem value="RANDOM">Random Selection</MenuItem>
-                              </Field>
-                              <Tooltip title="Please specify how you wish to downsample the data">
-                                <IconButton>
-                                  <HelpOutlineIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </Box>
-                          </FormControl>
-                        </>
-                      )}
+                              )}
+
+
+                            </Field>
+                            <Tooltip title="Please specify how you wish to downsample the data">
+                              <IconButton>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </FormControl>
+                      </>
+                    )}
                   </>
                 )}
                 {activeStep === 1 && (
