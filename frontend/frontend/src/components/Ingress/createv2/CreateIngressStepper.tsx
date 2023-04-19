@@ -535,14 +535,14 @@ const CreateIngressStepper: React.FC<Props> = ({
                       <InputLabel id="datatype-label">Data Type</InputLabel>
                       <Field
                         as={Select}
-                        name="datatype"
-                        labelId="datatype-label"
-                        label="datatype"
+                        name="dataType"
+                        labelId="dataType-label"
+                        label="dataType"
                         size="small"
                       >
-                        <MenuItem value="Number">NUMBER</MenuItem>
-                        <MenuItem value="String">STRING</MenuItem>
-                        <MenuItem value="Array">ARRAY</MenuItem>
+                        <MenuItem value="NUMBER">NUMBER</MenuItem>
+                        <MenuItem value="STRING">STRING</MenuItem>
+                        <MenuItem value="ARRAY">ARRAY</MenuItem>
                       </Field>
                     </FormControl>
                     {values?.changedFrequency &&
@@ -570,21 +570,21 @@ const CreateIngressStepper: React.FC<Props> = ({
                                 label="downsampleMethod"
                                 size="small"
                               >
-                                {(values.datatype === "String" ||
-                                  values.datatype === "Array") && (
+                                {(values.dataType === "String" ||
+                                  values.dataType === "Array") && (
                                   <MenuItem value="ACCUMULATED">
                                     Accumulated
                                   </MenuItem>
                                 )}
-                                {(values.datatype === "String" ||
-                                  values.datatype === "Array" ||
-                                  values.datatype === "Number") && (
+                                {(values.dataType === "String" ||
+                                  values.dataType === "Array" ||
+                                  values.dataType === "Number") && (
                                   <MenuItem value="LATEST">Latest</MenuItem>
                                 )}
-                                {values.datatype === "Number" && (
+                                {values.dataType === "Number" && (
                                   <MenuItem value="AVERAGE">Average</MenuItem>
                                 )}
-                                {values.datatype === "Number" && (
+                                {values.dataType === "Number" && (
                                   <MenuItem value="MEDIAN">Median</MenuItem>
                                 )}
                               </Field>

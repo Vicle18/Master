@@ -30,7 +30,7 @@ public class IngressRepository : IIngressRepository
     public async Task<Response> CreateObservableProperty(string id, IngressDTOBase value, string topicName,
         string connectionDetails)
     {
-        Log.Debug("value before request " + value);
+        Log.Debug("value before request " + value.containingElement);
         var request = new GraphQLRequest
         {
             Query = @"
@@ -57,9 +57,10 @@ public class IngressRepository : IIngressRepository
                         id = id,
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
+                        dataType = value.dataType,
+                        downsampleMethod = value.downsampleMethod,
                         // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
                         changedFrequency = value.frequency,
-
                         topic = new
                         {
                             create = new
@@ -154,6 +155,8 @@ public class IngressRepository : IIngressRepository
                     description = value.description,
                     dataFormat = value.dataFormat,
                     changedFrequency = value.changedFrequency,
+                    dataType = value.dataType,
+                    downsampleMethod = value.downsampleMethod,
                     connectionDetails = connectionDetails.ToString(),
                     topic = new
                     {

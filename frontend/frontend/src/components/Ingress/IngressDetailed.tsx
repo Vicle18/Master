@@ -43,6 +43,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
   cells(where: $cellsWhere2) {
@@ -60,6 +62,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
   machines(where: $machinesWhere2) {
@@ -77,6 +81,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
   companies(where: $companiesWhere2) {
@@ -94,6 +100,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
   lines(where: $linesWhere2) {
@@ -111,6 +119,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
   plants(where: $plantsWhere2) {
@@ -128,6 +138,8 @@ query Company($where: AreaWhere, $cellsWhere2: CellWhere, $machinesWhere2: Machi
       connectionDetails
       changedFrequency
       dataFormat
+      dataType
+      downsampleMethod
     }
   }
 }
@@ -148,6 +160,9 @@ interface ObjectWithProperties {
     changedFrequency: number;
     connectionDetails: JSON;
     dataFormat: string;
+    dataType: string;
+    downsampleMethod: string;
+
   }[];
 }
 
@@ -271,8 +286,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    console.log(data)
-    console.log(data.connectionDetails)
+    console.log("data data data")
+    console.log(data.downsampleMethod)
+    console.log(data.dataType)
     const connectionDetails = JSON.parse(data.connectionDetails)
     initialValues.protocol = connectionDetails.PROTOCOL
 
@@ -292,6 +308,8 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     initialValues.changedFrequency = data.changedFrequency
     initialValues.dataFormat = data.dataFormat
     initialValues.id = data.id
+    initialValues.dataType = data.dataType
+    initialValues.downsampleMethod = data.downsampleMethod
     setShowEditEndpoint(true);
     setPopupEditIngress(true);
   }
