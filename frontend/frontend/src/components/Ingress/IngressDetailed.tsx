@@ -330,6 +330,14 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     egressInitialValues.ingressId = item.id;
     setPopupCreateEgress(true);
   }
+  function isJsonString(str: string) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 
   return (
     <>
@@ -417,9 +425,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                     </Typography>
                     <Typography>
                       <Box component="span" fontWeight="bold">
-                        Topic:
+                        Source Information:
                       </Box>{" "}
-                      {item.topic.name}
+                      {isJsonString(item.connectionDetails) && JSON.parse(item?.connectionDetails).PROTOCOL}
                     </Typography>
                     <Typography>
                       <Box component="span" fontWeight="bold">

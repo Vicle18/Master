@@ -51,14 +51,14 @@ const GET_ENDPOINTS = gql`
 `;
 
 interface IEgressSearchResultProps {
-  searchParameters: EgressSearchParameters;
-  onSelectEgressId: (egressId: string) => void;
+  searchParameters?: EgressSearchParameters;
+  onSelectEgress: (egressEndpoint: any) => void;
   onSelectGroupId?: (groupId: string) => void;
 }
 
 const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
-  onSelectEgressId,
+  onSelectEgress,
   onSelectGroupId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -101,27 +101,8 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
 
   const handleShowChart = (data: any) => {
     console.log("data: ", JSON.stringify(data));
-    // const connectionDetails: ConnectionDetails = JSON.parse(
-    //   data.connectionDetails,
-    //   (key, value) => {
-    //     if (key === "PROTOCOL") {
-    //       return value;
-    //     } else if (key === "PARAMETERS") {
-    //       return Object.entries(value).reduce<Record<string, any>>(
-    //         (acc, [key, value]) => {
-    //           acc[key.toLowerCase()] = value;
-    //           return acc;
-    //         },
-    //         {}
-    //       );
-    //     }
-    //     return value;
-    //   }
-    // );
-    // connectionDetails.OBSERVABLE_PROPERTY = data.accessTo;
-    // console.log("connectionDetails: ", connectionDetails);
 
-    onSelectEgressId(data.id);
+    onSelectEgress(data);
   };
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {

@@ -154,16 +154,7 @@ public class IngressRepository : IIngressRepository
                         description = value.description,
                         dataFormat = value.dataFormat,
                         changedFrequency = value.changedFrequency,
-                        topic = new
-                        {
-                            update = new
-                            {
-                                node = new
-                                {
-                                    name = value.topic
-                                }
-                            }
-                        }
+                        
                     },
                     where = new
                     {

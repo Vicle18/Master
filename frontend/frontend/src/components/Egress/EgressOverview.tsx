@@ -57,8 +57,8 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
   };
 
   const handleSelectEgressId = (data: any) => {
-    console.log("handleSelectConnectionDetails", data);
-    setSelectedEgressId(data);
+    console.log("handleSelectConnectionDetails", JSON.stringify(data));
+    setSelectedEgressId(data.id);
   };
 
   const handleSearchResult = (data: any) => {
@@ -96,7 +96,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            <EgressGroupsSearchResults searchParameters={searchParameters} onSelectEgressId={handleSelectEgressId} />
+            <EgressGroupsSearchResults searchParameters={searchParameters} onSelectEgress={handleSelectEgressId} />
           </Grid2>
           <Grid2
             xs
@@ -107,7 +107,7 @@ const EgressOverview: React.FC<EgressOverviewProps> = ({}) => {
               backgroundColor: "whitesmoke",
             }}
           >
-            <ConnectionDetailsDisplay egressId={selectedEgressId}/>
+            <ConnectionDetailsDisplay egressEndpoint={selectedEgressId}/>
           </Grid2>
         </Grid2>
       </Box>

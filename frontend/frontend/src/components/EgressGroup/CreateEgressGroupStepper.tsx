@@ -41,36 +41,27 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import { initialValues, validationSchema, FormData } from "./FormDefinition";
 import DetailedView from "../Ingress/IngressDetailed";
 import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
+import EgressGroupsSearchResults from "../Egress/EgressGroupsSearchResults";
 
 interface Props {
-  setPopupContainingElement: React.Dispatch<React.SetStateAction<boolean>>;
-  PopupContainingElement: boolean;
+  setPopupEgressGroup: React.Dispatch<React.SetStateAction<boolean>>;
+  PopupEgressGroup: boolean;
   handleResult: (result: string) => void;
 }
 
-const steps = [
-  "Define Meta data",
-  "Select Egress Endpoints",
-];
+const steps = ["Define Meta data", "Select Egress Endpoints"];
 
-const CreateContainingElementStepper: React.FC<Props> = ({
-  setPopupContainingElement,
-  PopupContainingElement,
+const CreateEgressGroupStepper: React.FC<Props> = ({
+  setPopupEgressGroup,
+  PopupEgressGroup,
   handleResult,
 }) => {
   const [activeStep, setActiveStep] = React.useState(0);
-  const [ingressNodes, setIngressNodes] = useState<string[]>(
-    initialValues.egressEndpointIds as string[]
-  );
-
-  const [selectedEngressNode, setSelectedEngressNode] = useState<string>("");
-
-  const [selectedContainingElement, setSelectedContainingElement] =
-    useState<string>("");
+  const [egressNodes, setEgressNodes] = useState<any[]>([]);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
-    setPopupContainingElement(false);
+    setPopupEgressGroup(false);
   };
 
   const handleNext = () => {
@@ -81,8 +72,9 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   };
 
   const handleSubmit = (values: FormData) => {
-    console.log("submit", values, ingressNodes);
-    setPopupContainingElement(false);
+    console.log("submit", values, egressNodes);
+    values.egressEndpointIds = egressNodes.map((node) => node.id);
+    setPopupEgressGroup(false);
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -91,7 +83,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
         "Origin, Content-Type, X-Auth-Token, X-Requested-With",
     };
 
-    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, {
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/EgressGroup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,27 +98,23 @@ const CreateContainingElementStepper: React.FC<Props> = ({
       .catch((error) => console.error(error));
   };
 
-  function HandleContainingElementClick(data: any): void {
-    setSelectedContainingElement(data);
-    console.log("selected containing element", data);
-  }
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
 
-  const handleSelectObservableProperty = (observableProperty: any) => {
-    console.log("observable property", observableProperty);
-    setSelectedEngressNode(observableProperty.name);
-    setIngressNodes([...ingressNodes, observableProperty.name]);
+  const handleSelectEgressNode = (egressEndpoint: any) => {
+    console.log("egressnode", egressEndpoint);
+    if(egressNodes.find((node) => node.id === egressEndpoint.id)) return;
+    setEgressNodes([...egressNodes, egressEndpoint]);
   };
-  const handleDelete = (element: string) => {
-    setIngressNodes(ingressNodes.filter((node) => node !== element));
+  const handleDelete = (element: any) => {
+    setEgressNodes(egressNodes.filter((node) => node.id !== element.id));
   };
 
   return (
     <div>
       <Dialog
-        open={PopupContainingElement}
+        open={PopupEgressGroup}
         onClose={handlerClose}
         scroll={"paper"}
         fullWidth={true}
@@ -154,7 +142,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
             isValid,
           }) => (
             <Form onSubmit={handleSubmit}>
-              <DialogTitle>Create a Containing Element</DialogTitle>
+              <DialogTitle>Create an Egress Group</DialogTitle>
               <DialogContent
                 dividers={true}
                 sx={{ overflow: "auto", maxHeight: "calc(100vh - 250px)" }}
@@ -184,7 +172,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                     {activeStep !== steps.length - 1 && (
                       <Button onClick={handleNext}>{"Next"}</Button>
                     )}
-  
                   </Box>
                 </React.Fragment>
                 {activeStep === 0 && (
@@ -221,7 +208,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
-                    
                   </>
                 )}
                 {activeStep === 1 && (
@@ -229,23 +215,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       
                       <Grid2
-                        xs={3.6}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <IngressOverviewLeft
-                          onItemClick={(containingElement: any) => {
-                            HandleContainingElementClick(containingElement.name);
-                          }}
-                        />
-                      </Grid2>
-                      <Grid2
-                        xs={4.3}
+                        xs={6}
                         sx={{
                           marginTop: "30px",
                           marginRight: "50px",
@@ -253,14 +223,12 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <DetailedView
-                          containingEntityId={selectedContainingElement}
-                          onOpenChart={handleSelectObservableProperty}
-                          withDetails={false}
+                        <EgressGroupsSearchResults
+                          onSelectEgress={handleSelectEgressNode}
                         />
                       </Grid2>
                       <Grid2
-                        xs={2.5}
+                        xs={3}
                         sx={{
                           marginTop: "30px",
                           marginLeft: "20px",
@@ -277,12 +245,12 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             bgcolor: "background.paper",
                           }}
                           subheader={
-                            <ListSubheader>Observable Properties</ListSubheader>
+                            <ListSubheader>Egress Endpoints</ListSubheader>
                           }
                         >
-                          {ingressNodes.map((node) => (
+                          {egressNodes.map((node:any) => (
                             <ListItemButton
-                              key={node}
+                              key={node.id}
                               sx={{
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
@@ -290,7 +258,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                               <ListItemIcon>
                                 <SensorsIcon />
                               </ListItemIcon>
-                              <ListItemText primary={node} />
+                              <ListItemText primary={node.name} />
                               <IconButton
                                 edge="end"
                                 onClick={() => handleDelete(node)}
@@ -336,7 +304,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!(isValid)}
+                  disabled={!isValid}
                 >
                   Create
                 </Button>
@@ -348,4 +316,4 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     </div>
   );
 };
-export default CreateContainingElementStepper;
+export default CreateEgressGroupStepper;

@@ -461,6 +461,62 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </Box>
                       </>
                     )}
+                    {createBroker && values.protocol === "OPCUA" && (
+                      <>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid port e.g., 8080">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </>
+                    )}
                   </>
                 )}
 

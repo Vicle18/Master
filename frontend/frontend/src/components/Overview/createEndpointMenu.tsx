@@ -22,6 +22,7 @@ import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 import CreateIngressStepper from "../Ingress/createv2/CreateIngressStepper";
 import ImportMenu from "../Import/ImportMenu";
+import CreateEgressGroupStepper from "../EgressGroup/CreateEgressGroupStepper";
 export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
@@ -39,7 +40,8 @@ export function CreateEndpoint(
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [PopupIngress, setPopupIngress] = React.useState(false);
-  
+  const [PopupEgressGroup, setPopupEgressGroup] = React.useState(false);
+
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [PopupContainingElement, setPopupContainingElement] =
     React.useState(false);
@@ -54,6 +56,10 @@ export function CreateEndpoint(
   };
   const handlerClickOpenContainingElement = () => {
     setPopupContainingElement(true);
+  };
+
+  const handlerClickOpenEgressGroup = () => {
+    setPopupEgressGroup(true);
   };
   const handlerClickOpenIngress = () => {
     setPopupIngress(true);
@@ -119,6 +125,11 @@ export function CreateEndpoint(
           Containing Element
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
+        <MenuItem onClick={handlerClickOpenEgressGroup} disableRipple>
+          <AddBox />
+          Egress Group
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
         
         <MenuItem onClick={handlerClickOpenImport} disableRipple>
           <AddBox />
@@ -132,6 +143,7 @@ export function CreateEndpoint(
         setPopupContainingElement,
         handleResult,
       })}
+      {CreateEgressGroupStepper({PopupEgressGroup, setPopupEgressGroup, handleResult})}
       {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
       {result && (
         <Snackbar

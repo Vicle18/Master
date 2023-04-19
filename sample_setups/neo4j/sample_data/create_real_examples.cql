@@ -123,7 +123,7 @@ name: 'Cutting Speed',
 description: 'Observable Property for Cutting Speed of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingSpeedConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -133,7 +133,7 @@ name: 'Tool Wear',
 description: 'Observable Property for Tool Wear of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "toolWearConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -147,7 +147,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "vibrationConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -157,7 +157,7 @@ name: 'Cutting Force',
 description: 'Observable Property for Cutting Force of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingForceConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -167,7 +167,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 75,
 changedFrequency: 75,
-connectionDetails: "temperatureConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -177,7 +177,7 @@ name: 'Welding Voltage',
 description: 'Observable Property for Welding Voltage of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "weldingVoltageConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -192,7 +192,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
 frequency: 50,
 changedFrequency: 25,
-connectionDetails: "vibrationConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -202,7 +202,7 @@ name: 'Surface Roughness',
 description: 'Observable Property for Surface Roughness of Surface Grinder in Nordborg Machining Line Cell 2',
 frequency: 75,
 changedFrequency: 50,
-connectionDetails: "surfaceRoughnessConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -215,7 +215,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of CNC Turning Center in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "temperatureConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -225,7 +225,7 @@ name: 'Tool Life',
 description: 'Observable Property for Tool Life of CNC Turning Center in Graasten Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "toolLifeConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -238,7 +238,7 @@ name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Grinding Machine in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "powerConsumptionConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "RAW"
 })
 
@@ -248,7 +248,7 @@ name: 'Grinding Force',
 description: 'Observable Property for Grinding Force of Grinding Machine in Graasten Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "grindingForceConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -261,7 +261,7 @@ CREATE (robotPosition:ObservableProperty {
   description: 'Observable Property for Position of Assembly Robot in Graasten Cell 2',
   frequency: 1000,
   changedFrequency: 500,
-  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,robotPosition:robotPosition" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
   dataFormat: "RAW"
 })
 
@@ -271,7 +271,7 @@ CREATE (robotStatus:ObservableProperty {
   description: 'Observable Property for Status of Assembly Robot in Graasten Cell 2',
   frequency: 100,
   changedFrequency: 50,
-  connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://138.46.245.232:12729/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
   dataFormat: "WITH_METADATA"
 })
 
@@ -284,7 +284,7 @@ CREATE (testResult:ObservableProperty {
   description: 'Observable Property for Test Results of Testing Station in Graasten Cell 2',
   frequency: 10,
   changedFrequency: 5,
-  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "222.118.240.238", "PORT": 23903, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testResult:testResult" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
   dataFormat: "WITH_METADATA"
 })
 
@@ -310,7 +310,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe 1 in the manufacturing facility',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://252.27.29.172:61947/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -320,7 +320,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
 frequency: 75,
 changedFrequency: 75,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://216.115.175.93:50495/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -333,7 +333,7 @@ name: 'Surface Roughness',
 description: 'Observable Property for Surface Roughness of Milling 1 in the manufacturing facility',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,roughness:surfaceRoughness" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -343,7 +343,7 @@ name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Milling 1 in the manufacturing facility',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x\\"int","ORIGIN_TOPIC": "powerConsumptionConnectionDetails" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -356,7 +356,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Grinder 1 in Graasten Machining Line Cell 1',
 frequency: 200,
 changedFrequency: 100,
-connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "190.166.215.102", "PORT": 3270, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,vibrationConnectionDetails:vibrationConnectionDetails" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "RAW"
 })
 
@@ -366,7 +366,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Grinder 1 in Graasten Machining Line Cell 1',
 frequency: 60,
 changedFrequency: 30,
-connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "207.151.116.55", "PORT": 27287, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temperatureConnectionDetails:temperatureConnectionDetails" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -379,7 +379,7 @@ name: 'RPM',
 description: 'Observable Property for RPM of Drill 1 in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "207.151.116.55", "PORT": 27287, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temperatureConnectionDetails:temperatureConnectionDetails" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -389,7 +389,7 @@ name: 'Drilling Depth',
 description: 'Observable Property for Drilling Depth of Drill 1 in Graasten Machining Line Cell 1',
 frequency: 60,
 changedFrequency: 30,
-connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "45.242.48.121", "PORT": 29157, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,depthConnectionDetails:depthConnectionDetails" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -403,7 +403,7 @@ description: 'Observable Property for Status of Robot 1 in Graasten Machining Li
 frequency: 50,
 changedFrequency: 25,
 connectionDetails: "robotStatusConnectionDetails",
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"robotStatusConnectionDetails\": \"robotStatusConnectionDetails\" }]" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 
 dataFormat: "RAW"
 })
@@ -414,7 +414,7 @@ name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Robot 1 in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"powerConsumptionConnectionDetails\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -427,7 +427,7 @@ name: 'Voltage',
 description: 'Observable Property for Voltage of Welder 1',
 frequency: 50,
 changedFrequency: 10,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://7.117.167.88:45278/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"welder1VoltageConnectionDetails\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "RAW"
 })
 
@@ -437,7 +437,7 @@ name: 'Current',
 description: 'Observable Property for Current of Welder 1',
 frequency: 50,
 changedFrequency: 10,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://227.118.130.154:42933/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"welder1CurrentConnectionDetails\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "RAW"
 })
 
@@ -450,7 +450,7 @@ name: 'Force',
 description: 'Observable Property for Force of Press 1',
 frequency: 100,
 changedFrequency: 20,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://150.213.96.202:45781/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"press1ForceConnectionDetails\" }]" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -460,7 +460,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Press 1',
 frequency: 10,
 changedFrequency: 5,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://242.169.223.14:24229/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"press1TempConnectionDetails\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "RAW"
 })
 
@@ -473,7 +473,7 @@ name: 'Air Pressure',
 description: 'Observable Property for Air Pressure of Rivet 1',
 frequency: 20,
 changedFrequency: 5,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://168.30.151.152:12511/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"rivet1AirPressureConnectionDetails\" }]" } }',
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -483,7 +483,7 @@ name: 'Cycle Time',
 description: 'Observable Property for Cycle Time of Rivet 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://198.92.83.57:27341/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"rivet1CycleTimeConnectionDetails\" }]" } }',
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
 dataFormat: "RAW"
 })
 
@@ -581,13 +581,13 @@ CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -599,6 +599,7 @@ CREATE (egress1:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
+        }
         }',
     frequency: 30,
     changedFrequency: 30,
@@ -609,17 +610,18 @@ CREATE (egress1:EgressEndpoint {
 
 })
 
+
 CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -631,7 +633,7 @@ CREATE (egress2:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
@@ -646,13 +648,13 @@ CREATE (egress3:EgressEndpoint {
     id: "egress3",
     name: "Endpoint 3",
     description: "This is the third egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -664,7 +666,7 @@ CREATE (egress3:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
