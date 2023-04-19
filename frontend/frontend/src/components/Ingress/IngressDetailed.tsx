@@ -291,12 +291,13 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   // };
 
   const handleShowEdit = (data: any) => {
-    previousPropertyValues = data;
-    console.log("data data data");
-    console.log(data.downsampleMethod);
-    console.log(data.dataType);
-    const connectionDetails = JSON.parse(data.connectionDetails);
-    initialValues.protocol = connectionDetails.PROTOCOL;
+    previousPropertyValues = data
+    console.log("data data data")
+    console.log(data.downsampleMethod)
+    console.log(data)
+
+    const connectionDetails = JSON.parse(data.connectionDetails)
+    initialValues.protocol = connectionDetails.PROTOCOL
 
     if (connectionDetails.PROTOCOL == "MQTT") {
       initialValues.port = connectionDetails.PARAMETERS.PORT;
@@ -305,17 +306,18 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString();
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString();
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODENAME;
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
-    initialValues.name = data.name;
-    initialValues.description = data.description;
-    initialValues.frequency = data.frequency;
-    initialValues.changedFrequency = data.changedFrequency;
-    initialValues.dataFormat = data.dataFormat;
-    initialValues.id = data.id;
-    initialValues.dataType = data.dataType;
-    initialValues.downsampleMethod = data.downsampleMethod;
+    initialValues.topic = data?.topic.name
+    initialValues.name = data.name
+    initialValues.description = data.description
+    initialValues.frequency = data.frequency
+    initialValues.changedFrequency = data.changedFrequency
+    initialValues.dataFormat = data.dataFormat
+    initialValues.id = data.id
+    initialValues.dataType = data.dataType
+    initialValues.downsampleMethod = data.downsampleMethod
     setShowEditEndpoint(true);
     setPopupEditIngress(true);
   };

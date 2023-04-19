@@ -177,18 +177,9 @@ const EditIngressStepper: React.FC<Props> = ({
                 </Stepper>
                 <React.Fragment>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
+                    
                     <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 && (
-                      <Button onClick={handleNext}>{"Next"}</Button>
-                    )}
+                    
                     {/* <Button onClick={handleNext} >
                       {activeStep === steps.length - 1 ? "" : "Next"}
                     </Button> */}
@@ -953,7 +944,6 @@ const EditIngressStepper: React.FC<Props> = ({
                     />
                   </div>
                 )}
-
                 <Button
                   variant="outlined"
                   color="primary"
@@ -961,6 +951,24 @@ const EditIngressStepper: React.FC<Props> = ({
                 >
                   Cancel
                 </Button>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
                 <Button
                   variant="contained"
                   color="success"
