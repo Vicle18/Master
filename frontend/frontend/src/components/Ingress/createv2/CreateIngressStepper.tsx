@@ -226,25 +226,9 @@ const CreateIngressStepper: React.FC<Props> = ({
                     );
                   })}
                 </Stepper>
-                <React.Fragment>
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 && (
-                      <Button onClick={handleNext}>{"Next"}</Button>
-                    )}
-                    {/* <Button onClick={handleNext} >
-                      {activeStep === steps.length - 1 ? "" : "Next"}
-                    </Button> */}
-                  </Box>
-                </React.Fragment>
+                {/* Here we create some vertical space */}
+                <Box sx={{ height: "20px" }} />
+                
                 {activeStep === 0 && (
                   <>
                     <Field name="name">
@@ -524,27 +508,39 @@ const CreateIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <FormControl
-                      variant="outlined"
-                      margin="normal"
-                      style={{
-                        width: "calc(100% - 40px)",
-                        marginRight: "10px",
+                    <Box
+                      sx={{
+                        alignItems: "center",
+                        display: "flex",
                       }}
                     >
-                      <InputLabel id="datatype-label">Data Type</InputLabel>
-                      <Field
-                        as={Select}
-                        name="dataType"
-                        labelId="dataType-label"
-                        label="dataType"
-                        size="small"
+                      <FormControl
+                        variant="outlined"
+                        margin="normal"
+                        style={{
+                          width: "calc(100% - 40px)",
+                          marginRight: "10px",
+                        }}
                       >
-                        <MenuItem value="NUMBER">NUMBER</MenuItem>
-                        <MenuItem value="STRING">STRING</MenuItem>
-                        <MenuItem value="ARRAY">ARRAY</MenuItem>
-                      </Field>
-                    </FormControl>
+                        <InputLabel id="datatype-label">Data Type</InputLabel>
+                        <Field
+                          as={Select}
+                          name="dataType"
+                          labelId="dataType-label"
+                          label="dataType"
+                          size="small"
+                        >
+                          <MenuItem value="NUMBER">NUMBER</MenuItem>
+                          <MenuItem value="STRING">STRING</MenuItem>
+                          <MenuItem value="ARRAY">ARRAY</MenuItem>
+                        </Field>
+                      </FormControl>
+                      <Tooltip title="Define what kind of data is arriving. For simple sensors, its often just a number, for other software it might be more text.">
+                        <IconButton sx={{ marginTop: "10px" }}>
+                          <HelpOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                     {values?.changedFrequency &&
                       values.frequency > values?.changedFrequency && (
                         <>
@@ -635,7 +631,6 @@ const CreateIngressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-
                         <Divider />
                         <IngressOverviewLeft
                           onItemClick={(parent: any) => {
@@ -708,7 +703,6 @@ const CreateIngressStepper: React.FC<Props> = ({
                     />
                   </div>
                 )}
-
                 <Button
                   variant="outlined"
                   color="primary"
@@ -717,13 +711,33 @@ const CreateIngressStepper: React.FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  disabled={!isValid || activeStep != 2}
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
                 >
-                  Create
+                  Back
                 </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    disabled={!isValid || activeStep != 1}
+                  >
+                    Create
+                  </Button>
+                )}
               </DialogActions>
             </Form>
           )}

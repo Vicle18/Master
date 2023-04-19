@@ -234,7 +234,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
-    return <p>Error : {error.message}</p>;
+    return <p>Error : {JSON.stringify(error)}</p>;
   }
 
   const dataObjects = [

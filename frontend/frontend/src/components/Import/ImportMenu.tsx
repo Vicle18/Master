@@ -169,7 +169,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
     observablePropertiesToCreate?.forEach((observableProperty: any) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
-      observableProperty.connectionDetails = observableProperty.connectionDetails
+      observableProperty.topic = observableProperty.topic.name;
       console.log(observableProperty)
       observableProperty.dataFormat = "RAW";
       console.log("creating", JSON.stringify(observableProperty));
