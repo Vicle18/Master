@@ -39,9 +39,9 @@ import {
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import InfoIcon from '@mui/icons-material/Info';
-import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import InfoIcon from "@mui/icons-material/Info";
+import RadioGroup, { useRadioGroup } from "@mui/material/RadioGroup";
 
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
@@ -73,10 +73,12 @@ const CreateIngressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-  const [radioValue, setRadioValue] = useState('');
+  const [radioValue, setRadioValue] = useState("");
   const [currentlySelectedParent, setCurrentlySelectedParent] =
     useState<string>("");
-  const [selectedParent, setSelectedParent] = useState<string>(initialValues.containingElement ?? "");
+  const [selectedParent, setSelectedParent] = useState<string>(
+    initialValues.containingElement ?? ""
+  );
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
   const theme = useTheme();
@@ -165,7 +167,10 @@ const CreateIngressStepper: React.FC<Props> = ({
     setActiveStep(step);
   };
 
-  function handleRadioButtonChange(event: ChangeEvent<HTMLInputElement>, value: string): void {
+  function handleRadioButtonChange(
+    event: ChangeEvent<HTMLInputElement>,
+    value: string
+  ): void {
     setRadioValue(event.target.value);
   }
 
@@ -248,7 +253,10 @@ const CreateIngressStepper: React.FC<Props> = ({
                           {...field}
                           label="Name"
                           variant="outlined"
-                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
+                          style={{
+                            width: "calc(100% - 40px)",
+                            marginRight: "10px",
+                          }}
                           margin="normal"
                           size="small"
                           error={touched.name && Boolean(errors.name)}
@@ -262,7 +270,10 @@ const CreateIngressStepper: React.FC<Props> = ({
                           {...field}
                           label="Description"
                           variant="outlined"
-                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
+                          style={{
+                            width: "calc(100% - 40px)",
+                            marginRight: "10px",
+                          }}
                           multiline
                           maxRows={4}
                           margin="normal"
@@ -274,79 +285,104 @@ const CreateIngressStepper: React.FC<Props> = ({
                         />
                       )}
                     </Field>
-                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
-                      <InputLabel id="protocol-label">Protocol</InputLabel>
-                      <Field
-                        as={Select}
-                        name="protocol"
-                        labelId="protocol-label"
-                        label="Protocol"
-                        size="small"
+                    <Box
+                      sx={{
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                    >
+                      <FormControl
+                        variant="outlined"
+                        margin="normal"
+                        style={{
+                          width: "calc(100% - 40px)",
+                          marginRight: "10px",
+                        }}
                       >
-                        <MenuItem value="MQTT">MQTT</MenuItem>
-                        <MenuItem value="OPCUA">OPCUA</MenuItem>
-                        <MenuItem value="RTDE">RTDE</MenuItem>
-                      </Field>
-                    </FormControl>
+                        <InputLabel id="protocol-label">Protocol</InputLabel>
+                        <Field
+                          as={Select}
+                          name="protocol"
+                          labelId="protocol-label"
+                          label="Protocol"
+                          size="small"
+                        >
+                          <MenuItem value="MQTT">MQTT</MenuItem>
+                          <MenuItem value="OPCUA">OPCUA</MenuItem>
+                          <MenuItem value="RTDE">RTDE</MenuItem>
+                        </Field>
+                      </FormControl>
+                      <Tooltip title="Please select the protocol you want to use, for instance RTDE to extract data from a UR.">
+                        <IconButton sx={{ marginTop: "10px" }}>
+                          <HelpOutlineIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
                     {(values.protocol === "MQTT" ||
                       values.protocol === "RTDE") && (
-                        <>
-                          <Box sx={{
+                      <>
+                        <Box
+                          sx={{
                             alignItems: "center",
                             display: "flex",
-                          }}>
-                            <Field name="host">
-                              {({ field }: FieldProps<FormData>) => (
-                                <TextField
-                                  {...field}
-                                  label="Host"
-                                  variant="outlined"
-                                  fullWidth
-                                  margin="normal"
-                                  size="small"
-                                  error={touched.host && Boolean(errors.host)}
-                                  helperText={touched.host && errors.host}
-                                />
-                              )}
-                            </Field>
-                            <Tooltip title="Please provide a valid host such as 127.0.0.1">
-                              <IconButton sx={{ marginTop: "10px" }}>
-                                <HelpOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                          <Box sx={{
+                          }}
+                        >
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Please provide a valid host such as 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
                             alignItems: "center",
                             display: "flex",
-                          }}>
-                            <Field name="port">
-                              {({ field }: FieldProps<FormData>) => (
-                                <TextField
-                                  {...field}
-                                  label="Port"
-                                  variant="outlined"
-                                  fullWidth
-                                  margin="normal"
-                                  size="small"
-                                  error={touched.port && Boolean(errors.port)}
-                                  helperText={touched.port && errors.port}
-                                />
-                              )}
-                            </Field>
-                            <Tooltip title="Please provide a valid port number, such as 8080.">
-                              <IconButton sx={{ marginTop: "10px" }}>
-                                <HelpOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </>
-                      )}
+                          }}
+                        >
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Please provide a valid port number, such as 8080.">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </>
+                    )}
                     {values.protocol === "MQTT" && (
                       <>
-                        <Box sx={{
-                          alignItems: "center",
-                          display: "flex",
-                        }}>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
                           <Field name="topic">
                             {({ field }: FieldProps<FormData>) => (
                               <TextField
@@ -373,7 +409,10 @@ const CreateIngressStepper: React.FC<Props> = ({
                       <>
                         <FormControl
                           variant="outlined"
-                          style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
+                          style={{
+                            width: "calc(100% - 40px)",
+                            marginRight: "10px",
+                          }}
                           margin="normal"
                         >
                           <InputLabel id="output-label">Output</InputLabel>
@@ -396,10 +435,12 @@ const CreateIngressStepper: React.FC<Props> = ({
                     )}
                     {values.protocol === "OPCUA" && (
                       <>
-                        <Box sx={{
-                          alignItems: "center",
-                          display: "flex",
-                        }}>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
                           <Field name="nodeId">
                             {({ field }: FieldProps<FormData>) => (
                               <TextField
@@ -422,10 +463,12 @@ const CreateIngressStepper: React.FC<Props> = ({
                         </Box>
                       </>
                     )}
-                    <Box sx={{
-                      alignItems: "center",
-                      display: "flex",
-                    }}>
+                    <Box
+                      sx={{
+                        alignItems: "center",
+                        display: "flex",
+                      }}
+                    >
                       <Field name="frequency">
                         {({ field }: FieldProps<FormData>) => (
                           <TextField
@@ -435,7 +478,9 @@ const CreateIngressStepper: React.FC<Props> = ({
                             fullWidth
                             margin="normal"
                             size="small"
-                            error={touched.frequency && Boolean(errors.frequency)}
+                            error={
+                              touched.frequency && Boolean(errors.frequency)
+                            }
                             helperText={touched.frequency && errors.frequency}
                           />
                         )}
@@ -451,7 +496,8 @@ const CreateIngressStepper: React.FC<Props> = ({
                       sx={{
                         alignItems: "center",
                         display: "flex",
-                      }}>
+                      }}
+                    >
                       <Field name="changedFrequency">
                         {({ field }: FieldProps<FormData>) => (
                           <TextField
@@ -466,7 +512,8 @@ const CreateIngressStepper: React.FC<Props> = ({
                               Boolean(errors.changedFrequency)
                             }
                             helperText={
-                              touched.changedFrequency && errors.changedFrequency
+                              touched.changedFrequency &&
+                              errors.changedFrequency
                             }
                           />
                         )}
@@ -477,8 +524,15 @@ const CreateIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
-                      <InputLabel id="dataType-label">Data Type</InputLabel>
+                    <FormControl
+                      variant="outlined"
+                      margin="normal"
+                      style={{
+                        width: "calc(100% - 40px)",
+                        marginRight: "10px",
+                      }}
+                    >
+                      <InputLabel id="datatype-label">Data Type</InputLabel>
                       <Field
                         as={Select}
                         name="dataType"
@@ -491,61 +545,84 @@ const CreateIngressStepper: React.FC<Props> = ({
                         <MenuItem value="ARRAY">ARRAY</MenuItem>
                       </Field>
                     </FormControl>
-                    {values?.changedFrequency && (values.frequency > values?.changedFrequency) && (
-                      <>
-                        <FormControl variant="outlined" margin="normal" fullWidth>
-                          <Box sx={{
-                            alignItems: "center",
-                            display: "flex",
-                          }}>
-                            <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
-                            <Field
-                              as={Select}
-                              name="downsampleMethod"
-                              fullWidth
-                              labelId="downsampleMethod-label"
-                              label="downsampleMethod"
-                              size="small"
+                    {values?.changedFrequency &&
+                      values.frequency > values?.changedFrequency && (
+                        <>
+                          <FormControl
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                          >
+                            <Box
+                              sx={{
+                                alignItems: "center",
+                                display: "flex",
+                              }}
                             >
-                              {(values.dataType === "STRING" || values.dataType === "ARRAY") && (
-                                <MenuItem value="Accumulated">Accumulated</MenuItem>
-                              )}
-                              {(values.dataType === "STRING" || values.dataType === "ARRAY" || values.dataType === "NUMBER") && (
-                                <MenuItem value="Latest">Latest</MenuItem>
-                              )}
-                              {(values.dataType === "NUMBER") && (
-                                <MenuItem value="Average">Average</MenuItem>
-                              )}
-                              {(values.dataType === "NUMBER") && (
-                                <MenuItem value="Median">Median</MenuItem>
-                              )}
-                            </Field>
-                            <Tooltip title="Please specify how you wish to downsample the data">
-                              <IconButton>
-                                <HelpOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </FormControl>
-                      </>
-                    )}
+                              <InputLabel id="downsampleMethod-label">
+                                Downsample Method
+                              </InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                {(values.dataType === "String" ||
+                                  values.dataType === "Array") && (
+                                  <MenuItem value="ACCUMULATED">
+                                    Accumulated
+                                  </MenuItem>
+                                )}
+                                {(values.dataType === "String" ||
+                                  values.dataType === "Array" ||
+                                  values.dataType === "Number") && (
+                                  <MenuItem value="LATEST">Latest</MenuItem>
+                                )}
+                                {values.dataType === "Number" && (
+                                  <MenuItem value="AVERAGE">Average</MenuItem>
+                                )}
+                                {values.dataType === "Number" && (
+                                  <MenuItem value="MEDIAN">Median</MenuItem>
+                                )}
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
+                        </>
+                      )}
                   </>
                 )}
                 {activeStep === 1 && (
                   <>
-                    <Box sx={{
-                      backgroundColor: "rgba(24, 85, 184, 0.9)", border: "1px solid white", p: 2, marginLeft: "13px",
-                      borderRadius: "10px",
-                      marginRight: "13px",
-                      color: "white",
-                      alignItems: "center",
-                      display: "flex",
-                      "& p": {
-                        marginLeft: "10px", // add some margin between the icon and the paragraph
-                      },
-                    }}>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
                       <InfoIcon />
-                      <p>Select the containing element in which you would like to store your Ingress Endpoint.</p>
+                      <p>
+                        Select the Containing Element in which you would like to
+                        store your Ingress Endpoint. For instance, which machine
+                        or cell the observable property is related to.
+                      </p>
                     </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
@@ -558,43 +635,15 @@ const CreateIngressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <Box mb={2}>
-                          <Grid2 container alignItems="center" spacing={2}>
-                            <Grid2 container xs={9}>
-                              {/* <Box
-                                display="inline-block"
-                                borderRadius={3}
-                                border="2px solid black"
-                                padding={2}
-                                maxWidth="100%"
-                              > */}
-                              <Typography variant="caption">
-                                Current Element: {currentlySelectedParent}
-                              </Typography>
-                              {/* </Box> */}
-                            </Grid2>
-                            <Grid2 container xs={3}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  values.containingElement =
-                                    currentlySelectedParent;
-                                  setSelectedParent(currentlySelectedParent);
-                                }}
-                              >
-                                SELECT
-                              </Button>
-                            </Grid2>
-                          </Grid2>
-                        </Box>
 
                         <Divider />
                         <IngressOverviewLeft
                           onItemClick={(parent: any) => {
-                            HandleIngressClick(parent.name);
-                            setCurrentlySelectedParent(parent.name);
-                            console.log("parent", values.containingElement);
+                            // HandleIngressClick(parent.name);
+                            // setCurrentlySelectedParent(parent.name);
+                            // console.log("parent", values.containingElement);
+                            values.containingElement = parent.name;
+                            setSelectedParent(parent.name);
                           }}
                         />
                       </Grid2>
@@ -671,7 +720,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!isValid}
+                  disabled={!isValid || activeStep != 2}
                 >
                   Create
                 </Button>

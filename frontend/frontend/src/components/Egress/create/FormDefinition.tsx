@@ -26,6 +26,9 @@ export interface FormData {
   downSamplingMethod?: (string | undefined);
   host?: string;
   port?: string;
+  serverUrl?:string;
+  nodeId?: string;
+  nodeType?: string;
   ingressId: (string | undefined);
   dataFormat: string;
   groupId: string;
@@ -83,5 +86,15 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   dataFormat: Yup.string().required("dataFormat is required"),
   groupId: Yup.string().required("dataFormat is required"),
   metadata: Yup.object().optional(),
+  serverUrl: Yup.string().when("protocol", {
+    is: "OPCUA",
+    then: (schema) => schema.required("Server URL is required"),
+    otherwise: (schema) => schema,
+  }),
+  nodeType: Yup.string().when("protocol", {
+    is: "OPCUA",
+    then: (schema) => schema.required("Node Type is required"),
+    otherwise: (schema) => schema,
+  }),
 
 });

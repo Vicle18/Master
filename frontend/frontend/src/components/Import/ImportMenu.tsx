@@ -24,7 +24,10 @@ import {
   FormLabel,
   Switch,
   Checkbox,
+  Snackbar,
+  Alert
 } from "@mui/material";
+
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
@@ -69,6 +72,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     useState<any>();
   const [selectedContainer, setSelectedContainer] = useState<any>();
   const [json, setJson] = useState<any>();
+  const [finished, setFinished] = useState(false);
+
   const { loading, error, data, refetch } = useQuery(
     GET_OBSERVABLE_PROPERTIES,
     {
@@ -153,7 +158,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
   const createObservableProperties = () => {
     console.log("creating");
-
+    setFinished(true)
+    console.log(finished)
     setCreationStarted(true);
     const observablePropertiesToCreate =
       json?.machines?.[0]?.observableProperties?.filter(
@@ -163,7 +169,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
     observablePropertiesToCreate?.forEach((observableProperty: any) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
-      observableProperty.topic = observableProperty.topic.name;
+      observableProperty.connectionDetails = observableProperty.connectionDetails
+      console.log(observableProperty)
       observableProperty.dataFormat = "RAW";
       console.log("creating", JSON.stringify(observableProperty));
 
@@ -247,6 +254,10 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     }
   };
 
+  const handleSnackbarClose = () => {
+    setFinished(false);
+  };
+
   return (
     <div>
       <Dialog
@@ -323,31 +334,11 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Box mb={2}>
-                    <Grid2 container alignItems="center" spacing={2}>
-                      <Grid2 container xs={9}>
-                        <Typography variant="caption">
-                          Current Element: {currentlySelectedContainer?.name}
-                        </Typography>
-                      </Grid2>
-                      <Grid2 container xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedContainer(currentlySelectedContainer);
-                          }}
-                        >
-                          Select
-                        </Button>
-                      </Grid2>
-                    </Grid2>
-                  </Box>
 
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
-                      setCurrentlySelectedContainer(parent);
+                      setSelectedContainer(parent);
                     }}
                     filter={["cells"]}
                     initialSearchString={""}
@@ -468,6 +459,14 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                   >
                     Create Observable Properties
                   </Button>
+                  {finished && (
+                    <Snackbar autoHideDuration={3000} onClose={handleSnackbarClose}>
+                      <Alert onClose={handleSnackbarClose} severity="info">
+                        Observable properties created!
+                      </Alert>
+                    </Snackbar>
+                  )}
+
                 </Grid2>
                 <Grid2
                   xs={5}
@@ -521,13 +520,14 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
             color="success"
             type="submit"
             onClick={handlerClose}
-          // disabled={!isValid}
+            disabled={activeStep !== steps.length - 1}
           >
             Finished
           </Button>
+
         </DialogActions>
       </Dialog>
-    </div>
+    </div >
   );
 };
 

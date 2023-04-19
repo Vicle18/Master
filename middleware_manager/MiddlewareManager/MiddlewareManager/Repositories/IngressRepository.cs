@@ -160,6 +160,7 @@ public class IngressRepository : IIngressRepository
                     connectionDetails = connectionDetails.ToString(),
                     topic = new
                     {
+
                         update = new
                         {
                             node = new

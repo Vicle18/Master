@@ -461,6 +461,62 @@ const CreateEgressStepper: React.FC<Props> = ({
                         </Box>
                       </>
                     )}
+                    {createBroker && values.protocol === "OPCUA" && (
+                      <>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid port e.g., 8080">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </>
+                    )}
                   </>
                 )}
 
@@ -484,8 +540,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                     >
                       <InfoIcon />
                       <p>
-                        Select the containing element in which you would like to
-                        store your Egress Endpoint.
+                        Select the ingress endpoint, i.e. observable property
+                        that you want to make accessible. For instance, you
+                        might choose the temperature of a robot to be accessible
+                        for your visualization tool.
                       </p>
                     </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -515,7 +573,8 @@ const CreateEgressStepper: React.FC<Props> = ({
                           onOpenChart={(observableProperty: any) => {
                             handleSelectObservableProperty(observableProperty);
                             values.frequency = observableProperty.frequency;
-                            values.changedFrequency = observableProperty.frequency;
+                            values.changedFrequency =
+                              observableProperty.frequency;
                           }}
                           withDetails={false}
                         />
@@ -605,7 +664,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                         <InfoIcon />
                         <p>
                           Here you can choose to reduce the frequency of the
-                          data and select how they should be reduced.
+                          data and select how they should be reduced, if the new
+                          frequency is smaller. You can not choose to make it
+                          higher.
                         </p>
                       </Box>
                     </>
@@ -685,6 +746,27 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 3 && (
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Select the group of the new egress endpoint
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={3.6}
@@ -798,7 +880,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!(isValid && selectedIngressNode)}
+                  disabled={!(isValid && selectedIngressNode) || activeStep < 3}
                 >
                   Create
                 </Button>

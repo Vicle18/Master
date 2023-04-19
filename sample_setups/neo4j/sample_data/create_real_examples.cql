@@ -123,10 +123,15 @@ name: 'Cutting Speed',
 description: 'Observable Property for Cutting Speed of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "RAW"
+=======
 connectionDetails: "cuttingSpeedConnectionDetails",
 dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (toolWear:ObservableProperty {
@@ -135,10 +140,15 @@ name: 'Tool Wear',
 description: 'Observable Property for Tool Wear of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
+<<<<<<< HEAD
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "[{\"DATA_TYPE\":\"int\",\"NODE_ID\": \"nodeId\" }]" } }',
+dataFormat: "WITH_METADATA"
+=======
 connectionDetails: "toolWearConnectionDetails",
 dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (machine1A)-[:has]->(cuttingSpeed)
@@ -151,10 +161,15 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 50,
 changedFrequency: 50,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "RAW"
+=======
 connectionDetails: "vibrationConnectionDetails",
 dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (cuttingForce:ObservableProperty {
@@ -163,10 +178,15 @@ name: 'Cutting Force',
 description: 'Observable Property for Cutting Force of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "WITH_METADATA"
+=======
 connectionDetails: "cuttingForceConnectionDetails",
 dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (temperature1:ObservableProperty {
@@ -175,10 +195,15 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 75,
 changedFrequency: 75,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "RAW"
+=======
 connectionDetails: "temperatureConnectionDetails",
 dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (weldingVoltage:ObservableProperty {
@@ -187,10 +212,15 @@ name: 'Welding Voltage',
 description: 'Observable Property for Welding Voltage of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 50,
 changedFrequency: 50,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "WITH_METADATA"
+=======
 connectionDetails: "weldingVoltageConnectionDetails",
 dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (machine1B)-[:has]->(vibration1)
@@ -204,10 +234,15 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
 frequency: 50,
 changedFrequency: 25,
+<<<<<<< HEAD
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "robotPosition:robotPosition" } }',
+dataFormat: "RAW"
+=======
 connectionDetails: "vibrationConnectionDetails",
 dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
+>>>>>>> 221754d10becf59f6c5b31de8167a44d2814c9da
 })
 
 CREATE (surfaceRoughness:ObservableProperty {
@@ -997,13 +1032,13 @@ CREATE (egress1:EgressEndpoint {
     id: "egress1",
     name: "Endpoint 1",
     description: "This is the first egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1015,6 +1050,7 @@ CREATE (egress1:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
+        }
         }',
     frequency: 30,
     changedFrequency: 30,
@@ -1025,17 +1061,18 @@ CREATE (egress1:EgressEndpoint {
 
 })
 
+
 CREATE (egress2:EgressEndpoint {
     id: "egress2",
     name: "Endpoint 2",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1047,7 +1084,7 @@ CREATE (egress2:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
@@ -1062,13 +1099,13 @@ CREATE (egress3:EgressEndpoint {
     id: "egress3",
     name: "Endpoint 3",
     description: "This is the third egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1080,7 +1117,7 @@ CREATE (egress3:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
