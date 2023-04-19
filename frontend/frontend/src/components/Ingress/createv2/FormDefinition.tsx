@@ -11,7 +11,7 @@ export interface FormData {
   name: string;
   description: string;
   protocol: string;
-  datatype:string;
+  dataType:string;
   frequency: string;
   changedFrequency?: string;
   host?: string;
@@ -40,7 +40,7 @@ export const initialValues: FormData = {
   nodeId: "",
   containingElement: "Robot 1",
   dataFormat: "RAW",
-  datatype: "String",
+  dataType: "String",
   downsampleMethod: "AVERAGE"
 };
 
@@ -49,7 +49,7 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
-  datatype: Yup.string().required("Data type is required"),
+  dataType: Yup.string().required("Data type is required"),
   frequency: Yup.string().required("Frequency is required"),
   changedFrequency: Yup.string().test('lower-frequency', 'Changed frequency cannot be higher than frequency', function (changedFrequency) {
     const { frequency } = this.parent;
