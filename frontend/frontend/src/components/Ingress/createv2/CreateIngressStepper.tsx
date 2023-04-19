@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -15,6 +15,7 @@ import {
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormLabel,
   IconButton,
   InputLabel,
   List,
@@ -23,6 +24,7 @@ import {
   ListItemText,
   ListSubheader,
   MenuItem,
+  Radio,
   Select,
   Snackbar,
   Step,
@@ -39,6 +41,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import InfoIcon from '@mui/icons-material/Info';
+import RadioGroup, { useRadioGroup } from '@mui/material/RadioGroup';
 
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
@@ -70,7 +73,7 @@ const CreateIngressStepper: React.FC<Props> = ({
 }) => {
   const [result, setResult] = useState<string | null>(null);
   const [activeStep, setActiveStep] = React.useState(0);
-
+  const [radioValue, setRadioValue] = useState('');
   const [currentlySelectedParent, setCurrentlySelectedParent] =
     useState<string>("");
   const [selectedParent, setSelectedParent] = useState<string>(initialValues.containingElement ?? "");
@@ -161,6 +164,10 @@ const CreateIngressStepper: React.FC<Props> = ({
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
+
+  function handleRadioButtonChange(event: ChangeEvent<HTMLInputElement>, value: string): void {
+    setRadioValue(event.target.value);
+  }
 
   return (
     <div>
@@ -470,7 +477,80 @@ const CreateIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
-
+                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
+                      <InputLabel id="datatype-label">Data Type</InputLabel>
+                      <Field
+                        as={Select}
+                        name="datatype"
+                        labelId="datatype-label"
+                        label="datatype"
+                        size="small"
+                      >
+                        <MenuItem value="Number">NUMBER</MenuItem>
+                        <MenuItem value="String">STRING</MenuItem>
+                        <MenuItem value="Array">ARRAY</MenuItem>
+                      </Field>
+                    </FormControl>
+                    {(values.datatype === "Number" &&
+                      values.frequency != values?.changedFrequency) && (
+                        <>
+                          <FormControl variant="outlined" margin="normal" fullWidth>
+                            <Box sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}>
+                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                <MenuItem value="AVERAGE">Average</MenuItem>
+                                <MenuItem value="MEDIAN">Median</MenuItem>
+                                <MenuItem value="LAST">Last Value</MenuItem>
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
+                        </>
+                      )}
+                    {(values.datatype === "String" || values.datatype === "Array" &&
+                      values.frequency != values?.changedFrequency) && (
+                        <>
+                          <FormControl variant="outlined" margin="normal" fullWidth>
+                            <Box sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}>
+                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                <MenuItem value="FIRST">First Value</MenuItem>
+                                <MenuItem value="LAST">Last Value</MenuItem>
+                                <MenuItem value="RANDOM">Random Selection</MenuItem>
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
+                        </>
+                      )}
                   </>
                 )}
                 {activeStep === 1 && (

@@ -261,7 +261,7 @@ CREATE (robotPosition:ObservableProperty {
   description: 'Observable Property for Position of Assembly Robot in Graasten Cell 2',
   frequency: 1000,
   changedFrequency: 500,
-  connectionDetails: "robotPositionConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "35.72.244.139", "PORT": 21793, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,robotPosition:robotPosition" } }',
   dataFormat: "RAW"
 })
 
@@ -271,7 +271,7 @@ CREATE (robotStatus:ObservableProperty {
   description: 'Observable Property for Status of Assembly Robot in Graasten Cell 2',
   frequency: 100,
   changedFrequency: 50,
-  connectionDetails: "robotStatusConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://138.46.245.232:12729/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
   dataFormat: "WITH_METADATA"
 })
 
@@ -284,7 +284,7 @@ CREATE (testResult:ObservableProperty {
   description: 'Observable Property for Test Results of Testing Station in Graasten Cell 2',
   frequency: 10,
   changedFrequency: 5,
-  connectionDetails: "testResultConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "222.118.240.238", "PORT": 23903, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testResult:testResult" } }',
   dataFormat: "WITH_METADATA"
 })
 
@@ -294,7 +294,7 @@ CREATE (testStatus:ObservableProperty {
   description: 'Observable Property for Status of Testing Station in Graasten Cell 2',
   frequency: 50,
   changedFrequency: 25,
-  connectionDetails: "testStatusConnectionDetails",
+  connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "244.72.139.64", "PORT": 15589, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,testStatus:testStatus" } }',
   dataFormat: "WITH_METADATA"
 })
 
@@ -310,7 +310,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe 1 in the manufacturing facility',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "vibrationConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://252.27.29.172:61947/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -320,7 +320,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
 frequency: 75,
 changedFrequency: 75,
-connectionDetails: "temperatureConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://216.115.175.93:50495/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"testOPCUA\" }]" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -333,7 +333,7 @@ name: 'Surface Roughness',
 description: 'Observable Property for Surface Roughness of Milling 1 in the manufacturing facility',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "surfaceRoughnessConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "localhost", "PORT": 1883, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,roughness:surfaceRoughness" } }',
 dataFormat: "RAW"
 })
 
@@ -343,7 +343,7 @@ name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Milling 1 in the manufacturing facility',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "powerConsumptionConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x\\"int","ORIGIN_TOPIC": "powerConsumptionConnectionDetails" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -356,7 +356,7 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Grinder 1 in Graasten Machining Line Cell 1',
 frequency: 200,
 changedFrequency: 100,
-connectionDetails: "vibrationConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "190.166.215.102", "PORT": 3270, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,vibrationConnectionDetails:vibrationConnectionDetails" } }',
 dataFormat: "RAW"
 })
 
@@ -366,7 +366,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Grinder 1 in Graasten Machining Line Cell 1',
 frequency: 60,
 changedFrequency: 30,
-connectionDetails: "temperatureConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "207.151.116.55", "PORT": 27287, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temperatureConnectionDetails:temperatureConnectionDetails" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -379,7 +379,7 @@ name: 'RPM',
 description: 'Observable Property for RPM of Drill 1 in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "rpmConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "207.151.116.55", "PORT": 27287, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,temperatureConnectionDetails:temperatureConnectionDetails" } }',
 dataFormat: "RAW"
 })
 
@@ -389,7 +389,7 @@ name: 'Drilling Depth',
 description: 'Observable Property for Drilling Depth of Drill 1 in Graasten Machining Line Cell 1',
 frequency: 60,
 changedFrequency: 30,
-connectionDetails: "depthConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "MQTT", "PARAMETERS": { "HOST": "45.242.48.121", "PORT": 29157, "TRANSMISSION_PAIRS": "mqttTopic:KafkaTopic,depthConnectionDetails:depthConnectionDetails" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -403,6 +403,8 @@ description: 'Observable Property for Status of Robot 1 in Graasten Machining Li
 frequency: 50,
 changedFrequency: 25,
 connectionDetails: "robotStatusConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"robotStatusConnectionDetails\": \"robotStatusConnectionDetails\" }]" } }',
+
 dataFormat: "RAW"
 })
 
@@ -412,7 +414,7 @@ name: 'Power Consumption',
 description: 'Observable Property for Power Consumption of Robot 1 in Graasten Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "powerConsumptionConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://250.77.217.167:38628/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"powerConsumptionConnectionDetails\" }]" } }',
 dataFormat: "WITH_METADATA"
 })
 
@@ -425,7 +427,7 @@ name: 'Voltage',
 description: 'Observable Property for Voltage of Welder 1',
 frequency: 50,
 changedFrequency: 10,
-connectionDetails: "welder1VoltageConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://7.117.167.88:45278/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"welder1VoltageConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -435,7 +437,7 @@ name: 'Current',
 description: 'Observable Property for Current of Welder 1',
 frequency: 50,
 changedFrequency: 10,
-connectionDetails: "welder1CurrentConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://227.118.130.154:42933/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"welder1CurrentConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -448,7 +450,7 @@ name: 'Force',
 description: 'Observable Property for Force of Press 1',
 frequency: 100,
 changedFrequency: 20,
-connectionDetails: "press1ForceConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://150.213.96.202:45781/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"press1ForceConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -458,7 +460,7 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Press 1',
 frequency: 10,
 changedFrequency: 5,
-connectionDetails: "press1TempConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://242.169.223.14:24229/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"press1TempConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -471,7 +473,7 @@ name: 'Air Pressure',
 description: 'Observable Property for Air Pressure of Rivet 1',
 frequency: 20,
 changedFrequency: 5,
-connectionDetails: "rivet1AirPressureConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://168.30.151.152:12511/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"rivet1AirPressureConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -481,7 +483,7 @@ name: 'Cycle Time',
 description: 'Observable Property for Cycle Time of Rivet 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "rivet1CycleTimeConnectionDetails",
+connectionDetails: '{ "PROTOCOL": "OPCUA", "PARAMETERS": { "SERVER_URL": "opc.tcp://198.92.83.57:27341/freeopcua/server/", "TRANSMISSION_PAIRS": "x"int\",\"ORIGIN_TOPIC\": \"rivet1CycleTimeConnectionDetails\" }]" } }',
 dataFormat: "RAW"
 })
 
@@ -523,18 +525,16 @@ CREATE (topicZD:Topic {name: 'TopicZD'})
 CREATE (topicZE:Topic {name: 'TopicZE'})
 
 
-
-
 CREATE (cuttingSpeed)-[:has]->(topicA)
 CREATE (toolWear)-[:has]->(topicB)
 CREATE (vibration1)-[:has]->(topicC)
 CREATE (cuttingForce)-[:has]->(topicD)
 CREATE (temperature1)-[:has]->(topicE)
-
 CREATE (weldingVoltage)-[:has]->(topicF)
 CREATE (vibration2)-[:has]->(topicG)
 CREATE (surfaceRoughness)-[:has]->(topicH)
 CREATE (temperature2)-[:has]->(topicI)
+CREATE (lathe1)-[:has]->(topicJ)
 CREATE (powerConsumption1)-[:has]->(topicK)
 CREATE (grindingForce)-[:has]->(topicL)
 CREATE (robotPosition)-[:has]->(topicM)
@@ -556,9 +556,6 @@ CREATE (force)-[:has]->(topicZB)
 CREATE (temperature5)-[:has]->(topicZC)
 CREATE (airPressure)-[:has]->(topicZD)
 CREATE (cycleTime)-[:has]->(topicZE)
-
-
-
 
 
 

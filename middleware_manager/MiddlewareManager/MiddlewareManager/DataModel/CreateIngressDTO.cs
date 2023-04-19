@@ -13,7 +13,8 @@ public class CreateIngressDto:CreateIngressDtoBase
     public string? port { get; set; }
     
     public string? output { get; set; }
-    public string? nodeName { get; set; }
+
+    public string? nodeId { get; set; }
     
     public Dictionary<string, JsonElement>? metadata { get; set; }
 

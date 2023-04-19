@@ -146,7 +146,7 @@ interface ObjectWithProperties {
     };
     frequency: number;
     changedFrequency: number;
-    connectionDetails: string;
+    connectionDetails: JSON;
     dataFormat: string;
   }[];
 }
@@ -271,8 +271,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
 
   const handleShowEdit = (data: any) => {
     previousPropertyValues = data
-    const connectionDetails = JSON.parse(data.connectionDetails)
+    console.log(data)
 
+    const connectionDetails = JSON.parse(data.connectionDetails)
     if (connectionDetails.PROTOCOL == "MQTT") {
       initialValues.port = connectionDetails.PARAMETERS.PORT
       initialValues.host = connectionDetails.PARAMETERS.HOST

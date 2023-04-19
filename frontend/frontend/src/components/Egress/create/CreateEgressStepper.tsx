@@ -94,7 +94,6 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-  console.log("le ingress selected: ", selectedIngress);
 
   const handlerClose = () => {
     setPopupEgress(false);
@@ -167,9 +166,6 @@ const CreateEgressStepper: React.FC<Props> = ({
   }
 
   const handleSelectObservableProperty = (observableProperty: any) => {
-    console.log("observable property", observableProperty);
-    selectedIngress = null;
-    console.log("selectedINgress is null ", selectedIngress);
     setSelectedIngressNode(observableProperty);
     // setIngressNodes([...ingressNodes, observableProperty]);
   };
