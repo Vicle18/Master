@@ -2,6 +2,7 @@ using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
 using MiddlewareManager.DataModel;
+using MiddlewareManager.Protocols;
 using Newtonsoft.Json;
 using Serilog;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -26,9 +27,10 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(string id, CreateIngressDtoBase value, string topicName,
+    public async Task<Response> CreateObservableProperty(string id, IngressDTOBase value, string topicName,
         string connectionDetails)
     {
+        Log.Debug("value before request " + value);
         var request = new GraphQLRequest
         {
             Query = @"
@@ -127,7 +129,7 @@ public class IngressRepository : IIngressRepository
         return JsonConvert.SerializeObject(response.Data);
     }
 
-    public async Task<string> UpdateObservableProperty(UpdateIngressDto value)
+    public async Task<string> UpdateObservableProperty(UpdateIngressDto value, string connectionDetails)
     {
         Log.Debug("BEFORE UPDATING");
         Log.Debug(value.id);
@@ -152,6 +154,7 @@ public class IngressRepository : IIngressRepository
                     description = value.description,
                     dataFormat = value.dataFormat,
                     changedFrequency = value.changedFrequency,
+                    connectionDetails = connectionDetails.ToString(),
                     topic = new
                     {
                         update = new

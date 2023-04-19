@@ -2,24 +2,17 @@ using System.Text.Json;
 
 namespace MiddlewareManager.DataModel;
 
-public class CreateIngressDto:CreateIngressDtoBase
+public class CreateIngressDto : IngressDTOBase
 {
-    public string protocol { get; set; }
+    public string? datatype { get; set; }
 
-    public string? host { get; set; }
-    
-    public string? topic { get; set; }
+    public string? downsampleMethod { get; set; }
 
-    public string? port { get; set; }
-    
-    public string? output { get; set; }
 
-    public string? nodeId { get; set; }
-    
-    public Dictionary<string, JsonElement>? metadata { get; set; }
 
     public override string ToString()
     {
-        return $"Create Ingress DTO, name: {name}, description: {description}";
+        return
+            $"Create Ingress DTO, protocol: {protocol}, datatype: {datatype}, downsampleMethod: {downsampleMethod}, host: {host}, topic: {topic}, port: {port}, output: {output}, nodeId: {nodeId}, frequency: {frequency}, changedFrequency: {changedFrequency}";
     }
 }

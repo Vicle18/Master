@@ -13,11 +13,14 @@ public class ConnectionDetailsFactory
 {
     private static int counter = 0;
 
-    public static IConnectionDetails Create(string id, CreateIngressDto value, string topicName)
+    public static IConnectionDetails Create(string id, IngressDTOBase value, string topicName)
     {
-        
+        Log.Debug("WHAHHAHTHSAJH");
+        Log.Debug(value.ToString());
+        Log.Debug("protocol" + value.protocol);
         switch (value.protocol)
         {
+
             case "MQTT":
                 return new MQTTConnectionDetails
                 {
@@ -26,12 +29,11 @@ public class ConnectionDetailsFactory
                     PARAMETERS = new MQTTParameters
                     {
                         HOST = value.host,
-                        PORT = value.port,
+                        PORT = value.port.ToString(),
                         TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
                         FREQUENCY = value.frequency.ToString(),
                         CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
                         DATA_FORMAT = value.dataFormat,
-                        METADATA = value.metadata
                     }
                 };
             case "RTDE":
@@ -42,12 +44,11 @@ public class ConnectionDetailsFactory
                     PARAMETERS = new RTDEParameters()
                     {
                         HOST = value.host,
-                        PORT = value.port,
+                        PORT = value.port.ToString(),
                         TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
                         FREQUENCY = value.frequency.ToString(),
                         CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
                         DATA_FORMAT = value.dataFormat,
-                        METADATA = value.metadata
                     }
                 };
             case "OPCUA":
@@ -68,7 +69,6 @@ public class ConnectionDetailsFactory
                             }
                         }),
                         DATA_FORMAT = value.dataFormat,
-                        METADATA = value.metadata
                     }
                 };
             default:
