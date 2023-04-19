@@ -303,6 +303,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
+    initialValues.topic = data?.topic.name
     initialValues.name = data.name
     initialValues.description = data.description
     initialValues.frequency = data.frequency
