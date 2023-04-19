@@ -26,7 +26,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
 import { gql, useQuery } from "@apollo/client";
 
-interface Props {}
+interface Props { }
 
 const steps = ["Select Machines to export", "Copy or Download"];
 
@@ -51,7 +51,7 @@ const GET_MACHINES = gql`
   }
 `;
 
-const ExportStepper: React.FC<Props> = ({}) => {
+const ExportStepper: React.FC<Props> = ({ }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [PopupExport, setPopupExport] = React.useState(false);
   const [currentlySelectedMachine, setCurrentlySelectedParent] =
@@ -89,7 +89,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
     element.download = "machines.json";
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
-    };
+  };
   return (
     <div>
       <Button
@@ -173,18 +173,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
                         {/* </Box> */}
                       </Grid2>
                       <Grid2 container xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedMachines([
-                              ...selectedMachines,
-                              currentlySelectedMachine,
-                            ]);
-                          }}
-                        >
-                          Add
-                        </Button>
+
                       </Grid2>
                     </Grid2>
                   </Box>
@@ -198,7 +187,22 @@ const ExportStepper: React.FC<Props> = ({}) => {
                     filter={["machines"]}
                     initialSearchString={""}
                   />
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => {
+                        setSelectedMachines([
+                          ...selectedMachines,
+                          currentlySelectedMachine,
+                        ]);
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </Box>
                 </Grid2>
+
                 <Grid2
                   xs={2.5}
                   sx={{
@@ -274,7 +278,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
                     color="success"
                     type="submit"
                     onClick={handleSave}
-                   
+
                   >
                     Save as file
                   </Button>
@@ -292,7 +296,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
             color="success"
             type="submit"
             onClick={handlerClose}
-            // disabled={!isValid}
+          // disabled={!isValid}
           >
             Finished
           </Button>
