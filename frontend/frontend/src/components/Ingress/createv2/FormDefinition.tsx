@@ -40,7 +40,7 @@ export const initialValues: FormData = {
   nodeId: "",
   containingElement: "Robot 1",
   dataFormat: "RAW",
-  dataType: "String",
+  dataType: "STRING",
   downsampleMethod: "AVERAGE"
 };
 

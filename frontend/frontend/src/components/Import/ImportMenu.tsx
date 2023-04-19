@@ -164,7 +164,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
       observableProperty.topic = observableProperty.topic.name;
       observableProperty.dataFormat = "RAW";
-      console.log("creating",  JSON.stringify(observableProperty));
+      console.log("creating", JSON.stringify(observableProperty));
 
       fetch(
         `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/IngressFromFile?=`,
@@ -195,7 +195,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
   const createMachine = (propertyIds: string[]) => {
     try {
-      console.log("creating machine", propertyIds)
+      console.log("creating machine", propertyIds);
       var createMachineDto = {
         id: json?.machines?.[0]?.id,
         name: json?.machines?.[0]?.name,
@@ -205,7 +205,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         children: [],
         observableProperties: propertyIds,
       };
-  
+
       fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, {
         method: "POST",
         headers: {
@@ -219,7 +219,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("created machine: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-  
+
       var UpdateCelldto = {
         machineId: json?.machines?.[0]?.id,
         cellId: selectedContainer.id,
@@ -240,8 +240,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("updated cell: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
@@ -272,22 +271,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
               );
             })}
           </Stepper>
-          <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {activeStep !== steps.length - 1 && (
-                <Button onClick={handleNext}>{"Next"}</Button>
-              )}
-            </Box>
-          </React.Fragment>
+          <Box sx={{ height: "20px" }} />
+
           {activeStep === 0 && (
             <>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -301,7 +286,6 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
@@ -474,15 +458,34 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           {/* <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button> */}
-          <Button
-            variant="contained"
-            color="success"
-            type="submit"
-            onClick={handlerClose}
-            disabled={activeStep !== steps.length - 1}
-          >
-            Finished
+          <Button variant="outlined" color="primary" onClick={handlerClose}>
+            Cancel
           </Button>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+
+          {activeStep !== steps.length - 1 && (
+            <Button color="primary" variant="contained" onClick={handleNext}>
+              {"Next"}
+            </Button>
+          )}
+          {activeStep === steps.length - 1 && (
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              onClick={handlerClose}
+              disabled={activeStep !== steps.length - 1}
+            >
+              Finished
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

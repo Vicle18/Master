@@ -132,25 +132,8 @@ const ExportStepper: React.FC<Props> = ({}) => {
               );
             })}
           </Stepper>
-          <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {activeStep !== steps.length - 1 && (
-                <Button onClick={handleNext}>{"Next"}</Button>
-              )}
-              {/* <Button onClick={handleNext} >
-                      {activeStep === steps.length - 1 ? "" : "Next"}
-                    </Button> */}
-            </Box>
-          </React.Fragment>
+          <Box sx={{ height: "20px" }} />
+
           {activeStep === 0 && (
             <>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -288,14 +271,41 @@ const ExportStepper: React.FC<Props> = ({}) => {
             Cancel
           </Button> */}
           <Button
-            variant="contained"
-            color="success"
-            type="submit"
-            onClick={handlerClose}
-            // disabled={!isValid}
-          >
-            Finished
-          </Button>
+                  variant="outlined"
+                  color="primary"
+                  onClick={handlerClose}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
+                >
+                  Back
+                </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    onClick={handlerClose}
+                    disabled={activeStep !== steps.length - 1}
+                  >
+                    Finished
+                  </Button>
+                )}
         </DialogActions>
       </Dialog>
     </div>
