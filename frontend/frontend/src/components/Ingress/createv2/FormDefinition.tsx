@@ -17,7 +17,7 @@ export interface FormData {
   host?: string;
   port?: string;
   topic?: string;
-  output?: string
+  output?: string;
   nodeId?: string;
   containingElement: string;
   dataFormat: string;

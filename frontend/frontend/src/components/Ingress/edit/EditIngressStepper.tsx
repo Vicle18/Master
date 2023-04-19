@@ -327,7 +327,7 @@ const EditIngressStepper: React.FC<Props> = ({
                             as={Select}
                             name="output"
                             labelId="output-label"
-                            label="Output"
+                            label="output"
                             size="small"
                             style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}
                           >
@@ -614,7 +614,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                 as={Select}
                                 name="output"
                                 labelId="output-label"
-                                label="Output"
+                                label="output"
                                 disabled
                                 value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.OUTPUT}
                                 size="small"
@@ -834,7 +834,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                 as={Select}
                                 name="output"
                                 labelId="output-label"
-                                label="Output"
+                                label="output"
                                 disabled
                                 size="small"
                               >

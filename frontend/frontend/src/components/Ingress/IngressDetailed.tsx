@@ -299,6 +299,8 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     } else if (connectionDetails.PROTOCOL == "RTDE") {
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
+      initialValues.output = connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift()
+      console.log(connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift())
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
       initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
