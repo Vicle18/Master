@@ -124,7 +124,9 @@ description: 'Observable Property for Cutting Speed of CNC Milling Machine in No
 frequency: 100,
 changedFrequency: 50,
 connectionDetails: "cuttingSpeedConnectionDetails",
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (toolWear:ObservableProperty {
@@ -134,7 +136,9 @@ description: 'Observable Property for Tool Wear of CNC Milling Machine in Nordbo
 frequency: 75,
 changedFrequency: 25,
 connectionDetails: "toolWearConnectionDetails",
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (machine1A)-[:has]->(cuttingSpeed)
@@ -148,7 +152,9 @@ description: 'Observable Property for Vibration of Lathe Machine in Nordborg Mac
 frequency: 50,
 changedFrequency: 50,
 connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (cuttingForce:ObservableProperty {
@@ -158,7 +164,9 @@ description: 'Observable Property for Cutting Force of Lathe Machine in Nordborg
 frequency: 100,
 changedFrequency: 50,
 connectionDetails: "cuttingForceConnectionDetails",
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (temperature1:ObservableProperty {
@@ -168,7 +176,9 @@ description: 'Observable Property for Temperature of Welding Robot in Nordborg W
 frequency: 75,
 changedFrequency: 75,
 connectionDetails: "temperatureConnectionDetails",
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (weldingVoltage:ObservableProperty {
@@ -178,7 +188,9 @@ description: 'Observable Property for Welding Voltage of Welding Robot in Nordbo
 frequency: 50,
 changedFrequency: 50,
 connectionDetails: "weldingVoltageConnectionDetails",
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (machine1B)-[:has]->(vibration1)
@@ -193,7 +205,9 @@ description: 'Observable Property for Vibration of Surface Grinder in Nordborg M
 frequency: 50,
 changedFrequency: 25,
 connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (surfaceRoughness:ObservableProperty {
@@ -219,7 +233,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (machine2B)-[:has]->(vibration2)
@@ -248,7 +264,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+downsampleMethod: "Accumulated",
+dataType:"STRING"
 })
 
 CREATE (toolLife:ObservableProperty {
@@ -275,7 +293,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+downsampleMethod: "Accumulated",
+dataType:"STRING"
 })
 
 CREATE (machine3A)-[:has]->(temperature2)
@@ -296,7 +316,9 @@ connectionDetails: '{
       "TARGET_TOPIC": "testOPCUA"
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+downsampleMethod: "Accumulated",
+dataType:"STRING"
 })
 
 CREATE (grindingForce:ObservableProperty {
@@ -315,7 +337,9 @@ connectionDetails: '{
     }
 }
 ',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+downsampleMethod: "Accumulated",
+dataType:"STRING"
 })
 
 CREATE (machine3B)-[:has]->(powerConsumption1)
@@ -337,7 +361,9 @@ CREATE (robotPosition:ObservableProperty {
     }
 }
 ',
-  dataFormat: "RAW"
+  dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (robotStatus:ObservableProperty {
@@ -364,7 +390,10 @@ CREATE (robotStatus:ObservableProperty {
       }
     }
     }',
-  dataFormat: "WITH_METADATA"
+  dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
+
 })
 
 CREATE (machine4A)-[:has]->(robotPosition)
@@ -393,6 +422,8 @@ CREATE (testResult:ObservableProperty {
         }
         }
     }',  
+  downsampleMethod: "Accumulated",
+  dataType:"STRING",
   dataFormat: "WITH_METADATA"
 })
 
@@ -419,6 +450,8 @@ CREATE (testStatus:ObservableProperty {
         }
         }
     }',
+  downsampleMethod: "Accumulated",
+  dataType:"STRING",
   dataFormat: "WITH_METADATA"
 })
 
@@ -452,7 +485,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (temperature3:ObservableProperty {
@@ -479,7 +514,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (lathe1)-[:has]->(vibration3)
@@ -508,7 +545,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (powerConsumption2:ObservableProperty {
@@ -535,7 +574,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (milling1)-[:has]->(surfaceRoughness2)
@@ -564,7 +605,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (temperature4:ObservableProperty {
@@ -582,7 +625,9 @@ connectionDetails: '{
       "TARGET_TOPIC": "testOPCUA"
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (grinder1)-[:has]->(vibration4)
@@ -611,7 +656,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (depth:ObservableProperty {
@@ -638,7 +685,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (drill1)-[:has]->(rpm)
@@ -667,7 +716,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (powerConsumption3:ObservableProperty {
@@ -693,7 +744,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "WITH_METADATA"
+dataFormat: "WITH_METADATA",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (robot1)-[:has]->(robotStatus2)
@@ -714,7 +767,9 @@ connectionDetails: '{
       "TARGET_TOPIC": "testOPCUA"
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (current:ObservableProperty {
@@ -740,7 +795,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (welder1)-[:has]->(voltage2)
@@ -769,7 +826,9 @@ connectionDetails: '{
         }
         }
     }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (temperature5:ObservableProperty {
@@ -787,7 +846,9 @@ connectionDetails: '{
       "TARGET_TOPIC": "testOPCUA"
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (press1)-[:has]->(force)
@@ -817,7 +878,9 @@ connectionDetails: '{
       }
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (cycleTime:ObservableProperty {
@@ -835,7 +898,9 @@ connectionDetails: '{
       "TARGET_TOPIC": "testOPCUA"
     }
 }',
-dataFormat: "RAW"
+dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
 })
 
 CREATE (rivet1)-[:has]->(airPressure)
