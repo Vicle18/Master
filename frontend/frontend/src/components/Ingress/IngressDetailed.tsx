@@ -288,7 +288,8 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     previousPropertyValues = data
     console.log("data data data")
     console.log(data.downsampleMethod)
-    console.log(data.dataType)
+    console.log(data)
+
     const connectionDetails = JSON.parse(data.connectionDetails)
     initialValues.protocol = connectionDetails.PROTOCOL
 
@@ -299,7 +300,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODENAME
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
     initialValues.name = data.name
