@@ -519,8 +519,6 @@ const CreateIngressStepper: React.FC<Props> = ({
                               {(values.datatype === "Number") && (
                                 <MenuItem value="MEDIAN">Median</MenuItem>
                               )}
-
-
                             </Field>
                             <Tooltip title="Please specify how you wish to downsample the data">
                               <IconButton>

@@ -431,6 +431,58 @@ const EditIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
+                    <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
+                      <InputLabel id="datatype-label">Data Type</InputLabel>
+                      <Field
+                        as={Select}
+                        name="datatype"
+                        labelId="datatype-label"
+                        label="datatype"
+                        size="small"
+                      >
+                        <MenuItem value="Number">NUMBER</MenuItem>
+                        <MenuItem value="String">STRING</MenuItem>
+                        <MenuItem value="Array">ARRAY</MenuItem>
+                      </Field>
+                    </FormControl>
+                    {values?.changedFrequency && (values.frequency > values?.changedFrequency) && (
+                      <>
+                        <FormControl variant="outlined" margin="normal" fullWidth>
+                          <Box sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}>
+                            <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                            <Field
+                              as={Select}
+                              name="downsampleMethod"
+                              fullWidth
+                              labelId="downsampleMethod-label"
+                              label="downsampleMethod"
+                              size="small"
+                            >
+                              {(values.datatype === "String" || values.datatype === "Array") && (
+                                <MenuItem value="ACCUMULATED">Accumulated</MenuItem>
+                              )}
+                              {(values.datatype === "String" || values.datatype === "Array" || values.datatype === "Number") && (
+                                <MenuItem value="LATEST">Latest</MenuItem>
+                              )}
+                              {(values.datatype === "Number") && (
+                                <MenuItem value="AVERAGE">Average</MenuItem>
+                              )}
+                              {(values.datatype === "Number") && (
+                                <MenuItem value="MEDIAN">Median</MenuItem>
+                              )}
+                            </Field>
+                            <Tooltip title="Please specify how you wish to downsample the data">
+                              <IconButton>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </Box>
+                        </FormControl>
+                      </>
+                    )}
                   </>
                 )}
                 {activeStep === 1 && ( //children
