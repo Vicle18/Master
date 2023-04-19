@@ -300,7 +300,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
       initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODEID
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
     initialValues.name = data.name
