@@ -24,7 +24,8 @@ import {
   FormLabel,
   Switch,
   Checkbox,
-  Alert
+  Alert,
+  Slide
 } from "@mui/material";
 import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
 
@@ -81,6 +82,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     vertical: 'top',
     horizontal: 'center',
   });
+  const [result, setResult] = useState<string | null>(null);
+
   const { vertical, horizontal, open } = state;
 
 
@@ -196,9 +199,10 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         }
       )
         .then((response) => response.json())
-        .then((data) =>
+        .then((data) => {
+          setResult(JSON.stringify(data));
           console.log("created observableProperty: " + JSON.stringify(data))
-        )
+        })
         .catch((error) => console.error(error));
     });
 
@@ -294,7 +298,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           </Stepper>
           <React.Fragment>
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Box sx={{ flex: "1 1 auto" }} />       
+              <Box sx={{ flex: "1 1 auto" }} />
             </Box>
           </React.Fragment>
           {activeStep === 0 && (
@@ -457,13 +461,43 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                   >
                     Create Observable Properties
                   </Button>
-                  <Snackbar
-                    anchorOrigin={{ vertical, horizontal }}
+                  {/* <Snackbar
                     open={open}
                     onClose={handleClose}
-                    message="Created observable properties"
-                    key={vertical + horizontal}
-                  />
+                    autoHideDuration={3000}
+                    TransitionComponent={Slide}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    message={"Observable was created"}
+
+                  /> */}
+                  {result && (<Snackbar
+                    open={open}
+                    onClose={handleClose}
+                    autoHideDuration={3000}
+                    TransitionComponent={Slide}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    message={result}
+                  >
+                    {result === "Network Error" ? (
+                      <Alert
+                        onClose={handleClose}
+                        severity="error"
+                        sx={{ width: "100%" }}
+                      >
+                        {result}
+                      </Alert>
+                    ) : (
+                      <Alert
+                        onClose={handleClose}
+                        severity="success"
+                        sx={{ width: "100%" }}
+                      >
+                        {
+                          "Observable Property was successfully created"
+                        }
+                      </Alert>
+                    )}
+                  </Snackbar>)}
 
                 </Grid2>
                 <Grid2
