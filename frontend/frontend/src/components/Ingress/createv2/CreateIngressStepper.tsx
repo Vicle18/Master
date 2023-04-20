@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -26,6 +27,7 @@ import {
   MenuItem,
   Radio,
   Select,
+  Slide,
   Snackbar,
   Step,
   StepButton,
@@ -83,6 +85,7 @@ const CreateIngressStepper: React.FC<Props> = ({
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
   const [checked, setChecked] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
 
 
   const theme = useTheme();
@@ -105,6 +108,14 @@ const CreateIngressStepper: React.FC<Props> = ({
 
   const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
+  };
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+  const handleResultInSnackbar = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResult(result);
   };
 
   const handleSubmit = (values: FormData) => {
@@ -754,6 +765,35 @@ const CreateIngressStepper: React.FC<Props> = ({
           )}
         </Formik>
       </Dialog>
+      
+      {result && (<Snackbar
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={3000}
+          TransitionComponent={Slide}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          message={result}
+        >
+          {result === "Network Error" ? (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {result}
+            </Alert>
+          ) : (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {
+                "Ingress Endpoint successfully created. You can now work with the data."
+              }
+            </Alert>
+          )}
+        </Snackbar>)}
     </div>
   );
 };

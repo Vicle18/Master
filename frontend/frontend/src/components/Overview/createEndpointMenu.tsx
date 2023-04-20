@@ -145,34 +145,6 @@ export function CreateEndpoint(
       })}
       {CreateEgressGroupStepper({PopupEgressGroup, setPopupEgressGroup, handleResult})}
       {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
-      {result && (
-        <Snackbar
-          open={openSnackbar}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={3000}
-          TransitionComponent={Slide}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          message={result}
-        >
-          {result === "Network Error" ? (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              {result}
-            </Alert>
-          ) : (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              {result}
-            </Alert>
-          )}
-        </Snackbar>
-      )}
     </div>
   );
 }

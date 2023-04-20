@@ -40,10 +40,8 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
     <ThemeProvider theme={theme}>
       <AppBar position="static" color="secondary">
         <Container maxWidth="xl">
-          
           <Toolbar disableGutters>
             <React.Fragment>
-              
               {pages.map((page) => (
                 <Button
                   id="ingress-egress-button"
@@ -59,7 +57,8 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
                     display: "block",
                     backgroundColor: "primary",
                     marginLeft: 1,
-                    borderBottom: openPage === page ? "5px solid lightblue" : "none"
+                    borderBottom:
+                      openPage === page ? "5px solid lightblue" : "none",
                   }}
                 >
                   {page}
@@ -67,7 +66,7 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
               ))}
             </React.Fragment>
             {CreateEndpoint(open, createClick, anchorEl, handleClose)}
-            <ExportStepper/>
+            <ExportStepper />
           </Toolbar>
         </Container>
       </AppBar>
