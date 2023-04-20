@@ -362,6 +362,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                       >
                         <MenuItem value="MQTT">MQTT</MenuItem>
                         <MenuItem value="OPCUA">OPCUA</MenuItem>
+                        <MenuItem value="KAFKA">Kafka</MenuItem>
+                        <MenuItem value="GRCP">gRPC</MenuItem>
+                        <MenuItem value="REST">REST</MenuItem>
                       </Field>
                     </FormControl>
 

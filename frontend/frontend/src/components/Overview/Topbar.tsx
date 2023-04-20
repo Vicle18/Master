@@ -16,7 +16,7 @@ type TopBarProps = {
 const pages = ["Ingress", "Egress"];
 
 const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
-  const [openPage, setOpenPage] = React.useState<string>();
+  const [openPage, setOpenPage] = React.useState<string>("Ingress");
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null

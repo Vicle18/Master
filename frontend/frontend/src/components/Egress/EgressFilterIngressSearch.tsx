@@ -132,26 +132,16 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-        {/* <Autocomplete
-          options={options}
-          value={searchValue}
-          onChange={(event, newValue) => {
-            setSearchValue(newValue ?? '');
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search"
-              margin="normal"
-              variant="outlined"
-            />
-          )}
-        /> */}
+        {/* vertical gap */}
+        <Box sx={{ height: 20 }} />
         <Button variant="contained" color="primary" onClick={handleOpenPopup}>
           Add
         </Button>
       
       <Box mt={2}>
+        {selected.length === 0 && (
+          <p style={{ color: 'grey' }}>No filter selected</p>
+        )}
         {selected.map((value) => (
           <Chip
             key={value}

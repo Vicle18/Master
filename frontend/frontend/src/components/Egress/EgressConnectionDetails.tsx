@@ -288,12 +288,14 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label={"Manage " + endpoint.name} />
       </Divider>
-      <Button color="error" variant="contained" onClick={handleDelete}>
-        Delete
-      </Button>
       <Button color="primary" variant="contained" onClick={handleEdit}>
-        Edit
+        Edit Egress Endpoint
       </Button>
+      <Box sx={{ width: "1px", height: "10px"}} />
+      <Button color="error" variant="contained" onClick={handleDelete}>
+        Delete Egress Endpoint
+      </Button>
+      
     </div>
   );
 };

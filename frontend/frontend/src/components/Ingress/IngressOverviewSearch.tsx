@@ -36,23 +36,7 @@ const SearchBar: React.FC<Props> = ({ suggestions, onSearch }) => {
         sx={{marginBottom: "10px"}}
         fullWidth
       />
-      {/* <Popper open={!!anchorEl} anchorEl={anchorEl}>
-        <ClickAwayListener onClickAway={() => setAnchorEl(null)}>
-          <Paper>
-            <List >
-              {suggestions.map((suggestion) => (
-                <ListItem
-                  button
-                  key={suggestion}
-                  onClick={() => handleListItemClick(suggestion)}
-                >
-                  <ListItemText primary={suggestion} />
-                </ListItem>
-              ))}
-            </List>
-          </Paper>
-        </ClickAwayListener>
-      </Popper> */}
+
     </div>
   );
 };

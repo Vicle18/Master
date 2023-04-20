@@ -33,7 +33,7 @@ const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
   const navigate = useNavigate();
-  const [openPage, setOpenPage] = React.useState<string>();
+  const [openPage, setOpenPage] = React.useState<string>("Overview");
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -151,7 +151,7 @@ function Navbar() {
                     color: "white",
                     display: "block",
 
-                    borderBottom: openPage === page ? "5px solid white" : "none"
+                    borderBottom: openPage === page ? "5px solid lightblue" : "none"
 
                   }}
                 >

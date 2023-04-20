@@ -306,6 +306,9 @@ const CreateIngressStepper: React.FC<Props> = ({
                           <MenuItem value="MQTT">MQTT</MenuItem>
                           <MenuItem value="OPCUA">OPCUA</MenuItem>
                           <MenuItem value="RTDE">RTDE</MenuItem>
+                          <MenuItem value="gRPC">gRPC</MenuItem>
+                          <MenuItem value="REST">REST</MenuItem>
+
                         </Field>
                       </FormControl>
                       <Tooltip title="Please select the protocol you want to use, for instance RTDE to extract data from a UR.">

@@ -168,7 +168,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
               <Box sx={{ marginLeft: "auto" }}>
                 {item.accessTo.length <= 0 && (
                   <Chip
-                    label="No Ingress Endpoints"
+                    label="No Egress Endpoints"
                     color="error"
                     size="small"
                     sx={{ marginRight: "10px" }}
@@ -256,7 +256,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
 
                     onClick={() => handleDeleteItem(item)}
                   >
-                    Delete
+                    Delete Egress Group
                   </Button>
                 </Stack>
               )}
