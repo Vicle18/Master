@@ -599,37 +599,8 @@ dataFormat: "RAW",
   dataType:"STRING"
 })
 
-CREATE (temperature3:ObservableProperty {
-id: 'temperature',
-name: 'Temperature',
-description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
-frequency: 75,
-changedFrequency: 75,
-connectionDetails: '{
-  "PROTOCOL": "RTDE",
-    "PARAMETERS": {
-      "HOST2": "107.40.207.82",
-      "HOST": "0.11.174.83",
-      "PORT": 49758,
-      "TRANSMISSION_PAIRS": "timestamp:temperatureLathe1",
-      "FREQUENCY": 30,
-      "CHANGED_FREQUENCY": 1,
-      "DATA_FORMAT": "WITH_METADATA",
-      "METADATA": {
-        "TIMESTAMP": true,
-        "NAME": "DefaultName",
-        "DESCRIPTION": "Default Description",
-        "FREQUENCY": 30
-      }
-    }
-}',
-dataFormat: "WITH_METADATA",
-  downsampleMethod: "Accumulated",
-  dataType:"STRING"
-})
 
 CREATE (lathe1)-[:has]->(vibration3)
-CREATE (lathe1)-[:has]->(temperature3)
 
 CREATE (surfaceRoughness2:ObservableProperty {
 id: 'surfaceRoughness',
@@ -1048,6 +1019,8 @@ CREATE (topicZB:Topic {name: 'TopicZB'})
 CREATE (topicZC:Topic {name: 'TopicZC'})
 CREATE (topicZD:Topic {name: 'TopicZD'})
 CREATE (topicZE:Topic {name: 'TopicZE'})
+CREATE (topicZF:Topic {name: 'TopicZF'})
+
 
 
 CREATE (cuttingSpeed)-[:has]->(topicA)
@@ -1059,7 +1032,7 @@ CREATE (weldingVoltage)-[:has]->(topicF)
 CREATE (vibration2)-[:has]->(topicG)
 CREATE (surfaceRoughness)-[:has]->(topicH)
 CREATE (temperature2)-[:has]->(topicI)
-CREATE (lathe1)-[:has]->(topicJ)
+CREATE (vibration3)-[:has]->(topicJ) //Lathe1
 CREATE (powerConsumption1)-[:has]->(topicK)
 CREATE (grindingForce)-[:has]->(topicL)
 CREATE (robotPosition)-[:has]->(topicM)
