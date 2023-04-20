@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -20,6 +21,8 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  Slide,
+  Snackbar,
   Step,
   StepButton,
   Stepper,
@@ -88,6 +91,9 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>(selectedIngress);
   const [selectedEgress, setSelectedEgress] = useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [result, setResult] = useState<string | null>(null);
+
   const [selectedDataFormat, setSelectedDataFormat] =
     useState<string>("string");
 
@@ -96,6 +102,10 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const handlerClose = () => {
     setPopupEgress(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
@@ -121,7 +131,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     setPopupEgress(false);
     values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
-    if(values.createBroker && values.protocol === "MQTT"){
+    if (values.createBroker && values.protocol === "MQTT") {
       values.host = "localhost";
       values.port = "8088";
     }
@@ -149,6 +159,7 @@ const CreateEgressStepper: React.FC<Props> = ({
 
     console.log("submitting:", JSON.stringify(values));
 
+
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
       headers: {
@@ -159,9 +170,16 @@ const CreateEgressStepper: React.FC<Props> = ({
       },
       body: JSON.stringify(values),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log(response)
+        setResult(JSON.stringify(response));
+      }
+      )
       .then((data) => console.log("data: " + JSON.stringify(data)))
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        console.error(error);
+        setResult(error.message);
+      });
   };
 
   function handleEgressClick(data: any): void {
@@ -370,29 +388,29 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     {(values.protocol === "MQTT" ||
                       values.protocol === "OPCUA") && (
-                      <>
-                        <Field name="createBroker">
-                          {({ field }: FieldProps<FormData>) => (
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  {...field}
-                                  defaultChecked={values.createBroker}
-                                  onChange={() => {
-                                    values.createBroker = !values.createBroker;
-                                    console.log(values.createBroker);
-                                    setCreateBroker(values.createBroker);
-                                  }}
-                                  disabled={values.protocol === "OPCUA"}
-                                  color="primary"
-                                />
-                              }
-                              label="Providing your own broker"
-                            />
-                          )}
-                        </Field>
-                      </>
-                    )}
+                        <>
+                          <Field name="createBroker">
+                            {({ field }: FieldProps<FormData>) => (
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    {...field}
+                                    defaultChecked={values.createBroker}
+                                    onChange={() => {
+                                      values.createBroker = !values.createBroker;
+                                      console.log(values.createBroker);
+                                      setCreateBroker(values.createBroker);
+                                    }}
+                                    disabled={values.protocol === "OPCUA"}
+                                    color="primary"
+                                  />
+                                }
+                                label="Providing your own broker"
+                              />
+                            )}
+                          </Field>
+                        </>
+                      )}
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
@@ -809,7 +827,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
-                
+
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -890,7 +908,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     type="submit"
                     disabled={(!isValid || (selectedIngressNode == undefined || selectedEgressGroup == undefined))}
                   >
-                    
+
                     Create
                   </Button>
                 )}
@@ -899,6 +917,34 @@ const CreateEgressStepper: React.FC<Props> = ({
           )}
         </Formik>
       </Dialog>
+      {result && (<Snackbar
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        message={result}
+      >
+        {result === "Network Error" ? (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {result}
+          </Alert>
+        ) : (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {
+              "Egress Endpoint successfully created"
+            }
+          </Alert>
+        )}
+      </Snackbar>)}
     </div>
   );
 };
