@@ -32,6 +32,7 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -81,6 +82,9 @@ const CreateIngressStepper: React.FC<Props> = ({
   );
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
+  const [checked, setChecked] = React.useState(false);
+
+
   const theme = useTheme();
   const handlerClose = () => {
     setPopupIngress(false);
@@ -99,8 +103,18 @@ const CreateIngressStepper: React.FC<Props> = ({
     setCheckBoxData({ ...checkBoxData, [name]: checked });
   };
 
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
   const handleSubmit = (values: FormData) => {
     console.log("submit", values);
+    
+    if (values.changedFrequency == undefined || values.changedFrequency.length <= 0 ) {
+      console.log("inside if")
+      values.changedFrequency = values.frequency;
+    }
+    console.log('changedFrequncy : ', values.changedFrequency)
     setPopupIngress(false);
     if (values.dataFormat === "WITH_METADATA") {
       values.metadata = {};
@@ -173,6 +187,7 @@ const CreateIngressStepper: React.FC<Props> = ({
   ): void {
     setRadioValue(event.target.value);
   }
+
 
   return (
     <div>
@@ -472,39 +487,49 @@ const CreateIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Switch checked={checked} onChange={handleSwitchChange} name="switch" />
+                        }
+                        label="Reduce the standard frequency"
+                      />
+                    </FormGroup>
+                    {checked && (
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <Field name="changedFrequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Reduced Frequency (Hz)"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={
+                                touched.changedFrequency &&
+                                Boolean(errors.changedFrequency)
+                              }
+                              helperText={
+                                touched.changedFrequency &&
+                                errors.changedFrequency
+                              }
+                            />
+                          )}
+                        </Field>
+                        <Tooltip title="Changed frequency helps you reduce the current frequency">
+                          <IconButton sx={{ marginTop: "10px" }}>
+                            <HelpOutlineIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
 
-                    <Box
-                      sx={{
-                        alignItems: "center",
-                        display: "flex",
-                      }}
-                    >
-                      <Field name="changedFrequency">
-                        {({ field }: FieldProps<FormData>) => (
-                          <TextField
-                            {...field}
-                            label="Changed Frequency (Hz)"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            error={
-                              touched.changedFrequency &&
-                              Boolean(errors.changedFrequency)
-                            }
-                            helperText={
-                              touched.changedFrequency &&
-                              errors.changedFrequency
-                            }
-                          />
-                        )}
-                      </Field>
-                      <Tooltip title="Changed frequency helps you reduce the current frequency">
-                        <IconButton sx={{ marginTop: "10px" }}>
-                          <HelpOutlineIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
                     <Box
                       sx={{
                         alignItems: "center",
@@ -539,39 +564,39 @@ const CreateIngressStepper: React.FC<Props> = ({
                       values.frequency > values?.changedFrequency && (
                         <>
                           <FormControl variant="outlined" margin="normal" fullWidth>
-                          <Box sx={{
-                            alignItems: "center",
-                            display: "flex",
-                          }}>
-                            <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
-                            <Field
-                              as={Select}
-                              name="downsampleMethod"
-                              fullWidth
-                              labelId="downsampleMethod-label"
-                              label="downsampleMethod"
-                              size="small"
-                            >
-                              {(values.dataType === "STRING" || values.dataType === "ARRAY") && (
-                                <MenuItem value="Accumulated">Accumulated</MenuItem>
-                              )}
-                              {(values.dataType === "STRING" || values.dataType === "ARRAY" || values.dataType === "NUMBER") && (
-                                <MenuItem value="Latest">Latest</MenuItem>
-                              )}
-                              {(values.dataType === "NUMBER") && (
-                                <MenuItem value="Average">Average</MenuItem>
-                              )}
-                              {(values.dataType === "NUMBER") && (
-                                <MenuItem value="Median">Median</MenuItem>
-                              )}
-                            </Field>
-                            <Tooltip title="Please specify how you wish to downsample the data">
-                              <IconButton>
-                                <HelpOutlineIcon />
-                              </IconButton>
-                            </Tooltip>
-                          </Box>
-                        </FormControl>
+                            <Box sx={{
+                              alignItems: "center",
+                              display: "flex",
+                            }}>
+                              <InputLabel id="downsampleMethod-label">Downsample Method</InputLabel>
+                              <Field
+                                as={Select}
+                                name="downsampleMethod"
+                                fullWidth
+                                labelId="downsampleMethod-label"
+                                label="downsampleMethod"
+                                size="small"
+                              >
+                                {(values.dataType === "STRING" || values.dataType === "ARRAY") && (
+                                  <MenuItem value="Accumulated">Accumulated</MenuItem>
+                                )}
+                                {(values.dataType === "STRING" || values.dataType === "ARRAY" || values.dataType === "NUMBER") && (
+                                  <MenuItem value="Latest">Latest</MenuItem>
+                                )}
+                                {(values.dataType === "NUMBER") && (
+                                  <MenuItem value="Average">Average</MenuItem>
+                                )}
+                                {(values.dataType === "NUMBER") && (
+                                  <MenuItem value="Median">Median</MenuItem>
+                                )}
+                              </Field>
+                              <Tooltip title="Please specify how you wish to downsample the data">
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
+                            </Box>
+                          </FormControl>
                         </>
                       )}
                   </>
@@ -718,9 +743,9 @@ const CreateIngressStepper: React.FC<Props> = ({
                   >
                     Create
                   </Button>
-                  
+
                 )}
-                
+
               </DialogActions>
             </Form>
           )}
