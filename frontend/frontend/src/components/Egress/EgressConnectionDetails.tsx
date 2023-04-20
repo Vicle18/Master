@@ -13,6 +13,7 @@ import { FC, useEffect, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import axios from "axios";
+import { CreateTelegramTemplate } from "./TemplateCreator";
 
 interface ConnectionDetailsProps {
   egressEndpoint: string;
@@ -127,21 +128,18 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
     );
 
   var endpoint = data.egressEndpoints[0];
-
   var connectionDetails = JSON.parse(endpoint.connectionDetails);
+
   function handleDelete(): void {
-    fetch(
-      `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${endpoint.id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers":
-            "Origin, Content-Type, X-Auth-Token, X-Requested-With",
-        },
-      }
-    )
+    fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${endpoint.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers":
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+      },
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error ${response.status}`);
@@ -155,6 +153,27 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
 
   function handleEdit(): void {
     throw new Error("Function not implemented.");
+  }
+
+  function handleDownloadTelegram(): void {
+    var data = "empty"
+    if (connectionDetails?.PROTOCOL == "MQTT") {
+        data = CreateTelegramTemplate(
+        connectionDetails?.PARAMETERS?.HOST,
+        connectionDetails?.PARAMETERS?.PORT,
+        connectionDetails?.TRANSMISSION_DETAILS?.TARGET
+      );
+    }
+
+    const element = document.createElement("a");
+
+    const file = new Blob([data], {
+      type: "text/plain",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `Telegram_${endpoint.name}_${connectionDetails?.PROTOCOL}.yaml`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
   }
 
   return (
@@ -224,6 +243,16 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
             {connectionDetails?.TRANSMISSION_DETAILS?.TARGET} to extract
             information
           </Typography>
+          <Box sx={{ height: "20px" }} />
+
+          <Button
+            color="primary"
+            variant="contained"
+            onClick={handleDownloadTelegram}
+            disabled={connectionDetails?.PROTOCOL != "MQTT"}
+          >
+            Download Telegram Template
+          </Button>
         </AccordionDetails>
       </Accordion>
       <Accordion>

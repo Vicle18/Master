@@ -121,7 +121,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     setPopupEgress(false);
     values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
-    if(!values.createBroker && values.protocol === "MQTT"){
+    if(values.createBroker && values.protocol === "MQTT"){
       values.host = "localhost";
       values.port = "8088";
     }

@@ -16,12 +16,14 @@ type TopBarProps = {
 const pages = ["Ingress", "Egress"];
 
 const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
+  const [openPage, setOpenPage] = React.useState<string>();
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
   const handleCloseNavMenu = (page: any) => {
     // navigate(page);
+    setOpenPage(page);
     setAnchorElNav(null);
     onNavMenuClick(page);
   };
@@ -57,6 +59,7 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
                     display: "block",
                     backgroundColor: "primary",
                     marginLeft: 1,
+                    borderBottom: openPage === page ? "5px solid lightblue" : "none"
                   }}
                 >
                   {page}
