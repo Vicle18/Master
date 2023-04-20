@@ -416,7 +416,7 @@ const EditIngressStepper: React.FC<Props> = ({
                           />
                         )}
                       </Field>
-                      <Tooltip title="Changed frequency helps you reduce the current frequency">
+                      <Tooltip title="Changed frequency allows you to reduce the current frequency">
                         <IconButton sx={{ marginTop: "10px" }}>
                           <HelpOutlineIcon />
                         </IconButton>
