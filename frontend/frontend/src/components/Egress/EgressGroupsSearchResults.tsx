@@ -77,9 +77,11 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
               name_CONTAINS: searchParameters.keyword,
             }),
             ...(searchParameters.ingressEndpoints?.length > 0 && {
-              accessTo_ALL: {
-                id_IN: searchParameters.ingressEndpoints,
-              },
+              accessToConnection: {
+                node: {
+                  id_IN: searchParameters.ingressEndpoints,
+                }
+              }
             }),
             ...(searchParameters.protocols?.length > 0 && {
               OR: searchParameters.protocols.map((protocol) => ({
@@ -95,7 +97,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
-    return <p>Error : {error.message}</p>;
+    return <p>Error : {JSON.stringify(error)}</p>;
   }
   var properties = data.egressGroups;
 
@@ -163,13 +165,21 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
               >
-                {item.name}
+                GROUP | {item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
                 {item.accessTo.length <= 0 && (
                   <Chip
                     label="No Egress Endpoints"
                     color="error"
+                    size="small"
+                    sx={{ marginRight: "10px" }}
+                  />
+                )}
+                {item.accessTo.length > 0 && (
+                  <Chip
+                    label={"Contains " + item.accessTo.length +" Egress Endpoints"}
+                    color="success"
                     size="small"
                     sx={{ marginRight: "10px" }}
                   />
