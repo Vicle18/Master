@@ -4,14 +4,14 @@ public class IngressDTOBase:CreateDTO
 {
     public string? name { get; set; }
     public string? description { get; set; }
-    public string protocol { get; set; }
+    public string? protocol { get; set; }
     public string? dataType { get; set; }
 
     public string? downsampleMethod { get; set; }
     public string? containingElement { get; set; }
     public int? frequency { get; set; }
     public int? changedFrequency { get; set; }
-    public string dataFormat { get; set; }
+    public string? dataFormat { get; set; }
     public string? host { get; set; }
     public string? output { get; set; }
     public int? port { get; set; }

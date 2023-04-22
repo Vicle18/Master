@@ -118,6 +118,8 @@ namespace MiddlewareManager.Controllers
                 var id = Guid.NewGuid().ToString();
                 var connectionDetails =
                     ConnectionDetailsFactory.Create(id, value, topicName);
+                Log.Debug("HEYEH");
+                Log.Debug(JsonSerializer.Serialize(connectionDetails));
                 var response = await _ingressRepo.UpdateObservableProperty(value, JsonSerializer.Serialize(connectionDetails));
                 return Ok(response);
             }
