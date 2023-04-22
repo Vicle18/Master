@@ -291,10 +291,9 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   // };
 
   const handleShowEdit = (data: any) => {
-    previousPropertyValues = data;
-    console.log("data data data");
-    console.log(data.downsampleMethod);
-    console.log(data);
+    console.log("data data data")
+    console.log(data.downsampleMethod)
+    console.log(data)
 
     const connectionDetails = JSON.parse(data.connectionDetails);
     initialValues.protocol = connectionDetails.PROTOCOL;
@@ -314,15 +313,16 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME;
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
-    initialValues.topic = data?.topic.name;
-    initialValues.name = data.name;
-    initialValues.description = data.description;
-    initialValues.frequency = data.frequency;
-    initialValues.changedFrequency = data.changedFrequency;
-    initialValues.dataFormat = data.dataFormat;
-    initialValues.id = data.id;
-    initialValues.dataType = data.dataType;
-    initialValues.downsampleMethod = data.downsampleMethod;
+    initialValues.topic = data?.topic.name
+    initialValues.name = data.name
+    initialValues.description = data.description
+    initialValues.frequency = data.frequency
+    initialValues.changedFrequency = data.changedFrequency
+    initialValues.dataFormat = data.dataFormat
+    initialValues.id = data.id
+    initialValues.dataType = data.dataType
+    initialValues.downsampleMethod = data.downsampleMethod
+    previousPropertyValues = initialValues
     setShowEditEndpoint(true);
     setPopupEditIngress(true);
   };

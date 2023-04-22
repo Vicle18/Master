@@ -13,6 +13,8 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   InputLabel,
   List,
@@ -29,6 +31,7 @@ import {
   StepContent,
   StepLabel,
   Stepper,
+  Switch,
   TextField,
   Tooltip,
   Typography,
@@ -62,6 +65,7 @@ const EditIngressStepper: React.FC<Props> = ({
   const [activeStep, setActiveStep] = React.useState(0);
   const [selectedIngress, setSelectedIngress] = useState<string>("");
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [checked, setChecked] = React.useState(false);
 
   const theme = useTheme();
   
@@ -130,6 +134,11 @@ const EditIngressStepper: React.FC<Props> = ({
     setSelectedIngress(data);
     console.log("selected containing element", data);
   }
+
+  const handleSwitchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
+
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
@@ -192,9 +201,9 @@ const EditIngressStepper: React.FC<Props> = ({
                 </Stepper>
                 <React.Fragment>
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    
+
                     <Box sx={{ flex: "1 1 auto" }} />
-                    
+
                     {/* <Button onClick={handleNext} >
                       {activeStep === steps.length - 1 ? "" : "Next"}
                     </Button> */}
@@ -408,35 +417,48 @@ const EditIngressStepper: React.FC<Props> = ({
                         </IconButton>
                       </Tooltip>
                     </Box>
-                    <Box sx={{
-                      alignItems: "center",
-                      display: "flex",
-                    }}>
-                      <Field name="changedFrequency">
-                        {({ field }: FieldProps<FormData>) => (
-                          <TextField
-                            {...field}
-                            label="Changed Frequency"
-                            variant="outlined"
-                            fullWidth
-                            margin="normal"
-                            size="small"
-                            error={
-                              touched.changedFrequency &&
-                              Boolean(errors.changedFrequency)
-                            }
-                            helperText={
-                              touched.changedFrequency && errors.changedFrequency
-                            }
-                          />
-                        )}
-                      </Field>
-                      <Tooltip title="Changed frequency allows you to reduce the current frequency">
-                        <IconButton sx={{ marginTop: "10px" }}>
-                          <HelpOutlineIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Switch checked={checked} onChange={handleSwitchChange} name="switch" />
+                        }
+                        label="Reduce the standard frequency"
+                      />
+                    </FormGroup>
+                    {checked && (
+                      <Box
+                        sx={{
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <Field name="changedFrequency">
+                          {({ field }: FieldProps<FormData>) => (
+                            <TextField
+                              {...field}
+                              label="Reduced Frequency (Hz)"
+                              variant="outlined"
+                              fullWidth
+                              margin="normal"
+                              size="small"
+                              error={
+                                touched.changedFrequency &&
+                                Boolean(errors.changedFrequency)
+                              }
+                              helperText={
+                                touched.changedFrequency &&
+                                errors.changedFrequency
+                              }
+                            />
+                          )}
+                        </Field>
+                        <Tooltip title="Changed frequency helps you reduce the current frequency">
+                          <IconButton sx={{ marginTop: "10px" }}>
+                            <HelpOutlineIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    )}
                     <FormControl variant="outlined" margin="normal" style={{ width: 'calc(100% - 40px)', marginRight: '10px' }}>
                       <InputLabel id="dataType-label">Data Type</InputLabel>
                       <Field
@@ -552,7 +574,7 @@ const EditIngressStepper: React.FC<Props> = ({
                             label="Protocol"
                             size="small"
                             disabled
-                            value={JSON.parse(previousPropertyValues.connectionDetails).PROTOCOL}
+                            value={previousPropertyValues.protocol}
                           >
                             <MenuItem value="MQTT">MQTT</MenuItem>
                             <MenuItem value="OPCUA">OPCUA</MenuItem>
@@ -570,7 +592,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                     variant="outlined"
                                     fullWidth
                                     disabled
-                                    value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.HOST}
+                                    value={previousPropertyValues.host}
                                     margin="normal"
                                     size="small"
                                     error={touched.host && Boolean(errors.host)}
@@ -586,7 +608,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                     variant="outlined"
                                     fullWidth
                                     disabled
-                                    value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.PORT}
+                                    value={previousPropertyValues.port}
                                     margin="normal"
                                     size="small"
                                     error={touched.port && Boolean(errors.port)}
@@ -608,7 +630,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                   disabled
                                   margin="normal"
                                   size="small"
-                                  value={previousPropertyValues.topic}
+                                  value={previousPropertyValues.topic.name}
                                   error={touched.topic && Boolean(errors.topic)}
                                   helperText={touched.topic && errors.topic}
                                 />
@@ -631,7 +653,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                 labelId="output-label"
                                 label="output"
                                 disabled
-                                value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.OUTPUT}
+                                value={previousPropertyValues.output}
                                 size="small"
                               >
                                 <MenuItem value="timestamp">Timestamp</MenuItem>
@@ -653,7 +675,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                   label="Node ID"
                                   variant="outlined"
                                   fullWidth
-                                  value={JSON.parse(previousPropertyValues.connectionDetails).PARAMETERS.NODEID}
+                                  value={JSON.parse(previousPropertyValues.nodeId)}
                                   disabled
                                   margin="normal"
                                   size="small"
@@ -681,6 +703,7 @@ const EditIngressStepper: React.FC<Props> = ({
                             />
                           )}
                         </Field>
+
                         <Field name="changedFrequency">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
@@ -688,9 +711,9 @@ const EditIngressStepper: React.FC<Props> = ({
                               label="Changed Frequency"
                               variant="outlined"
                               fullWidth
+                              value={previousPropertyValues.changedFrequency}
                               margin="normal"
                               size="small"
-                              value={previousPropertyValues.changedFrequency}
                               disabled
                               error={
                                 touched.changedFrequency &&
@@ -702,6 +725,7 @@ const EditIngressStepper: React.FC<Props> = ({
                             />
                           )}
                         </Field>
+
                         <Field name="dataFormat">
                           {({ field }: FieldProps<FormData>) => (
                             <TextField
