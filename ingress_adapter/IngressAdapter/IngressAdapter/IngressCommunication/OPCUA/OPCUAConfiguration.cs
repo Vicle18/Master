@@ -4,8 +4,6 @@ public class OPCUAConfiguration
 {
     public string SERVER_URL { get; set; }
     public string NODE_NAME { get; set; }
-    public string VALUE_TYPE { get; set; }
-
 
 
     public override string ToString()
