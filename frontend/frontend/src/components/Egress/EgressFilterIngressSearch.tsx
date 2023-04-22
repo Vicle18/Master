@@ -70,7 +70,7 @@ function extractNames(nodes: Node[]) {
 
 
 const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
-    const [selected, setSelected] = useState<string[]>([]);
+    const [selected, setSelected] = useState<any[]>([]);
     const [searchValue, setSearchValue] = useState<string>('');
     const [openPopup, setOpenPopup] = useState(false);
     const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
@@ -93,14 +93,15 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
   }
 
   const handleDelete = (chipToDelete: string) => {
+    console.log("chipToDelete", chipToDelete)
     setSelected((prevSelected) =>
-      prevSelected.filter((value) => value !== chipToDelete)
+      prevSelected.filter((value) => value.id !== chipToDelete)
     );
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onApply(selected);
+    onApply(selected.map((value) => value.id));
   };
 
   const handlerClose = () => {
@@ -111,12 +112,13 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
     console.log("Ingress nodes", ingressNodes);
     ingressNodes.forEach((node) => {
       console.log("node", node);
-      setSelected((prevSelected) => [...prevSelected, node.name]);
+      setSelected((prevSelected) => [...prevSelected, node]);
     });
     setOpenPopup(false);
   };
 
   function handleEgressClick(data: any): void {
+    console.log("data", data);
     setSelectedEgress(data.name);
   }
 
@@ -144,9 +146,9 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
         )}
         {selected.map((value) => (
           <Chip
-            key={value}
-            label={value}
-            onDelete={() => handleDelete(value)}
+            key={value.name}
+            label={value.name}
+            onDelete={() => handleDelete(value.id)}
             color="primary"
             variant="outlined"
             style={{ marginRight: '5px', marginBottom: '5px' }}
@@ -178,6 +180,34 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
               >
                 <>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
+                      
+                      <Grid2
+                        xs={3.6}
+                        sx={{
+                          marginTop: "30px",
+                          marginRight: "20px",
+                          borderRadius: "10px",
+
+                          backgroundColor: "whitesmoke",
+                        }}
+                      >
+                        <IngressOverviewLeft onItemClick={handleEgressClick} />
+                      </Grid2>
+                      <Grid2
+                        xs={4.3}
+                        sx={{
+                          marginTop: "30px",
+                          marginRight: "50px",
+                          borderRadius: "10px",
+                          backgroundColor: "whitesmoke",
+                        }}
+                      >
+                        <DetailedView
+                          containingEntityId={selectedEgress}
+                          onOpenChart={handleSelectObservableProperty}
+                          withDetails={false}
+                        />
+                      </Grid2>
                       <Grid2
                         xs={2.5}
                         sx={{
@@ -219,33 +249,6 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
                             </ListItemButton>
                           ))}
                         </List>
-                      </Grid2>
-                      <Grid2
-                        xs={3.6}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <IngressOverviewLeft onItemClick={handleEgressClick} />
-                      </Grid2>
-                      <Grid2
-                        xs={4.3}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "50px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <DetailedView
-                          containingEntityId={selectedEgress}
-                          onOpenChart={handleSelectObservableProperty}
-                          withDetails={false}
-                        />
                       </Grid2>
                     </Grid2>
                   </>
