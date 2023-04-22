@@ -1,4 +1,4 @@
-namespace EgressAdapter.Controller;
+namespace IngressAdapter.Controller.FrequencyControl;
 
 public interface IFrequencyChanger
 {

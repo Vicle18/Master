@@ -1,6 +1,6 @@
 using Serilog;
 
-namespace EgressAdapter.Controller;
+namespace IngressAdapter.Controller.FrequencyControl;
 
 public abstract class FrequencyController
 {
@@ -19,7 +19,7 @@ public abstract class FrequencyController
     }
     
     
-    public async Task StartTransmission(float changedFrequency, string target, Action<string, string> messageHandler)
+    public async Task StartTransmission(float changedFrequency, Action< string> messageHandler)
     {
         
         var task = Task.Run(async() =>
@@ -31,7 +31,7 @@ public abstract class FrequencyController
                     if (frequencyChanger.HasMessage())
                     {
                         Log.Debug("sending message, waiting for {time} ms with frequency {freq}", 1000 / changedFrequency, changedFrequency);
-                        messageHandler(target, frequencyChanger.GetMessage());
+                        messageHandler(frequencyChanger.GetMessage());
 
                         Log.Debug("{time} waiting", "starting");
                         await Task.Delay((int) (1000 / changedFrequency));
@@ -40,7 +40,6 @@ public abstract class FrequencyController
                     }
                     // this could potentially use a lot of resources..
                 }
-           
             }
             catch (Exception e)
             {

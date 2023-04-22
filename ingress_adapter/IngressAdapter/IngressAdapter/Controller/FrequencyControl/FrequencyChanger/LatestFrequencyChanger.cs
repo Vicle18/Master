@@ -1,5 +1,4 @@
-namespace EgressAdapter.Controller;
-
+namespace IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
 public class LatestFrequencyChanger : IFrequencyChanger
 {
     private string _latestMessage;

@@ -1,5 +1,4 @@
-namespace EgressAdapter.Controller;
-
+namespace IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
 public class MedianFrequencyChanger : IFrequencyChanger
 {
     private List<string> _latestMessages;

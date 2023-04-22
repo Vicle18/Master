@@ -1,6 +1,8 @@
+using IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
+
 namespace IngressAdapter.Controller.FrequencyControl.FrequencyControllers;
 
-public class LatestFrequencyController : EgressAdapter.Controller.FrequencyController
+public class LatestFrequencyController : FrequencyController
 {
     public override IFrequencyChanger CreateFrequencyChanger()
     {

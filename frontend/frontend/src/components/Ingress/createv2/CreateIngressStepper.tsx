@@ -161,12 +161,12 @@ const CreateIngressStepper: React.FC<Props> = ({
       .then((response) => {
         console.log(response.data);
         setResult(response.data);
-        handleResult(response.data);
+        handleResultInSnackbar(response.data);
       })
       .catch((error) => {
         console.error(error);
         setResult(error.message);
-        handleResult(error.message);
+        handleResultInSnackbar(error.message);
       });
 
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress?=`, {

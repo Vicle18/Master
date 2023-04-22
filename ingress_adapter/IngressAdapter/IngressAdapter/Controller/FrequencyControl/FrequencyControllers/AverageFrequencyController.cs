@@ -2,7 +2,7 @@ using IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
 
 namespace IngressAdapter.Controller.FrequencyControl.FrequencyControllers;
 
-public class AverageFrequencyController : EgressAdapter.Controller.FrequencyController
+public class AverageFrequencyController : FrequencyController
 {
     public override IFrequencyChanger CreateFrequencyChanger()
     {

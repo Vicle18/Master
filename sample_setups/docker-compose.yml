@@ -197,6 +197,7 @@ services:
     build:
       context: ./opcua
       dockerfile: Dockerfile
+    restart: always
     ports:
       - 8888:8888
     profiles:

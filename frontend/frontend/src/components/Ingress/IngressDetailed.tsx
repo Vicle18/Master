@@ -291,35 +291,38 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   // };
 
   const handleShowEdit = (data: any) => {
-    previousPropertyValues = data
-    console.log("data data data")
-    console.log(data.downsampleMethod)
-    console.log(data)
+    previousPropertyValues = data;
+    console.log("data data data");
+    console.log(data.downsampleMethod);
+    console.log(data);
 
-    const connectionDetails = JSON.parse(data.connectionDetails)
-    initialValues.protocol = connectionDetails.PROTOCOL
+    const connectionDetails = JSON.parse(data.connectionDetails);
+    initialValues.protocol = connectionDetails.PROTOCOL;
 
     if (connectionDetails.PROTOCOL == "MQTT") {
       initialValues.port = connectionDetails.PARAMETERS.PORT;
       initialValues.host = connectionDetails.PARAMETERS.HOST;
     } else if (connectionDetails.PROTOCOL == "RTDE") {
-      initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
-      initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
-      initialValues.output = connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift()
-      console.log(connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift())
+      initialValues.port = connectionDetails.PARAMETERS.PORT.toString();
+      initialValues.host = connectionDetails.PARAMETERS.HOST.toString();
+      initialValues.output =
+        connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(":").shift();
+      console.log(
+        connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(":").shift()
+      );
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME;
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
-    initialValues.topic = data?.topic.name
-    initialValues.name = data.name
-    initialValues.description = data.description
-    initialValues.frequency = data.frequency
-    initialValues.changedFrequency = data.changedFrequency
-    initialValues.dataFormat = data.dataFormat
-    initialValues.id = data.id
-    initialValues.dataType = data.dataType
-    initialValues.downsampleMethod = data.downsampleMethod
+    initialValues.topic = data?.topic.name;
+    initialValues.name = data.name;
+    initialValues.description = data.description;
+    initialValues.frequency = data.frequency;
+    initialValues.changedFrequency = data.changedFrequency;
+    initialValues.dataFormat = data.dataFormat;
+    initialValues.id = data.id;
+    initialValues.dataType = data.dataType;
+    initialValues.downsampleMethod = data.downsampleMethod;
     setShowEditEndpoint(true);
     setPopupEditIngress(true);
   };
@@ -341,7 +344,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
-        "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
       },
     })
       .then((response) => {
@@ -501,13 +504,13 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                     >
                       Edit Endpoint
                     </Button>
-                    {PopupEditIngress && (
-                      <EditIngressStepper
-                        PopupIngress
-                        handleResult={handleResult}
-                        setPopupIngress={setPopupEditIngress}
-                      ></EditIngressStepper>
-                    )}
+
+                    <EditIngressStepper
+                      PopupIngress={PopupEditIngress}
+                      handleResult={handleResult}
+                      setPopupIngress={setPopupEditIngress}
+                    ></EditIngressStepper>
+
                     <Button
                       variant="contained"
                       style={{ fontSize: "12px" }}

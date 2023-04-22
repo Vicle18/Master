@@ -1,6 +1,6 @@
 using Serilog;
 
-namespace EgressAdapter.Controller;
+namespace IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
 
 public class AverageFrequencyChanger  : IFrequencyChanger
 {

@@ -1077,7 +1077,7 @@ CREATE (egressAnalysis:EgressGroup {
 
 CREATE (egress1:EgressEndpoint {
     id: "egress1",
-    name: "Endpoint 1",
+    name: "Drilling Depth Visual",
     description: "This is the first egress endpoint",
     connectionDetails: '{ "ID":"postman-pod1",
         "PROTOCOL":"MQTT",
@@ -1111,7 +1111,7 @@ CREATE (egress1:EgressEndpoint {
 
 CREATE (egress2:EgressEndpoint {
     id: "egress2",
-    name: "Endpoint 2",
+    name: "Temperature Visual",
     description: "This is the second egress endpoint",
     connectionDetails: '{ "ID":"postman-pod1",
         "PROTOCOL":"MQTT",
@@ -1144,7 +1144,7 @@ CREATE (egress2:EgressEndpoint {
 
 CREATE (egress3:EgressEndpoint {
     id: "egress3",
-    name: "Endpoint 3",
+    name: "Power Consumption Analysis",
     description: "This is the third egress endpoint",
     connectionDetails: '{ "ID":"postman-pod1",
         "PROTOCOL":"MQTT",
@@ -1178,11 +1178,9 @@ CREATE (egressVisual)-[:has]->(egress1)
 CREATE (egressVisual)-[:has]->(egress2)
 CREATE (egressAnalysis)-[:has]->(egress3)
 
-CREATE (egress1)-[:accessTo]->(rpm)
+
 CREATE (egress1)-[:accessTo]->(depth)
 
-CREATE (egress2)-[:accessTo]->(vibration4)
 CREATE (egress2)-[:accessTo]->(temperature4)
 
-CREATE (egress3)-[:accessTo]->(surfaceRoughness2)
 CREATE (egress3)-[:accessTo]->(powerConsumption2)
