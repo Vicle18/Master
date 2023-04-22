@@ -1,10 +1,4 @@
-using System.Diagnostics;
-using System.Net;
-using System.Net.Sockets;
-using System.Text.Json;
 using MiddlewareManager.DataModel;
-using Newtonsoft.Json;
-using NuGet.Packaging;
 using Serilog;
 
 namespace MiddlewareManager.Protocols;
@@ -21,85 +15,11 @@ public class ConnectionDetailsFactory
         switch (value.protocol)
         {
             case "RTDE": return RTDE.CreateRTDEIngressConnection(id, value, topicName);
-            case "OPCUA": return new OPCUA(id, value);
             case "MQTT": return MQTT.CreateMqttIngressConnection(id, value, topicName);
+            case "OPCUA": return OPCUA.CreateOPCUAIngressConnection(id, value);
             default:
                 throw new ArgumentException("Unsupported protocol");
         }
-
-        /*var connectionDetails = new ParameterDetails
-        {
-            FREQUENCY = value.frequency.ToString(),
-            CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
-            DATA_FORMAT = value.dataFormat,
-            HOST = value.host,
-            PORT = value.port.ToString(),
-            TRANSMISSION_PAIRS = ExtractTransmissionPairs(value, topicName)
-        };
-
-        return new MQTTConnectionDetails
-        {
-            ID = id,
-            PROTOCOL = value.protocol,
-            PARAMETERS = connectionDetails,
-        };*/
-        //TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
-
-        /*switch (value.protocol)
-        {
-            case "MQTT":
-                return new MQTTConnectionDetails
-                {
-                    ID = id,
-                    PROTOCOL = value.protocol,
-                    PARAMETERS = new MQTTParameters
-                    {
-                        HOST = value.host,
-                        PORT = value.port.ToString(),
-                        TRANSMISSION_PAIRS = $"{value.topic}:{topicName}",
-                        FREQUENCY = value.frequency.ToString(),
-                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
-                        DATA_FORMAT = value.dataFormat,
-                    }
-                };
-            case "RTDE":
-                return new RTDEConnectionDetails
-                {
-                    ID = id,
-                    PROTOCOL = value.protocol,
-                    PARAMETERS = new RTDEParameters()
-                    {
-                        HOST = value.host,
-                        PORT = value.port.ToString(),
-                        TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
-                        FREQUENCY = value.frequency.ToString(),
-                        CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
-                        DATA_FORMAT = value.dataFormat,
-                    }
-                };
-            case "OPCUA":
-                return new OPCUAConnectionDetails
-                {
-                    ID = id,
-                    PROTOCOL = value.protocol,
-                    PARAMETERS = new OPCUAParameters
-                    {
-                        SERVER_URL = value.host,
-                        TRANSMISSION_PAIRS = JsonConvert.SerializeObject(new object[]
-                        {
-                            new
-                            {
-                                NODE_NAME = $"{value.nodeId}",
-                                VALUE_TYPE = $"{value.dataFormat}",
-                                ORIGIN_TOPIC = $"{value.topic}"
-                            }
-                        }),
-                        DATA_FORMAT = value.dataFormat,
-                    }
-                };
-            default:
-                throw new ArgumentException("Unsupported protocol");
-        }*/
     }
 
 
@@ -107,7 +27,6 @@ public class ConnectionDetailsFactory
     {
         Log.Debug("details");
         Log.Debug(value.protocol);
-        var topicName = $"{value.name}-{Guid.NewGuid().ToString()}";
         var transmissionDetails = new TransmissionDetails()
         {
             FREQUENCY = value.frequency.ToString(),
@@ -121,38 +40,10 @@ public class ConnectionDetailsFactory
         switch (value.protocol)
         {
             case "MQTT": return MQTT.CreateMqttEgressConnection(id, value, transmissionDetails);
-            case "RTDE": return RTDE.CreateRTDEEgressConnection(id, value, transmissionDetails)
+            case "RTDE": return RTDE.CreateRTDEEgressConnection(id, value, transmissionDetails);
+            case "OPCUA": return OPCUA.CreateOPCUAEgressConnection(id, value, transmissionDetails);
+            default:
+                throw new ArgumentException("Unsupported protocol");
         }
-
-        // switch (value.protocol)
-        // {
-        //     case "MQTT":
-        //         return new MQTTConnectionDetails
-        //         {
-        //             ID = id,
-        //             PROTOCOL = value.protocol,
-        //             PARAMETERS = new MQTTParameters
-        //             {
-        //                 HOST = value.host ?? GenerateHost(),
-        //                 PORT = value.port ?? GeneratePort(),
-        //             },
-        //             TRANSMISSION_DETAILS = transmissionDetails
-        //         };
-        //     case "OPCUA":
-        //         return new OPCUAConnectionDetails
-        //         {
-        //             ID = id,
-        //             PROTOCOL = value.protocol,
-        //             PARAMETERS = new OPCUAParameters
-        //             {
-        //                 SERVER_URL = GenerateHost(),
-        //             },
-        //             TRANSMISSION_DETAILS = transmissionDetails
-        //         };
-        //     default:
-        //         throw new ArgumentException("Unsupported protocol");
-        // }
-        return null;
     }
-    
 }

@@ -33,7 +33,7 @@ namespace MiddlewareManager.Protocols
             {
                 ID = id,
                 PROTOCOL = value.protocol,
-                PARAMETERS = new OPCUAParameters
+                PARAMETERS = new OPCUAConnectionDetails
                 {
                     SERVER_URL = DetailsGenerator.GenerateHost(),
                 },

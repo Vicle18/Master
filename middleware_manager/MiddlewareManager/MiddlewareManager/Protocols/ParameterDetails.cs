@@ -11,4 +11,6 @@ public class ParameterDetails
     public string? DATA_TYPE { get; set; }
     public object DOWN_SAMPLING_METHOD { get; set; }
 
+    public string? SERVER_URL { get; set; }
+
 }
