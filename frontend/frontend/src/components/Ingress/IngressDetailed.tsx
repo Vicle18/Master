@@ -291,7 +291,6 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   // };
 
   const handleShowEdit = (data: any) => {
-    previousPropertyValues = data
     console.log("data data data")
     console.log(data.downsampleMethod)
     console.log(data)
@@ -320,6 +319,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     initialValues.id = data.id
     initialValues.dataType = data.dataType
     initialValues.downsampleMethod = data.downsampleMethod
+    previousPropertyValues = initialValues
     setShowEditEndpoint(true);
     setPopupEditIngress(true);
   };
@@ -341,7 +341,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers":
-        "Origin, Content-Type, X-Auth-Token, X-Requested-With",
+          "Origin, Content-Type, X-Auth-Token, X-Requested-With",
       },
     })
       .then((response) => {
