@@ -10,12 +10,11 @@ public class ConnectionDetailsFactory
     public static IConnectionDetails Create(string id, IngressDTOBase value, string topicName)
     {
         Log.Debug(value.ToString());
-        Log.Debug("protocol" + value.protocol);
 
         switch (value.protocol)
         {
             case "RTDE": return RTDE.CreateRTDEIngressConnection(id, value, topicName);
-            case "MQTT": return MQTT.CreateMqttIngressConnection(id, value, topicName);
+            case "MQTT": return MQTT.CreateMQTTIngressConnection(id, value, topicName);
             case "OPCUA": return OPCUA.CreateOPCUAIngressConnection(id, value);
             default:
                 throw new ArgumentException("Unsupported protocol");
@@ -26,7 +25,7 @@ public class ConnectionDetailsFactory
     public static IConnectionDetails Create(string id, CreateEgressDto value, ObservableProperty property)
     {
         Log.Debug("details");
-        Log.Debug(value.protocol);
+        
         var transmissionDetails = new TransmissionDetails()
         {
             FREQUENCY = value.frequency.ToString(),
@@ -39,7 +38,7 @@ public class ConnectionDetailsFactory
         };
         switch (value.protocol)
         {
-            case "MQTT": return MQTT.CreateMqttEgressConnection(id, value, transmissionDetails);
+            case "MQTT": return MQTT.CreateMQTTEgressConnection(id, value, transmissionDetails);
             case "RTDE": return RTDE.CreateRTDEEgressConnection(id, value, transmissionDetails);
             case "OPCUA": return OPCUA.CreateOPCUAEgressConnection(id, value, transmissionDetails);
             default:

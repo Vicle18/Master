@@ -5,7 +5,7 @@ namespace MiddlewareManager.Protocols;
 
 public static class MQTT
 {
-    public static IConnectionDetails CreateMqttIngressConnection(string id, IngressDTOBase ingressValue,
+    public static IConnectionDetails CreateMQTTIngressConnection(string id, IngressDTOBase ingressValue,
         string topicName)
     {
         return new MQTTConnectionDetails
@@ -26,7 +26,7 @@ public static class MQTT
         };
     }
 
-    public static IConnectionDetails CreateMqttEgressConnection(string id, CreateEgressDto value,
+    public static IConnectionDetails CreateMQTTEgressConnection(string id, CreateEgressDto value,
         TransmissionDetails transmissionDetails)
     {
         return new MQTTConnectionDetails

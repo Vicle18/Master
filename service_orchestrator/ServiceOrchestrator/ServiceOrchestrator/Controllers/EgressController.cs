@@ -46,6 +46,7 @@ namespace ServiceOrchestrator.Controllers
         [HttpPost]
         public async Task Post([FromBody] EndpointPayload data)
         {
+            Log.Debug("Inside egress post");
             ContainerConfig config = new ContainerConfig("clemme/egress:latest", new Dictionary<string, string>());
             AddingConfigurationData(data, config);
 
