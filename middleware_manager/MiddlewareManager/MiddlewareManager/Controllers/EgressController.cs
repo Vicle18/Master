@@ -62,13 +62,10 @@ namespace MiddlewareManager.Controllers
             {
                 Response response = null;
                 var id = Guid.NewGuid().ToString();
-
-
-                
                 ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
                 var connectionDetails = ConnectionDetailsFactory.Create(id, value, observableProperty);
                 _logger.LogDebug("creating new egress with connection details: {details}", JsonSerializer.Serialize(connectionDetails));
-                await ForwardsRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails));
+                await HTTPForwarder.ForwardsEgressRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails), _client);
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
                 JsonSerializer.Serialize(connectionDetails));
                 
@@ -80,42 +77,7 @@ namespace MiddlewareManager.Controllers
                 return BadRequest(e.Message);
             }
         }
-
-        /**
-         * Creates an HTTP request to the ServiceConfigurator
-         */
-        private async Task ForwardsRequestToConfigurator(CreateEgressDto value,
-            string connectionDetails)
-        {
-            try
-            {
-                // Create the HTTP request message with the JSON string as the content
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Egress?=");
-                var contentObject = new JObject()
-                {
-                    ["CreateBroker"] = value.createBroker,
-                    ["ConnectionDetails"] = JsonConvert.DeserializeObject<JToken>(connectionDetails),
-                };
-                _logger.LogDebug("connectionDetails: {details}", contentObject.ToString());
-                Console.WriteLine($"connectionDetails: {contentObject.ToString()}");
-                //request.Content = new StringContent(connectionDetails, Encoding.UTF8, "application/json");
-                request.Content = new StringContent(contentObject.ToString(), Encoding.UTF8, "application/json");
-                // Send the request and wait for the response
-                var response = await _client.SendAsync(request);
-
-                // Get the response content
-                var responseString = await response.Content.ReadAsStringAsync();
-                _logger.LogDebug("Received ServiceConfigurator Response: {responseString}", responseString);
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw new ArgumentException($"Could not forward request: {e.Message}", e);
-            }
-            
-        }
-
+        
         // PUT: api/Egress/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
