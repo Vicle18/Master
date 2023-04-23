@@ -45,6 +45,7 @@ namespace ServiceOrchestrator.Controllers
         [HttpGet("{id}", Name = "GetIngress")]
         public string Get(int id)
         {
+            var list = new List<string>() { };
             return "value";
         }
 

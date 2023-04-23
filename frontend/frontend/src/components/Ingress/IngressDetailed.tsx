@@ -25,6 +25,7 @@ import { initialValues } from "./createv2/FormDefinition";
 import EditIngressStepper from "./edit/EditIngressStepper";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import { egressInitialValues } from "../Egress/create/FormDefinition";
+import IngressStatus from "./IngressConnectionIndicator";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
   query Company(
@@ -406,6 +407,8 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         .map((item: any, index: any) => (
           <Accordion key={index}>
             <AccordionSummary>
+            <IngressStatus ingressId={item.id}/>
+            <Box sx={{ width: "10px" }} />
               <Typography
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
