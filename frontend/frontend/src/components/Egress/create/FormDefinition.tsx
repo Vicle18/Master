@@ -26,9 +26,12 @@ export interface FormData {
   downSamplingMethod?: (string | undefined);
   host?: string;
   port?: string;
-  ingressId: (string | undefined);
+  serverUrl?:string;
+  nodeId?: string;
+  nodeType?: string;
+  ingressId?: (string | undefined);
   dataFormat: string;
-  groupId: string;
+  groupId?: string;
   metadata?: {
     timestamp?: boolean;
     name?: string;
@@ -38,18 +41,18 @@ export interface FormData {
 }
 
 export const egressInitialValues: FormData = {
-  name: "defaultName",
-  description: "default Description",
-  protocol: "MQTT",
-  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
-  port: "1883",
+  name: "",
+  description: "",
+  protocol: "",
+  host: "localhost", //172.17.0.1 is the default host for the mosquitto container on the docker network
+  port: "8088",
   createBroker: false,
-  frequency: 30,
-  changedFrequency: 30,
-  downSamplingMethod: "LATEST",
-  ingressId: "jointTemperature2",
-  dataFormat: "RAW",
-  groupId: "defaultEgressGroup",
+  frequency: 0,
+  changedFrequency: 0,
+  downSamplingMethod: "",
+  ingressId: "",
+  dataFormat: "",
+  groupId: "",
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
@@ -79,9 +82,19 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   frequency: Yup.number().required("Frequency is required"),
   changedFrequency: Yup.number().optional(),
   downSamplingMethod: Yup.string().optional(),
-  ingressId: Yup.string().required("Ingress is required"),
+  ingressId: Yup.string().optional(),
   dataFormat: Yup.string().required("dataFormat is required"),
-  groupId: Yup.string().required("dataFormat is required"),
+  groupId: Yup.string().optional(),
   metadata: Yup.object().optional(),
+  serverUrl: Yup.string().when("protocol", {
+    is: "OPCUA",
+    then: (schema) => schema.required("Server URL is required"),
+    otherwise: (schema) => schema,
+  }),
+  nodeType: Yup.string().when("protocol", {
+    is: "OPCUA",
+    then: (schema) => schema.required("Node Type is required"),
+    otherwise: (schema) => schema,
+  }),
 
 });

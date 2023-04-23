@@ -140,6 +140,7 @@ public class EgressRepository : IEgressRepository
                 }
             }
         };
+        _logger.LogDebug("sending graphql: {request}", JsonConvert.SerializeObject(request));
         var response = await graphQLClient.SendMutationAsync<Response>(request);
         Log.Debug(JsonConvert.SerializeObject(response));
         _logger.LogCritical("when creating egress, got feedback: {feedback}", response.Data);
@@ -170,7 +171,7 @@ public class EgressRepository : IEgressRepository
         _logger.LogCritical("when deleting egress, got feedback: {feedback}", response.Data);
         if (response.Errors != null)
         {
-            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
+            throw new ArgumentException($"Failed in deleting egress, error: {response.Errors}");
         }
 
         return JsonConvert.SerializeObject(response.Data);

@@ -1,5 +1,9 @@
+using System.Globalization;
 using IngressAdapter.BusCommunication;
 using IngressAdapter.BusCommunication.KAFKA;
+using IngressAdapter.Controller.FrequencyControl;
+using IngressAdapter.Controller.FrequencyControl.FrequencyControllers;
+using IngressAdapter.DataModel;
 using IngressAdapter.IngressCommunication;
 using IngressAdapter.IngressCommunication.MQTT;
 using IngressAdapter.IngressCommunication.OPCUA;
@@ -19,7 +23,10 @@ public class Controller : IController
     private readonly ILogger<Controller> _logger;
     private IBusClient _busClient;
     private IIngressClient _ingressClient;
-    private CancellationTokenSource cts = new CancellationTokenSource();
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+    private readonly TransmissionDetails _transmissionDetails = new TransmissionDetails();
+    private FrequencyController _frequencyController;
+
     public Controller(IConfiguration config, IIngressClientCreator clientCreator, ILogger<Controller> logger)
     {
         _config = config;
@@ -32,7 +39,13 @@ public class Controller : IController
         try
         {
             Log.Debug("Initializing Controller");
+            _config.GetSection("INGRESS_CONFIG").GetSection("TRANSMISSION_DETAILS").Bind(_transmissionDetails);
             InitializeBusCommunication();
+            _logger.LogDebug("{freq} {changedFres}", _transmissionDetails.FREQUENCY, _transmissionDetails.CHANGED_FREQUENCY);
+            if (_transmissionDetails.FREQUENCY != _transmissionDetails.CHANGED_FREQUENCY)
+            {
+                InitializeFrequencyController();
+            }
             await InitializeIngressCommunication();
             PublishAvailabilityNotification();
         }
@@ -67,9 +80,9 @@ public class Controller : IController
             _ingressClient = _clientCreator.CreateIngressClient(clientType);
             _logger.LogDebug("Initializing ingestion");
 
-            await _ingressClient.Initialize(TransmitMessage);
+            await _ingressClient.Initialize(_transmissionDetails.FREQUENCY == _transmissionDetails.CHANGED_FREQUENCY ? TransmitMessage : TransmitMessageWithFrequencyChange);
             _logger.LogDebug("Starting ingestion");
-            _ingressClient.StartIngestion();
+            _ingressClient.StartIngestion(_transmissionDetails);
         }
         catch (Exception e)
         {
@@ -78,15 +91,41 @@ public class Controller : IController
         }
         
     }
+    private void InitializeFrequencyController()
+    {
+        Log.Debug("Initializing Frequency Controller for {method} downsampling", _transmissionDetails.DOWN_SAMPLING_METHOD);
+        switch (_transmissionDetails.DOWN_SAMPLING_METHOD)
+        {
+            case "AVERAGE":
+                _frequencyController = new AverageFrequencyController();
+                break;
+            case "MEDIAN":
+                _frequencyController = new MedianFrequencyController();
+                break;
+            case "LATEST":
+                _frequencyController = new LatestFrequencyController();
+                break;
+            case "ACCUMULATED":
+                _frequencyController = new AccumulatedStringFrequencyController();
+                break;
+            default:
+                _frequencyController = new LatestFrequencyController();
+                break;
+        }
+        // Required to make sure that the "." is used as separator
+        CultureInfo ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+        ci.NumberFormat.CurrencyDecimalSeparator = ".";
+        _frequencyController.StartTransmission(float.Parse(_transmissionDetails.CHANGED_FREQUENCY, NumberStyles.Any,ci), TransmitMessage);
+    }
 
     public void StartTransmission()
     {
         Console.CancelKeyPress += delegate(object? sender, ConsoleCancelEventArgs e) {
             e.Cancel = true;
-            cts.Cancel();
+            _cts.Cancel();
         };
         Log.Debug("Starting Transmission");
-        while (!cts.IsCancellationRequested)
+        while (!_cts.IsCancellationRequested)
         {
             JObject msg = new JObject()
             {
@@ -99,34 +138,15 @@ public class Controller : IController
         Log.Debug("Stopping transmission");
     }
 
-    private void TransmitMessage(string targetTopic, string value)
+    private void TransmitMessageWithFrequencyChange(string value)
     {
-        var dataFormat = _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").GetValue<string>("DATA_FORMAT") ?? throw new ArgumentException();
-        if (dataFormat == "RAW")
-        {
-            _busClient.Publish(targetTopic, value);
-            Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
-        }
-        else if (dataFormat == "WITH_METADATA")
-        {
-            var metadata = _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").GetSection("METADATA") ?? throw new ArgumentException();
-            var metadataObject = new JObject();
-            metadataObject["value"] = value;
-            if (metadata.GetValue<bool>("TIMESTAMP"))
-            {
-                metadataObject["timestamp"] = DateTime.Now.ToUniversalTime();
-            }
-            foreach (var item in metadata.GetChildren())
-            {
-                if (item.Key != "TIMESTAMP")
-                {
-                    metadataObject.Add(item.Key.ToLower(), item.Value);
-                }
-            }
-            _busClient.Publish(targetTopic, metadataObject.ToString());
-            Log.Debug("Transmitting message with metadata: {message} to topic: {topic}", metadataObject.ToString(), targetTopic);
-        }
-        // _busClient.Publish(targetTopic, value);
-        // Log.Debug("Transmitting message: {message} to topic: {topic}", value, targetTopic);
+        // Log.Debug("Received message {message} from, changing frequency", value);
+        _frequencyController.AddMessage(value);
+    }
+    
+    private void TransmitMessage(string value)
+    {
+        _busClient.Publish(_transmissionDetails.TARGET_TOPIC, value);
+        Log.Debug("Transmitting message: {message} to topic: {topic}", value, _transmissionDetails.TARGET_TOPIC);
     }
 }

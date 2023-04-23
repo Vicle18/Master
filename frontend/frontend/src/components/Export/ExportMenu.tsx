@@ -26,7 +26,7 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
 import { gql, useQuery } from "@apollo/client";
 
-interface Props {}
+interface Props { }
 
 const steps = ["Select Machines to export", "Copy or Download"];
 
@@ -51,7 +51,7 @@ const GET_MACHINES = gql`
   }
 `;
 
-const ExportStepper: React.FC<Props> = ({}) => {
+const ExportStepper: React.FC<Props> = ({ }) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [PopupExport, setPopupExport] = React.useState(false);
   const [currentlySelectedMachine, setCurrentlySelectedParent] =
@@ -89,7 +89,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
     element.download = "machines.json";
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
-    };
+  };
   return (
     <div>
       <Button
@@ -132,25 +132,8 @@ const ExportStepper: React.FC<Props> = ({}) => {
               );
             })}
           </Stepper>
-          <React.Fragment>
-            <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
-              <Box sx={{ flex: "1 1 auto" }} />
-              {activeStep !== steps.length - 1 && (
-                <Button onClick={handleNext}>{"Next"}</Button>
-              )}
-              {/* <Button onClick={handleNext} >
-                      {activeStep === steps.length - 1 ? "" : "Next"}
-                    </Button> */}
-            </Box>
-          </React.Fragment>
+          <Box sx={{ height: "20px" }} />
+
           {activeStep === 0 && (
             <>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -173,18 +156,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
                         {/* </Box> */}
                       </Grid2>
                       <Grid2 container xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedMachines([
-                              ...selectedMachines,
-                              currentlySelectedMachine,
-                            ]);
-                          }}
-                        >
-                          Add
-                        </Button>
+
                       </Grid2>
                     </Grid2>
                   </Box>
@@ -195,10 +167,26 @@ const ExportStepper: React.FC<Props> = ({}) => {
                       // HandleIngressClick(parent.name);
                       setCurrentlySelectedParent(parent.name);
                     }}
+
                     filter={["machines"]}
                     initialSearchString={""}
                   />
+                  <Divider />
+                  <Button
+                    sx={{ marginTop: "20px", marginLeft:"375px"}}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => {
+                      setSelectedMachines([
+                        ...selectedMachines,
+                        currentlySelectedMachine,
+                      ]);
+                    }}
+                  >
+                    Add
+                  </Button>
                 </Grid2>
+
                 <Grid2
                   xs={2.5}
                   sx={{
@@ -255,7 +243,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography variant="body2" gutterBottom>
+                  <Typography variant="body2" gutterBottom style={{ wordBreak: "break-all" }}>
                     {JSON.stringify(data?.machines, null, "\t")}
                   </Typography>
                 </Grid2>
@@ -274,7 +262,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
                     color="success"
                     type="submit"
                     onClick={handleSave}
-                   
+
                   >
                     Save as file
                   </Button>
@@ -288,14 +276,41 @@ const ExportStepper: React.FC<Props> = ({}) => {
             Cancel
           </Button> */}
           <Button
-            variant="contained"
-            color="success"
-            type="submit"
+            variant="outlined"
+            color="primary"
             onClick={handlerClose}
-            // disabled={!isValid}
           >
-            Finished
+            Cancel
           </Button>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+
+          {activeStep !== steps.length - 1 && (
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={handleNext}
+            >
+              {"Next"}
+            </Button>
+          )}
+          {activeStep === steps.length - 1 && (
+            <Button
+              variant="contained"
+              color="success"
+              type="submit"
+              onClick={handlerClose}
+              disabled={activeStep !== steps.length - 1}
+            >
+              Finished
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </div>

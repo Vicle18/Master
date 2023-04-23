@@ -24,10 +24,16 @@ import {
   FormLabel,
   Switch,
   Checkbox,
+  Alert,
+  Slide,
+  Paper,
 } from "@mui/material";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
+import InfoIcon from "@mui/icons-material/Info";
 import React, { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Grid2 from "@mui/material/Unstable_Grid2";
@@ -39,6 +45,10 @@ import { create } from "domain";
 interface Props {
   setPopupImport: React.Dispatch<React.SetStateAction<boolean>>;
   PopupImport: boolean;
+}
+
+export interface State extends SnackbarOrigin {
+  open: boolean;
 }
 
 const steps = [
@@ -68,6 +78,15 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     useState<any>();
   const [selectedContainer, setSelectedContainer] = useState<any>();
   const [json, setJson] = useState<any>();
+  const [state, setState] = React.useState<State>({
+    open: false,
+    vertical: "top",
+    horizontal: "center",
+  });
+  const [result, setResult] = useState<string | null>(null);
+
+  const { vertical, horizontal, open } = state;
+
   const { loading, error, data, refetch } = useQuery(
     GET_OBSERVABLE_PROPERTIES,
     {
@@ -150,9 +169,9 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     }
   };
 
-  const createObservableProperties = () => {
+  const createObservableProperties = (newState: SnackbarOrigin) => () => {
     console.log("creating");
-
+    setState({ open: true, ...newState });
     setCreationStarted(true);
     const observablePropertiesToCreate =
       json?.machines?.[0]?.observableProperties?.filter(
@@ -162,9 +181,9 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
     observablePropertiesToCreate?.forEach((observableProperty: any) => {
       observableProperty.containingElement = json?.machines?.[0]?.id;
-      observableProperty.topic = observableProperty.topic.name;
+      observableProperty.topic = observableProperty.topic;
       observableProperty.dataFormat = "RAW";
-      console.log("creating",  JSON.stringify(observableProperty));
+      console.log("creating", JSON.stringify(observableProperty));
 
       fetch(
         `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/IngressFromFile?=`,
@@ -180,9 +199,10 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         }
       )
         .then((response) => response.json())
-        .then((data) =>
-          console.log("created observableProperty: " + JSON.stringify(data))
-        )
+        .then((data) => {
+          setResult(JSON.stringify(data));
+          console.log("created observableProperty: " + JSON.stringify(data));
+        })
         .catch((error) => console.error(error));
     });
 
@@ -195,7 +215,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
   const createMachine = (propertyIds: string[]) => {
     try {
-      console.log("creating machine", propertyIds)
+      console.log("creating machine", propertyIds);
       var createMachineDto = {
         id: json?.machines?.[0]?.id,
         name: json?.machines?.[0]?.name,
@@ -205,7 +225,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         children: [],
         observableProperties: propertyIds,
       };
-  
+
       fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/ContainingElement`, {
         method: "POST",
         headers: {
@@ -219,7 +239,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("created machine: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-  
+
       var UpdateCelldto = {
         machineId: json?.machines?.[0]?.id,
         cellId: selectedContainer.id,
@@ -240,10 +260,13 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("updated cell: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
   };
 
   return (
@@ -274,22 +297,33 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           </Stepper>
           <React.Fragment>
             <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-              <Button
-                color="inherit"
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                sx={{ mr: 1 }}
-              >
-                Back
-              </Button>
               <Box sx={{ flex: "1 1 auto" }} />
-              {activeStep !== steps.length - 1 && (
-                <Button onClick={handleNext}>{"Next"}</Button>
-              )}
             </Box>
           </React.Fragment>
           {activeStep === 0 && (
             <>
+              <Box
+                sx={{
+                  backgroundColor: "rgba(24, 85, 184, 0.9)",
+                  border: "1px solid white",
+                  p: 2,
+                  marginLeft: "13px",
+                  borderRadius: "10px",
+                  marginRight: "13px",
+                  color: "white",
+                  alignItems: "center",
+                  display: "flex",
+                  "& p": {
+                    marginLeft: "10px", // add some margin between the icon and the paragraph
+                  },
+                }}
+              >
+                <InfoIcon />
+                <p>
+                  Select the parent element in which you want to store your
+                  import machines
+                </p>
+              </Box>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                 <Grid2
                   xs={5}
@@ -301,31 +335,10 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Box mb={2}>
-                    <Grid2 container alignItems="center" spacing={2}>
-                      <Grid2 container xs={9}>
-                        <Typography variant="caption">
-                          Current Element: {currentlySelectedContainer?.name}
-                        </Typography>
-                      </Grid2>
-                      <Grid2 container xs={3}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() => {
-                            setSelectedContainer(currentlySelectedContainer);
-                          }}
-                        >
-                          Select
-                        </Button>
-                      </Grid2>
-                    </Grid2>
-                  </Box>
-
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
-                      setCurrentlySelectedContainer(parent);
+                      setSelectedContainer(parent);
                     }}
                     filter={["cells"]}
                     initialSearchString={""}
@@ -385,9 +398,12 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography variant="body2" gutterBottom>
-                    {JSON.stringify(json, null, "\t")}
-                  </Typography>
+                  <Paper style={{ padding: "10px" }}>
+                    <Typography style={{ wordBreak: "break-all" }}>{JSON.stringify( json, null, 2)}</Typography>
+                  </Paper>
+                  {/* <Typography variant="body2" gutterBottom>
+                    
+                  </Typography> */}
                 </Grid2>
               </Grid2>
             </>
@@ -440,12 +456,50 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     }}
                     variant="outlined"
                     disableElevation
-                    onClick={() => {
-                      createObservableProperties();
-                    }}
+                    onClick={createObservableProperties({
+                      vertical: "bottom",
+                      horizontal: "center",
+                    })}
                   >
                     Create Observable Properties
                   </Button>
+                  {/* <Snackbar
+                    open={open}
+                    onClose={handleClose}
+                    autoHideDuration={3000}
+                    TransitionComponent={Slide}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    message={"Observable was created"}
+
+                  /> */}
+                  {result && (
+                    <Snackbar
+                      open={open}
+                      onClose={handleClose}
+                      autoHideDuration={3000}
+                      TransitionComponent={Slide}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      message={result}
+                    >
+                      {result === "Network Error" ? (
+                        <Alert
+                          onClose={handleClose}
+                          severity="error"
+                          sx={{ width: "100%" }}
+                        >
+                          {result}
+                        </Alert>
+                      ) : (
+                        <Alert
+                          onClose={handleClose}
+                          severity="success"
+                          sx={{ width: "100%" }}
+                        >
+                          {"Observable Property was successfully created"}
+                        </Alert>
+                      )}
+                    </Snackbar>
+                  )}
                 </Grid2>
                 <Grid2
                   xs={5}
@@ -494,12 +548,29 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           {/* <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button> */}
+          <Button variant="outlined" color="primary" onClick={handlerClose}>
+            Cancel
+          </Button>
+          <Button
+            color="inherit"
+            disabled={activeStep === 0}
+            onClick={handleBack}
+            sx={{ mr: 1 }}
+          >
+            Back
+          </Button>
+
+          {activeStep !== steps.length - 1 && (
+            <Button color="primary" variant="contained" onClick={handleNext}>
+              {"Next"}
+            </Button>
+          )}
           <Button
             variant="contained"
             color="success"
             type="submit"
             onClick={handlerClose}
-            // disabled={!isValid}
+            disabled={activeStep !== steps.length - 1}
           >
             Finished
           </Button>

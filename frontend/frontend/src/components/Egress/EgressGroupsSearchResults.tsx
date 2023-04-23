@@ -51,14 +51,14 @@ const GET_ENDPOINTS = gql`
 `;
 
 interface IEgressSearchResultProps {
-  searchParameters: EgressSearchParameters;
-  onSelectEgressId: (egressId: string) => void;
+  searchParameters?: EgressSearchParameters;
+  onSelectEgress: (egressEndpoint: any) => void;
   onSelectGroupId?: (groupId: string) => void;
 }
 
 const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   searchParameters,
-  onSelectEgressId,
+  onSelectEgress,
   onSelectGroupId,
 }) => {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -77,9 +77,11 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
               name_CONTAINS: searchParameters.keyword,
             }),
             ...(searchParameters.ingressEndpoints?.length > 0 && {
-              accessTo_ALL: {
-                id_IN: searchParameters.ingressEndpoints,
-              },
+              accessToConnection: {
+                node: {
+                  id_IN: searchParameters.ingressEndpoints,
+                }
+              }
             }),
             ...(searchParameters.protocols?.length > 0 && {
               OR: searchParameters.protocols.map((protocol) => ({
@@ -95,33 +97,14 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
-    return <p>Error : {error.message}</p>;
+    return <p>Error : {JSON.stringify(error)}</p>;
   }
   var properties = data.egressGroups;
 
   const handleShowChart = (data: any) => {
     console.log("data: ", JSON.stringify(data));
-    // const connectionDetails: ConnectionDetails = JSON.parse(
-    //   data.connectionDetails,
-    //   (key, value) => {
-    //     if (key === "PROTOCOL") {
-    //       return value;
-    //     } else if (key === "PARAMETERS") {
-    //       return Object.entries(value).reduce<Record<string, any>>(
-    //         (acc, [key, value]) => {
-    //           acc[key.toLowerCase()] = value;
-    //           return acc;
-    //         },
-    //         {}
-    //       );
-    //     }
-    //     return value;
-    //   }
-    // );
-    // connectionDetails.OBSERVABLE_PROPERTY = data.accessTo;
-    // console.log("connectionDetails: ", connectionDetails);
 
-    onSelectEgressId(data.id);
+    onSelectEgress(data);
   };
   function handleDeleteItem(item: any): void {
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress/${item.id}`, {
@@ -182,13 +165,21 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
               >
-                {item.name}
+                GROUP | {item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
                 {item.accessTo.length <= 0 && (
                   <Chip
-                    label="No Ingress Endpoints"
+                    label="No Egress Endpoints"
                     color="error"
+                    size="small"
+                    sx={{ marginRight: "10px" }}
+                  />
+                )}
+                {item.accessTo.length > 0 && (
+                  <Chip
+                    label={"Contains " + item.accessTo.length +" Egress Endpoints"}
+                    color="success"
                     size="small"
                     sx={{ marginRight: "10px" }}
                   />
@@ -262,19 +253,20 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 </Button>
               )}
               {!onSelectGroupId && (
-                <Stack direction="row" spacing={2}>
-                  <Button
+                <Stack direction="row" spacing={2} justifyContent="flex-end">
+                  {/* <Button
                     variant="contained"
                     onClick={() => handleShowChart(item)}
                   >
                     Show Connection Details
-                  </Button>
+                  </Button> */}
                   <Button
                     variant="outlined"
                     color="error"
+
                     onClick={() => handleDeleteItem(item)}
                   >
-                    Delete
+                    Delete Egress Group
                   </Button>
                 </Stack>
               )}

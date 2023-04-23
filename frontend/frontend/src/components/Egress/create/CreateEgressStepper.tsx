@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -20,6 +21,8 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  Slide,
+  Snackbar,
   Step,
   StepButton,
   Stepper,
@@ -61,7 +64,6 @@ const steps = [
   "Add Observable Properties",
   "Select Frequency",
   "Select Endpoint Group",
-  "Access Information",
 ];
 
 const GET_ENDPOINTS = gql`
@@ -85,10 +87,13 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [checkBoxData, setCheckBoxData] = useState<CheckBoxData>({});
 
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
-  const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>([]);
+  const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>();
 
-  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>();
+  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>(selectedIngress);
   const [selectedEgress, setSelectedEgress] = useState<string>("");
+  const [openSnackbar, setOpenSnackbar] = React.useState(true);
+  const [result, setResult] = useState<string | null>(null);
+
   const [selectedDataFormat, setSelectedDataFormat] =
     useState<string>("string");
 
@@ -97,6 +102,10 @@ const CreateEgressStepper: React.FC<Props> = ({
 
   const handlerClose = () => {
     setPopupEgress(false);
+  };
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
   };
 
   const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
@@ -122,6 +131,10 @@ const CreateEgressStepper: React.FC<Props> = ({
     setPopupEgress(false);
     values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
+    if (values.createBroker && values.protocol === "MQTT") {
+      values.host = "localhost";
+      values.port = "8088";
+    }
     if (values.dataFormat === "WITH_METADATA") {
       values.metadata = {};
       for (const [key, value] of Object.entries(checkBoxData)) {
@@ -146,6 +159,7 @@ const CreateEgressStepper: React.FC<Props> = ({
 
     console.log("submitting:", JSON.stringify(values));
 
+
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
       headers: {
@@ -156,9 +170,16 @@ const CreateEgressStepper: React.FC<Props> = ({
       },
       body: JSON.stringify(values),
     })
-      .then((response) => response.json())
+      .then((response) => {
+        console.log(response)
+        setResult(JSON.stringify(response));
+      }
+      )
       .then((data) => console.log("data: " + JSON.stringify(data)))
-      .catch((error) => console.error(error.message));
+      .catch((error) => {
+        console.error(error);
+        setResult(error.message);
+      });
   };
 
   function handleEgressClick(data: any): void {
@@ -227,25 +248,8 @@ const CreateEgressStepper: React.FC<Props> = ({
                     );
                   })}
                 </Stepper>
-                <React.Fragment>
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 && (
-                      <Button onClick={handleNext}>{"Next"}</Button>
-                    )}
-                    {/* <Button onClick={handleNext} >
-                    {activeStep === steps.length - 1 ? "" : "Next"}
-                  </Button> */}
-                  </Box>
-                </React.Fragment>
+                <Box sx={{ height: "20px" }} />
+
                 {activeStep === 0 && (
                   <>
                     <Field name="name">
@@ -376,36 +380,95 @@ const CreateEgressStepper: React.FC<Props> = ({
                       >
                         <MenuItem value="MQTT">MQTT</MenuItem>
                         <MenuItem value="OPCUA">OPCUA</MenuItem>
+                        <MenuItem value="KAFKA">Kafka</MenuItem>
+                        <MenuItem value="GRCP">gRPC</MenuItem>
+                        <MenuItem value="REST">REST</MenuItem>
                       </Field>
                     </FormControl>
 
                     {(values.protocol === "MQTT" ||
                       values.protocol === "OPCUA") && (
-                      <>
-                        <Field name="createBroker">
-                          {({ field }: FieldProps<FormData>) => (
-                            <FormControlLabel
-                              control={
-                                <Switch
-                                  {...field}
-                                  defaultChecked={values.createBroker}
-                                  onChange={() => {
-                                    values.createBroker = !values.createBroker;
-                                    console.log(values.createBroker);
-                                    setCreateBroker(values.createBroker);
-                                  }}
-                                  disabled={values.protocol === "OPCUA"}
-                                  color="primary"
-                                />
-                              }
-                              label="Providing your own broker"
-                            />
-                          )}
-                        </Field>
-                      </>
-                    )}
+                        <>
+                          <Field name="createBroker">
+                            {({ field }: FieldProps<FormData>) => (
+                              <FormControlLabel
+                                control={
+                                  <Switch
+                                    {...field}
+                                    defaultChecked={values.createBroker}
+                                    onChange={() => {
+                                      values.createBroker = !values.createBroker;
+                                      console.log(values.createBroker);
+                                      setCreateBroker(values.createBroker);
+                                    }}
+                                    disabled={values.protocol === "OPCUA"}
+                                    color="primary"
+                                  />
+                                }
+                                label="Providing your own broker"
+                              />
+                            )}
+                          </Field>
+                        </>
+                      )}
 
                     {createBroker && values.protocol === "MQTT" && (
+                      <>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="host">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Host"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.host && Boolean(errors.host)}
+                                helperText={touched.host && errors.host}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="port">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Port"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.port && Boolean(errors.port)}
+                                helperText={touched.port && errors.port}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid port e.g., 8080">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </>
+                    )}
+                    {createBroker && values.protocol === "OPCUA" && (
                       <>
                         <Box
                           sx={{
@@ -484,8 +547,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                     >
                       <InfoIcon />
                       <p>
-                        Select the containing element in which you would like to
-                        store your Egress Endpoint.
+                        Select the ingress endpoint, i.e. observable property
+                        that you want to make accessible. For instance, you
+                        might choose the temperature of a robot to be accessible
+                        for your visualization tool.
                       </p>
                     </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -513,9 +578,11 @@ const CreateEgressStepper: React.FC<Props> = ({
                         <DetailedView
                           containingEntityId={selectedEgress}
                           onOpenChart={(observableProperty: any) => {
+                            values.ingressId = observableProperty.id;
                             handleSelectObservableProperty(observableProperty);
                             values.frequency = observableProperty.frequency;
-                            values.changedFrequency = observableProperty.frequency;
+                            values.changedFrequency =
+                              observableProperty.frequency;
                           }}
                           withDetails={false}
                         />
@@ -605,7 +672,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                         <InfoIcon />
                         <p>
                           Here you can choose to reduce the frequency of the
-                          data and select how they should be reduced.
+                          data and select how they should be reduced, if the new
+                          frequency is smaller. You can not choose to make it
+                          higher.
                         </p>
                       </Box>
                     </>
@@ -685,6 +754,25 @@ const CreateEgressStepper: React.FC<Props> = ({
                 )}
                 {activeStep === 3 && (
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>Select the group of the new egress endpoint</p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={3.6}
@@ -714,9 +802,10 @@ const CreateEgressStepper: React.FC<Props> = ({
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
                               onClick={() => {
+                                values.groupId = node.id;
+
                                 console.log("clicked");
                                 setSelectedEgressGroup(node);
-                                values.groupId = node.id;
                               }}
                             >
                               <ListItemText primary={node.name} />
@@ -738,7 +827,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     </Grid2>
                   </>
                 )}
-                {activeStep === 4 && <Typography variant="h6">Info</Typography>}
+
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -795,18 +884,67 @@ const CreateEgressStepper: React.FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  disabled={!(isValid && selectedIngressNode)}
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
                 >
-                  Create
+                  Back
                 </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    disabled={(!isValid || (selectedIngressNode == undefined || selectedEgressGroup == undefined))}
+                  >
+
+                    Create
+                  </Button>
+                )}
               </DialogActions>
             </Form>
           )}
         </Formik>
       </Dialog>
+      {result && (<Snackbar
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        message={result}
+      >
+        {result === "Network Error" ? (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {result}
+          </Alert>
+        ) : (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {
+              "Egress Endpoint successfully created"
+            }
+          </Alert>
+        )}
+      </Snackbar>)}
     </div>
   );
 };

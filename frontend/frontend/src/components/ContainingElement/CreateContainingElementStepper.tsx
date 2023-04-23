@@ -33,6 +33,8 @@ import {
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -139,8 +141,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     setChildren(children.filter((node) => node !== child));
   };
 
-
-
   function getParentOptionsFilter(type: string): string[] | undefined {
     switch (type) {
       case "company":
@@ -160,11 +160,10 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     }
   }
 
-
   function getChildrenOptionsFilter(type: string): string[] | undefined {
     switch (type) {
       case "company":
-        return [ "plants"];
+        return ["plants"];
       case "plant":
         return ["areas"];
       case "area":
@@ -231,25 +230,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                     );
                   })}
                 </Stepper>
-                <React.Fragment>
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 && (
-                      <Button onClick={handleNext}>{"Next"}</Button>
-                    )}
-                    {/* <Button onClick={handleNext} >
-                      {activeStep === steps.length - 1 ? "" : "Next"}
-                    </Button> */}
-                  </Box>
-                </React.Fragment>
+                <Box sx={{ height: "20px" }} />
+
                 {activeStep === 0 && (
                   <>
                     <Field name="name">
@@ -299,13 +281,33 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         <MenuItem value="line">Line</MenuItem>
                         <MenuItem value="cell">Cell</MenuItem>
                         <MenuItem value="machine">Machine</MenuItem>
-
                       </Field>
                     </FormControl>
                   </>
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Here you can select where to store your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -352,7 +354,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             HandleContainingElementClick(parent);
                             setSelectedParent(parent);
                             console.log("parent", values.parent);
-                            console.log(values.type)
+                            console.log(values.type);
                           }}
                           filter={getParentOptionsFilter(values.type)}
                         />
@@ -384,6 +386,27 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
                 {activeStep === 2 && ( //children
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Select which subelements should be stored in your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -429,7 +452,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           onItemClick={(child: any) => {
                             HandleContainingElementClick(child);
                             setSelectedChild(child);
-                    
                           }}
                           filter={getChildrenOptionsFilter(values.type)}
                         />
@@ -450,9 +472,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             maxWidth: 360,
                             bgcolor: "background.paper",
                           }}
-                          subheader={
-                            <ListSubheader>Children</ListSubheader>
-                          }
+                          subheader={<ListSubheader>Children</ListSubheader>}
                         >
                           {children.map((node) => (
                             <ListItemButton
@@ -482,7 +502,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                 {activeStep === 3 && (
                   <>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      
                       <Grid2
                         xs={3.6}
                         sx={{
@@ -495,7 +514,9 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                       >
                         <IngressOverviewLeft
                           onItemClick={(containingElement: any) => {
-                            HandleContainingElementClick(containingElement.name);
+                            HandleContainingElementClick(
+                              containingElement.name
+                            );
                           }}
                         />
                       </Grid2>
@@ -588,13 +609,33 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  disabled={!(isValid)}
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
                 >
-                  Create
+                  Back
                 </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    disabled={!isValid || activeStep != 1}
+                  >
+                    Create
+                  </Button>
+                )}
               </DialogActions>
             </Form>
           )}

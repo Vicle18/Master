@@ -123,8 +123,23 @@ name: 'Cutting Speed',
 description: 'Observable Property for Cutting Speed of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingSpeedConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "22.48.159.115",
+      "PORT": 2175,
+      "TRANSMISSION_PAIRS": "cuttingSpeed:cuttingSpeed",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -135,8 +150,23 @@ name: 'Tool Wear',
 description: 'Observable Property for Tool Wear of CNC Milling Machine in Nordborg Machining Line Cell 1',
 frequency: 75,
 changedFrequency: 25,
-connectionDetails: "toolWearConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "72.61.116.220",
+      "PORT": 56730,
+      "TRANSMISSION_PAIRS": "toolWear:toolWear",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -151,8 +181,24 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "56.69.102.204",
+      "PORT": 4331,
+      "TRANSMISSION_PAIRS": "vibration:vibration",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',
+  dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -163,8 +209,23 @@ name: 'Cutting Force',
 description: 'Observable Property for Cutting Force of Lathe Machine in Nordborg Machining Line Cell 1',
 frequency: 100,
 changedFrequency: 50,
-connectionDetails: "cuttingForceConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "159.136.57.223",
+      "PORT": 18230,
+      "TRANSMISSION_PAIRS": "cuttingForce:cuttingForce",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -175,8 +236,24 @@ name: 'Temperature',
 description: 'Observable Property for Temperature of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 75,
 changedFrequency: 75,
-connectionDetails: "temperatureConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "212.205.206.230",
+      "HOST": "49.147.93.44",
+      "PORT": 7070,
+      "TRANSMISSION_PAIRS": "timestamp:temperature",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -187,8 +264,24 @@ name: 'Welding Voltage',
 description: 'Observable Property for Welding Voltage of Welding Robot in Nordborg Welding Line Cell 2',
 frequency: 50,
 changedFrequency: 50,
-connectionDetails: "weldingVoltageConnectionDetails",
-dataFormat: "WITH_METADATA",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "192.168.0.160",
+      "HOST": "243.35.191.54",
+      "PORT": 30004,
+      "TRANSMISSION_PAIRS": "timestamp:weldingVoltage",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "WITH_METADATA",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -204,8 +297,24 @@ name: 'Vibration',
 description: 'Observable Property for Vibration of Surface Grinder in Nordborg Machining Line Cell 2',
 frequency: 50,
 changedFrequency: 25,
-connectionDetails: "vibrationConnectionDetails",
-dataFormat: "RAW",
+connectionDetails: '{
+  "PROTOCOL": "RTDE",
+    "PARAMETERS": {
+      "HOST2": "170.255.42.208",
+      "HOST": "34.191.186.246",
+      "PORT": 30014,
+      "TRANSMISSION_PAIRS": "timestamp:vibrationSurfaceGrinder",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 1,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
   downsampleMethod: "Accumulated",
   dataType:"STRING"
 })
@@ -219,9 +328,9 @@ changedFrequency: 50,
 connectionDetails: '{
   "PROTOCOL": "MQTT",
     "PARAMETERS": {
-      "HOST": "localhost",
-      "PORT": 1883,
-      "TRANSMISSION_PAIRS": "example:example",
+      "HOST": "206.143.202.141",
+      "PORT": 12230,
+      "TRANSMISSION_PAIRS": "surfaceRoughness:surfaceRoughness",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 0.5,
       "DATA_FORMAT": "WITH_METADATA",
@@ -250,9 +359,9 @@ changedFrequency: 50,
 connectionDetails: '{
   "PROTOCOL": "MQTT",
     "PARAMETERS": {
-      "HOST": "localhost",
-      "PORT": 1883,
-      "TRANSMISSION_PAIRS": "example:example",
+      "HOST": "216.14.54.104",
+      "PORT": 49656,
+      "TRANSMISSION_PAIRS": "temperatureCNC:temperatureCNC",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 0.5,
       "DATA_FORMAT": "WITH_METADATA",
@@ -278,10 +387,10 @@ changedFrequency: 25,
 connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "108.169.120.17",
+      "HOST": "38.89.41.89",
+      "PORT": 49727,
+      "TRANSMISSION_PAIRS": "timestamp:toolLife",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -310,10 +419,10 @@ changedFrequency: 50,
 connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://40.235.8.196:63611/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "powerConsumption"
     }
 }',
 dataFormat: "RAW",
@@ -354,10 +463,10 @@ CREATE (robotPosition:ObservableProperty {
   connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://249.126.137.239:35805/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "robotPosition"
     }
 }
 ',
@@ -375,10 +484,10 @@ CREATE (robotStatus:ObservableProperty {
   connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "174.103.28.255",
+      "HOST": "36.226.106.231",
+      "PORT": 52228,
+      "TRANSMISSION_PAIRS": "timestamp:robotStatus",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -408,9 +517,9 @@ CREATE (testResult:ObservableProperty {
     connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "67.91.139.147",
+        "PORT": 41645,
+        "TRANSMISSION_PAIRS": "testResult:testResult",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -436,9 +545,9 @@ CREATE (testStatus:ObservableProperty {
   connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "196.117.161.71",
+        "PORT": 17462,
+        "TRANSMISSION_PAIRS": "testStatus:testStatus",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -470,10 +579,10 @@ changedFrequency: 50,
 connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "54.17.150.12",
+      "HOST": "194.14.233.67",
+      "PORT": 49664,
+      "TRANSMISSION_PAIRS": "timestamp:vibrationLathe",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -490,37 +599,8 @@ dataFormat: "RAW",
   dataType:"STRING"
 })
 
-CREATE (temperature3:ObservableProperty {
-id: 'temperature',
-name: 'Temperature',
-description: 'Observable Property for Temperature of Lathe 1 in the manufacturing facility',
-frequency: 75,
-changedFrequency: 75,
-connectionDetails: '{
-  "PROTOCOL": "RTDE",
-    "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
-      "FREQUENCY": 30,
-      "CHANGED_FREQUENCY": 1,
-      "DATA_FORMAT": "WITH_METADATA",
-      "METADATA": {
-        "TIMESTAMP": true,
-        "NAME": "DefaultName",
-        "DESCRIPTION": "Default Description",
-        "FREQUENCY": 30
-      }
-    }
-}',
-dataFormat: "WITH_METADATA",
-  downsampleMethod: "Accumulated",
-  dataType:"STRING"
-})
 
 CREATE (lathe1)-[:has]->(vibration3)
-CREATE (lathe1)-[:has]->(temperature3)
 
 CREATE (surfaceRoughness2:ObservableProperty {
 id: 'surfaceRoughness',
@@ -531,9 +611,9 @@ changedFrequency: 50,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "52.163.0.191",
+        "PORT": 34395,
+        "TRANSMISSION_PAIRS": "surfaceRoughnessMilling:surfaceRoughnessMilling",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -559,10 +639,10 @@ changedFrequency: 25,
 connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "76.35.116.39",
+      "HOST": "43.71.20.167",
+      "PORT": 6969,
+      "TRANSMISSION_PAIRS": "timestamp:powerConsumptionMilling",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -591,9 +671,9 @@ changedFrequency: 100,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "130.230.247.203",
+        "PORT": 46598,
+        "TRANSMISSION_PAIRS": "vibrationGrinder:vibrationGrinder",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -619,10 +699,10 @@ changedFrequency: 30,
 connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://201.189.246.192:32321/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "temperatureGrinder"
     }
 }',
 dataFormat: "WITH_METADATA",
@@ -642,9 +722,9 @@ changedFrequency: 50,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "34.222.154.211",
+        "PORT": 9999,
+        "TRANSMISSION_PAIRS": "rpm:rpm",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -670,10 +750,10 @@ changedFrequency: 30,
 connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "95.203.31.105",
+      "HOST": "239.135.107.93",
+      "PORT": 54318,
+      "TRANSMISSION_PAIRS": "timestamp:depth",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -702,9 +782,9 @@ changedFrequency: 25,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "88.40.67.139",
+        "PORT": 18978,
+        "TRANSMISSION_PAIRS": "robotStatusTopic:robotStatusTopic",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -730,9 +810,9 @@ changedFrequency: 50,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "171.222.192.56",
+        "PORT": 12634,
+        "TRANSMISSION_PAIRS": "powerConsumption1:powerConsumption1",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -761,10 +841,10 @@ changedFrequency: 10,
 connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://85.57.77.77:48611/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "voltageWelder"
     }
 }',
 dataFormat: "RAW",
@@ -781,9 +861,9 @@ changedFrequency: 10,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "90.184.219.72",
+        "PORT": 41099,
+        "TRANSMISSION_PAIRS": "currentWelder:currentWelde",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -812,9 +892,9 @@ changedFrequency: 20,
 connectionDetails: '{
     "PROTOCOL": "MQTT",
         "PARAMETERS": {
-        "HOST": "localhost",
-        "PORT": 1883,
-        "TRANSMISSION_PAIRS": "example:example",
+        "HOST": "48.120.32.4",
+        "PORT": 48621,
+        "TRANSMISSION_PAIRS": "forcePress:forcePress",
         "FREQUENCY": 30,
         "CHANGED_FREQUENCY": 0.5,
         "DATA_FORMAT": "WITH_METADATA",
@@ -840,10 +920,10 @@ changedFrequency: 5,
 connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://35.152.86.212:61737/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "temperaturePress"
     }
 }',
 dataFormat: "RAW",
@@ -863,10 +943,10 @@ changedFrequency: 5,
 connectionDetails: '{
   "PROTOCOL": "RTDE",
     "PARAMETERS": {
-      "HOST2": "192.168.0.160",
-      "HOST": "localhost",
-      "PORT": 30004,
-      "TRANSMISSION_PAIRS": "actual_q:example",
+      "HOST2": "55.101.134.54",
+      "HOST": "15.179.152.56",
+      "PORT": 33849,
+      "TRANSMISSION_PAIRS": "timestamp:airPressure",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 1,
       "DATA_FORMAT": "WITH_METADATA",
@@ -892,10 +972,10 @@ changedFrequency: 50,
 connectionDetails: '{
   "PROTOCOL": "OPCUA",
     "PARAMETERS": {
-      "SERVER_URL": "opc.tcp://localhost:8888/freeopcua/server/",
+      "SERVER_URL": "opc.tcp://157.203.145.74:58210/freeopcua/server/",
       "NODE_NAME": "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
       "VALUE_TYPE": "int",
-      "TARGET_TOPIC": "testOPCUA"
+      "TARGET_TOPIC": "cycleTime"
     }
 }',
 dataFormat: "RAW",
@@ -939,6 +1019,8 @@ CREATE (topicZB:Topic {name: 'TopicZB'})
 CREATE (topicZC:Topic {name: 'TopicZC'})
 CREATE (topicZD:Topic {name: 'TopicZD'})
 CREATE (topicZE:Topic {name: 'TopicZE'})
+CREATE (topicZF:Topic {name: 'TopicZF'})
+
 
 
 CREATE (cuttingSpeed)-[:has]->(topicA)
@@ -950,7 +1032,7 @@ CREATE (weldingVoltage)-[:has]->(topicF)
 CREATE (vibration2)-[:has]->(topicG)
 CREATE (surfaceRoughness)-[:has]->(topicH)
 CREATE (temperature2)-[:has]->(topicI)
-CREATE (lathe1)-[:has]->(topicJ)
+CREATE (vibration3)-[:has]->(topicJ) //Lathe1
 CREATE (powerConsumption1)-[:has]->(topicK)
 CREATE (grindingForce)-[:has]->(topicL)
 CREATE (robotPosition)-[:has]->(topicM)
@@ -995,15 +1077,15 @@ CREATE (egressAnalysis:EgressGroup {
 
 CREATE (egress1:EgressEndpoint {
     id: "egress1",
-    name: "Endpoint 1",
+    name: "Drilling Depth Visual",
     description: "This is the first egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1015,6 +1097,7 @@ CREATE (egress1:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
+        }
         }',
     frequency: 30,
     changedFrequency: 30,
@@ -1025,17 +1108,18 @@ CREATE (egress1:EgressEndpoint {
 
 })
 
+
 CREATE (egress2:EgressEndpoint {
     id: "egress2",
-    name: "Endpoint 2",
+    name: "Temperature Visual",
     description: "This is the second egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1047,7 +1131,7 @@ CREATE (egress2:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
@@ -1060,15 +1144,15 @@ CREATE (egress2:EgressEndpoint {
 
 CREATE (egress3:EgressEndpoint {
     id: "egress3",
-    name: "Endpoint 3",
+    name: "Power Consumption Analysis",
     description: "This is the third egress endpoint",
-    connectionDetails: '{ "id":"postman-pod1",
-        "protocol":"MQTT",
-        "parameters":{
+    connectionDetails: '{ "ID":"postman-pod1",
+        "PROTOCOL":"MQTT",
+        "PARAMETERS":{
             "HOST":"mqtt-broker-8341af19-8a7c-4a4f-b321-6cb7319e16c1",
             "PORT":"1883"
         },
-        "transmissionDetails":{
+        "TRANSMISSION_DETAILS":{
             "ORIGIN_TOPIC":"example",
             "FREQUENCY":"1",
             "TARGET":"exampleMQTT",
@@ -1080,7 +1164,7 @@ CREATE (egress3:EgressEndpoint {
                 "NAME": "postman",
                 "FREQUENCY": 30
             }
-        }',
+        }}',
     frequency: 30,
     changedFrequency: 30,
     dataFormat: "WITH_METADATA",
@@ -1094,11 +1178,9 @@ CREATE (egressVisual)-[:has]->(egress1)
 CREATE (egressVisual)-[:has]->(egress2)
 CREATE (egressAnalysis)-[:has]->(egress3)
 
-CREATE (egress1)-[:accessTo]->(rpm)
+
 CREATE (egress1)-[:accessTo]->(depth)
 
-CREATE (egress2)-[:accessTo]->(vibration4)
 CREATE (egress2)-[:accessTo]->(temperature4)
 
-CREATE (egress3)-[:accessTo]->(surfaceRoughness2)
 CREATE (egress3)-[:accessTo]->(powerConsumption2)

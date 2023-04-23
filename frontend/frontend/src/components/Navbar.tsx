@@ -19,14 +19,21 @@ import Integrate from "../views/Integrate/IntegratePage";
 import { To, useNavigate } from "react-router-dom";
 import { theme } from "./Theme";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 
 const pages = ["Overview", "Favourites"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function Navbar() {
   const navigate = useNavigate();
-
+  const [openPage, setOpenPage] = React.useState<string>("Overview");
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -42,6 +49,7 @@ function Navbar() {
   };
 
   const handleCloseNavMenu = (page: any) => {
+    setOpenPage(page);
     navigate(page);
     setAnchorElNav(null);
   };
@@ -51,7 +59,6 @@ function Navbar() {
   };
 
   return (
-   
     <ThemeProvider theme={theme}>
       <AppBar position="static">
         <Container maxWidth="xl">
@@ -112,7 +119,6 @@ function Navbar() {
                   </MenuItem>
                 ))}
               </Menu>
-              
             </Box>
             <StackedLineChartIcon
               sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
@@ -140,9 +146,17 @@ function Navbar() {
                 <Button
                   key={page}
                   onClick={() => handleCloseNavMenu(page)}
-                  sx={{ my: 2, color: "white", display: "block" }}
+                  sx={{
+                    my: 2,
+                    color: "white",
+                    display: "block",
+
+                    borderBottom: openPage === page ? "5px solid lightblue" : "none"
+
+                  }}
                 >
                   {page}
+                  
                 </Button>
               ))}
             </Box>
@@ -180,7 +194,6 @@ function Navbar() {
         </Container>
       </AppBar>
     </ThemeProvider>
-    
   );
 }
 export default Navbar;
