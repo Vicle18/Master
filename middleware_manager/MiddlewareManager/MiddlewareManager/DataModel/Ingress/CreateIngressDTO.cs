@@ -11,6 +11,6 @@ public class CreateIngressDto : IngressDTOBase
     public override string ToString()
     {
         return
-            $"Create Ingress DTO, protocol: {protocol}, datatype: {dataType}, downsampleMethod: {downsampleMethod}, host: {host}, topic: {topic}, port: {port}, output: {output}, nodeId: {nodeId}, frequency: {frequency}, changedFrequency: {changedFrequency}";
+            $"CreateEgress Ingress DTO, protocol: {protocol}, datatype: {dataType}, downsampleMethod: {downsampleMethod}, host: {host}, topic: {topic}, port: {port}, output: {output}, nodeId: {nodeId}, frequency: {frequency}, changedFrequency: {changedFrequency}";
     }
 }

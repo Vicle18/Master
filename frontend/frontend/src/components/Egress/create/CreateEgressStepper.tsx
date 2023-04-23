@@ -401,7 +401,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                                       console.log(values.createBroker);
                                       setCreateBroker(values.createBroker);
                                     }}
-                                    disabled={values.protocol === "OPCUA"}
+                                    // disabled={values.protocol === "OPCUA"}
                                     color="primary"
                                   />
                                 }
@@ -476,21 +476,21 @@ const CreateEgressStepper: React.FC<Props> = ({
                             display: "flex",
                           }}
                         >
-                          <Field name="host">
+                          <Field name="serverUrl">
                             {({ field }: FieldProps<FormData>) => (
                               <TextField
                                 {...field}
-                                label="Host"
+                                label="Server URL"
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
                                 size="small"
-                                error={touched.host && Boolean(errors.host)}
-                                helperText={touched.host && errors.host}
+                                error={touched.serverUrl && Boolean(errors.serverUrl)}
+                                helperText={touched.serverUrl && errors.serverUrl}
                               />
                             )}
                           </Field>
-                          <Tooltip title="Insert a valid host e.g., 127.0.0.1">
+                          <Tooltip title="Insert a valid serverurl e.g., opc.tcp://172.17.0.1:8888/freeopcua/server/">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
                             </IconButton>
@@ -502,21 +502,47 @@ const CreateEgressStepper: React.FC<Props> = ({
                             display: "flex",
                           }}
                         >
-                          <Field name="port">
+                          <Field name="nodeId">
                             {({ field }: FieldProps<FormData>) => (
                               <TextField
                                 {...field}
-                                label="Port"
+                                label="Node ID"
                                 variant="outlined"
                                 fullWidth
                                 margin="normal"
                                 size="small"
-                                error={touched.port && Boolean(errors.port)}
-                                helperText={touched.port && errors.port}
+                                error={touched.nodeId && Boolean(errors.nodeId)}
+                                helperText={touched.nodeId && errors.nodeId}
                               />
                             )}
                           </Field>
-                          <Tooltip title="Insert a valid port e.g., 8080">
+                          <Tooltip title="Insert a valid nodeId e.g., ns=6;s=::AsGlobalPV:MoveAssemblyPart">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="nodeType">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Node Type"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.nodeType && Boolean(errors.nodeType)}
+                                helperText={touched.nodeType && errors.nodeType}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Insert a valid node type e.g., int">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
                             </IconButton>

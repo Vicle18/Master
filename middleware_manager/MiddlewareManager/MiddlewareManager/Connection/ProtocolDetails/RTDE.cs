@@ -6,7 +6,7 @@ namespace MiddlewareManager.Protocols
 {
     public static class RTDE
     {
-        public static IConnectionDetails CreateRTDEIngressConnection(string id, IngressDTOBase value, string topicName)
+        public static IConnectionDetails CreateRTDEIngressConnection(string id, IngressDTOBase value, string topicName, TransmissionDetails transmissionDetails)
         {
             return new RTDEConnectionDetails
             {
@@ -16,13 +16,9 @@ namespace MiddlewareManager.Protocols
                 {
                     HOST = value.host,
                     PORT = value.port.ToString(),
-                    TRANSMISSION_PAIRS = $"{value.output}:{topicName}",
-                    FREQUENCY = value.frequency.ToString(),
-                    CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
-                    DATA_FORMAT = value.dataFormat,
-                    DATA_TYPE = value.dataType,
-                    DOWN_SAMPLING_METHOD = value.downsampleMethod
-                }
+                    OUTPUT = value.output
+                },
+                TRANSMISSION_DETAILS = transmissionDetails
             };
         }
 
@@ -33,9 +29,11 @@ namespace MiddlewareManager.Protocols
             {
                 ID = id,
                 PROTOCOL = value.protocol,
-                PARAMETERS = new OPCUAConnectionDetails
+                PARAMETERS = new ParameterDetails()
                 {
-                    SERVER_URL = DetailsGenerator.GenerateHost(),
+                    HOST = value.host,
+                    PORT = value.port,
+                    
                 },
                 TRANSMISSION_DETAILS = transmissionDetails
             };
@@ -50,6 +48,5 @@ namespace MiddlewareManager.Protocols
 
         public TransmissionDetails TRANSMISSION_DETAILS { get; set; }
 
-        public Dictionary<string, JsonElement>? METADATA { get; set; }
     }
 }

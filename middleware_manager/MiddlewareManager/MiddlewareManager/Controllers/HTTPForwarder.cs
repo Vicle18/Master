@@ -14,7 +14,7 @@ public class HTTPForwarder
     public static async Task ForwardsIngressRequestToConfigurator(
         string connectionDetails, HttpClient client)
     {
-        // Create the HTTP request message with the JSON string as the content
+        // CreateEgress the HTTP request message with the JSON string as the content
         var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Ingress?=");
         var contentObject = new JObject()
         {

@@ -230,13 +230,13 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
                 value != null && (
                   <Typography>
                     <Box component="span" fontWeight="bold">
-                      {key}:
+                      {key.replace("_", " ").toLowerCase()}:
                     </Box>{" "}
                     {JSON.stringify(value)}
                   </Typography>
                 )
             )}
-          <Typography>
+          <Typography style={{ wordBreak: "break-all" }}>
             And since you are using the {connectionDetails?.PROTOCOL} protocol,
             you use the{" "}
             {connectionDetails?.PROTOCOL == "MQTT" ? "MQTT Topic" : "NodeID"}:{" "}
@@ -270,10 +270,11 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
               the data format, etc.
               {Object.entries(connectionDetails?.TRANSMISSION_DETAILS).map(
                 ([key, value]) =>
-                  value != null && (
-                    <Typography>
+                  
+                  value != null && !["DOWN_SAMPLING_METHOD", "CHANGED_FREQUENCY"].includes(key.toString()) && (
+                    <Typography style={{ wordBreak: "break-all" }}>
                       <Box component="span" fontWeight="bold">
-                        {key}:
+                        {key.replace("_", " ").toLowerCase()}:
                       </Box>{" "}
                       {JSON.stringify(value)}
                     </Typography>

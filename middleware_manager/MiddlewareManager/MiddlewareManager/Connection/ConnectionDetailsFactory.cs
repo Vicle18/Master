@@ -3,26 +3,33 @@ using Serilog;
 
 namespace MiddlewareManager.Protocols;
 
-public class ConnectionDetailsFactory
+public class ConnectionDetailsFactory : IConnectionDetailsFactory
 {
-    private static int counter = 0;
 
-    public static IConnectionDetails Create(string id, IngressDTOBase value, string topicName)
+    public IConnectionDetails CreateIngress(string id, IngressDTOBase value, string topicName)
     {
         Log.Debug(value.ToString());
-
+        var transmissionDetails = new TransmissionDetails()
+        {
+            FREQUENCY = value.frequency.ToString(),
+            CHANGED_FREQUENCY = value.changedFrequency.ToString() ?? value.frequency.ToString(),
+            DATA_FORMAT = value.dataFormat,
+            TARGET_TOPIC = topicName,
+            DOWN_SAMPLING_METHOD = value.downsampleMethod,
+            DATA_TYPE = value.dataType
+        };
         switch (value.protocol)
         {
-            case "RTDE": return RTDE.CreateRTDEIngressConnection(id, value, topicName);
-            case "MQTT": return MQTT.CreateMQTTIngressConnection(id, value, topicName);
-            case "OPCUA": return OPCUA.CreateOPCUAIngressConnection(id, value);
+            case "RTDE": return RTDE.CreateRTDEIngressConnection(id, value, topicName, transmissionDetails);
+            case "MQTT": return MQTT.CreateMQTTIngressConnection(id, value, topicName, transmissionDetails);
+            case "OPCUA": return OPCUA.CreateOPCUAIngressConnection(id, value, transmissionDetails);
             default:
                 throw new ArgumentException("Unsupported protocol");
         }
     }
 
 
-    public static IConnectionDetails Create(string id, CreateEgressDto value, ObservableProperty property)
+    public IConnectionDetails CreateEgress(string id, CreateEgressDto value, ObservableProperty property)
     {
         Log.Debug("details");
         

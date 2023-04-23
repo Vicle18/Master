@@ -22,16 +22,18 @@ namespace MiddlewareManager.Controllers
         private readonly IConfiguration _config;
         private readonly ILogger<IngressController> _logger;
         private readonly IEgressRepository _egressRepo;
+        private readonly IConnectionDetailsFactory _connectionDetailsFactory;
         private readonly HttpClient _client;
         private List<string> _connectionDetails;
 
 
         public EgressController(IConfiguration config, ILogger<IngressController> logger,
-            IEgressRepository egressRepo)
+            IEgressRepository egressRepo, IConnectionDetailsFactory connectionDetailsFactory)
         {
             _config = config;
             _logger = logger;
             _egressRepo = egressRepo;
+            _connectionDetailsFactory = connectionDetailsFactory;
             _connectionDetails = new List<string>();
             _client = new HttpClient();
             _logger.LogDebug("starting {controller}", "IngressController");
@@ -64,7 +66,7 @@ namespace MiddlewareManager.Controllers
                 var id = Guid.NewGuid().ToString();
 
                 ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
-                var connectionDetails = ConnectionDetailsFactory.Create(id, value, observableProperty);
+                var connectionDetails = _connectionDetailsFactory.CreateEgress(id, value, observableProperty);
                 _logger.LogDebug("creating new egress with connection details: {details}", JsonSerializer.Serialize(connectionDetails));
                 await HTTPForwarder.ForwardsEgressRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails), _client);
 

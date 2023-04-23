@@ -7,7 +7,7 @@ namespace MiddlewareManager.Protocols;
 
 public static class OPCUA
 {
-    public static IConnectionDetails CreateOPCUAIngressConnection(string id, IngressDTOBase value)
+    public static IConnectionDetails CreateOPCUAIngressConnection(string id, IngressDTOBase value, TransmissionDetails transmissionDetails)
     {
         return new OPCUAConnectionDetails
         {
@@ -15,18 +15,10 @@ public static class OPCUA
             PROTOCOL = value.protocol,
             PARAMETERS = new ParameterDetails
             {
-                SERVER_URL = value.host,
-                TRANSMISSION_PAIRS = JsonConvert.SerializeObject(new object[]
-                {
-                    new
-                    {
-                        NODE_NAME = $"{value.nodeId}",
-                        VALUE_TYPE = $"{value.dataFormat}",
-                        ORIGIN_TOPIC = $"{value.topic}"
-                    }
-                }),
-                DATA_FORMAT = value.dataFormat,
-            }
+                SERVER_URL = value.serverUrl,
+                NODE_NAME = value.nodeId
+            },
+            TRANSMISSION_DETAILS = transmissionDetails
         };
     }
 
@@ -39,7 +31,7 @@ public static class OPCUA
             PROTOCOL = value.protocol,
             PARAMETERS = new ParameterDetails
             {
-                SERVER_URL = DetailsGenerator.GenerateHost(),
+                SERVER_URL = value.serverUrl ?? DetailsGenerator.GenerateServerUrl(),
             },
             TRANSMISSION_DETAILS = transmissionDetails
         };

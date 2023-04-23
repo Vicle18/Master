@@ -1054,7 +1054,7 @@ CREATE (force)-[:has]->(topicZB)
 CREATE (temperature5)-[:has]->(topicZC)
 CREATE (airPressure)-[:has]->(topicZD)
 CREATE (cycleTime)-[:has]->(topicZE)
-
+CREATE (toolLife)-[:has]->(topicZF)
 
 
 

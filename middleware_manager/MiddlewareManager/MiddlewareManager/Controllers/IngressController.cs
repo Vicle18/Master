@@ -29,14 +29,16 @@ namespace MiddlewareManager.Controllers
         private readonly IConfiguration _config;
         private readonly ILogger<IngressController> _logger;
         private readonly IIngressRepository _ingressRepo;
+        private readonly IConnectionDetailsFactory _connectionDetailsFactory;
         private readonly HttpClient _client;
 
         public IngressController(IConfiguration config, ILogger<IngressController> logger,
-            IIngressRepository ingressRepo)
+            IIngressRepository ingressRepo, IConnectionDetailsFactory connectionDetailsFactory)
         {
             _config = config;
             _logger = logger;
             _ingressRepo = ingressRepo;
+            _connectionDetailsFactory = connectionDetailsFactory;
             _logger.LogDebug("starting {controller}", "IngressController");
             _client = new HttpClient();
             
@@ -66,12 +68,12 @@ namespace MiddlewareManager.Controllers
                 var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
                 var id = Guid.NewGuid().ToString();
                 var connectionDetails =
-                    ConnectionDetailsFactory.Create(id, value, topicName);
+                    _connectionDetailsFactory.CreateIngress(id, value, topicName);
                 var response = await _ingressRepo.CreateObservableProperty(id, value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 
                 await HTTPForwarder.ForwardsIngressRequestToConfigurator( JsonSerializer.Serialize(connectionDetails), _client);
-
+                
                 return Ok(response);
             }
             catch (ArgumentException e)
@@ -115,7 +117,7 @@ namespace MiddlewareManager.Controllers
                 var topicName = $"{value.name.Replace(" ", "")}-{Guid.NewGuid().ToString()}";
                 var id = Guid.NewGuid().ToString();
                 var connectionDetails =
-                    ConnectionDetailsFactory.Create(id, value, topicName);
+                    _connectionDetailsFactory.CreateIngress(id, value, topicName);
                 Log.Debug("HEYEH");
                 Log.Debug(JsonSerializer.Serialize(connectionDetails));
                 var response = await _ingressRepo.UpdateObservableProperty(value, JsonSerializer.Serialize(connectionDetails));

@@ -6,7 +6,7 @@ namespace MiddlewareManager.Protocols;
 public static class MQTT
 {
     public static IConnectionDetails CreateMQTTIngressConnection(string id, IngressDTOBase ingressValue,
-        string topicName)
+        string topicName, TransmissionDetails transmissionDetails)
     {
         return new MQTTConnectionDetails
         {
@@ -16,13 +16,9 @@ public static class MQTT
             {
                 HOST = ingressValue.host,
                 PORT = ingressValue.port.ToString(),
-                TRANSMISSION_PAIRS = $"{ingressValue.topic}:{topicName}",
-                FREQUENCY = ingressValue.frequency.ToString(),
-                CHANGED_FREQUENCY = ingressValue.changedFrequency.ToString() ?? ingressValue.frequency.ToString(),
-                DATA_FORMAT = ingressValue.dataFormat,
-                DATA_TYPE = ingressValue.dataType,
-                DOWN_SAMPLING_METHOD = ingressValue.downsampleMethod
-            }
+                TOPIC = ingressValue.topic,
+            },
+            TRANSMISSION_DETAILS = transmissionDetails
         };
     }
 
@@ -49,5 +45,4 @@ public class MQTTConnectionDetails : IConnectionDetails
     public string PROTOCOL { get; set; }
     public object PARAMETERS { get; set; }
     public TransmissionDetails TRANSMISSION_DETAILS { get; set; }
-    public Dictionary<string, JsonElement>? METADATA { get; set; }
 }
