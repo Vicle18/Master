@@ -1,4 +1,5 @@
 using System.Text;
+using IngressAdapter.DataModel;
 using Microsoft.Extensions.Configuration;
 using MQTTnet;
 using MQTTnet.Client;
@@ -12,34 +13,21 @@ public class MQTTIngressClient : IIngressClient
     private readonly IConfiguration _config;
     private MQTTConfiguration _mqttConfig;
     private CancellationTokenSource cts = new CancellationTokenSource();
-    private readonly Dictionary<string, string> _transitionPairs;
     private static IMqttClient mqttClient;
     private MqttFactory factory;
     private float _accumulatedValue = 0;
     private float _messageCounter = 0;
-    private Action<string, string> _messageHandler;
+    private Action<string> _messageHandler;
     public MQTTIngressClient(IConfiguration config)
     {
         _config = config;
         _mqttConfig = new MQTTConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_mqttConfig);
         Log.Debug("Received ingress config: {config}", _mqttConfig);
-        _transitionPairs = new Dictionary<string, string>();
-        ExtractTransitionPairs(_mqttConfig.TRANSMISSION_PAIRS);
+
     }
 
-    private void ExtractTransitionPairs(string pairs)
-    {
-        string[] pairArray = pairs.Split(",");
-        foreach (var stringPair in pairArray)
-        {
-            var pair = stringPair.Split(":");
-            _transitionPairs.Add(pair[0], pair[1]);
-        }
-        Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs) );
-    }
-    
-    public async Task<bool> Initialize(Action<string, string> messageHandler)
+    public async Task<bool> Initialize(Action<string> messageHandler)
     {
         _messageHandler = messageHandler;
         Task task = Task.Run(async () =>
@@ -47,13 +35,13 @@ public class MQTTIngressClient : IIngressClient
             Log.Debug($"Starting initializing MQTT receiver");
             await InitializeMqttClient(messageHandler);
             Log.Debug($"Finished initializing MQTT receiver");
-            SubscribeToTopic("example");
+            SubscribeToTopic(_mqttConfig.TOPIC);
         }, cts.Token);
         await task;
         return true;
     }
     
-    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId, Action<string, string> messageHandler)
+    private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId, Action<string> messageHandler)
         {
             Log.Debug( "Connecting to mqtt with broker: {broker}, and clientId {clientId}", mqttHost + ":" + mqttPort, mqttClientId);
             await Task.Run(async () =>
@@ -92,14 +80,14 @@ public class MQTTIngressClient : IIngressClient
             });
         }
 
-    private async Task InitializeMqttClient(Action<string, string> messageHandler)
+    private async Task InitializeMqttClient(Action<string> messageHandler)
     {
         factory = new MqttFactory();
         mqttClient = factory.CreateMqttClient();
         await ConnectToMQTT(_mqttConfig.HOST, _mqttConfig.PORT, Guid.NewGuid().ToString(), messageHandler);
     }
 
-    private async Task StartHeartBeat(Action<string, string> messageHandler)
+    private async Task StartHeartBeat(Action<string> messageHandler)
     {
         Log.Debug( "Starting heartbeat");
         
@@ -131,7 +119,7 @@ public class MQTTIngressClient : IIngressClient
         }
     }
     
-    private void SetReceivingHandler(Action<string, string> messageHandler)
+    private void SetReceivingHandler(Action<string> messageHandler)
     {
         mqttClient.ApplicationMessageReceivedAsync += e =>
         {
@@ -140,10 +128,7 @@ public class MQTTIngressClient : IIngressClient
                 var message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                 var topic = e.ApplicationMessage.Topic;
                 Log.Debug($"Received MQTT message:{message} on topic {topic}");
-                var targetTopic = _transitionPairs[topic];
-                _accumulatedValue += Int32.Parse(message);
-                _messageCounter++;
-                //messageHandler(targetTopic, message);
+                messageHandler(message);
                 return Task.CompletedTask;
             }
             catch (Exception exception)
@@ -155,28 +140,14 @@ public class MQTTIngressClient : IIngressClient
         };
     }
 
-    public void StartIngestion()
+    public void StartIngestion(TransmissionDetails transmissionDetails)
     {
-        var cts = new CancellationTokenSource();
-        
-        var task = Task.Run(() =>
-        {
-            while (!cts.Token.IsCancellationRequested)
-            {
-                if (_messageCounter != 0)
-                {
-                    var value = _accumulatedValue / _messageCounter;
-                    _accumulatedValue = _messageCounter = 0;
-                    _messageHandler(_transitionPairs.Values.ElementAt(0), value.ToString());
-                    Task.Delay((int) (1000 / int.Parse(_mqttConfig.CHANGED_FREQUENCY))).Wait();
-                }
-                else
-                {
-                    Log.Debug("No new messages on MQTT, not sending anything");
-                }
-               
-            }
-        }, CancellationToken.None);
+        // var cts = new CancellationTokenSource();
+        //
+        // var task = Task.Run(() =>
+        // {
+        //     
+        // }, CancellationToken.None);
     }
     
     public bool HasConnection()

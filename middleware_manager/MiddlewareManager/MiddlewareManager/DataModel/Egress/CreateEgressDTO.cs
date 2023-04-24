@@ -15,6 +15,8 @@ public class CreateEgressDto : CreateDTO
     public string? host { get; set; }
     public string? port { get; set; }
     public string ingressId { get; set; }
+    public string? serverUrl { get; set; }
+
     public string? nodeId { get; set; }
     public string? datatype { get; set; }
     public bool? createBroker { get; set; }

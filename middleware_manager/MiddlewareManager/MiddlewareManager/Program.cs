@@ -1,4 +1,5 @@
 
+using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
 using Serilog;
 
@@ -20,6 +21,7 @@ builder.Services.AddSingleton<IEgressRepository, EgressRepository>();
 builder.Services.AddSingleton<IEgressGroupRepository, EgressGroupRepository>();
 
 builder.Services.AddSingleton<IContainingElementRepository, ContainingElementRepository>();
+builder.Services.AddSingleton<IConnectionDetailsFactory, ConnectionDetailsFactory>();
 
 builder.Host.UseSerilog();
 

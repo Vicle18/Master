@@ -134,7 +134,7 @@ public class IngressRepository : IIngressRepository
     {
         Log.Debug("BEFORE UPDATING");
         Log.Debug(value.id);
-        
+
         var request = new GraphQLRequest
         {
             Query = @"
@@ -184,7 +184,8 @@ public class IngressRepository : IIngressRepository
         }
 
         Log.Debug("Response:");
-        //Log.Debug(JsonSerializer.Serialize(response));
-        return null;
+        //Log.Debug(JsonSerializer.Serialize(response))
+
+        return JsonSerializer.Serialize(response.Data);
     }
 }

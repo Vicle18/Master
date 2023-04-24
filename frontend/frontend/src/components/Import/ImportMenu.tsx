@@ -25,9 +25,10 @@ import {
   Switch,
   Checkbox,
   Alert,
-  Slide
+  Slide,
+  Paper,
 } from "@mui/material";
-import Snackbar, { SnackbarOrigin } from '@mui/material/Snackbar';
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -79,13 +80,12 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
   const [json, setJson] = useState<any>();
   const [state, setState] = React.useState<State>({
     open: false,
-    vertical: 'top',
-    horizontal: 'center',
+    vertical: "top",
+    horizontal: "center",
   });
   const [result, setResult] = useState<string | null>(null);
 
   const { vertical, horizontal, open } = state;
-
 
   const { loading, error, data, refetch } = useQuery(
     GET_OBSERVABLE_PROPERTIES,
@@ -201,7 +201,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => {
           setResult(JSON.stringify(data));
-          console.log("created observableProperty: " + JSON.stringify(data))
+          console.log("created observableProperty: " + JSON.stringify(data));
         })
         .catch((error) => console.error(error));
     });
@@ -215,7 +215,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
   const createMachine = (propertyIds: string[]) => {
     try {
-      console.log("creating machine", propertyIds)
+      console.log("creating machine", propertyIds);
       var createMachineDto = {
         id: json?.machines?.[0]?.id,
         name: json?.machines?.[0]?.name,
@@ -260,8 +260,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         .then((response) => response.json())
         .then((data) => console.log("updated cell: " + JSON.stringify(data)))
         .catch((error) => console.error(error));
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
@@ -321,7 +320,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
               >
                 <InfoIcon />
                 <p>
-                  Select the parent element in which you want to store your import machines
+                  Select the parent element in which you want to store your
+                  import machines
                 </p>
               </Box>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -335,7 +335,6 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
@@ -399,9 +398,12 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography variant="body2" gutterBottom>
-                    {JSON.stringify(json, null, "\t")}
-                  </Typography>
+                  <Paper style={{ padding: "10px" }}>
+                    <Typography style={{ wordBreak: "break-all" }}>{JSON.stringify( json, null, 2)}</Typography>
+                  </Paper>
+                  {/* <Typography variant="body2" gutterBottom>
+                    
+                  </Typography> */}
                 </Grid2>
               </Grid2>
             </>
@@ -455,8 +457,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     variant="outlined"
                     disableElevation
                     onClick={createObservableProperties({
-                      vertical: 'bottom',
-                      horizontal: 'center',
+                      vertical: "bottom",
+                      horizontal: "center",
                     })}
                   >
                     Create Observable Properties
@@ -470,35 +472,34 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                     message={"Observable was created"}
 
                   /> */}
-                  {result && (<Snackbar
-                    open={open}
-                    onClose={handleClose}
-                    autoHideDuration={3000}
-                    TransitionComponent={Slide}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    message={result}
-                  >
-                    {result === "Network Error" ? (
-                      <Alert
-                        onClose={handleClose}
-                        severity="error"
-                        sx={{ width: "100%" }}
-                      >
-                        {result}
-                      </Alert>
-                    ) : (
-                      <Alert
-                        onClose={handleClose}
-                        severity="success"
-                        sx={{ width: "100%" }}
-                      >
-                        {
-                          "Observable Property was successfully created"
-                        }
-                      </Alert>
-                    )}
-                  </Snackbar>)}
-
+                  {result && (
+                    <Snackbar
+                      open={open}
+                      onClose={handleClose}
+                      autoHideDuration={3000}
+                      TransitionComponent={Slide}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      message={result}
+                    >
+                      {result === "Network Error" ? (
+                        <Alert
+                          onClose={handleClose}
+                          severity="error"
+                          sx={{ width: "100%" }}
+                        >
+                          {result}
+                        </Alert>
+                      ) : (
+                        <Alert
+                          onClose={handleClose}
+                          severity="success"
+                          sx={{ width: "100%" }}
+                        >
+                          {"Observable Property was successfully created"}
+                        </Alert>
+                      )}
+                    </Snackbar>
+                  )}
                 </Grid2>
                 <Grid2
                   xs={5}
@@ -547,11 +548,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           {/* <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button> */}
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handlerClose}
-          >
+          <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button>
           <Button
@@ -564,11 +561,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           </Button>
 
           {activeStep !== steps.length - 1 && (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleNext}
-            >
+            <Button color="primary" variant="contained" onClick={handleNext}>
               {"Next"}
             </Button>
           )}
@@ -581,10 +574,9 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
           >
             Finished
           </Button>
-
         </DialogActions>
       </Dialog>
-    </div >
+    </div>
   );
 };
 

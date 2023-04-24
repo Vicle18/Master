@@ -53,6 +53,9 @@ export const egressInitialValues: FormData = {
   ingressId: "",
   dataFormat: "",
   groupId: "",
+  nodeId: "ns=6;s=::AsGlobalPV:MoveAssemblyPart",
+  nodeType: "int",
+  serverUrl: "opc.tcp://172.17.0.1:8888/freeopcua/server/"
 };
 
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({

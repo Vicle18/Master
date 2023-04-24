@@ -25,6 +25,7 @@ import { initialValues } from "./createv2/FormDefinition";
 import EditIngressStepper from "./edit/EditIngressStepper";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import { egressInitialValues } from "../Egress/create/FormDefinition";
+import IngressStatus from "./IngressConnectionIndicator";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
   query Company(
@@ -307,12 +308,15 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
       initialValues.port = connectionDetails.PARAMETERS.PORT;
       initialValues.host = connectionDetails.PARAMETERS.HOST;
     } else if (connectionDetails.PROTOCOL == "RTDE") {
-      initialValues.port = connectionDetails.PARAMETERS.PORT.toString()
-      initialValues.host = connectionDetails.PARAMETERS.HOST.toString()
-      initialValues.output = connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift()
-      console.log(connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(':').shift())
+      initialValues.port = connectionDetails.PARAMETERS.PORT.toString();
+      initialValues.host = connectionDetails.PARAMETERS.HOST.toString();
+      initialValues.output =
+        connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(":").shift();
+      console.log(
+        connectionDetails.PARAMETERS.TRANSMISSION_PAIRS.split(":").shift()
+      );
     } else if (connectionDetails.PROTOCOL == "OPCUA") {
-      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME
+      initialValues.nodeId = connectionDetails.PARAMETERS.NODE_NAME;
       // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
     }
     previousPropertyValues = initialValues
@@ -399,6 +403,8 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         .map((item: any, index: any) => (
           <Accordion key={index}>
             <AccordionSummary>
+            <IngressStatus ingressId={item.id}/>
+            <Box sx={{ width: "10px" }} />
               <Typography
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
@@ -497,13 +503,13 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                     >
                       Edit Endpoint
                     </Button>
-                    {PopupEditIngress && (
-                      <EditIngressStepper
-                        PopupIngress
-                        handleResult={handleResult}
-                        setPopupIngress={setPopupEditIngress}
-                      ></EditIngressStepper>
-                    )}
+
+                    <EditIngressStepper
+                      PopupIngress={PopupEditIngress}
+                      handleResult={handleResult}
+                      setPopupIngress={setPopupEditIngress}
+                    ></EditIngressStepper>
+
                     <Button
                       variant="contained"
                       style={{ fontSize: "12px" }}

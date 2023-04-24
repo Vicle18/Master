@@ -1,6 +1,7 @@
 using Serilog;
 using ServiceOrchestrator.ContainerManagement;
 using ServiceOrchestrator.ContainerManagement.Kubernetes;
+using ServiceOrchestrator.Protocols;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {NewLine}{Exception}")
@@ -19,6 +20,9 @@ builder.Services.AddControllers();
 
 
 builder.Services.AddSingleton<IContainerManager, KubernetesManager>();
+builder.Services.AddSingleton<IEnvVarCreator, EnvVarCreator>();
+
+
 builder.Host.UseSerilog();
 
 

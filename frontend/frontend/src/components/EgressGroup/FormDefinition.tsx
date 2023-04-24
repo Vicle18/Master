@@ -6,8 +6,8 @@ export interface FormData {
   }
   
 export const initialValues: FormData = {
-    name: "defaultName",
-    description: "default Description",
+    name: "",
+    description: "",
     egressEndpointIds: [],
   };
   

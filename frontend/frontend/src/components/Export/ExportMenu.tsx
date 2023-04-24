@@ -243,7 +243,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography variant="body2" gutterBottom>
+                  <Typography variant="body2" gutterBottom style={{ wordBreak: "break-all" }}>
                     {JSON.stringify(data?.machines, null, "\t")}
                   </Typography>
                 </Grid2>

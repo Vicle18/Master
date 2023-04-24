@@ -1,4 +1,5 @@
 using System.Text;
+using IngressAdapter.DataModel;
 using Microsoft.Extensions.Configuration;
 using Opc.Ua;
 using Opc.Ua.Client;
@@ -12,7 +13,7 @@ public class OPCUAIngressClient : IIngressClient
     private readonly IConfiguration _config;
     private Session _session;
     private OPCUAConfiguration _opcuaConfig;
-    private Action<string, string> _messageHandler;
+    private Action<string> _messageHandler;
 
     private string ServerUrl;
 
@@ -22,14 +23,14 @@ public class OPCUAIngressClient : IIngressClient
         _opcuaConfig = new OPCUAConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_opcuaConfig);
     }
-    public async Task<bool> Initialize(Action<string, string> messageHandler)
+    public async Task<bool> Initialize(Action<string> messageHandler)
     {
         _messageHandler = messageHandler;
         await CreateClientSession(_opcuaConfig.SERVER_URL);
         return true;
     }
 
-    public void StartIngestion()
+    public void StartIngestion(TransmissionDetails _transmissionDetails)
     {
         while (!HasConnection())
         {
@@ -43,7 +44,7 @@ public class OPCUAIngressClient : IIngressClient
             try
             {
                 // Create a subscription for the node with the external method as the FastDataChangeCallback
-                var subscription = new Subscription(_session.DefaultSubscription) {PublishingInterval = 100}; // change the publish interval to increase fetching rate
+                var subscription = new Subscription(_session.DefaultSubscription) {PublishingInterval = int.Parse(_transmissionDetails.FREQUENCY)}; // change the publish interval to increase fetching rate
                 var monitoredItem = new MonitoredItem(subscription.DefaultItem)
                 {
                     StartNodeId = _opcuaConfig.NODE_NAME, 
@@ -71,9 +72,9 @@ public class OPCUAIngressClient : IIngressClient
     {
         try
         {
-            ;
+            
             Log.Debug("Value of OPCUA Node: {node} changed to: {value}", subscription.MonitoredItems.First().StartNodeId.Identifier ,notification.MonitoredItems[0].Value.Value);
-            _messageHandler(_opcuaConfig.TARGET_TOPIC, notification.MonitoredItems[0].Value.Value.ToString()!);
+            _messageHandler(notification.MonitoredItems[0].Value.Value.ToString()!);
         }
         catch (Exception e)
         {
