@@ -101,12 +101,7 @@ public class Controller : IController
     {
         _receivedObservableBusMessages.Add(message);
     }
-
-
-    private void HandleEgressMessage(string arg1, ReceivedBusMessage arg2)
-    {
-        throw new NotImplementedException();
-    }
+    
 
     public void RunObservables()
     {
@@ -142,7 +137,6 @@ public class Controller : IController
         }
         catch (Exception e)
         {
-            Log.Debug("Ahhh shit");
             Console.WriteLine(e);
             throw;
         }
