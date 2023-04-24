@@ -111,7 +111,6 @@ public class IngressRepository : IIngressRepository
             Variables = variables
         };
         var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
-        Log.Debug(JsonSerializer.Serialize(response));
         _hasErrorOccured = true;
     }
 }

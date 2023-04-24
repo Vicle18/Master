@@ -20,6 +20,9 @@ public class Controller : IController
     private List<ReceivedBusMessage> _receivedEgressBusMessages;
     private List<ReceivedBusMessage> _receivedObservableBusMessages;
     private Dictionary<string, string> _observables;
+    private HashSet<string> _subscribedObservables;
+    private List<string> _subscribedEgress;
+
 
     public Controller(IConfiguration config, ILogger<Controller> logger, IEgressRepository egressRepo,
         IIngressRepository ingressRepo)
@@ -30,6 +33,8 @@ public class Controller : IController
         _ingressRepo = ingressRepo;
         _receivedObservableBusMessages = new List<ReceivedBusMessage>();
         _receivedEgressBusMessages = new List<ReceivedBusMessage>();
+        _subscribedObservables = new HashSet<string>();
+        _subscribedEgress = new List<string>();
     }
 
     public Task Initialize()
@@ -78,15 +83,20 @@ public class Controller : IController
         _observables = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
         Log.Debug(JsonSerializer.Serialize(_observables));
-        foreach (var observableId in _observables)
+
+        foreach (var observable in _observables)
         {
-            _busClient.Subscribe(observableId.Key, HandleObservablePropertyMessages);
+            if (!_subscribedObservables.Contains(observable.Key))
+            {
+                _busClient.Subscribe(observable.Key, HandleObservablePropertyMessages);
+                _subscribedObservables.Add(observable.Key);
+            }
         }
 
-        foreach (var egressId in egressEndpointIds)
+        /*foreach (var egress in egressEndpointIds)
         {
-            _busClient.Subscribe(egressId, HandleEgressMessages);
-        }
+            _busClient.Subscribe(egress, HandleEgressMessages);
+        }*/
 
         RunObservables();
     }
@@ -104,7 +114,6 @@ public class Controller : IController
 
     public void RunObservables()
     {
-        Log.Debug("Inside Run method");
         try
         {
             Task.Run(async () =>
@@ -122,6 +131,7 @@ public class Controller : IController
                         DateTime lastCheck = DateTime.Now;
                         CheckObservableProperties(lastCheck);
                         CheckEgress(lastCheck);
+                        GetObservableElements();
                         Task _currentExecution = Task.Delay(5000, cts.Token);
 
                         await _currentExecution.ContinueWith(task => { Log.Debug("Still running"); });
@@ -147,12 +157,15 @@ public class Controller : IController
         {
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
-                _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "error", lastCheck.ToUniversalTime());
+                _ingressRepo.updateObservableStatus(
+                    _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "error",
+                    lastCheck.ToUniversalTime());
             }
             else
             {
-                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "running", lastCheck.ToUniversalTime()
+                _ingressRepo.updateObservableStatus(
+                    _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "running",
+                    lastCheck.ToUniversalTime()
                 );
             }
         }
@@ -165,12 +178,11 @@ public class Controller : IController
         {
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
-                _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, false, lastCheck.ToUniversalTime());
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, "running", lastCheck.ToUniversalTime());
             }
             else
             {
-                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, true, lastCheck.ToUniversalTime());
+                _egressRepo.updateEgressStatus(receivedBusMessage.Topic, "error", lastCheck.ToUniversalTime());
             }
         }
     }
