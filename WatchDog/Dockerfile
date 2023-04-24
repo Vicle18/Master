@@ -5,8 +5,8 @@ EXPOSE 444
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["WatchDog.csproj", "./"]
-RUN dotnet restore "WatchDog.csproj"
+COPY ["WatchDog.csproj", "WatchDog/"]
+RUN dotnet restore "WatchDog/WatchDog.csproj"
 COPY . .
 WORKDIR "/src/WatchDog"
 RUN dotnet build "WatchDog.csproj" -c Release -o /app/build
