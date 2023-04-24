@@ -679,7 +679,7 @@ const EditIngressStepper: React.FC<Props> = ({
                                   label="Node ID"
                                   variant="outlined"
                                   fullWidth
-                                  value={JSON.parse(previousPropertyValues.nodeId)}
+                                  value={previousPropertyValues.nodeId}
                                   disabled
                                   margin="normal"
                                   size="small"
