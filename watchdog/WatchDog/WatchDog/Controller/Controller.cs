@@ -78,7 +78,7 @@ public class Controller : IController
         var observablePropertyIds = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
         List<string> observableElementIds = observablePropertyIds.Concat(egressEndpointIds).ToList();
-
+        Log.Debug(JsonSerializer.Serialize(observablePropertyIds));
         foreach (var observableId in observablePropertyIds)
         {
             _busClient.Subscribe(observableId, HandleObservablePropertyMessages);
@@ -101,7 +101,7 @@ public class Controller : IController
     {
         _receivedObservableBusMessages.Add(message);
     }
-    
+
 
     public void RunObservables()
     {

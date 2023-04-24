@@ -51,7 +51,7 @@ public class IngressRepository : IIngressRepository
         }
 
         Log.Debug(JsonSerializer.Serialize(response.Data));
-        return response.Data.ObservableProperties.Select(op => op.id).ToList();
+        return response.Data.ObservableProperties.Select(op => op.topic.name).ToList();
     }
 
     public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)
