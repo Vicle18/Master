@@ -141,3 +141,12 @@ kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 
 ```
 
+## watch dog
+```
+kubectl apply -f sample_setups/watchdog/watchdog.yaml
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=watchdog" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8086:80
+
+kubectl delete -f sample_setups/watchdog/watchdog.yaml
+```
+
