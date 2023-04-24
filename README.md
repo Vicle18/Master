@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a watchdog/v1.4.6 -m "now with transition details"
-git push origin ingress/v1.4.6
+git tag -a watchdog/v1.0.2 -m "now "
+git push origin watchdog/v1.0.2
 
 git tag -a mvp -m "mvp"
 git push origin mvp
