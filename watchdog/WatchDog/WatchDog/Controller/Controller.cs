@@ -19,7 +19,7 @@ public class Controller : IController
     private readonly IEgressRepository _egressRepo;
     private List<ReceivedBusMessage> _receivedEgressBusMessages;
     private List<ReceivedBusMessage> _receivedObservableBusMessages;
-
+    private Dictionary<string, string> _observables;
 
     public Controller(IConfiguration config, ILogger<Controller> logger, IEgressRepository egressRepo,
         IIngressRepository ingressRepo)
@@ -75,13 +75,12 @@ public class Controller : IController
 
     private async void GetObservableElements()
     {
-        var observablePropertyIds = await _ingressRepo.getObservableProperties();
+        _observables = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
-        List<string> observableElementIds = observablePropertyIds.Concat(egressEndpointIds).ToList();
-        Log.Debug(JsonSerializer.Serialize(observablePropertyIds));
-        foreach (var observableId in observablePropertyIds)
+        Log.Debug(JsonSerializer.Serialize(_observables));
+        foreach (var observableId in _observables)
         {
-            _busClient.Subscribe(observableId, HandleObservablePropertyMessages);
+            _busClient.Subscribe(observableId.Value, HandleObservablePropertyMessages);
         }
 
         foreach (var egressId in egressEndpointIds)
@@ -149,11 +148,11 @@ public class Controller : IController
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
                 _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, "error", lastCheck.ToUniversalTime());
+                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Value == receivedBusMessage.Topic).Key, "error", lastCheck.ToUniversalTime());
             }
             else
             {
-                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, "running", lastCheck.ToUniversalTime()
+                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Value == receivedBusMessage.Topic).Key, "running", lastCheck.ToUniversalTime()
                 );
             }
         }

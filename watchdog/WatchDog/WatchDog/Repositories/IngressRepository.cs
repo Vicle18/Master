@@ -26,7 +26,7 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<List<string>> getObservableProperties()
+    public async Task<Dictionary<string, string>> getObservableProperties()
     {
         Log.Debug("Before request");
         var request = new GraphQLRequest
@@ -37,6 +37,7 @@ public class IngressRepository : IIngressRepository
                 topic {
                   name
                 }
+                id
               }
             }
             "
@@ -51,7 +52,7 @@ public class IngressRepository : IIngressRepository
         }
 
         Log.Debug(JsonSerializer.Serialize(response.Data));
-        return response.Data.ObservableProperties.Select(op => op.topic.name).ToList();
+        return response.Data.ObservableProperties.ToDictionary(op => op.id, op => op.topic.name);
     }
 
     public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)
