@@ -96,7 +96,7 @@ const ExportStepper: React.FC<Props> = ({}) => {
     });
     const file = new Blob([JSON.stringify(dataCopy)], { type: "application/json" });
     element.href = URL.createObjectURL(file);
-    element.download = "machines.json";
+    element.download = `${dataCopy.machines[0].name}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };

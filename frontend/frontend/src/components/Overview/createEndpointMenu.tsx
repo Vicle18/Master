@@ -112,12 +112,12 @@ export function CreateEndpoint(
       >
         <MenuItem onClick={handlerClickOpenIngress} disableRipple>
           <AddCircleOutline />
-          Ingress
+          Ingress Endpoint
         </MenuItem>
 
         <MenuItem onClick={handlerClickOpenEgress}>
           <AddCircleOutline />
-          Egress
+          Egress Endpoint
         </MenuItem>
 
         <Divider sx={{ my: 0.5 }} />
@@ -133,12 +133,12 @@ export function CreateEndpoint(
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
         
-        <MenuItem onClick={handlerClickOpenImport} disableRipple>
+        {/* <MenuItem onClick={handlerClickOpenImport} disableRipple>
           <AddBox />
           Import Machine
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
-      <ImportMenu PopupImport={PopupImport} setPopupImport={setPopupImport}/>
+      {/* <ImportMenu PopupImport={PopupImport} setPopupImport={setPopupImport}/> */}
       {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
       {CreateContainingElementStepper({
         PopupContainingElement,

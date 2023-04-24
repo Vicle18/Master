@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a watchdog/v1.4.6 -m "now with transition details"
-git push origin ingress/v1.4.6
+git tag -a watchdog/v1.0.2 -m "now "
+git push origin watchdog/v1.0.2
 
 git tag -a mvp -m "mvp"
 git push origin mvp
@@ -139,5 +139,14 @@ kubectl --namespace sso port-forward $POD_NAME 8086:80
 
 kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 
+```
+
+## watch dog
+```
+kubectl apply -f sample_setups/watchdog/watchdog.yaml
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=watchdog" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8086:80
+
+kubectl delete -f sample_setups/watchdog/watchdog.yaml
 ```
 

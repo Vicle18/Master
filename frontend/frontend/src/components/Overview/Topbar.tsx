@@ -8,6 +8,7 @@ import { theme } from "../Theme";
 import { CreateEndpoint } from "./createEndpointMenu";
 import { useNavigate } from "react-router-dom";
 import ExportStepper from "../Export/ExportMenu";
+import ImportMenu from "../Import/ImportMenu";
 
 type TopBarProps = {
   onNavMenuClick: (page: string) => void;
@@ -66,6 +67,7 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
               ))}
             </React.Fragment>
             {CreateEndpoint(open, createClick, anchorEl, handleClose)}
+            <ImportMenu />
             <ExportStepper />
           </Toolbar>
         </Container>
