@@ -22,7 +22,6 @@ import Divider from "@mui/material/Divider";
 import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
-import { log } from "console";
 import { initialValues } from "./createv2/FormDefinition";
 import EditIngressStepper from "./edit/EditIngressStepper";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
