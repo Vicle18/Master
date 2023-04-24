@@ -22,7 +22,7 @@ public class Controller : IController
     private Dictionary<string, string> _observables;
     private HashSet<string> _subscribedObservables;
     private List<string> _subscribedEgress;
-
+    private bool loopActivated = false;
 
     public Controller(IConfiguration config, ILogger<Controller> logger, IEgressRepository egressRepo,
         IIngressRepository ingressRepo)
@@ -82,7 +82,7 @@ public class Controller : IController
     {
         _observables = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
-        Log.Debug(JsonSerializer.Serialize(_observables));
+
 
         foreach (var observable in _observables)
         {
@@ -97,8 +97,11 @@ public class Controller : IController
         {
             _busClient.Subscribe(egress, HandleEgressMessages);
         }*/
-
-        RunObservables();
+        if (!loopActivated)
+        {
+            RunObservables();
+            loopActivated = true;
+        }
     }
 
     private void HandleEgressMessages(string topic, ReceivedBusMessage message)
