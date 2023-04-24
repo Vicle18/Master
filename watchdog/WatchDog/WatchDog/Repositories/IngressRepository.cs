@@ -33,10 +33,13 @@ public class IngressRepository : IIngressRepository
         {
             Query = @"
             query ObservableProperties {
-                observableProperties {
-                    id
+              observableProperties {
+                topic {
+                  name
                 }
-            }"
+              }
+            }
+            "
         };
 
         Log.Debug("before sending request");
