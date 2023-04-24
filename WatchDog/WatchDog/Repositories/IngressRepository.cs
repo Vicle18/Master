@@ -51,13 +51,13 @@ public class IngressRepository : IIngressRepository
         return response.Data.ObservableProperties.Select(op => op.id).ToList();
     }
 
-    public async Task<bool> updateObservableStatus(string id, bool active, DateTime lastUpdatedAt)
+    public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)
     {
         Log.Debug("Updating");
         var variables = new
         {
             where = new { id = $"{id}" },
-            update = new { status = $"{active}", lastUpdatedAt = $"{lastUpdatedAt}" }
+            update = new { status = $"{status}", lastUpdatedAt = $"{lastUpdatedAt}" }
         };
 
         // Define the GraphQL mutation request
@@ -75,7 +75,7 @@ public class IngressRepository : IIngressRepository
             Variables = variables
         };
 
-        if (!active && !_hasErrorOccured)
+        if (status == "error" && !_hasErrorOccured)
         {
             UpdateErrorAt(id, lastUpdatedAt);
         }

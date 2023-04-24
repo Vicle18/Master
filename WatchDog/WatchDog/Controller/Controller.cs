@@ -149,11 +149,11 @@ public class Controller : IController
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
                 _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, false, lastCheck.ToUniversalTime());
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, "error", lastCheck.ToUniversalTime());
             }
             else
             {
-                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, true, lastCheck.ToUniversalTime()
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Topic, "running", lastCheck.ToUniversalTime()
                 );
             }
         }
