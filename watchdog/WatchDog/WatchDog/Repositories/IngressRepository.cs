@@ -52,7 +52,7 @@ public class IngressRepository : IIngressRepository
         }
 
         Log.Debug(JsonSerializer.Serialize(response.Data));
-        return response.Data.ObservableProperties.ToDictionary(op => op.id, op => op.topic.name);
+        return response.Data.ObservableProperties.ToDictionary( op => op.topic.name, op => op.id);
     }
 
     public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)

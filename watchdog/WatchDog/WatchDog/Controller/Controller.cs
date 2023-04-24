@@ -80,7 +80,7 @@ public class Controller : IController
         Log.Debug(JsonSerializer.Serialize(_observables));
         foreach (var observableId in _observables)
         {
-            _busClient.Subscribe(observableId.Value, HandleObservablePropertyMessages);
+            _busClient.Subscribe(observableId.Key, HandleObservablePropertyMessages);
         }
 
         foreach (var egressId in egressEndpointIds)
@@ -148,11 +148,11 @@ public class Controller : IController
             if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
             {
                 _logger.LogError("The topic {topicId} is not longer active", receivedBusMessage.Topic);
-                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Value == receivedBusMessage.Topic).Key, "error", lastCheck.ToUniversalTime());
+                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "error", lastCheck.ToUniversalTime());
             }
             else
             {
-                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Value == receivedBusMessage.Topic).Key, "running", lastCheck.ToUniversalTime()
+                _ingressRepo.updateObservableStatus(_observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "running", lastCheck.ToUniversalTime()
                 );
             }
         }
