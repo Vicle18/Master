@@ -6,12 +6,14 @@ import DetailedView from "./IngressDetailed";
 import Chart from "./DataChart";
 import { useState } from "react";
 import IngressOverviewLeft from "./IngressOverviewLeft";
+import { Fab } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 interface IngressOverviewProps {
   //onItemClick: (data: any) => void;
 }
 
-const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
+const IngressOverview: React.FC<IngressOverviewProps> = ({}) => {
   const [selectedItemData, setSelectedItemData] = useState(null);
   const [selectedDataForChart, setSelectedDataForChart] = useState(null);
   const [selectedView, setSelectedView] = useState("");
@@ -26,8 +28,7 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
 
   return (
     <>
-        <Box sx={{ flexGrow: 6, height: "90vh" }}>
-
+      <Box sx={{ flexGrow: 6, height: "90vh" }}>
         <Grid2 container spacing={2} sx={{ height: "100%" }}>
           <Grid2
             xs={2.5}
@@ -72,7 +73,8 @@ const IngressOverview: React.FC<IngressOverviewProps> = ({  }) => {
             />
           </Grid2>
         </Grid2>
-        </Box>
+        
+      </Box>
     </>
   );
 };
