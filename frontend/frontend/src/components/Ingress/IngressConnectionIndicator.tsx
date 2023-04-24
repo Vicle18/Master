@@ -38,8 +38,8 @@ const IngressStatus: React.FC<IApiDataProps> = ({
   if (error) return <p>Error : {error.message}</p>;
 
   function hasConnection(): boolean {
-    if (data?.observableProperties[0].status) {
-      if (data?.observableProperties[0].status == "running") {
+    if (data?.observableProperties[0]?.status) {
+      if (data?.observableProperties[0]?.status == "running") {
         return true;
       }
       return false;
@@ -52,9 +52,9 @@ const IngressStatus: React.FC<IApiDataProps> = ({
         {hasConnection() ? (
           <Tooltip
             title={`Current status: ${
-              data?.observableProperties[0].status ?? "not found"
+              data?.observableProperties[0]?.status ?? "not found"
             }, last updated: ${
-              data?.observableProperties[0].lastUpdatedAt ?? "not found"
+              data?.observableProperties[0]?.lastUpdatedAt ?? "not found"
             }`}
           >
             <SensorsIcon color="success" />
@@ -62,11 +62,11 @@ const IngressStatus: React.FC<IApiDataProps> = ({
         ) : (
           <Tooltip
             title={`Current status: ${
-              data?.observableProperties[0].status ?? "not found"
+              data?.observableProperties[0]?.status ?? "not found"
             }, last updated: ${
-              data?.observableProperties[0].lastUpdatedAt ?? "not found"
+              data?.observableProperties[0]?.lastUpdatedAt ?? "not found"
             }, error state at: ${
-              data?.observableProperties[0].errorStateAt ?? "not found"
+              data?.observableProperties[0]?.errorStateAt ?? "not found"
             }`}
           >
             <SensorsOffIcon color="error" />

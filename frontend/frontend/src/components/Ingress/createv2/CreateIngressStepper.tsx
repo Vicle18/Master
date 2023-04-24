@@ -90,6 +90,8 @@ const CreateIngressStepper: React.FC<Props> = ({
 
   const theme = useTheme();
   const handlerClose = () => {
+    setActiveStep(0)
+
     setPopupIngress(false);
   };
 
@@ -120,7 +122,8 @@ const CreateIngressStepper: React.FC<Props> = ({
 
   const handleSubmit = (values: FormData) => {
     console.log("submit", values);
-    
+    setActiveStep(0)
+
     if (values.changedFrequency == undefined || values.changedFrequency.length <= 0 ) {
       console.log("inside if")
       values.changedFrequency = values.frequency;

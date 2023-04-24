@@ -101,6 +101,8 @@ const CreateEgressStepper: React.FC<Props> = ({
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handlerClose = () => {
+    setActiveStep(0)
+
     setPopupEgress(false);
   };
 
@@ -113,6 +115,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   });
 
   const handleNext = () => {
+    refetch();
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
   const handleBack = () => {
@@ -127,6 +130,8 @@ const CreateEgressStepper: React.FC<Props> = ({
   };
 
   const handleSubmit = (values: FormData) => {
+    setActiveStep(0)
+
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
     values.ingressId = selectedIngressNode?.id;
@@ -195,6 +200,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     setIngressNodes(ingressNodes.filter((node) => node.id !== element.id));
   };
   const handleStep = (step: number) => () => {
+    refetch();
     setActiveStep(step);
   };
   return (

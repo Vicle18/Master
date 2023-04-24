@@ -26,16 +26,16 @@ import Grid2 from "@mui/material/Unstable_Grid2";
 import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
 import { gql, useQuery } from "@apollo/client";
 
-interface Props { }
+interface Props {}
 
 const steps = ["Select Machines to export", "Copy or Download"];
 
 const GET_MACHINES = gql`
   query Machines($where: MachineWhere) {
     machines(where: $where) {
-      description
       id
       name
+      description
       observableProperties {
         changedFrequency
         description
@@ -46,25 +46,28 @@ const GET_MACHINES = gql`
           name
         }
         connectionDetails
+        dataFormat
+        dataType
+        downsampleMethod
       }
     }
   }
 `;
 
-const ExportStepper: React.FC<Props> = ({ }) => {
+const ExportStepper: React.FC<Props> = ({}) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const [PopupExport, setPopupExport] = React.useState(false);
-  const [currentlySelectedMachine, setCurrentlySelectedParent] =
-    useState<string>("");
-  const [selectedMachines, setSelectedMachines] = useState<string[]>([]);
+  const [currentlySelectedParent, setCurrentlySelectedParent] = useState<any>();
+  const [selectedMachines, setSelectedMachines] = useState<any[]>();
 
-  const { loading, error, data } = useQuery(GET_MACHINES, {
-    variables: { where: { name_IN: selectedMachines } },
+  const { loading, error, data, refetch } = useQuery(GET_MACHINES, {
+    variables: { where: { id: currentlySelectedParent?.id } },
   });
   //   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
-
   const handlerClose = () => {
+    setActiveStep(0);
+    setSelectedMachines([]);
     setPopupExport(false);
   };
 
@@ -77,14 +80,21 @@ const ExportStepper: React.FC<Props> = ({ }) => {
   const handleStep = (step: number) => () => {
     setActiveStep(step);
   };
-  const handleDelete = (element: string) => {
-    setSelectedMachines(selectedMachines.filter((node) => node !== element));
+  const handleDelete = (element: any) => {
+    setSelectedMachines(
+      selectedMachines?.filter((node) => node.id !== element.id)
+    );
   };
 
   const handleSave = () => {
-    //console.log("Save");
     const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(data)], { type: "application/json" });
+    var dataCopy = structuredClone(data);
+    dataCopy.machines.forEach((machine: any) => {
+      machine.observableProperties.forEach((observableProperty: any) => {
+        observableProperty.topic = observableProperty.topic.name;
+      });
+    });
+    const file = new Blob([JSON.stringify(dataCopy)], { type: "application/json" });
     element.href = URL.createObjectURL(file);
     element.download = "machines.json";
     document.body.appendChild(element); // Required for this to work in FireFox
@@ -151,13 +161,11 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     <Grid2 container alignItems="center" spacing={2}>
                       <Grid2 container xs={9}>
                         <Typography variant="caption">
-                          Current Element: {currentlySelectedMachine}
+                          Current Element: {currentlySelectedParent?.name}
                         </Typography>
                         {/* </Box> */}
                       </Grid2>
-                      <Grid2 container xs={3}>
-
-                      </Grid2>
+                      <Grid2 container xs={3}></Grid2>
                     </Grid2>
                   </Box>
 
@@ -165,22 +173,26 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {
                       // HandleIngressClick(parent.name);
-                      setCurrentlySelectedParent(parent.name);
+                      console.log("parent", parent);
+                      setCurrentlySelectedParent(parent);
+                      setSelectedMachines([parent]);
                     }}
-
                     filter={["machines"]}
                     initialSearchString={""}
                   />
                   <Divider />
                   <Button
-                    sx={{ marginTop: "20px", marginLeft:"375px"}}
+                    sx={{ marginTop: "20px", marginLeft: "375px" }}
                     variant="contained"
                     color="primary"
                     onClick={() => {
+                      console.log("parents", currentlySelectedParent);
                       setSelectedMachines([
-                        ...selectedMachines,
-                        currentlySelectedMachine,
+                        // ...selectedMachines?? [],
+                        currentlySelectedParent,
                       ]);
+                      console.log("refetching", currentlySelectedParent.id);
+                      refetch({ where: { id: currentlySelectedParent.id } });
                     }}
                   >
                     Add
@@ -206,9 +218,9 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     }}
                     subheader={<ListSubheader>Machines</ListSubheader>}
                   >
-                    {selectedMachines.map((machine) => (
+                    {selectedMachines?.map((machine) => (
                       <ListItemButton
-                        key={machine}
+                        key={machine.id}
                         sx={{
                           "&:hover": { backgroundColor: "#f0f0f0" },
                         }}
@@ -216,7 +228,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                         <ListItemIcon>
                           <SensorsIcon />
                         </ListItemIcon>
-                        <ListItemText primary={machine} />
+                        <ListItemText primary={machine.name} />
                         <IconButton
                           edge="end"
                           onClick={() => handleDelete(machine)}
@@ -243,7 +255,11 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Typography variant="body2" gutterBottom style={{ wordBreak: "break-all" }}>
+                  <Typography
+                    variant="body2"
+                    gutterBottom
+                    style={{ wordBreak: "break-all" }}
+                  >
                     {JSON.stringify(data?.machines, null, "\t")}
                   </Typography>
                 </Grid2>
@@ -262,7 +278,6 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     color="success"
                     type="submit"
                     onClick={handleSave}
-
                   >
                     Save as file
                   </Button>
@@ -275,11 +290,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
           {/* <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button> */}
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handlerClose}
-          >
+          <Button variant="outlined" color="primary" onClick={handlerClose}>
             Cancel
           </Button>
           <Button
@@ -292,11 +303,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
           </Button>
 
           {activeStep !== steps.length - 1 && (
-            <Button
-              color="primary"
-              variant="contained"
-              onClick={handleNext}
-            >
+            <Button color="primary" variant="contained" onClick={handleNext}>
               {"Next"}
             </Button>
           )}

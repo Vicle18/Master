@@ -1,13 +1,14 @@
 import * as React from "react";
 import { gql, useQuery } from "@apollo/client";
 import SearchBar from "./IngressOverviewSearch";
-import CustomizedTreeView from './IngressOverviewTree';
+import CustomizedTreeView from "./IngressOverviewTree";
 import { useState } from "react";
-
+import RefreshIcon from "@mui/icons-material/Refresh";
+import { Grid, IconButton } from "@mui/material";
 type Props = {
   onItemClick: (data: any) => void;
   selectedNode?: string;
-  filter?: string[]
+  filter?: string[];
   initialSearchString?: string;
 };
 
@@ -77,25 +78,53 @@ const findChildrenKey = (node: TreeNode): string | undefined => {
   return undefined;
 };
 
+const IngressOverviewLeft: React.FC<Props> = ({
+  onItemClick,
+  selectedNode,
+  filter,
+  initialSearchString,
+}) => {
+  const [searchString, setSearchString] = useState("");
 
-const IngressOverviewLeft: React.FC<Props> = ({ onItemClick, selectedNode, filter, initialSearchString}) => {
-  const [searchString, setSearchString] = useState('');
-
-
-  const { loading, error, data } = useQuery(GET_LOCATIONS);
+  const { loading, error, data, refetch } = useQuery(GET_LOCATIONS);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
-  if(initialSearchString) setSearchString(initialSearchString);
+  if (initialSearchString) setSearchString(initialSearchString);
 
   function onSearchResultSelection(searchString: string) {
     setSearchString(searchString);
   }
 
-
   return (
     <>
-      <SearchBar suggestions={extractNames(data)} onSearch={onSearchResultSelection}/>
-      <CustomizedTreeView onItemClick={onItemClick} searchString={searchString} data={data} filter={filter ?? ["companies", "plants", "areas", "lines", "cells", "machines"]}/>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={12} sm={10}>
+          <SearchBar
+            suggestions={extractNames(data)}
+            onSearch={onSearchResultSelection}
+          />
+        </Grid>
+        <Grid item xs={12} sm={2}>
+          <IconButton edge="end" onClick={() => refetch()}>
+            <RefreshIcon />
+          </IconButton>
+        </Grid>
+      </Grid>
+      <CustomizedTreeView
+        onItemClick={onItemClick}
+        searchString={searchString}
+        data={data}
+        filter={
+          filter ?? [
+            "companies",
+            "plants",
+            "areas",
+            "lines",
+            "cells",
+            "machines",
+          ]
+        }
+      />
     </>
   );
 };

@@ -3,6 +3,9 @@
 ## pushing a new version
 git tag -a ingress/v1.4.6 -m "now with transition details"
 git push origin ingress/v1.4.6
+
+git tag -a mvp -m "mvp"
+git push origin mvp
 ### informatio about pipeline metadata
 https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)

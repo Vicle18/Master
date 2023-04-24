@@ -27,6 +27,7 @@ import {
   Alert,
   Slide,
   Paper,
+  TextField,
 } from "@mui/material";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
 
@@ -54,6 +55,7 @@ export interface State extends SnackbarOrigin {
 const steps = [
   "Select Parent",
   "Select file to import",
+  "Modify Connection Details",
   "Select Machines to Add",
 ];
 interface Machine {
@@ -83,6 +85,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
     vertical: "top",
     horizontal: "center",
   });
+  const [formData, setFormData] = useState<any>();
   const [result, setResult] = useState<string | null>(null);
 
   const { vertical, horizontal, open } = state;
@@ -104,6 +107,8 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
   //   if (error) return <p>Error : {error.message}</p>;
 
   const handlerClose = () => {
+    setActiveStep(0);
+
     setCurrentlySelectedContainer("");
     setSelectedContainer("");
     setCreationStarted(false);
@@ -178,12 +183,15 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         (observableProperty: any) => observableProperty.checked
       );
     console.log(observablePropertiesToCreate);
+    createMachine(
+      observablePropertiesToCreate?.map(
+        (observableProperty: any) => observableProperty.id
+      ) || []
+    );
 
     observablePropertiesToCreate?.forEach((observableProperty: any) => {
-      observableProperty.containingElement = json?.machines?.[0]?.id;
-      observableProperty.topic = observableProperty.topic;
-      observableProperty.dataFormat = "RAW";
-      console.log("creating", JSON.stringify(observableProperty));
+      observableProperty.containingElement = json?.machines?.[0]?.name;
+      console.log("creating obs from file", JSON.stringify(observableProperty));
 
       fetch(
         `${process.env.REACT_APP_MIDDLEWARE_URL}/api/Ingress/IngressFromFile?=`,
@@ -205,12 +213,6 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
         })
         .catch((error) => console.error(error));
     });
-
-    createMachine(
-      observablePropertiesToCreate?.map(
-        (observableProperty: any) => observableProperty.id
-      ) || []
-    );
   };
 
   const createMachine = (propertyIds: string[]) => {
@@ -369,6 +371,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
               </Grid2>
             </>
           )}
+          
           {activeStep === 1 && (
             <>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -399,7 +402,9 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                   }}
                 >
                   <Paper style={{ padding: "10px" }}>
-                    <Typography style={{ wordBreak: "break-all" }}>{JSON.stringify( json, null, 2)}</Typography>
+                    <Typography style={{ wordBreak: "break-all" }}>
+                      {JSON.stringify(json, null, 2)}
+                    </Typography>
                   </Paper>
                   {/* <Typography variant="body2" gutterBottom>
                     

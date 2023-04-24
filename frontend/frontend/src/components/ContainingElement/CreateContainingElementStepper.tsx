@@ -75,11 +75,12 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
   const [selectedParent, setSelectedParent] = useState<any>("");
   const [selectedContainingElement, setSelectedContainingElement] =
-    useState<string>("");
+    useState<any>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
     setPopupContainingElement(false);
+    setActiveStep(0)
   };
 
   const handleNext = () => {
@@ -92,6 +93,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupContainingElement(false);
+    setActiveStep(0)
     values.children = children;
     const headers = {
       "Content-Type": "application/json",
@@ -530,7 +532,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         }}
                       >
                         <DetailedView
-                          containingEntityId={selectedContainingElement}
+                          containingEntityId={selectedContainingElement?.id}
                           onOpenChart={handleSelectObservableProperty}
                           withDetails={false}
                         />
@@ -631,7 +633,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                     variant="contained"
                     color="success"
                     type="submit"
-                    disabled={!isValid || activeStep != 1}
+                    disabled={!isValid || activeStep != 3}
                   >
                     Create
                   </Button>

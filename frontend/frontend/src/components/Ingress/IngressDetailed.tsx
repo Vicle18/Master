@@ -3,6 +3,8 @@ import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import {
   Box,
   Button,
@@ -406,7 +408,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
         )
         .map((item: any, index: any) => (
           <Accordion key={index}>
-            <AccordionSummary>
+            <AccordionSummary  expandIcon={<ExpandMoreIcon />}>
             <IngressStatus ingressId={item.id}/>
             <Box sx={{ width: "10px" }} />
               <Typography

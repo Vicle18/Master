@@ -87,17 +87,16 @@ namespace MiddlewareManager.Controllers
         [HttpPost("IngressFromFile")]
         public async Task<ActionResult<CreateObservablePropertiesResult>> PostFromFile([FromBody] IngressFromFileDto file)
         {
-            _logger.LogDebug("creating ingress with values: {value}", file);
+            _logger.LogDebug("creating ingress from file with values: {value}", file);
             try
             {
                 var topicName = file.topic;
                
-                var connectionDetails =
-                    file.connectionDetails;
-                var response = await _ingressRepo.CreateObservableProperty(file.id, file, topicName,
-                    JsonSerializer.Serialize(connectionDetails));
 
-                await HTTPForwarder.ForwardsIngressRequestToConfigurator(JsonSerializer.Serialize(connectionDetails), _client);
+                var response = await _ingressRepo.CreateObservableProperty(file.id, file, topicName,
+                    file.connectionDetails);
+
+                await HTTPForwarder.ForwardsIngressRequestToConfigurator(file.connectionDetails, _client);
 
                 return Ok(response);
             }

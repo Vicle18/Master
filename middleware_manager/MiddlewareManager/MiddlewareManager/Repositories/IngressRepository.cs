@@ -59,8 +59,7 @@ public class IngressRepository : IIngressRepository
                         dataFormat = value.dataFormat,
                         dataType = value.dataType,
                         downsampleMethod = value.downsampleMethod,
-                        // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
-                        changedFrequency = value.frequency,
+                        changedFrequency = value.changedFrequency ?? value.frequency,
                         topic = new
                         {
                             create = new

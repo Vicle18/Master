@@ -76,6 +76,8 @@ const EditIngressStepper: React.FC<Props> = ({
     console.log(openSnackbar);
   };
   const handlerClose = () => {
+    setActiveStep(0)
+
     setPopupIngress(false);
   };
 
@@ -88,6 +90,8 @@ const EditIngressStepper: React.FC<Props> = ({
 
   const handleSubmit = (values: FormData) => {
     console.log("submit", values);
+    setActiveStep(0)
+
     setPopupIngress(false);
 
     const headers = {
