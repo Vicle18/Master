@@ -21,7 +21,8 @@ public class IngressRepository : IIngressRepository
         _logger = logger;
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
-            EndPoint = new Uri("http://localhost:4000")
+            EndPoint = new Uri(
+                $"http://{_config.GetSection("METASTORE").GetValue<string>("HOST")}:{_config.GetSection("METASTORE").GetValue<string>("PORT")}")
         }, new SystemTextJsonSerializer());
     }
 
