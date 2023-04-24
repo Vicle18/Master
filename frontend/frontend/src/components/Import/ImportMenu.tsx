@@ -30,6 +30,7 @@ import {
   TextField,
 } from "@mui/material";
 import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import RefreshIcon from "@mui/icons-material/Refresh";
 
 import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -44,8 +45,8 @@ import { AddBox } from "@mui/icons-material";
 import { create } from "domain";
 
 interface Props {
-  setPopupImport: React.Dispatch<React.SetStateAction<boolean>>;
-  PopupImport: boolean;
+  // setPopupImport: React.Dispatch<React.SetStateAction<boolean>>;
+  // PopupImport: boolean;
 }
 
 export interface State extends SnackbarOrigin {
@@ -55,7 +56,6 @@ export interface State extends SnackbarOrigin {
 const steps = [
   "Select Parent",
   "Select file to import",
-  "Modify Connection Details",
   "Select Machines to Add",
 ];
 interface Machine {
@@ -73,7 +73,9 @@ const GET_OBSERVABLE_PROPERTIES = gql`
   }
 `;
 
-const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
+const ImportStepper: React.FC<Props> = ({}) => {
+  const [PopupImport, setPopupImport] = React.useState(false);
+
   const [activeStep, setActiveStep] = React.useState(0);
   const [creationStarted, setCreationStarted] = React.useState(false);
   const [currentlySelectedContainer, setCurrentlySelectedContainer] =
@@ -273,6 +275,16 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
 
   return (
     <div>
+      <Button
+        sx={{
+          marginLeft: 1,
+        }}
+        variant="outlined"
+        disableElevation
+        onClick={() => setPopupImport(true)}
+      >
+        Import Machine
+      </Button>
       <Dialog
         open={PopupImport}
         onClose={handlerClose}
@@ -371,7 +383,7 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
               </Grid2>
             </>
           )}
-          
+
           {activeStep === 1 && (
             <>
               <Grid2 container spacing={2} sx={{ height: "60vh" }}>
@@ -527,7 +539,12 @@ const ImportStepper: React.FC<Props> = ({ PopupImport, setPopupImport }) => {
                       bgcolor: "background.paper",
                     }}
                     subheader={
-                      <ListSubheader>Observable Properties</ListSubheader>
+                      <ListSubheader>
+                        Observable Properties{" "}
+                        <IconButton edge="end" onClick={() => refetch()}>
+                          <RefreshIcon />
+                        </IconButton>
+                      </ListSubheader>
                     }
                   >
                     {data?.observableProperties?.map((property: any) => (
