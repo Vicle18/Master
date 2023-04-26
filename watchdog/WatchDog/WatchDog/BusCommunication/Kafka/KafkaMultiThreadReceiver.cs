@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using WatchDog.Models;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WatchDog.BusCommunication.KAFKA
 {
@@ -60,11 +61,16 @@ namespace WatchDog.BusCommunication.KAFKA
                                 var consumeResult = consumer.Consume(CancellationToken.None);
 
                                 Log.Debug($"Received Message from Kafka: {consumeResult.Message.Value}");
-
+                                var message = JsonSerializer.Deserialize<Message>(consumeResult.Message.Value);
                                 msgHandler(consumeResult.Topic, new ReceivedBusMessage
                                 {
                                     Topic = consumeResult.Topic,
-                                    Message = consumeResult.Message.Value,
+                                    Message = new Message
+                                    {
+                                        id = message?.id,
+                                        status = message?.status,
+                                        timestamp = message?.timestamp
+                                    },
                                     TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
                                     Raw = JsonConvert.SerializeObject(consumeResult)
                                 });

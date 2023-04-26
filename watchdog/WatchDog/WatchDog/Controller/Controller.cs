@@ -18,7 +18,7 @@ public class Controller : IController
     private readonly IIngressRepository _ingressRepo;
     private readonly IEgressRepository _egressRepo;
     private List<ReceivedBusMessage> _receivedEgressBusMessages;
-    private List<ReceivedBusMessage> _receivedObservableBusMessages;
+    private Dictionary<string, Message> _receivedObservableBusMessages;
     private Dictionary<string, string> _observables;
     private HashSet<string> _subscribedObservables;
     private List<string> _subscribedEgress;
@@ -31,7 +31,7 @@ public class Controller : IController
         _logger = logger;
         _egressRepo = egressRepo;
         _ingressRepo = ingressRepo;
-        _receivedObservableBusMessages = new List<ReceivedBusMessage>();
+        _receivedObservableBusMessages = new Dictionary<string, Message>();
         _receivedEgressBusMessages = new List<ReceivedBusMessage>();
         _subscribedObservables = new HashSet<string>();
         _subscribedEgress = new List<string>();
@@ -75,6 +75,8 @@ public class Controller : IController
             Task.Delay(10000).Wait();
         }
 
+        _busClient.Subscribe("ingress_availability", HandleObservablePropertyMessages);
+
         Log.Debug("Stopping transmission");
     }
 
@@ -109,9 +111,17 @@ public class Controller : IController
         _receivedEgressBusMessages.Add(message);
     }
 
-    private void HandleObservablePropertyMessages(string topic, ReceivedBusMessage message)
+    private void HandleObservablePropertyMessages(string topic, ReceivedBusMessage receivedBusMessage)
     {
-        _receivedObservableBusMessages.Add(message);
+        // Ads or replaces the messages based on id
+        if (receivedBusMessage.Message.id != null)
+        {
+            _receivedObservableBusMessages[receivedBusMessage.Message.id] = new Message
+            {
+                id = receivedBusMessage.Message.id, status = receivedBusMessage.Message.status,
+                timestamp = receivedBusMessage.Message.timestamp
+            };
+        }
     }
 
 
@@ -158,18 +168,26 @@ public class Controller : IController
     {
         foreach (var receivedBusMessage in _receivedObservableBusMessages)
         {
-            if (lastCheck.ToUniversalTime() - receivedBusMessage.TimeStamp.ToUniversalTime() > TimeSpan.FromSeconds(20))
+            //receivedBusMessage.TimeStamp.ToUniversalTime()
+            if (lastCheck.ToUniversalTime() - receivedBusMessage.Value.timestamp.Value.ToUniversalTime() >
+                TimeSpan.FromSeconds(20))
             {
-                _ingressRepo.updateObservableStatus(
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Key, "error", lastCheck.ToUniversalTime(),
+                    receivedBusMessage.Value.timestamp);
+                
+                /*_ingressRepo.updateObservableStatus(
                     _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "error",
-                    lastCheck.ToUniversalTime());
+                    lastCheck.ToUniversalTime());*/
             }
             else
             {
-                _ingressRepo.updateObservableStatus(
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Key, receivedBusMessage.Value.status,
+                    lastCheck.ToUniversalTime(), receivedBusMessage.Value.timestamp);
+                
+                /*_ingressRepo.updateObservableStatus(
                     _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "running",
                     lastCheck.ToUniversalTime()
-                );
+                );*/
             }
         }
     }

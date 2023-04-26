@@ -13,8 +13,10 @@ public class IngressRepository : IIngressRepository
     private readonly IConfiguration _config;
     private readonly ILogger<IngressRepository> _logger;
     private GraphQLHttpClient graphQLClient;
+
     private bool _hasErrorOccured = false;
 
+    // availability
     public IngressRepository(IConfiguration config, ILogger<IngressRepository> logger)
     {
         _config = config;
@@ -49,10 +51,11 @@ public class IngressRepository : IIngressRepository
             // Handle errors here
         }
 
-        return response.Data.ObservableProperties.ToDictionary( op => op.topic.name, op => op.id);
+        return response.Data.ObservableProperties.ToDictionary(op => op.topic.name, op => op.id);
     }
 
-    public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)
+    public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt,
+        DateTime? lastMessageReceived)
     {
         var variables = new
         {
@@ -77,14 +80,14 @@ public class IngressRepository : IIngressRepository
 
         if (status == "error" && !_hasErrorOccured)
         {
-            UpdateErrorAt(id, lastUpdatedAt);
+            UpdateErrorAt(id, lastMessageReceived ?? lastUpdatedAt);
         }
 
         var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
         return true;
     }
 
-    private async Task UpdateErrorAt(string id, DateTime lastUpdatedAt)
+    private async Task UpdateErrorAt(string id, DateTime? lastUpdatedAt)
     {
         var variables = new
         {
