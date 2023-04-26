@@ -71,7 +71,7 @@ namespace WatchDog.BusCommunication.KAFKA
                                     {
                                         id = message?.id,
                                         status = message?.status,
-                                        timestamp = message?.timestamp
+                                        timestamp = DateTime.Now
                                     },
                                     TimeStamp = consumeResult.Message.Timestamp.UtcDateTime,
                                     Raw = JsonConvert.SerializeObject(consumeResult)

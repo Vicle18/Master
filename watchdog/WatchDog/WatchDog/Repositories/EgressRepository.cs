@@ -14,6 +14,7 @@ public class EgressRepository : IEgressRepository
     private readonly ILogger<IngressRepository> _logger;
     private GraphQLHttpClient graphQLClient;
     private bool _hasErrorOccured = false;
+    private IEgressRepository _egressRepositoryImplementation;
 
     public EgressRepository(IConfiguration config, ILogger<IngressRepository> logger)
     {
@@ -44,8 +45,12 @@ public class EgressRepository : IEgressRepository
         return response.Data.EgressEndpoints.Select(op => op.id).ToList();
     }
 
-    public async Task<bool> updateEgressStatus(string id, string status, DateTime lastUpdatedAt)
+    public async Task<bool> updateEgressStatus(string id, string status, DateTime lastUpdatedAt,
+        DateTime? lastMessageReceived)
     {
+        _logger.Log(LogLevel.Debug,
+            $"id {id}, status {status}, lastUpdatedAt {lastUpdatedAt}, lastMessageReceived {lastMessageReceived}");
+
         var mutation = new GraphQLRequest
         {
             Query = @"
@@ -74,10 +79,10 @@ public class EgressRepository : IEgressRepository
 
         if (status == "error" && !_hasErrorOccured)
         {
-            UpdateErrorAt(id, lastUpdatedAt);
+            UpdateErrorAt(id, lastMessageReceived ?? lastUpdatedAt);
         }
 
-        var response = await graphQLClient.SendMutationAsync<EgressEndpoint>(mutation);
+        var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
         return true;
     }
 
