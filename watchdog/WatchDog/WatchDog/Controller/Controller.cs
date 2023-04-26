@@ -75,7 +75,6 @@ public class Controller : IController
             Task.Delay(10000).Wait();
         }
 
-        _busClient.Subscribe("ingress_availability", HandleObservablePropertyMessages);
 
         Log.Debug("Stopping transmission");
     }
@@ -85,15 +84,16 @@ public class Controller : IController
         _observables = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
 
+        _busClient.Subscribe("ingress_availability", HandleObservablePropertyMessages);
 
-        foreach (var observable in _observables)
+        /*foreach (var observable in _observables)
         {
             if (!_subscribedObservables.Contains(observable.Key))
             {
                 _busClient.Subscribe(observable.Key, HandleObservablePropertyMessages);
                 _subscribedObservables.Add(observable.Key);
             }
-        }
+        }*/
 
         /*foreach (var egress in egressEndpointIds)
         {
