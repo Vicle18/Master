@@ -18,6 +18,7 @@ public class MQTTIngressClient : IIngressClient
     private float _accumulatedValue = 0;
     private float _messageCounter = 0;
     private Action<string> _messageHandler;
+    private string _statusMessage = "";
     public MQTTIngressClient(IConfiguration config)
     {
         _config = config;
@@ -68,12 +69,16 @@ public class MQTTIngressClient : IIngressClient
                             Log.Error( ex,
                                 "could not connect to MQTT broker with ip {ip} and port: {port}",
                                 mqttHost, mqttPort);
+                            _statusMessage =
+                                $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                         }
                         catch (MQTTnet.Exceptions.MqttCommunicationException ex)
                         {
                             Log.Error(ex,
                                 "could not connect to MQTT broker with ip {ip} and port: {port}",
                                 mqttHost, mqttPort);
+                            _statusMessage =
+                                $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                         }
                     });
                 }
@@ -149,11 +154,17 @@ public class MQTTIngressClient : IIngressClient
         //     
         // }, CancellationToken.None);
     }
-    
-    public bool HasConnection()
+
+    public bool IsConnected()
     {
         return mqttClient?.IsConnected ?? false;
     }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
+    }
+    
 
     public void Disconnect()
     {

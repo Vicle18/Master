@@ -3,7 +3,7 @@ using ServiceOrchestrator.ContainerManagement;
 
 namespace ServiceOrchestrator.Brokers;
 
-public class MQTTBroker
+public class MQTTBroker : IMessageBroker
 {
     public MQTTBroker()
     {

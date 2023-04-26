@@ -14,6 +14,7 @@ public class OPCUAIngressClient : IIngressClient
     private Session _session;
     private OPCUAConfiguration _opcuaConfig;
     private Action<string> _messageHandler;
+    private string _statusMessage = "";
 
     private string ServerUrl;
 
@@ -67,7 +68,17 @@ public class OPCUAIngressClient : IIngressClient
         })).ConfigureAwait(false);
 
     }
-    
+
+    public bool IsConnected()
+    {
+        return _session?.Connected ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        throw new NotImplementedException();
+    }
+
     private void MyFastDataChangeCallback(Subscription subscription, DataChangeNotification notification, IList<string> stringTable)
     {
         try
@@ -128,6 +139,8 @@ public class OPCUAIngressClient : IIngressClient
                 catch (Opc.Ua.ServiceResultException e)
                 {
                     Log.Debug( e, "Connection to client with url {endpointUrl}, could not be established because of error: ", endpointUrlString, e.Message);
+                    _statusMessage =
+                        $"Connection to client with url {endpointUrlString}, could not be established because of error: {e.Message}";
                     Thread.Sleep(1000);
                 }
             }

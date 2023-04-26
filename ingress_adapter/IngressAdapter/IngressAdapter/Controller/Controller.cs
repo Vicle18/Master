@@ -130,7 +130,8 @@ public class Controller : IController
             JObject msg = new JObject()
             {
                 ["id"]=_config.GetValue<string>("ID"),
-                ["timestamp"]=DateTime.Now
+                ["timestamp"]=DateTime.Now,
+                ["status"]=_ingressClient.IsConnected() ? "running" : _ingressClient.GetStatusMessage(),
             };
             _busClient.Publish("ingress_availability", msg.ToString());
             Task.Delay(5000).Wait();

@@ -16,7 +16,7 @@ public class RTDEIngressClient : IIngressClient
     private RtdeClient client;
     private readonly RTDEConfiguration _rtdeConfig;
     private Action<string> _messageHandler;
-    
+    private string _statusMessage = "";
     public RTDEIngressClient(IConfiguration config)
     {
         _config = config;
@@ -41,6 +41,8 @@ public class RTDEIngressClient : IIngressClient
         catch (Exception e)
         {
             Console.WriteLine(e);
+            _statusMessage =
+                $"Could not connect to RTDE Client with host {_rtdeConfig.HOST} and port {_rtdeConfig.PORT}, {e.Message}";
             throw;
         }
         
@@ -75,6 +77,16 @@ public class RTDEIngressClient : IIngressClient
         {
             Log.Debug("Error when starting ingestion for RTDE: {error}", e.Message);
         }
+    }
+
+    public bool IsConnected()
+    {
+        return client?.IsConnected() ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        throw new NotImplementedException();
     }
 
     private string MapOutputToType(string output)
