@@ -83,7 +83,6 @@ public class Controller : IController
     {
         _observables = await _ingressRepo.getObservableProperties();
         var egressEndpointIds = await _egressRepo.getEgressEndpoints();
-
         _busClient.Subscribe("ingress_availability", HandleObservablePropertyMessages);
         _busClient.Subscribe("egress_availability", HandleEgressMessages);
 
