@@ -57,6 +57,9 @@ public class IngressRepository : IIngressRepository
     public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt,
         DateTime? lastMessageReceived)
     {
+        _logger.Log(LogLevel.Debug,
+            $"id {id}, status {status}, lastUpdatedAt {lastUpdatedAt}, lastMessageReceived {lastMessageReceived}");
+
         var variables = new
         {
             where = new { id = $"{id}" },
@@ -89,6 +92,7 @@ public class IngressRepository : IIngressRepository
 
     private async Task UpdateErrorAt(string id, DateTime? lastUpdatedAt)
     {
+        _logger.Log(LogLevel.Debug, "IngressRepository UpdateErrorAt");
         var variables = new
         {
             where = new { id = $"{id}" },

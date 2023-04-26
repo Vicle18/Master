@@ -144,7 +144,7 @@ public class Controller : IController
                         DateTime lastCheck = DateTime.Now;
                         CheckObservableProperties(lastCheck);
                         CheckEgress(lastCheck);
-                        GetObservableElements();
+                        //GetObservableElements();
                         Task _currentExecution = Task.Delay(5000, cts.Token);
 
                         await _currentExecution.ContinueWith(task => { Log.Debug("Still running"); });
