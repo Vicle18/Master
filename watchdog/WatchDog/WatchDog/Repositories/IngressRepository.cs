@@ -28,7 +28,6 @@ public class IngressRepository : IIngressRepository
 
     public async Task<Dictionary<string, string>> getObservableProperties()
     {
-        Log.Debug("Before request");
         var request = new GraphQLRequest
         {
             Query = @"
@@ -43,7 +42,6 @@ public class IngressRepository : IIngressRepository
             "
         };
 
-        Log.Debug("before sending request");
         var response = await graphQLClient.SendQueryAsync<ObservablePropertyResponse>(request);
 
         if (response.Errors != null && response.Errors.Any())
@@ -51,13 +49,11 @@ public class IngressRepository : IIngressRepository
             // Handle errors here
         }
 
-        Log.Debug(JsonSerializer.Serialize(response.Data));
         return response.Data.ObservableProperties.ToDictionary( op => op.topic.name, op => op.id);
     }
 
     public async Task<bool> updateObservableStatus(string id, string status, DateTime lastUpdatedAt)
     {
-        Log.Debug("Updating");
         var variables = new
         {
             where = new { id = $"{id}" },
@@ -85,7 +81,6 @@ public class IngressRepository : IIngressRepository
         }
 
         var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
-        Log.Debug(JsonSerializer.Serialize(response));
         return true;
     }
 
@@ -111,7 +106,6 @@ public class IngressRepository : IIngressRepository
             Variables = variables
         };
         var response = await graphQLClient.SendMutationAsync<ObservableProperty>(mutation);
-        Log.Debug(JsonSerializer.Serialize(response));
         _hasErrorOccured = true;
     }
 }

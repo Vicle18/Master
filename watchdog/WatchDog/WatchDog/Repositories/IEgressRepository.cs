@@ -4,5 +4,5 @@ public interface IEgressRepository
 {
     public Task<List<string>> getEgressEndpoints();
 
-    public Task<bool> updateEgressStatus(string id, bool active, DateTime lastUpdatedAt);
+    public Task<bool> updateEgressStatus(string id, string status, DateTime lastUpdatedAt);
 }

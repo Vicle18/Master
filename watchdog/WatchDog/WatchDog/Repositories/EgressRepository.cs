@@ -40,12 +40,11 @@ public class EgressRepository : IEgressRepository
 
         var response = await graphQLClient.SendQueryAsync<EgressEndpointResponse>(request);
 
-        _logger.LogInformation("Received following query response {response}", JsonSerializer.Serialize(response.Data));
 
         return response.Data.EgressEndpoints.Select(op => op.id).ToList();
     }
 
-    public async Task<bool> updateEgressStatus(string id, bool active, DateTime lastUpdatedAt)
+    public async Task<bool> updateEgressStatus(string id, string status, DateTime lastUpdatedAt)
     {
         var mutation = new GraphQLRequest
         {
@@ -68,19 +67,17 @@ public class EgressRepository : IEgressRepository
                 },
                 update = new
                 {
-                    status = $"{active}", lastUpdatedAt = $"{lastUpdatedAt}"
+                    status = $"{status}", lastUpdatedAt = $"{lastUpdatedAt}"
                 }
             }
         };
 
-        if (!active && !_hasErrorOccured)
+        if (status == "error" && !_hasErrorOccured)
         {
             UpdateErrorAt(id, lastUpdatedAt);
         }
 
         var response = await graphQLClient.SendMutationAsync<EgressEndpoint>(mutation);
-        _logger.LogInformation("Received following mutation response {response}",
-            JsonSerializer.Serialize(response.Data));
         return true;
     }
 
@@ -105,7 +102,6 @@ public class EgressRepository : IEgressRepository
             Variables = variables
         };
         var response = await graphQLClient.SendMutationAsync<EgressEndpoint>(mutation);
-        Log.Debug(JsonSerializer.Serialize(response));
         _hasErrorOccured = true;
     }
 }
