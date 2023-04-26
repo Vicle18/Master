@@ -62,6 +62,8 @@ namespace WatchDog.BusCommunication.KAFKA
 
                                 Log.Debug($"Received Message from Kafka: {consumeResult.Message.Value}");
                                 var message = JsonSerializer.Deserialize<Message>(consumeResult.Message.Value);
+                                Log.Debug($"Received Message: {message}");
+
                                 msgHandler(consumeResult.Topic, new ReceivedBusMessage
                                 {
                                     Topic = consumeResult.Topic,

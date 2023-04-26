@@ -114,6 +114,8 @@ public class Controller : IController
     private void HandleObservablePropertyMessages(string topic, ReceivedBusMessage receivedBusMessage)
     {
         // Ads or replaces the messages based on id
+        Log.Debug($"HandleObservablePropertyMessages: {receivedBusMessage}");
+
         if (receivedBusMessage.Message.id != null)
         {
             _receivedObservableBusMessages[receivedBusMessage.Message.id] = new Message
@@ -172,9 +174,10 @@ public class Controller : IController
             if (lastCheck.ToUniversalTime() - receivedBusMessage.Value.timestamp.Value.ToUniversalTime() >
                 TimeSpan.FromSeconds(20))
             {
-                _ingressRepo.updateObservableStatus(receivedBusMessage.Key, "error", lastCheck.ToUniversalTime(),
+                _ingressRepo.updateObservableStatus(receivedBusMessage.Key, receivedBusMessage.Value.status, lastCheck.ToUniversalTime(),
                     receivedBusMessage.Value.timestamp);
-                
+                Log.Debug($"Error: {receivedBusMessage.Value.status}");
+
                 /*_ingressRepo.updateObservableStatus(
                     _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "error",
                     lastCheck.ToUniversalTime());*/
@@ -183,7 +186,7 @@ public class Controller : IController
             {
                 _ingressRepo.updateObservableStatus(receivedBusMessage.Key, receivedBusMessage.Value.status,
                     lastCheck.ToUniversalTime(), receivedBusMessage.Value.timestamp);
-                
+
                 /*_ingressRepo.updateObservableStatus(
                     _observables.FirstOrDefault(x => x.Key == receivedBusMessage.Topic).Value, "running",
                     lastCheck.ToUniversalTime()
