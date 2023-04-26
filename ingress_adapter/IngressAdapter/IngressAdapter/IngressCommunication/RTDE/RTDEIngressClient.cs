@@ -86,7 +86,7 @@ public class RTDEIngressClient : IIngressClient
 
     public string GetStatusMessage()
     {
-        throw new NotImplementedException();
+        return _statusMessage;
     }
 
     private string MapOutputToType(string output)

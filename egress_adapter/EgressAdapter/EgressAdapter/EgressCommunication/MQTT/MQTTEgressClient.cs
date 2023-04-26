@@ -16,6 +16,7 @@ public class MQTTEgressClient : IEgressClient
     private readonly Dictionary<string, string> _transitionPairs;
     private static IMqttClient mqttClient;
     private MqttFactory factory;
+    private string _statusMessage;
 
     public MQTTEgressClient(IConfiguration config)
     {
@@ -69,12 +70,16 @@ public class MQTTEgressClient : IEgressClient
                         Log.Error(ex,
                             "could not connect to MQTT broker with ip {ip} and port: {port}",
                             mqttHost, mqttPort);
+                        _statusMessage =
+                            $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                     }
                     catch (MQTTnet.Exceptions.MqttCommunicationException ex)
                     {
                         Log.Error(ex,
                             "could not connect to MQTT broker with ip {ip} and port: {port}",
                             mqttHost, mqttPort);
+                        _statusMessage =
+                            $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                     }
                 });
             }
@@ -115,6 +120,16 @@ public class MQTTEgressClient : IEgressClient
             .Build();
         await mqttClient.PublishAsync(publishMessage);
         Log.Debug("Published message {message} to MQTT {topic}", message, target);
+    }
+
+    public bool IsConnected()
+    {
+        return mqttClient?.IsConnected ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
     }
 
     public bool HasConnection()

@@ -12,6 +12,8 @@ public class OPCUAEgressClient : IEgressClient
     private readonly IConfiguration _config;
     private Session _session;
     private OPCUAConfiguration _opcuaConfig;
+    private string _statusMessage;
+
     public OPCUAEgressClient(IConfiguration config)
     {
         _config = config;
@@ -59,6 +61,16 @@ public class OPCUAEgressClient : IEgressClient
         }
     }
 
+    public bool IsConnected()
+    {
+        return _session?.Connected ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
+    }
+
     private async Task CreateClientSession(string endpointUrlString)
     {
 
@@ -93,6 +105,8 @@ public class OPCUAEgressClient : IEgressClient
                 catch (Opc.Ua.ServiceResultException e)
                 {
                     Log.Debug( e, "Connection to client with url {endpointUrl}, could not be established because of error: ", endpointUrlString, e.Message);
+                    _statusMessage =
+                        $"Connection to client with url {endpointUrlString}, could not be established because of error: {e.Message}";
                     Thread.Sleep(1000);
                 }
             }

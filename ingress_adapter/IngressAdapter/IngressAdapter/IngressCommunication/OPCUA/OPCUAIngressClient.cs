@@ -76,7 +76,7 @@ public class OPCUAIngressClient : IIngressClient
 
     public string GetStatusMessage()
     {
-        throw new NotImplementedException();
+        return _statusMessage;
     }
 
     private void MyFastDataChangeCallback(Subscription subscription, DataChangeNotification notification, IList<string> stringTable)

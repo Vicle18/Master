@@ -6,4 +6,6 @@ public interface IEgressClient
 {
     public void Initialize(IBusClient busClient);
     public Task PublishMessage(string message, string target);
+    public bool IsConnected();
+    public string GetStatusMessage();
 }

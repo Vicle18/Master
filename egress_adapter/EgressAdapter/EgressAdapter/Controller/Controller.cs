@@ -78,10 +78,11 @@ public class Controller : IController
     {
         JObject msg = new JObject()
         {
-            ["id"] = "DoesItWork",
-            ["available"] = true
+            ["id"]=_config.GetValue<string>("ID"),
+            ["timestamp"]=DateTime.Now,
+            ["status"]= _egressClient.IsConnected() ? "running" : _egressClient.GetStatusMessage(),
         };
-        _busClient.Publish("test", msg.ToString());
+        _busClient.Publish("ingress_availability", msg.ToString());
     }
 
     private void MessageHandler(string topic, string msg)
@@ -155,7 +156,8 @@ public class Controller : IController
         Log.Debug("Starting Transmission");
         while (!cts.IsCancellationRequested)
         {
-            
+            PublishAvailabilityNotification();
+            Task.Delay(5000).Wait();
         }
         _frequencyController.StopTransmission();
         Log.Debug("Stopping transmission");

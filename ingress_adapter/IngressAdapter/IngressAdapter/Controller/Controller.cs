@@ -61,7 +61,8 @@ public class Controller : IController
         JObject msg = new JObject()
         {
             ["id"]=_config.GetValue<string>("ID"),
-            ["available"]=true
+            ["timestamp"]=DateTime.Now,
+            ["status"]= _ingressClient.IsConnected() ? "running" : _ingressClient.GetStatusMessage(),
         };
         _busClient.Publish("ingress_availability", msg.ToString());
     }
@@ -127,13 +128,7 @@ public class Controller : IController
         Log.Debug("Starting Transmission");
         while (!_cts.IsCancellationRequested)
         {
-            JObject msg = new JObject()
-            {
-                ["id"]=_config.GetValue<string>("ID"),
-                ["timestamp"]=DateTime.Now,
-                ["status"]=_ingressClient.IsConnected() ? "running" : _ingressClient.GetStatusMessage(),
-            };
-            _busClient.Publish("ingress_availability", msg.ToString());
+            PublishAvailabilityNotification();
             Task.Delay(5000).Wait();
         }
         Log.Debug("Stopping transmission");
