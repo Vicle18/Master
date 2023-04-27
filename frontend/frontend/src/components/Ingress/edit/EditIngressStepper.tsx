@@ -68,7 +68,7 @@ const EditIngressStepper: React.FC<Props> = ({
   const [checked, setChecked] = React.useState(false);
 
   const theme = useTheme();
-  
+
   const handleResultInSnackbar = (result: string) => {
     console.log(`Result for snackbar: ${result}`);
     setResult(result);
@@ -132,7 +132,9 @@ const EditIngressStepper: React.FC<Props> = ({
       .then((response) => response.json())
       .then((data) => console.log("data: " + data))
       .catch((error) => console.error(error));
+    window.location.reload();
   };
+
 
   function HandleIngressClick(data: any): void {
     setSelectedIngress(data);
@@ -1026,35 +1028,35 @@ const EditIngressStepper: React.FC<Props> = ({
         </Formik>
       </Dialog>
       {result && (<Snackbar
-          open={true}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={3000}
-          TransitionComponent={Slide}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          message={result}
-        >
-          {result === "Network Error" ? (
-            <Alert
-              // onClose={handleCloseSnackbar}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              {result}
-            </Alert>
-          ) : (
-            <Alert
-              // onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              {
-                "Ingress Endpoint successfully created. You can now work with the data."
-              }
-            </Alert>
-          )}
-          
-          
-        </Snackbar>)}
+        open={true}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        message={result}
+      >
+        {result === "Network Error" ? (
+          <Alert
+            // onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {result}
+          </Alert>
+        ) : (
+          <Alert
+            // onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {
+              "Ingress Endpoint successfully created. You can now work with the data."
+            }
+          </Alert>
+        )}
+
+
+      </Snackbar>)}
     </div>
   );
 };

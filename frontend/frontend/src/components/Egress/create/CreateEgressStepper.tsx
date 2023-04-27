@@ -185,6 +185,7 @@ const CreateEgressStepper: React.FC<Props> = ({
         console.error(error);
         setResult(error.message);
       });
+    window.location.reload();
   };
 
   function handleEgressClick(data: any): void {

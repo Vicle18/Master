@@ -97,6 +97,8 @@ const CreateEgressGroupStepper: React.FC<Props> = ({
       .then((response) => response.json())
       .then((data) => console.log("data: " + data))
       .catch((error) => console.error(error));
+
+    window.location.reload();
   };
 
   const handleStep = (step: number) => () => {

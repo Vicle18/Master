@@ -150,6 +150,7 @@ const CreateIngressStepper: React.FC<Props> = ({
           }
         }
       }
+      window.location.reload();
     }
     const headers = {
       "Content-Type": "application/json",
