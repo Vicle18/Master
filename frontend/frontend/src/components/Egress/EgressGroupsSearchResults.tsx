@@ -167,7 +167,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
         )
         .map((item: any, index: any) => (
           <Accordion key={index}>
-            <AccordionSummary  expandIcon={<ExpandMoreIcon />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
@@ -185,7 +185,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 )}
                 {item.accessTo.length > 0 && (
                   <Chip
-                    label={"Contains " + item.accessTo.length +" Egress Endpoints"}
+                    label={"Contains " + item.accessTo.length + " Egress Endpoints"}
                     color="success"
                     size="small"
                     sx={{ marginRight: "10px" }}
@@ -195,7 +195,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
             </AccordionSummary>
             <AccordionDetails>
               <Grid2 container spacing={2}>
-                
+
                 <Grid2
                   xs={4}
                   sx={{
@@ -215,14 +215,15 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                         bgcolor: "background.paper",
                       }}
                       subheader={
-                        <ListSubheader>Egress Endpoints {"(Click for more details)"}</ListSubheader>
-                      }
+                        <ListSubheader sx={{ fontWeight: "bold" }}>
+                          Egress Endpoints (Click for more details)
+                        </ListSubheader>}
                     >
                       {item.accessTo.map((node: any) => (
                         <ListItemButton
                           key={node.id}
                           sx={{
-                            "&:hover": { backgroundColor: "#f0f0f0" },
+                            "&:hover": { backgroundColor: "#4f92ff" },
                           }}
                           onClick={() => handleShowChart(node)}
                         >
