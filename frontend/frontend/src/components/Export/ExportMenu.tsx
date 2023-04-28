@@ -149,18 +149,6 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     backgroundColor: "whitesmoke",
                   }}
                 >
-                  <Box mb={2}>
-                    <Grid2 container alignItems="center" spacing={2}>
-                      <Grid2 container xs={9}>
-                        <Paper style={{ padding: "10px" }}>
-                          <Typography style={{ wordBreak: "break-all" }}>
-                            {JSON.stringify(currentlySelectedMachine, null, 2)}
-                          </Typography>
-                        </Paper>
-                      </Grid2>
-                    </Grid2>
-                  </Box>
-
                   <Divider />
                   <IngressOverviewLeft
                     onItemClick={(parent: any) => {

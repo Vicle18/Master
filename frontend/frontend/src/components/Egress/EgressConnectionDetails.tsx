@@ -1,4 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InfoIcon from "@mui/icons-material/Info";
 import {
   Accordion,
   AccordionDetails,
@@ -12,10 +14,8 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import { FC, useEffect, useState } from "react";
-import InfoIcon from "@mui/icons-material/Info";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import axios from "axios";
+import { FC, useEffect, useState } from "react";
 import { CreateTelegramTemplate } from "./TemplateCreator";
 
 interface ConnectionDetailsProps {
@@ -68,6 +68,8 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
 }) => {
   const [resultDelete, setResultDelete] = useState<string | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(true);
+  const [expandedPanel1, setExpandedPanel1] = useState<string | false>('panel1');
+  const [expandedPanel2, setExpandedPanel2] = useState<string | false>('panel2');
 
   const [currentValueOfIngress, setCurrentValueOfIngress] =
     useState<string>("not found");
@@ -84,6 +86,17 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false);
   };
+
+  const handleChangePanel1 =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpandedPanel1(newExpanded ? panel : false);
+    };
+
+  const handleChangePanel2 =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setExpandedPanel2(newExpanded ? panel : false);
+    };
+
   const handleResultInSnackbar = (result: string) => {
     console.log(`Result: ${result}`);
     setOpenSnackbar(true);
@@ -155,7 +168,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
     })
       .then((response) => {
         if (!response.ok) {
-          
+
           throw new Error(`HTTP error ${response.status}`);
         }
         refetch();
@@ -180,7 +193,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
   function handleDownloadTelegram(): void {
     var data = "empty"
     if (connectionDetails?.PROTOCOL == "MQTT") {
-        data = CreateTelegramTemplate(
+      data = CreateTelegramTemplate(
         connectionDetails?.PARAMETERS?.HOST,
         connectionDetails?.PARAMETERS?.PORT,
         connectionDetails?.TRANSMISSION_DETAILS?.TARGET
@@ -204,7 +217,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label={"Detailed information for " + endpoint.name} />
       </Divider>
-      <Accordion>
+      <Accordion expanded={expandedPanel1 === 'panel1'} onChange={handleChangePanel1('panel1')}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -231,7 +244,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
           </Box>{" "}
         </AccordionDetails>
       </Accordion>
-      <Accordion>
+      <Accordion expanded={expandedPanel2 === 'panel2'} onChange={handleChangePanel2('panel2')}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -292,7 +305,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
               the data format, etc.
               {Object.entries(connectionDetails?.TRANSMISSION_DETAILS).map(
                 ([key, value]) =>
-                  
+
                   value != null && !["DOWN_SAMPLING_METHOD", "CHANGED_FREQUENCY"].includes(key.toString()) && (
                     <Typography style={{ wordBreak: "break-all" }}>
                       <Box component="span" fontWeight="bold">
@@ -311,41 +324,43 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label={"Manage " + endpoint.name} />
       </Divider>
-      <Button color="primary" variant="contained" onClick={handleEdit}>
-        Edit Egress Endpoint
-      </Button>
-      <Box sx={{ width: "1px", height: "10px"}} />
-      <Button color="error" variant="contained" onClick={handleDelete}>
-        Delete Egress Endpoint
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+        <Button color="primary" variant="contained" onClick={handleEdit}>
+          Edit Egress Endpoint
+        </Button>
+        <Box sx={{ width: "1px", height: "10px" }} />
+        <Button color="error" variant="contained" onClick={handleDelete}>
+          Delete Egress Endpoint
+        </Button>
+      </Box>
       {resultDelete && (<Snackbar
-          open={openSnackbar}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={3000}
-          TransitionComponent={Slide}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          message={resultDelete}
-        >
-          {resultDelete === "error" ? (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              {resultDelete}
-            </Alert>
-          ) : (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              {
-                "Egress Endpoint successfully Deleted"
-              }
-            </Alert>
-          )}
-        </Snackbar>)}
+        open={openSnackbar}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={3000}
+        TransitionComponent={Slide}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        message={resultDelete}
+      >
+        {resultDelete === "error" ? (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {resultDelete}
+          </Alert>
+        ) : (
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {
+              "Egress Endpoint successfully Deleted"
+            }
+          </Alert>
+        )}
+      </Snackbar>)}
     </div>
   );
 };
