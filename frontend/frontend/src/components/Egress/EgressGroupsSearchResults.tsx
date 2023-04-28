@@ -28,6 +28,7 @@ import Chip from "@mui/material/Chip";
 import PrecisionManufacturingIcon from "@mui/icons-material/PrecisionManufacturing";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import { EgressSearchParameters } from "./EgressOverview";
+import { useEffect } from "react";
 const GET_ENDPOINTS = gql`
   query Query($where: EgressGroupWhere) {
     egressGroups(where: $where) {
@@ -96,6 +97,10 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
     },
     fetchPolicy: "no-cache",
   });
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
@@ -167,7 +172,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
               >
-                GROUP | {item.name}
+                <Box fontWeight="bold" fontSize={15}>GROUP</Box>{item.name}
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
                 {item.accessTo.length <= 0 && (
@@ -190,22 +195,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
             </AccordionSummary>
             <AccordionDetails>
               <Grid2 container spacing={2}>
-                <Grid2
-                  xs={6}
-                  sx={{
-                    backgroundColor: "whitesmoke",
-                    marginBottom: "30px",
-                    marginLeft: "20px",
-                    borderRadius: "10px",
-                  }}
-                >
-                  <Typography>
-                    <Box component="span" fontWeight="bold">
-                      Description:
-                    </Box>{" "}
-                    {item.description}
-                  </Typography>
-                </Grid2>
+                
                 <Grid2
                   xs={4}
                   sx={{
@@ -225,7 +215,7 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                         bgcolor: "background.paper",
                       }}
                       subheader={
-                        <ListSubheader>Egress Endpoints</ListSubheader>
+                        <ListSubheader>Egress Endpoints {"(Click for more details)"}</ListSubheader>
                       }
                     >
                       {item.accessTo.map((node: any) => (
@@ -244,6 +234,22 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                       ))}
                     </List>
                   </Box>
+                </Grid2>
+                <Grid2
+                  xs={6}
+                  sx={{
+                    backgroundColor: "whitesmoke",
+                    marginBottom: "30px",
+                    marginLeft: "20px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  <Typography>
+                    <Box component="span" fontWeight="bold">
+                      Description:
+                    </Box>{" "}
+                    {item.description}
+                  </Typography>
                 </Grid2>
               </Grid2>
               {onSelectGroupId && (

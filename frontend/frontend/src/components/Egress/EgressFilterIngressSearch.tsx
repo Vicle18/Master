@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../Ingress/IngressDetailed";
@@ -76,7 +76,11 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
     const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
     const [selectedEgress, setSelectedEgress] =
     useState<string>("");
-  const { loading, error, data } = useQuery(GET_LOCATIONS);
+  const { loading, error, data, refetch} = useQuery(GET_LOCATIONS);
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 

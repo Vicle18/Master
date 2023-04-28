@@ -27,6 +27,7 @@ import EditIngressStepper from "./edit/EditIngressStepper";
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import { egressInitialValues } from "../Egress/create/FormDefinition";
 import IngressStatus from "./IngressConnectionIndicator";
+import { useEffect } from "react";
 
 const GET_DATA_FOR_CONTAINING_ENTITY = gql`
   query Company(
@@ -242,6 +243,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     },
     fetchPolicy: "no-cache",
   });
+
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);

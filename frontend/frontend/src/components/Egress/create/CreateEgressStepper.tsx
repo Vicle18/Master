@@ -113,7 +113,10 @@ const CreateEgressStepper: React.FC<Props> = ({
   const { loading, error, data, refetch } = useQuery(GET_ENDPOINTS, {
     fetchPolicy: "no-cache",
   });
-
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   const handleNext = () => {
     refetch();
     setActiveStep((prevActiveStep) => prevActiveStep + 1);

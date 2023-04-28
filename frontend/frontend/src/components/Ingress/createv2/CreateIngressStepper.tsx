@@ -185,6 +185,8 @@ const CreateIngressStepper: React.FC<Props> = ({
       .then((response) => response.json())
       .then((data) => console.log("data: " + data))
       .catch((error) => console.error(error));
+
+    resetValues();
   };
 
   function HandleIngressClick(data: any): void {
@@ -201,6 +203,26 @@ const CreateIngressStepper: React.FC<Props> = ({
   ): void {
     setRadioValue(event.target.value);
   }
+
+  function resetValues(){
+    initialValues.protocol = ""
+    initialValues.topic = ""
+    initialValues.name = ""
+    initialValues.description = ""
+    initialValues.frequency = ""
+    initialValues.changedFrequency = ""
+    initialValues.dataFormat = ""
+    initialValues.id = ""
+    initialValues.dataType = ""
+    initialValues.downsampleMethod = ""
+    initialValues.port = "";
+    initialValues.host = "";
+    initialValues.port = "";
+    initialValues.host = "";
+    initialValues.output = "";
+    initialValues.nodeId = "";
+      // TODO SØRG FOR VED UPDATE I MIDDLE_WARE AT REQUEST ET KILL POD OSV. OG LAVE EN NY MED DE NYE CONNECTIONDETAILS
+    }
 
 
   return (
@@ -486,7 +508,7 @@ const CreateIngressStepper: React.FC<Props> = ({
                         {({ field }: FieldProps<FormData>) => (
                           <TextField
                             {...field}
-                            label="Frequency (Hz)"
+                            label="Original Frequency (Hz)"
                             variant="outlined"
                             fullWidth
                             margin="normal"

@@ -3,10 +3,13 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
   Button,
   Chip,
   Divider,
+  Slide,
+  Snackbar,
   Typography,
 } from "@mui/material";
 import { FC, useEffect, useState } from "react";
@@ -63,6 +66,9 @@ const GET_ENDPOINTS = gql`
 const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
   egressEndpoint,
 }) => {
+  const [resultDelete, setResultDelete] = useState<string | null>(null);
+  const [openSnackbar, setOpenSnackbar] = useState(true);
+
   const [currentValueOfIngress, setCurrentValueOfIngress] =
     useState<string>("not found");
   const [fetchingCurrentValue, setFetchingCurrentValue] =
@@ -75,7 +81,14 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
     },
     fetchPolicy: "no-cache",
   });
-
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false);
+  };
+  const handleResultInSnackbar = (result: string) => {
+    console.log(`Result: ${result}`);
+    setOpenSnackbar(true);
+    setResultDelete(result);
+  };
   useEffect(() => {
     const fetchData = async () => {
       if (data?.egressEndpoints[0]?.accessTo?.id) {
@@ -142,13 +155,22 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
     })
       .then((response) => {
         if (!response.ok) {
+          
           throw new Error(`HTTP error ${response.status}`);
         }
         refetch();
         return response.json();
       })
-      .then((data) => console.log("data: " + JSON.stringify(data)))
-      .catch((error) => console.error(error));
+      .then((data) => {
+        console.log("data: " + JSON.stringify(data));
+        setResultDelete(data);
+        handleResultInSnackbar(data);
+      })
+      .catch((error) => {
+        console.error(error);
+        setResultDelete("error");
+        handleResultInSnackbar("error");
+      });
   }
 
   function handleEdit(): void {
@@ -296,7 +318,34 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Button color="error" variant="contained" onClick={handleDelete}>
         Delete Egress Endpoint
       </Button>
-      
+      {resultDelete && (<Snackbar
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={3000}
+          TransitionComponent={Slide}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          message={resultDelete}
+        >
+          {resultDelete === "error" ? (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {resultDelete}
+            </Alert>
+          ) : (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {
+                "Egress Endpoint successfully Deleted"
+              }
+            </Alert>
+          )}
+        </Snackbar>)}
     </div>
   );
 };

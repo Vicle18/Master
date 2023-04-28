@@ -1,4 +1,5 @@
 using System.Globalization;
+using Confluent.Kafka;
 using IngressAdapter.BusCommunication;
 using IngressAdapter.BusCommunication.KAFKA;
 using IngressAdapter.Controller.FrequencyControl;
@@ -61,6 +62,7 @@ public class Controller : IController
         JObject msg = new JObject()
         {
             ["id"]=_config.GetValue<string>("ID"),
+            
             ["timestamp"]=DateTime.Now,
             ["status"]= _ingressClient.IsConnected() ? "running" : _ingressClient.GetStatusMessage(),
         };

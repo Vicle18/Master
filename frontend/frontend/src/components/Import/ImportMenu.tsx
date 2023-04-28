@@ -36,7 +36,7 @@ import { isValid } from "date-fns";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SensorsIcon from "@mui/icons-material/Sensors";
 import InfoIcon from "@mui/icons-material/Info";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import IngressOverviewLeft from "../Ingress/IngressOverviewLeft";
@@ -105,6 +105,10 @@ const ImportStepper: React.FC<Props> = ({}) => {
       },
     }
   );
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   //   if (loading) return <p>Loading...</p>;
   //   if (error) return <p>Error : {error.message}</p>;
 

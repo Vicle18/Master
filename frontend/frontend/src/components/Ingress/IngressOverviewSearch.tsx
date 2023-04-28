@@ -32,6 +32,7 @@ const SearchBar: React.FC<Props> = ({ suggestions, onSearch }) => {
         value={query}
         variant="filled"
         size="small"
+        
         onChange={handleQueryChange}
         sx={{marginBottom: "10px"}}
         fullWidth
