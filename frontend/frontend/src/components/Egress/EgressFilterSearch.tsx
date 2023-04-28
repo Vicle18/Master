@@ -84,10 +84,10 @@ const EgressSearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   const renderInput = (params: AutocompleteRenderInputParams) => (
     <TextField
       {...params}
-      label="Search"
       margin="normal"
       variant="outlined"
       fullWidth
+      size="small"
     />
   );
 

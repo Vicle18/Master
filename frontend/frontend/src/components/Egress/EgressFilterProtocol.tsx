@@ -3,20 +3,20 @@ import { useState } from "react";
 
 interface SearchBarProps {
 
-    onApply: (selected: string[]) => void;
+  onApply: (selected: string[]) => void;
 }
 interface Node {
-    name: string;
-    [key: string]: any;
-  }
+  name: string;
+  [key: string]: any;
+}
 
 
 const EgressFilterProtocol: React.FC<SearchBarProps> = ({ onApply }) => {
-    const [selected, setSelected] = useState<string[]>([]);
-    const [searchValue, setSearchValue] = useState<string>('');
+  const [selected, setSelected] = useState<string[]>([]);
+  const [searchValue, setSearchValue] = useState<string>('');
 
   const options = ["MQTT", "OPCUA", "RTDE"];
-  
+
 
   const handleAdd = () => {
     setSelected((prevSelected) => [...prevSelected, searchValue]);
@@ -36,44 +36,42 @@ const EgressFilterProtocol: React.FC<SearchBarProps> = ({ onApply }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      
-        <Autocomplete
-          freeSolo
-          options={options}
-          value={searchValue}
-          onChange={(event, newValue) => {
-            setSearchValue(newValue ?? '');
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search"
-              margin="normal"
-              variant="outlined"
-            />
-          )}
-        />
-        <Button variant="contained" color="primary" onClick={handleAdd}>
-          Add
-        </Button>
-      
-      <Box mt={2}>
+
+      <Autocomplete
+        freeSolo
+        options={options}
+        value={searchValue}
+        onChange={(event, newValue) => {
+          setSearchValue(newValue ?? '');
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            margin="normal"
+            variant="outlined"
+            size="small"
+
+          />
+        )}
+      />
+      <Box mt={0.1} display="flex">
         {selected.map((value) => (
           <Chip
             key={value}
             label={value}
+            size="small"
             onDelete={() => handleDelete(value)}
             color="primary"
             variant="outlined"
-            style={{ marginRight: '5px', marginBottom: '5px' }}
+            style={{ marginRight: '3px', marginBottom: '3px' }}
           />
         ))}
       </Box>
-      <Box mt={2}>
-        <Button type="submit" variant="contained" color="primary">
-          Apply
-        </Button>
-      </Box>
+      <Button type="submit" variant="contained" color="primary" onClick={handleAdd} size="small">
+        Apply
+      </Button>
+
+
     </form>
   );
 };

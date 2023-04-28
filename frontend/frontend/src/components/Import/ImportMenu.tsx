@@ -73,7 +73,7 @@ const GET_OBSERVABLE_PROPERTIES = gql`
   }
 `;
 
-const ImportStepper: React.FC<Props> = ({}) => {
+const ImportStepper: React.FC<Props> = ({ }) => {
   const [PopupImport, setPopupImport] = React.useState(false);
 
   const [activeStep, setActiveStep] = React.useState(0);
@@ -218,6 +218,9 @@ const ImportStepper: React.FC<Props> = ({}) => {
           console.log("created observableProperty: " + JSON.stringify(data));
         })
         .catch((error) => console.error(error));
+      console.log('what is result', result)
+      handlerClose()
+
     });
   };
 
@@ -431,60 +434,47 @@ const ImportStepper: React.FC<Props> = ({}) => {
           )}
           {activeStep === 2 && (
             <>
-              <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                <Grid2
-                  xs={5}
-                  sx={{
-                    marginTop: "30px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    borderRadius: "10px",
-                    backgroundColor: "whitesmoke",
-                  }}
+              <Grid2
+                xs={5}
+                sx={{
+                  height: "60vh",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  borderRadius: "10px",
+                  backgroundColor: "whitesmoke",
+                }}
+              >
+                <FormControl
+                  // required
+                  // error={error}
+                  component="fieldset"
+                  sx={{ m: 3 }}
+                  variant="standard"
                 >
-                  <FormControl
-                    // required
-                    // error={error}
-                    component="fieldset"
-                    sx={{ m: 3 }}
-                    variant="standard"
-                  >
-                    <FormLabel component="legend">
-                      Choose the Observable Properties to include
-                    </FormLabel>
-                    <FormGroup>
-                      {json?.machines[0]?.observableProperties?.map(
-                        (item: any, index: any) => (
-                          <FormControlLabel
-                            key={index}
-                            control={
-                              <Checkbox
-                                disabled={creationStarted}
-                                checked={item.checked}
-                                onChange={handleCheckboxChange(index)}
-                              />
-                            }
-                            label={item.name}
-                          />
-                        )
-                      )}
-                    </FormGroup>
-                    {/* <FormHelperText>You can display an error</FormHelperText> */}
-                  </FormControl>
-                  <Button
-                    sx={{
-                      marginLeft: 1,
-                    }}
-                    variant="outlined"
-                    disableElevation
-                    onClick={createObservableProperties({
-                      vertical: "bottom",
-                      horizontal: "center",
-                    })}
-                  >
-                    Create Observable Properties
-                  </Button>
-                  {/* <Snackbar
+                  <FormLabel component="legend">
+                    Choose the Observable Properties to create
+                  </FormLabel>
+                  <FormGroup>
+                    {json?.machines[0]?.observableProperties?.map(
+                      (item: any, index: any) => (
+                        <FormControlLabel
+                          key={index}
+                          control={
+                            <Checkbox
+                              disabled={creationStarted}
+                              checked={item.checked}
+                              onChange={handleCheckboxChange(index)}
+                            />
+                          }
+                          label={item.name}
+                        />
+                      )
+                    )}
+                  </FormGroup>
+                  {/* <FormHelperText>You can display an error</FormHelperText> */}
+                </FormControl>
+
+                {/* <Snackbar
                     open={open}
                     onClose={handleClose}
                     autoHideDuration={3000}
@@ -493,79 +483,7 @@ const ImportStepper: React.FC<Props> = ({}) => {
                     message={"Observable was created"}
 
                   /> */}
-                  {result && (
-                    <Snackbar
-                      open={open}
-                      onClose={handleClose}
-                      autoHideDuration={3000}
-                      TransitionComponent={Slide}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      message={result}
-                    >
-                      {result === "Network Error" ? (
-                        <Alert
-                          onClose={handleClose}
-                          severity="error"
-                          sx={{ width: "100%" }}
-                        >
-                          {result}
-                        </Alert>
-                      ) : (
-                        <Alert
-                          onClose={handleClose}
-                          severity="success"
-                          sx={{ width: "100%" }}
-                        >
-                          {"Observable Property was successfully created"}
-                        </Alert>
-                      )}
-                    </Snackbar>
-                  )}
-                </Grid2>
-                <Grid2
-                  xs={5}
-                  sx={{
-                    marginTop: "30px",
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    borderRadius: "10px",
-                    backgroundColor: "whitesmoke",
-                  }}
-                >
-                  <Typography variant="h6" gutterBottom>
-                    The Following Observable Properties have been created:
-                  </Typography>
-                  <List
-                    dense={true}
-                    sx={{
-                      width: "100%",
-                      maxWidth: 360,
-                      bgcolor: "background.paper",
-                    }}
-                    subheader={
-                      <ListSubheader>
-                        Observable Properties{" "}
-                        <IconButton edge="end" onClick={() => refetch()}>
-                          <RefreshIcon />
-                        </IconButton>
-                      </ListSubheader>
-                    }
-                  >
-                    {data?.observableProperties?.map((property: any) => (
-                      <ListItemButton
-                        key={property.name}
-                        sx={{
-                          "&:hover": { backgroundColor: "#f0f0f0" },
-                        }}
-                      >
-                        <ListItemIcon>
-                          <SensorsIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={property.name} />
-                      </ListItemButton>
-                    ))}
-                  </List>
-                </Grid2>
+
               </Grid2>
             </>
           )}
@@ -595,13 +513,45 @@ const ImportStepper: React.FC<Props> = ({}) => {
             variant="contained"
             color="success"
             type="submit"
-            onClick={handlerClose}
+            onClick={createObservableProperties({
+              vertical: "bottom",
+              horizontal: "center",
+            })}
             disabled={activeStep !== steps.length - 1}
           >
-            Finished
+            Create
           </Button>
+
         </DialogActions>
       </Dialog>
+      {result && (
+        <Snackbar
+          open={open}
+          onClose={handleClose}
+          autoHideDuration={3000}
+          TransitionComponent={Slide}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          message={result}
+        >
+          {result === "Network Error" ? (
+            <Alert
+              onClose={handleClose}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {result}
+            </Alert>
+          ) : (
+            <Alert
+              onClose={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {"Observable Property was successfully created"}
+            </Alert>
+          )}
+        </Snackbar>
+      )}
     </div>
   );
 };
