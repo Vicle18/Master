@@ -7,6 +7,6 @@ public class CreateContainingElementDTO
     public string description { get; set; }
     public string type { get; set; }
     public string parent { get; set; }
-    public string[] children { get; set; }
-    public string[] observableProperties { get; set; }
+    public string[]? children { get; set; }
+    public string[]? observableProperties { get; set; }
 }

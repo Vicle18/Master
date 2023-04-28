@@ -200,15 +200,15 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
 
   return (
     <div>
-      <Typography variant="h5"></Typography>
+      
       <Divider sx={{ marginBottom: "20px" }}>
         <Chip label={"Detailed information for " + endpoint.name} />
       </Divider>
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+          aria-controls="panel1a-content1"
+          id="panel1a-header1"
         >
           <Typography>What data do I get?</Typography>
         </AccordionSummary>
@@ -234,8 +234,8 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+          aria-controls="panel1a-content2"
+          id="panel1a-header2"
         >
           <Typography>How do I connect?</Typography>
         </AccordionSummary>
@@ -250,7 +250,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
             Object.entries(connectionDetails?.PARAMETERS).map(
               ([key, value]) =>
                 value != null && (
-                  <Typography>
+                  <Typography key={key}>
                     <Box component="span" fontWeight="bold">
                       {key.replace("_", " ").toLowerCase()}:
                     </Box>{" "}
@@ -280,8 +280,8 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
       <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
+          aria-controls="panel2a-content3"
+          id="panel2a-header3"
         >
           <Typography>More Details</Typography>
         </AccordionSummary>
@@ -294,7 +294,7 @@ const ConnectionDetailsDisplay: FC<ConnectionDetailsProps> = ({
                 ([key, value]) =>
                   
                   value != null && !["DOWN_SAMPLING_METHOD", "CHANGED_FREQUENCY"].includes(key.toString()) && (
-                    <Typography style={{ wordBreak: "break-all" }}>
+                    <Typography style={{ wordBreak: "break-all" }} key={key}>
                       <Box component="span" fontWeight="bold">
                         {key.replace("_", " ").toLowerCase()}:
                       </Box>{" "}

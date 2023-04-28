@@ -223,22 +223,22 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
   } = useQuery<QueryResult>(GET_DATA_FOR_CONTAINING_ENTITY, {
     variables: {
       where: {
-        id: containingEntityId,
+        name: containingEntityId,
       },
       cellsWhere2: {
-        id: containingEntityId,
+        name: containingEntityId,
       },
       machinesWhere2: {
         name: containingEntityId,
       },
       companiesWhere2: {
-        id: containingEntityId,
+        name: containingEntityId,
       },
       linesWhere2: {
-        id: containingEntityId,
+        name: containingEntityId,
       },
       plantsWhere2: {
-        id: containingEntityId,
+        name: containingEntityId,
       },
     },
     fetchPolicy: "no-cache",
@@ -248,13 +248,12 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
     const intervalId = setInterval(refetch, 1000);
     return () => clearInterval(intervalId);
   }, []);
-
+  
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.log("graph ", error);
     return <p>Error : {JSON.stringify(error)}</p>;
   }
-
   const dataObjects = [
     ...(queryResult?.areas || []),
     ...(queryResult?.cells || []),
@@ -406,7 +405,7 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
           item.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
         .map((item: any, index: any) => (
-          <Accordion key={index}>
+          <Accordion key={index} onClick={() => handleShowChart(item)}>
             <AccordionSummary  expandIcon={<ExpandMoreIcon />}>
             <IngressStatus ingressId={item.id}/>
             <Box sx={{ width: "10px" }} />
@@ -533,18 +532,18 @@ const DetailedView: React.FC<IDetailedViewProps> = ({
                   </Stack>
                 </>
               )}
-              {!withDetails && (
+              {/* {!withDetails && (
                 <>
                   <Stack direction="row" spacing={2}>
                     <Button
                       variant="contained"
                       onClick={() => handleShowChart(item)}
                     >
-                      Add
+                      Select
                     </Button>
                   </Stack>
                 </>
-              )}
+              )} */}
             </AccordionDetails>
           </Accordion>
         ))}

@@ -67,9 +67,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const [ingressNodes, setIngressNodes] = useState<string[]>(
     initialValues.observableProperties as string[]
   );
-  const [children, setChildren] = useState<string[]>(
-    initialValues.children as string[]
-  );
+  const [children, setChildren] = useState<any[]>([]);
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedChild, setSelectedChild] = useState<any>("");
 
@@ -94,7 +92,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     console.log("submit", values, ingressNodes);
     setPopupContainingElement(false);
     setActiveStep(0)
-    values.children = children;
+    values.children = children.map((child) => child.id);
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -137,9 +135,9 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
   const handleSelectChild = (child: any) => {
     console.log("observable property", child.id);
-    setChildren([...children, child.id]);
+    setChildren([...children, child]);
   };
-  const handleDeleteChild = (child: string) => {
+  const handleDeleteChild = (child: any) => {
     setChildren(children.filter((node) => node !== child));
   };
 
@@ -321,34 +319,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <Box mb={2}>
-                          <Grid2 container alignItems="center" spacing={2}>
-                            <Grid2 container xs={9}>
-                              <Box
-                                display="inline-block"
-                                borderRadius={3}
-                                border="2px solid black"
-                                padding={2}
-                                maxWidth="100%"
-                              >
-                                <Typography variant="body1">
-                                  Current Element: {selectedParent.name}
-                                </Typography>
-                              </Box>
-                            </Grid2>
-                            <Grid2 container xs={3}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  values.parent = selectedParent.id;
-                                }}
-                              >
-                                SELECT
-                              </Button>
-                            </Grid2>
-                          </Grid2>
-                        </Box>
 
                         <Divider />
                         <IngressOverviewLeft
@@ -357,6 +327,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             setSelectedParent(parent);
                             console.log("parent", values.parent);
                             console.log(values.type);
+                            values.parent = selectedParent.id
                           }}
                           filter={getParentOptionsFilter(values.type)}
                         />
@@ -378,7 +349,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           maxWidth="100%"
                         >
                           <Typography variant="body1">
-                            Selected Element: {values.parent}
+                            Selected Element: {selectedParent.name}
                           </Typography>
                         </Box>
                       </Grid2>
@@ -440,7 +411,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                  handleSelectChild(selectedChild.id);
+                                  handleSelectChild(selectedChild);
                                 }}
                               >
                                 SELECT
@@ -478,7 +449,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         >
                           {children.map((node) => (
                             <ListItemButton
-                              key={node}
+                              key={node.id}
                               sx={{
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
@@ -486,7 +457,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                               <ListItemIcon>
                                 <SensorsIcon />
                               </ListItemIcon>
-                              <ListItemText primary={node} />
+                              <ListItemText primary={node.name} />
                               <IconButton
                                 edge="end"
                                 onClick={() => handleDeleteChild(node)}
@@ -516,8 +487,9 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                       >
                         <IngressOverviewLeft
                           onItemClick={(containingElement: any) => {
+                            console.log("containingElement", containingElement);
                             HandleContainingElementClick(
-                              containingElement.name
+                              containingElement
                             );
                           }}
                         />
@@ -532,7 +504,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         }}
                       >
                         <DetailedView
-                          containingEntityId={selectedContainingElement?.id}
+                          containingEntityId={selectedContainingElement?.name}
                           onOpenChart={handleSelectObservableProperty}
                           withDetails={false}
                         />
