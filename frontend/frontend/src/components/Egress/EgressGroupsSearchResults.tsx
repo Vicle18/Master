@@ -141,14 +141,14 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
         spacing={2}
         alignItems="center"
         justifyContent="center"
-        sx={{ marginBottom: "20px" }}
+        sx={{ marginBottom: "10px" }}
       >
         <Icon component={PrecisionManufacturingIcon} sx={{ fontSize: 40 }} />
         <Typography component="div" variant="h5" sx={{ marginLeft: "10px" }}>
           {properties?.name}
         </Typography>
       </Stack>
-      <Divider sx={{ marginBottom: "20px" }}>
+      <Divider sx={{ marginBottom: "10px" }}>
         <Chip label="External Data Endpoints and Groups" />
         <Button onClick={() => refetch()}>Refresh</Button>
       </Divider>
@@ -158,7 +158,6 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
         variant="filled"
         size="small"
         onChange={handleSearchTermChange}
-        sx={{ marginBottom: "10px" }}
         fullWidth
       />
       {properties
@@ -172,7 +171,10 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
                 variant="overline"
                 sx={{ width: "33%", flexShrink: 0 }}
               >
-                <Box fontWeight="bold" fontSize={15}>GROUP</Box>{item.name}
+                <Box sx={{ display: "flex", gap: '1.5rem', alignItems: "center", marginLeft: "0.4rem" }}>
+                  <Box fontWeight="bold" fontSize={15}>GROUP</Box>
+                  <Box fontSize={13} color="#1955B8">{item.name}</Box>
+                </Box>
               </Typography>
               <Box sx={{ marginLeft: "auto" }}>
                 {item.accessTo.length <= 0 && (
@@ -194,65 +196,67 @@ const EgressGroupsSearchResults: React.FC<IEgressSearchResultProps> = ({
               </Box>
             </AccordionSummary>
             <AccordionDetails>
-              <Grid2 container spacing={2}>
-
-                <Grid2
-                  xs={4}
-                  sx={{
-                    marginLeft: "20px",
-                    marginRight: "20px",
-                    marginBottom: "30px",
-                    borderRadius: "10px",
-                    backgroundColor: "whitesmoke",
-                  }}
-                >
-                  <Box sx={{ maxHeight: "300px", overflow: "auto" }}>
-                    <List
-                      dense={true}
-                      sx={{
-                        width: "100%",
-                        maxWidth: 360,
-                        bgcolor: "background.paper",
-                      }}
-                      subheader={
-                        <ListSubheader sx={{ fontWeight: "bold" }}>
-                          Egress Endpoints (Click for more details)
-                        </ListSubheader>}
-                    >
-                      {item.accessTo.map((node: any) => (
-                        <ListItemButton
-                          key={node.id}
-                          sx={{
-                            "&:hover": { backgroundColor: "#4f92ff" },
-                          }}
-                          onClick={() => handleShowChart(node)}
-                        >
-                          <ListItemIcon>
-                            <SensorsIcon />
-                          </ListItemIcon>
-                          <ListItemText primary={node.name} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                </Grid2>
-                <Grid2
-                  xs={6}
+              <Box sx={{
+                marginBottom: "10px", display: "flex", gap: '0.7rem', flexDirection: "column",
+              }}>
+                <Box
                   sx={{
                     backgroundColor: "whitesmoke",
-                    marginBottom: "30px",
-                    marginLeft: "20px",
                     borderRadius: "10px",
+                    paddingRight: "20px",
+                    maxHeight: "8rem",
+                    overflow: "auto"
                   }}
                 >
-                  <Typography>
+                  <Typography sx={{ marginLeft: "1rem" }}>
                     <Box component="span" fontWeight="bold">
                       Description:
                     </Box>{" "}
                     {item.description}
                   </Typography>
-                </Grid2>
-              </Grid2>
+                </Box>
+
+                <Box
+                  sx={{
+                    backgroundColor: "whitesmoke",
+                    borderRadius: "10px",
+                    paddingLeft: "5px",
+                    paddingRight: "5px",
+                    paddingTop: "5px",
+                    paddingBottom: "5px",
+                    maxHeight: "150px",
+                    overflow: "clip",
+                  }}
+                >
+                  <List
+                    dense={true}
+                    sx={{
+                      width: "100%",
+                      bgcolor: "background.paper",
+                    }}
+                    subheader={
+                      <ListSubheader sx={{ fontWeight: "bold" }}>
+                        Egress Endpoints (Click for more details)
+                      </ListSubheader>
+                    }
+                  >
+                    {item.accessTo.map((node: any) => (
+                      <ListItemButton
+                        key={node.id}
+                        sx={{
+                          "&:hover": { backgroundColor: "#4f92ff" },
+                        }}
+                        onClick={() => handleShowChart(node)}
+                      >
+                        <ListItemIcon>
+                          <SensorsIcon />
+                        </ListItemIcon>
+                        <ListItemText primary={node.name} />
+                      </ListItemButton>
+                    ))}
+                  </List>
+                </Box>
+              </Box>
               {onSelectGroupId && (
                 <Button
                   variant="contained"
