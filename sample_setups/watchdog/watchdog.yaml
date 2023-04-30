@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: watchdog-service
+  namespace: sso
+spec:
+  selector:
+    app: watchdog
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: watchdog-deployment
+  namespace: sso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: watchdog
+  template:
+    metadata:
+      labels:
+        app: watchdog
+    spec:
+      containers:
+        - name: watchdog-container
+          image: clemme/watchdog
+          env:
+            - name: METASTORE__HOST
+              value: "meta-store-service"
+            - name: METASTORE_PORT
+              value: "4000"
+            - name: BUS_CONFIG__PROTOCOL
+              value: "KAFKA"
+            - name: BUS_CONFIG__PARAMETERS__HOST
+              value: "my-cluster-kafka-brokers"
+            - name: BUS_CONFIG__PARAMETERS__PORT
+              value: "9092"
+            - name: egress_CONFIG__PROTOCOL
+              value: "OPCUA"
+            - name: EGRESS_CONFIG__PARAMETERS__SERVER_URL
+              value: "opc.tcp://10.123.252.192:8888/freeopcua/server/"
+            - name: EGRESS_CONFIG__PARAMETERS__TRANSMISSION_PAIRS
+              value: '[{"NODE_NAME": "ns=6;s=::AsGlobalPV:LoadOffTrack","VALUE_TYPE": "int","ORIGIN_TOPIC": "testOPCUA" }]'
+          # ports:
+          # - containerPort: 80

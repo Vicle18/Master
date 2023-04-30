@@ -57,7 +57,7 @@ kowl:
   config: 
     kafka:
         brokers:
-          - kafka-0.kafka-headless.kafka:9092
+          - my-cluster-kafka-brokers:9092
 ```
 ### deploy kowl (from /Master/kafka)
 ```
@@ -143,3 +143,19 @@ kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 ps -ef|grep port-forward
 kill
 ```
+
+## Access pod
+```
+kubectl exec --stdin --tty pod-3758378b-eb95-4616-8027-e278d31b07d1 -- /bin/bash
+```
+
+## Copy file from pod to local
+```
+kubectl cp <pod-name>:<fully-qualified-file-name> /<path-to-your-file>/<file-name>
+
+kubectl cp pod-a6978edf-d339-4c52-aa11-3288995aa177:Logs/log20230416.txt ~/logs/ingress_logs500.json
+
+kubectl cp pod-8341af19-8a7c-4a4f-b321-6cb7319e16c1:Logs/log20230416.txt ~/logs/egress_logs500.json
+```
+
+## Kill 

@@ -10,7 +10,7 @@ image:
   repository: cloudhut/kowl
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "master-59f68da"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -93,7 +93,7 @@ kowl:
   config: 
     kafka:
         brokers:
-          - kafka-0.kafka-headless.kafka:9092
+          - my-cluster-kafka-brokers:9092
   # roles:
   # roleBindings:
 
