@@ -13,15 +13,18 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fab,
   Menu,
   Slide,
   Snackbar,
   TextField,
 } from "@mui/material";
+
 import CreateEgressStepper from "../Egress/create/CreateEgressStepper";
 import CreateContainingElementStepper from "../ContainingElement/CreateContainingElementStepper";
 import CreateIngressStepper from "../Ingress/createv2/CreateIngressStepper";
 import ImportMenu from "../Import/ImportMenu";
+import CreateEgressGroupStepper from "../EgressGroup/CreateEgressGroupStepper";
 export function CreateEndpoint(
   open: boolean,
   createClick: (event: React.MouseEvent<HTMLElement>) => void,
@@ -39,7 +42,8 @@ export function CreateEndpoint(
 ) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [PopupIngress, setPopupIngress] = React.useState(false);
-  
+  const [PopupEgressGroup, setPopupEgressGroup] = React.useState(false);
+
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [PopupContainingElement, setPopupContainingElement] =
     React.useState(false);
@@ -54,6 +58,10 @@ export function CreateEndpoint(
   };
   const handlerClickOpenContainingElement = () => {
     setPopupContainingElement(true);
+  };
+
+  const handlerClickOpenEgressGroup = () => {
+    setPopupEgressGroup(true);
   };
   const handlerClickOpenIngress = () => {
     setPopupIngress(true);
@@ -104,12 +112,12 @@ export function CreateEndpoint(
       >
         <MenuItem onClick={handlerClickOpenIngress} disableRipple>
           <AddCircleOutline />
-          Ingress
+          Ingress Endpoint
         </MenuItem>
 
         <MenuItem onClick={handlerClickOpenEgress}>
           <AddCircleOutline />
-          Egress
+          Egress Endpoint
         </MenuItem>
 
         <Divider sx={{ my: 0.5 }} />
@@ -119,48 +127,27 @@ export function CreateEndpoint(
           Containing Element
         </MenuItem>
         <Divider sx={{ my: 0.5 }} />
+        <MenuItem onClick={handlerClickOpenEgressGroup} disableRipple>
+          <AddBox />
+          Egress Group
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
         
-        <MenuItem onClick={handlerClickOpenImport} disableRipple>
+        {/* <MenuItem onClick={handlerClickOpenImport} disableRipple>
           <AddBox />
           Import Machine
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
-      <ImportMenu PopupImport={PopupImport} setPopupImport={setPopupImport}/>
+      {/* <ImportMenu PopupImport={PopupImport} setPopupImport={setPopupImport}/> */}
       {CreateIngressStepper({ PopupIngress, setPopupIngress, handleResult })}
       {CreateContainingElementStepper({
         PopupContainingElement,
         setPopupContainingElement,
         handleResult,
       })}
+      {CreateEgressGroupStepper({PopupEgressGroup, setPopupEgressGroup, handleResult})}
       {CreateEgressStepper({ PopupEgress, setPopupEgress, handleResult })}
-      {result && (
-        <Snackbar
-          open={openSnackbar}
-          onClose={handleCloseSnackbar}
-          autoHideDuration={3000}
-          TransitionComponent={Slide}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          message={result}
-        >
-          {result === "Network Error" ? (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="error"
-              sx={{ width: "100%" }}
-            >
-              {result}
-            </Alert>
-          ) : (
-            <Alert
-              onClose={handleCloseSnackbar}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              {result}
-            </Alert>
-          )}
-        </Snackbar>
-      )}
+      
     </div>
   );
 }

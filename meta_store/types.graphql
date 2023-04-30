@@ -1,15 +1,4 @@
-# Interfaces
-# interface Resource {
-#     id: ID!
-#     name: String!
-# }
 
-# interface ManufacturingFacility {
-#     id: ID!
-#     name: String!
-# }
-
-# union Resource = Company | Plant | Area | Line | Cell | Machine
 
 interface ContainingElement {
     observableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
@@ -23,9 +12,9 @@ interface Resource {
     name: String!
     description: String!
 }
-type Query {
-    resources(): [Resource]!
-}
+# type Query {
+#     resources(): [Resource]!
+# }
 
 # Types
 type Company implements Resource{
@@ -84,27 +73,36 @@ type ObservableProperty{
     topic: Topic! @relationship(type: "has", direction: OUT)
     connectionDetails: String!
     propertyOf: ContainingElement! @relationship(type: "has", direction: IN)
-    accessibleVia: [EgressEndpoint!]! @relationship(type: "accessVia", direction: IN)
+    accessibleVia: [EgressEndpoint!]! @relationship(type: "accessTo", direction: IN)
     dataFormat: String!
     changedFrequency: Int!
-    status: String!
-    lastUpdatedAt:String!
-    errorStateAt:String!
+    status: String
+    lastUpdatedAt: String
+    errorStateAt: String
+    dataType: String!
+    downsampleMethod: String!
 }
 
 type EgressEndpoint{
     id: ID!
     name: String!
     description: String!
-    connectionDetails: [String!]!
-    frequency: [Int!]!
+    connectionDetails: String!
+    frequency: Int!
     dataFormat: String!
-    accessTo: [ObservableProperty!]! @relationship(type: "accessVia", direction: OUT)
-    changedFrequency: [Int!]!
-    egressGroup: String!
-    status: String!
-    lastUpdatedAt:String!
-    errorStateAt:String!
+    accessTo: ObservableProperty! @relationship(type: "accessTo", direction: OUT)
+    changedFrequency: Int!
+    status: String
+    lastUpdatedAt:String
+    errorStateAt:String
+    egressGroup: [EgressGroup!]! @relationship(type: "has", direction: IN)
+}
+
+type EgressGroup{
+    id: ID!
+    name: String!
+    description: String!
+    accessTo: [EgressEndpoint!]! @relationship(type: "has", direction: OUT)
 }
 
 type Topic{
@@ -113,15 +111,6 @@ type Topic{
     description: String!
     topicOf: ObservableProperty! @relationship(type: "has", direction: IN)
 }
-
-
-# type Resource{
-#     id: ID!
-#     name: String!
-#     description: String!
-#     ObservableProperties: [ObservableProperty!]! @relationship(type: "has", direction: OUT)
-# }
-
 
 
 

@@ -30,6 +30,8 @@ def opcuaserver(name):
 
     myobj.add_variable("ns=6;s=::AsGlobalPV:LoadOnTrack",
                        "LoadOnTrack", False).set_writable()
+    myobj.add_variable("ns=6;s=::AsGlobalPV:StringExample",
+                       "StringExample", "string").set_writable()
     myobj.add_variable("ns=6;s=::AsGlobalPV:WaitingCell1",
                        "WaitingCell1", False).set_writable()
     myobj.add_variable("ns=6;s=::AsGlobalPV:MoveAssemblyPart",

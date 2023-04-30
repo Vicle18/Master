@@ -33,6 +33,8 @@ import {
   useTheme,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoIcon from "@mui/icons-material/Info";
+
 import SensorsIcon from "@mui/icons-material/Sensors";
 import { Formik, Form, Field, FieldProps, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -65,19 +67,18 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const [ingressNodes, setIngressNodes] = useState<string[]>(
     initialValues.observableProperties as string[]
   );
-  const [children, setChildren] = useState<string[]>(
-    initialValues.children as string[]
-  );
+  const [children, setChildren] = useState<any[]>([]);
   const [selectedIngressNode, setSelectedIngressNode] = useState<string>("");
   const [selectedChild, setSelectedChild] = useState<any>("");
 
   const [selectedParent, setSelectedParent] = useState<any>("");
   const [selectedContainingElement, setSelectedContainingElement] =
-    useState<string>("");
+    useState<any>();
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
   const handlerClose = () => {
     setPopupContainingElement(false);
+    setActiveStep(0)
   };
 
   const handleNext = () => {
@@ -90,7 +91,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
   const handleSubmit = (values: FormData) => {
     console.log("submit", values, ingressNodes);
     setPopupContainingElement(false);
-    values.children = children;
+    setActiveStep(0)
+    values.children = children.map((child) => child.id);
     const headers = {
       "Content-Type": "application/json",
       "Access-Control-Allow-Origin": "*",
@@ -133,13 +135,11 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
   const handleSelectChild = (child: any) => {
     console.log("observable property", child.id);
-    setChildren([...children, child.id]);
+    setChildren([...children, child]);
   };
-  const handleDeleteChild = (child: string) => {
+  const handleDeleteChild = (child: any) => {
     setChildren(children.filter((node) => node !== child));
   };
-
-
 
   function getParentOptionsFilter(type: string): string[] | undefined {
     switch (type) {
@@ -160,11 +160,10 @@ const CreateContainingElementStepper: React.FC<Props> = ({
     }
   }
 
-
   function getChildrenOptionsFilter(type: string): string[] | undefined {
     switch (type) {
       case "company":
-        return [ "plants"];
+        return ["plants"];
       case "plant":
         return ["areas"];
       case "area":
@@ -231,25 +230,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                     );
                   })}
                 </Stepper>
-                <React.Fragment>
-                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
-                    <Button
-                      color="inherit"
-                      disabled={activeStep === 0}
-                      onClick={handleBack}
-                      sx={{ mr: 1 }}
-                    >
-                      Back
-                    </Button>
-                    <Box sx={{ flex: "1 1 auto" }} />
-                    {activeStep !== steps.length - 1 && (
-                      <Button onClick={handleNext}>{"Next"}</Button>
-                    )}
-                    {/* <Button onClick={handleNext} >
-                      {activeStep === steps.length - 1 ? "" : "Next"}
-                    </Button> */}
-                  </Box>
-                </React.Fragment>
+                <Box sx={{ height: "20px" }} />
+
                 {activeStep === 0 && (
                   <>
                     <Field name="name">
@@ -299,13 +281,33 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         <MenuItem value="line">Line</MenuItem>
                         <MenuItem value="cell">Cell</MenuItem>
                         <MenuItem value="machine">Machine</MenuItem>
-
                       </Field>
                     </FormControl>
                   </>
                 )}
                 {activeStep === 1 && (
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Here you can select where to store your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -317,34 +319,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <Box mb={2}>
-                          <Grid2 container alignItems="center" spacing={2}>
-                            <Grid2 container xs={9}>
-                              <Box
-                                display="inline-block"
-                                borderRadius={3}
-                                border="2px solid black"
-                                padding={2}
-                                maxWidth="100%"
-                              >
-                                <Typography variant="body1">
-                                  Current Element: {selectedParent.name}
-                                </Typography>
-                              </Box>
-                            </Grid2>
-                            <Grid2 container xs={3}>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                  values.parent = selectedParent.id;
-                                }}
-                              >
-                                SELECT
-                              </Button>
-                            </Grid2>
-                          </Grid2>
-                        </Box>
 
                         <Divider />
                         <IngressOverviewLeft
@@ -352,7 +326,8 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             HandleContainingElementClick(parent);
                             setSelectedParent(parent);
                             console.log("parent", values.parent);
-                            console.log(values.type)
+                            console.log(values.type);
+                            values.parent = selectedParent.id
                           }}
                           filter={getParentOptionsFilter(values.type)}
                         />
@@ -374,7 +349,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           maxWidth="100%"
                         >
                           <Typography variant="body1">
-                            Selected Element: {values.parent}
+                            Selected Element: {selectedParent.name}
                           </Typography>
                         </Box>
                       </Grid2>
@@ -384,6 +359,27 @@ const CreateContainingElementStepper: React.FC<Props> = ({
 
                 {activeStep === 2 && ( //children
                   <>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(24, 85, 184, 0.9)",
+                        border: "1px solid white",
+                        p: 2,
+                        marginLeft: "13px",
+                        borderRadius: "10px",
+                        marginRight: "13px",
+                        color: "white",
+                        alignItems: "center",
+                        display: "flex",
+                        "& p": {
+                          marginLeft: "10px", // add some margin between the icon and the paragraph
+                        },
+                      }}
+                    >
+                      <InfoIcon />
+                      <p>
+                        Select which subelements should be stored in your containing element
+                      </p>
+                    </Box>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
                       <Grid2
                         xs={5}
@@ -415,7 +411,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                  handleSelectChild(selectedChild.id);
+                                  handleSelectChild(selectedChild);
                                 }}
                               >
                                 SELECT
@@ -429,7 +425,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                           onItemClick={(child: any) => {
                             HandleContainingElementClick(child);
                             setSelectedChild(child);
-                    
                           }}
                           filter={getChildrenOptionsFilter(values.type)}
                         />
@@ -450,13 +445,11 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                             maxWidth: 360,
                             bgcolor: "background.paper",
                           }}
-                          subheader={
-                            <ListSubheader>Children</ListSubheader>
-                          }
+                          subheader={<ListSubheader>Children</ListSubheader>}
                         >
                           {children.map((node) => (
                             <ListItemButton
-                              key={node}
+                              key={node.id}
                               sx={{
                                 "&:hover": { backgroundColor: "#f0f0f0" },
                               }}
@@ -464,7 +457,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                               <ListItemIcon>
                                 <SensorsIcon />
                               </ListItemIcon>
-                              <ListItemText primary={node} />
+                              <ListItemText primary={node.name} />
                               <IconButton
                                 edge="end"
                                 onClick={() => handleDeleteChild(node)}
@@ -482,7 +475,6 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                 {activeStep === 3 && (
                   <>
                     <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      
                       <Grid2
                         xs={3.6}
                         sx={{
@@ -495,7 +487,10 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                       >
                         <IngressOverviewLeft
                           onItemClick={(containingElement: any) => {
-                            HandleContainingElementClick(containingElement.name);
+                            console.log("containingElement", containingElement);
+                            HandleContainingElementClick(
+                              containingElement
+                            );
                           }}
                         />
                       </Grid2>
@@ -509,7 +504,7 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                         }}
                       >
                         <DetailedView
-                          containingEntityId={selectedContainingElement}
+                          containingEntityId={selectedContainingElement?.name}
                           onOpenChart={handleSelectObservableProperty}
                           withDetails={false}
                         />
@@ -588,13 +583,33 @@ const CreateContainingElementStepper: React.FC<Props> = ({
                   Cancel
                 </Button>
                 <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  disabled={!(isValid)}
+                  color="inherit"
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  sx={{ mr: 1 }}
                 >
-                  Create
+                  Back
                 </Button>
+
+                {activeStep !== steps.length - 1 && (
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={handleNext}
+                  >
+                    {"Next"}
+                  </Button>
+                )}
+                {activeStep === steps.length - 1 && (
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    disabled={!isValid || activeStep != 3}
+                  >
+                    Create
+                  </Button>
+                )}
               </DialogActions>
             </Form>
           )}

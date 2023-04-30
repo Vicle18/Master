@@ -2,8 +2,10 @@ using GraphQL;
 using GraphQL.Client.Http;
 using GraphQL.Client.Serializer.SystemTextJson;
 using MiddlewareManager.DataModel;
+using MiddlewareManager.Protocols;
 using Newtonsoft.Json;
 using Serilog;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace MiddlewareManager.Repositories;
 
@@ -25,10 +27,10 @@ public class IngressRepository : IIngressRepository
         }, new SystemTextJsonSerializer());
     }
 
-    public async Task<Response> CreateObservableProperty(string id, CreateIngressDtoBase value, string topicName,
+    public async Task<Response> CreateObservableProperty(string id, IngressDTOBase value, string topicName,
         string connectionDetails)
     {
-        
+        Log.Debug("value before request " + value.containingElement);
         var request = new GraphQLRequest
         {
             Query = @"
@@ -55,9 +57,9 @@ public class IngressRepository : IIngressRepository
                         id = id,
                         connectionDetails = connectionDetails,
                         dataFormat = value.dataFormat,
-                        // changedFrequency = Int32.Parse(value.changedFrequency ?? value.frequency),
-                        changedFrequency = value.frequency,
-
+                        dataType = value.dataType,
+                        downsampleMethod = value.downsampleMethod,
+                        changedFrequency = value.changedFrequency ?? value.frequency,
                         topic = new
                         {
                             create = new
@@ -110,7 +112,7 @@ public class IngressRepository : IIngressRepository
                     }",
             Variables = new
             {
-                where= new
+                where = new
                 {
                     id = id
                 }
@@ -125,5 +127,64 @@ public class IngressRepository : IIngressRepository
         }
 
         return JsonConvert.SerializeObject(response.Data);
+    }
+
+    public async Task<string> UpdateObservableProperty(UpdateIngressDto value, string connectionDetails)
+    {
+        Log.Debug("BEFORE UPDATING");
+        Log.Debug(value.id);
+
+        var request = new GraphQLRequest
+        {
+            Query = @"
+                mutation UpdateObservableProperties($update: ObservablePropertyUpdateInput, $where: ObservablePropertyWhere) {
+                  updateObservableProperties(update: $update, where: $where) {
+                    observableProperties {
+                      id
+                    }
+                  }
+                }
+            ",
+            Variables = new
+            {
+                update = new
+                {
+                    name = value.name,
+                    frequency = value.frequency,
+                    description = value.description,
+                    dataFormat = value.dataFormat,
+                    changedFrequency = value.changedFrequency,
+                    dataType = value.dataType,
+                    downsampleMethod = value.downsampleMethod,
+                    connectionDetails = connectionDetails.ToString(),
+                    topic = new
+                    {
+
+                        update = new
+                        {
+                            node = new
+                            {
+                                name = value.topic
+                            }
+                        }
+                    }
+                },
+                where = new
+                {
+                    id = value.id
+                }
+            },
+        };
+        Log.Debug(JsonSerializer.Serialize(request));
+        var response = await graphQLClient.SendMutationAsync<Object>(request);
+        if (response.Errors != null)
+        {
+            throw new ArgumentException($"Failed in creating ObservableProperty, error: {response.Errors}");
+        }
+
+        Log.Debug("Response:");
+        //Log.Debug(JsonSerializer.Serialize(response))
+
+        return JsonSerializer.Serialize(response.Data);
     }
 }

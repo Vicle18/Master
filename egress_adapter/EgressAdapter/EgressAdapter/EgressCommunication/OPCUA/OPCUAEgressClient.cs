@@ -12,37 +12,65 @@ public class OPCUAEgressClient : IEgressClient
     private readonly IConfiguration _config;
     private Session _session;
     private OPCUAConfiguration _opcuaConfig;
+    private string _statusMessage;
+
     public OPCUAEgressClient(IConfiguration config)
     {
         _config = config;
         _opcuaConfig = new OPCUAConfiguration();
         _config.GetSection("EGRESS_CONFIG").GetSection("PARAMETERS").Bind(_opcuaConfig);
+        CreateClientSession(_opcuaConfig.SERVER_URL);
     }
     public void Initialize(IBusClient busClient)
     {
-        CreateClientSession(_opcuaConfig.SERVER_URL);
-        var myArray = JsonConvert.DeserializeObject<List<OPCUATransmissionPair>>(_opcuaConfig.TRANSMISSION_PAIRS);
-        foreach (var pair in myArray)
+        // var myArray = JsonConvert.DeserializeObject<List<OPCUATransmissionPair>>(_opcuaConfig.TRANSMISSION_PAIRS);
+        // foreach (var pair in myArray)
+        // {
+        //     switch (pair.VALUE_TYPE)
+        //     {
+        //         case "int":
+        //             busClient.Subscribe(pair.ORIGIN_TOPIC, 
+        //                 (topic, value) => 
+        //                     WriteNumberToServer(pair.NODE_NAME, Int32.Parse(value))
+        //             );
+        //             break;
+        //         case "bool":
+        //             busClient.Subscribe(pair.ORIGIN_TOPIC, 
+        //                 (topic, value) => 
+        //                     WriteBoolToServer(pair.NODE_NAME, Boolean.Parse(value))
+        //             );
+        //             break;
+        //     }
+        // }
+    }
+
+    public async Task PublishMessage(string message, string target)
+    {
+        var opcuaTransmissionDetails = JsonConvert.DeserializeObject<List<OPCUATransmissionPair>>(target)![0];
+        switch (opcuaTransmissionDetails.VALUE_TYPE)
         {
-            switch (pair.VALUE_TYPE)
-            {
-                case "int":
-                    busClient.Subscribe(pair.ORIGIN_TOPIC, 
-                        (topic, value) => 
-                            WriteNumberToServer(pair.NODE_NAME, Int32.Parse(value))
-                    );
-                    break;
-                case "bool":
-                    busClient.Subscribe(pair.ORIGIN_TOPIC, 
-                        (topic, value) => 
-                            WriteBoolToServer(pair.NODE_NAME, Boolean.Parse(value))
-                    );
-                    break;
-            }
-            
+            case "int":
+                WriteNumberToServer(opcuaTransmissionDetails.NODE_NAME, Int32.Parse(message));
+                break;
+            case "bool":
+                WriteBoolToServer(opcuaTransmissionDetails.NODE_NAME, Boolean.Parse(message));
+                break;
+            case "string":
+                WriteStringToServer(opcuaTransmissionDetails.NODE_NAME, message);
+                break;
         }
     }
-    
+
+    public bool IsConnected()
+    {
+        return _session?.Connected ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
+    }
+
     private async Task CreateClientSession(string endpointUrlString)
     {
 
@@ -77,6 +105,8 @@ public class OPCUAEgressClient : IEgressClient
                 catch (Opc.Ua.ServiceResultException e)
                 {
                     Log.Debug( e, "Connection to client with url {endpointUrl}, could not be established because of error: ", endpointUrlString, e.Message);
+                    _statusMessage =
+                        $"Connection to client with url {endpointUrlString}, could not be established because of error: {e.Message}";
                     Thread.Sleep(1000);
                 }
             }
@@ -96,6 +126,13 @@ public class OPCUAEgressClient : IEgressClient
         Log.Debug( "Writing number to server with nodeIdentifier {nodeIdentifier}, and input {inputNumber}", nodeIdentifier, input);
         Variant value = Convert.ToInt16(input);
         WriteValue(nodeIdentifier, new DataValue(value));
+    }
+    
+    private void WriteStringToServer(string nodeIdentifier, string input)
+    {
+        Log.Debug( "Writing string to server with nodeIdentifier {nodeIdentifier}, and input {inputString}", nodeIdentifier, input);
+        if (_session == null) throw new IOException("not connected");
+        WriteValue(nodeIdentifier, new DataValue(input));
     }
     
     private void WriteValue(NodeId variableId, DataValue value)

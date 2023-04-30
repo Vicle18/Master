@@ -51,8 +51,11 @@ const EgressFilter: React.FC<Props> = ({ onSearch, egressSearchParameters, setEg
         <Box
           sx={{
             borderRadius: "10px",
-            backgroundColor: "azure",
+            backgroundColor: "white",
             padding: "10px",
+            fontSize:"12px",
+            // fontWeight:"bold",
+            textTransform:"uppercase"
           }}
         >
           Search for Egress Data points
@@ -60,24 +63,30 @@ const EgressFilter: React.FC<Props> = ({ onSearch, egressSearchParameters, setEg
         </Box>
         <Box
           sx={{
-            marginTop: "10px",
+            marginTop: "15px",
             borderRadius: "10px",
-            backgroundColor: "azure",
+            backgroundColor: "white",
             padding: "10px",
+            fontSize:"12px",
+            // fontWeight:"bold",
+            textTransform:"uppercase"
           }}
         >
-          Filter by Ingress Data points
+          Filter Based on Ingress Endpoints
           <EgressSearchIngress onApply={handleOnApplyIngressSearch} />
         </Box>
         <Box
           sx={{
-            marginTop: "10px",
+            marginTop: "15px",
             borderRadius: "10px",
-            backgroundColor: "azure",
+            backgroundColor: "white",
             padding: "10px",
+            fontSize:"12px",
+            // fontWeight:"bold",
+            textTransform:"uppercase",
           }}
         >
-          Filter by Protocols
+          Filter Based On Protocols
           <EgressFilterProtocol onApply={handleOnApplyProtocolSearch} />
         </Box>
         

@@ -8,6 +8,7 @@ import { theme } from "../Theme";
 import { CreateEndpoint } from "./createEndpointMenu";
 import { useNavigate } from "react-router-dom";
 import ExportStepper from "../Export/ExportMenu";
+import ImportMenu from "../Import/ImportMenu";
 
 type TopBarProps = {
   onNavMenuClick: (page: string) => void;
@@ -16,12 +17,14 @@ type TopBarProps = {
 const pages = ["Ingress", "Egress"];
 
 const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
+  const [openPage, setOpenPage] = React.useState<string>("Ingress");
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
   const handleCloseNavMenu = (page: any) => {
     // navigate(page);
+    setOpenPage(page);
     setAnchorElNav(null);
     onNavMenuClick(page);
   };
@@ -38,10 +41,8 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
     <ThemeProvider theme={theme}>
       <AppBar position="static" color="secondary">
         <Container maxWidth="xl">
-          
           <Toolbar disableGutters>
             <React.Fragment>
-              
               {pages.map((page) => (
                 <Button
                   id="ingress-egress-button"
@@ -57,6 +58,8 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
                     display: "block",
                     backgroundColor: "primary",
                     marginLeft: 1,
+                    borderBottom:
+                      openPage === page ? "5px solid lightblue" : "none",
                   }}
                 >
                   {page}
@@ -64,7 +67,8 @@ const TopBar: React.FC<TopBarProps> = ({ onNavMenuClick }) => {
               ))}
             </React.Fragment>
             {CreateEndpoint(open, createClick, anchorEl, handleClose)}
-            <ExportStepper/>
+            <ImportMenu />
+            <ExportStepper />
           </Toolbar>
         </Container>
       </AppBar>

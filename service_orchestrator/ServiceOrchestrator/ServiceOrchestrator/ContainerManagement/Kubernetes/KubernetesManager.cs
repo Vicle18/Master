@@ -1,9 +1,10 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Text.Json;
 using k8s;
 using k8s.Models;
+using Newtonsoft.Json;
 using Serilog;
 using ServiceOrchestrator.Brokers;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ServiceOrchestrator.ContainerManagement.Kubernetes;
 
@@ -47,9 +48,20 @@ public class KubernetesManager : IContainerManager
     public async Task StartContainer(string id, ContainerConfig config)
     {
         // string uniqueId = Guid.NewGuid().ToString("N");
-        var pod = CreateV1Pod(config, id);
-        var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
-        _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
+        try
+        {
+            var pod = CreateV1Pod(config, id);
+            pod.Validate();
+            _logger.LogDebug("init pod: {pod}", JsonConvert.SerializeObject(pod));
+            var createdPod = await _client.CreateNamespacedPodAsync(pod, "sso");
+            _logger.LogDebug("created {pod}", createdPod.Metadata.ToString());
+
+        }
+        catch (k8s.Autorest.HttpOperationException e)
+        {
+            Console.WriteLine(e.Response.Content);
+            throw;
+        }
     }
 
     private static V1Pod CreateV1Pod(ContainerConfig config, string uniqueId)
@@ -101,22 +113,30 @@ public class KubernetesManager : IContainerManager
     {
         Log.Debug(protocol);
 
-
-        if (protocol == "MQTT")
+        try
         {
-            if (isBrokerCreated) return _mqttBrokerHost;
-            Log.Debug("inside mqtt");
-            MQTTBroker mqttBroker = new MQTTBroker();
-            V1Service service = mqttBroker.createService(config, id);
-            V1Pod pod = mqttBroker.createPod(config, id);
-            var podResult = await _client.CreateNamespacedPodAsync(pod, "sso");
-            var serviceResult = await _client.CreateNamespacedServiceAsync(service, "sso");
-            _mqttBrokerHost = pod.Metadata.Name;
-            isBrokerCreated = true;
-            return pod.Metadata.Name;
+            if (protocol == "MQTT")
+            {
+                if (isBrokerCreated) return _mqttBrokerHost;
+                Log.Debug("inside mqtt");
+                MQTTBroker mqttBroker = new MQTTBroker();
+                V1Service service = mqttBroker.createService(config, id);
+                V1Pod pod = mqttBroker.createPod(config, id);
+                var podResult = await _client.CreateNamespacedPodAsync(pod, "sso");
+                var serviceResult = await _client.CreateNamespacedServiceAsync(service, "sso");
+                _mqttBrokerHost = pod.Metadata.Name;
+                isBrokerCreated = true;
+                return pod.Metadata.Name;
+            }
+            throw new ArgumentException($"We do not support the protocol {protocol}");
+
+            //TODO Create OPCUA broker and 
         }
-        throw new ArgumentException($"We do not support the protocol {protocol}");
-        //TODO Create OPCUA broker and 
+        catch (k8s.Autorest.HttpOperationException e)
+        {
+            _logger.LogDebug("Could not create broker, probably because broker already exists: {reason}", e.Response.Content);
+            return "error, but probably broker is already set up";
+        }
     }
 
 

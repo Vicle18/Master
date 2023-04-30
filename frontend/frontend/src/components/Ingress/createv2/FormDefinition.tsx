@@ -1,44 +1,85 @@
 import * as Yup from "yup";
+import { v4 as uuidv4 } from 'uuid';
+interface Metadata {
+  timestamp?: boolean;
+  name?: string;
+  description?: string;
+  frequency?: string;
+}
 export interface FormData {
+  id: string;
   name: string;
   description: string;
   protocol: string;
+  dataType:string;
   frequency: string;
   changedFrequency?: string;
   host?: string;
   port?: string;
   topic?: string;
-  output?: string
+  output?: string;
   nodeId?: string;
-  containingElement: string;
-  dataFormat: string;
+  containingElement?: string;
+  dataFormat?: string;
+  downsampleMethod?:string;
+  metadata?: Metadata;
 }
 
 export const initialValues: FormData = {
-  name: "Robot Mode" + Math.floor(Math.random() * 1000),
-  description: "default Description",
-  protocol: "RTDE",
-  frequency: "1",
-  changedFrequency: "1",
-  host: "172.17.0.1", //172.17.0.1 is the default host for the mosquitto container on the docker network
-  topic: "example",
-  port: "1883",
-  output: "robot_mode",
+  // id with random uuid generated based on uuidv4
+  id: uuidv4(),
+  name: "",
+  description: "",
+  protocol: "",
+  frequency: "",
+  changedFrequency: "",
+  host: "",
+  topic: "",
+  port: "",
+  output: "",
   nodeId: "",
-  containingElement: "Machine A",
-  dataFormat: "JSON",
+  containingElement: "",
+  dataType: "",
+  dataFormat: "RAW",
+  downsampleMethod: "Average"
+
 };
 
+// export const initialValues: FormData = {
+//   // id with random uuid generated based on uuidv4
+//   id: uuidv4(),
+//   name: "Robot Mode" + Math.floor(Math.random() * 1000),
+//   description: "default Description",
+//   protocol: "RTDE",
+//   frequency: "1",
+//   changedFrequency: "1",
+//   host: "172.17.0.1",
+//   topic: "example",
+//   port: "1883",
+//   output: "robot_mode",
+//   nodeId: "",
+//   containingElement: "Robot 1",
+//   dataFormat: "RAW",
+//   dataType: "NUMBER",
+//   downsampleMethod: "Average"
+// };
+
 export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
+  id: Yup.string().required(),
   name: Yup.string().required(),
   description: Yup.string().required("Description is required"),
   protocol: Yup.string().required("Protocol is required"),
+  dataType: Yup.string().required("Data type is required"),
   frequency: Yup.string().required("Frequency is required"),
   changedFrequency: Yup.string().test('lower-frequency', 'Changed frequency cannot be higher than frequency', function (changedFrequency) {
     const { frequency } = this.parent;
     if (!changedFrequency || !frequency) { return true; }
     return parseInt(changedFrequency) <= parseInt(frequency); // check if changedFrequency is lower than or equal to frequency
   }),
+  downsampleMethod: Yup.string().optional(),
+  // downsampleMethod: Yup.string().when(datatype, {
+  //   is:(datatype:string) => datatype === "AVERAGE" || datatype === ""
+  // })
   host: Yup.string().when("protocol", {
     is: (protocol: string) => protocol === "MQTT" || protocol === "RTDE",
     then: (schema) => schema.required("host is required"),
@@ -64,6 +105,7 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
     then: (schema) => schema.required("nodeid is required"),
     otherwise: (schema) => schema,
   }),
-  containingElement: Yup.string().required("Containing element is required"),
-  dataFormat: Yup.string().required("Data format is required"),
+  containingElement: Yup.string().optional(),
+  dataFormat: Yup.string().optional(),
+  metadata: Yup.object().optional()
 });

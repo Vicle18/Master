@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import Grid2 from "@mui/material/Unstable_Grid2";
 import DetailedView from "../Ingress/IngressDetailed";
@@ -9,7 +9,7 @@ import SensorsIcon from "@mui/icons-material/Sensors";
 import { ingressNode } from "./create/FormDefinition";
 interface SearchBarProps {
 
-    onApply: (selected: string[]) => void;
+  onApply: (selected: string[]) => void;
 }
 const GET_LOCATIONS = gql`
   query GetAreas {
@@ -34,54 +34,58 @@ const GET_LOCATIONS = gql`
   }
 `;
 interface Node {
-    name: string;
-    [key: string]: any;
-  }
+  name: string;
+  [key: string]: any;
+}
 function extractNames(nodes: Node[]) {
-    const names: string[] = [];
-    const traverse = (node: Node) => {
-      names.push(node.name);
-      const childrenKey = findChildrenKey(node);
-      if (childrenKey && Array.isArray(node[childrenKey])) {
-        node[childrenKey]?.forEach((child: Node) => {
-          traverse(child);
-        });
-      }
-    };
-    if (Array.isArray(nodes)) {
-      nodes.forEach((node) => {
-        traverse(node);
+  const names: string[] = [];
+  const traverse = (node: Node) => {
+    names.push(node.name);
+    const childrenKey = findChildrenKey(node);
+    if (childrenKey && Array.isArray(node[childrenKey])) {
+      node[childrenKey]?.forEach((child: Node) => {
+        traverse(child);
       });
-    } else {
-      //console.log("Error: nodes argument is not an array.");
     }
-    return names;
-  }
-  const findChildrenKey = (node: Node): string | undefined => {
-    const keys = Object.keys(node);
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      if (Array.isArray(node[key]) && node[key].length > 0) {
-        return key;
-      }
-    }
-    return undefined;
   };
+  if (Array.isArray(nodes)) {
+    nodes.forEach((node) => {
+      traverse(node);
+    });
+  } else {
+    //console.log("Error: nodes argument is not an array.");
+  }
+  return names;
+}
+const findChildrenKey = (node: Node): string | undefined => {
+  const keys = Object.keys(node);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (Array.isArray(node[key]) && node[key].length > 0) {
+      return key;
+    }
+  }
+  return undefined;
+};
 
 
 const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
-    const [selected, setSelected] = useState<string[]>([]);
-    const [searchValue, setSearchValue] = useState<string>('');
-    const [openPopup, setOpenPopup] = useState(false);
-    const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
-    const [selectedEgress, setSelectedEgress] =
+  const [selected, setSelected] = useState<any[]>([]);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [openPopup, setOpenPopup] = useState(false);
+  const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
+  const [selectedEgress, setSelectedEgress] =
     useState<string>("");
-  const { loading, error, data } = useQuery(GET_LOCATIONS);
+  const { loading, error, data, refetch} = useQuery(GET_LOCATIONS);
+  useEffect(() => {
+    const intervalId = setInterval(refetch, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error : {error.message}</p>;
 
   const options = extractNames(data.companies);
-  
+
 
   const handleAdd = () => {
     setSelected((prevSelected) => [...prevSelected, searchValue]);
@@ -93,14 +97,15 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
   }
 
   const handleDelete = (chipToDelete: string) => {
+    console.log("chipToDelete", chipToDelete)
     setSelected((prevSelected) =>
-      prevSelected.filter((value) => value !== chipToDelete)
+      prevSelected.filter((value) => value.id !== chipToDelete)
     );
   };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    onApply(selected);
+    onApply(selected.map((value) => value.id));
   };
 
   const handlerClose = () => {
@@ -111,12 +116,13 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
     console.log("Ingress nodes", ingressNodes);
     ingressNodes.forEach((node) => {
       console.log("node", node);
-      setSelected((prevSelected) => [...prevSelected, node.name]);
+      setSelected((prevSelected) => [...prevSelected, node]);
     });
     setOpenPopup(false);
   };
 
   function handleEgressClick(data: any): void {
+    console.log("data", data);
     setSelectedEgress(data.name);
   }
 
@@ -132,42 +138,27 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-        {/* <Autocomplete
-          options={options}
-          value={searchValue}
-          onChange={(event, newValue) => {
-            setSearchValue(newValue ?? '');
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search"
-              margin="normal"
-              variant="outlined"
-            />
-          )}
-        /> */}
-        <Button variant="contained" color="primary" onClick={handleOpenPopup}>
-          Add
-        </Button>
-      
-      <Box mt={2}>
+      {/* vertical gap */}
+      <Box sx={{ height: 20 }} />
+      <Box mt={0.1}>
         {selected.map((value) => (
           <Chip
-            key={value}
-            label={value}
-            onDelete={() => handleDelete(value)}
+            key={value.name}
+            label={value.name}
+            onDelete={() => handleDelete(value.id)}
             color="primary"
             variant="outlined"
+            size="small"
             style={{ marginRight: '5px', marginBottom: '5px' }}
           />
         ))}
       </Box>
-      <Box mt={2}>
-        <Button type="submit" variant="contained" color="primary">
-          Apply
-        </Button>
-      </Box>
+      <Button variant="contained" color="primary" onClick={handleOpenPopup} size="small">
+        Add
+      </Button>
+
+
+
       <Dialog
         open={openPopup}
         onClose={handlerClose}
@@ -183,100 +174,101 @@ const EgressSearchIngress: React.FC<SearchBarProps> = ({ onApply }) => {
       >
         <DialogTitle>Add filter for Observable Property</DialogTitle>
         <DialogContent
-                dividers={true}
-                sx={{ overflow: "auto", maxHeight: "calc(100vh - 250px)" }}
-              >
-                <>
-                    <Grid2 container spacing={2} sx={{ height: "60vh" }}>
-                      <Grid2
-                        xs={2.5}
-                        sx={{
-                          marginTop: "30px",
-                          marginLeft: "20px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <List
-                          dense={true}
-                          sx={{
-                            width: "100%",
-                            maxWidth: 360,
-                            bgcolor: "background.paper",
-                          }}
-                          subheader={
-                            <ListSubheader>Observable Properties</ListSubheader>
-                          }
-                        >
-                          {ingressNodes.map((node) => (
-                            <ListItemButton
-                              key={node.name}
-                              sx={{
-                                "&:hover": { backgroundColor: "#f0f0f0" },
-                              }}
-                            >
-                              <ListItemIcon>
-                                <SensorsIcon />
-                              </ListItemIcon>
-                              <ListItemText primary={node.name} />
-                              <IconButton
-                                edge="end"
-                                onClick={() => handleDeleteIngressFilterNode(node)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItemButton>
-                          ))}
-                        </List>
-                      </Grid2>
-                      <Grid2
-                        xs={3.6}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "20px",
-                          borderRadius: "10px",
+          dividers={true}
+          sx={{ overflow: "auto", maxHeight: "calc(100vh - 250px)" }}
+        >
+          <>
+            <Grid2 container spacing={2} sx={{ height: "60vh" }}>
 
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <IngressOverviewLeft onItemClick={handleEgressClick} />
-                      </Grid2>
-                      <Grid2
-                        xs={4.3}
-                        sx={{
-                          marginTop: "30px",
-                          marginRight: "50px",
-                          borderRadius: "10px",
-                          backgroundColor: "whitesmoke",
-                        }}
-                      >
-                        <DetailedView
-                          containingEntityId={selectedEgress}
-                          onOpenChart={handleSelectObservableProperty}
-                          withDetails={false}
-                        />
-                      </Grid2>
-                    </Grid2>
-                  </>
-              </DialogContent>
-              <DialogActions>
-              <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handlerClose}
+              <Grid2
+                xs={3.6}
+                sx={{
+                  marginTop: "30px",
+                  marginRight: "20px",
+                  borderRadius: "10px",
+
+                  backgroundColor: "whitesmoke",
+                }}
+              >
+                <IngressOverviewLeft onItemClick={handleEgressClick} />
+              </Grid2>
+              <Grid2
+                xs={4.3}
+                sx={{
+                  marginTop: "30px",
+                  marginRight: "50px",
+                  borderRadius: "10px",
+                  backgroundColor: "whitesmoke",
+                }}
+              >
+                <DetailedView
+                  containingEntityId={selectedEgress}
+                  onOpenChart={handleSelectObservableProperty}
+                  withDetails={false}
+                />
+              </Grid2>
+              <Grid2
+                xs={2.5}
+                sx={{
+                  marginTop: "30px",
+                  marginLeft: "20px",
+                  marginRight: "20px",
+                  borderRadius: "10px",
+                  backgroundColor: "whitesmoke",
+                }}
+              >
+                <List
+                  dense={true}
+                  sx={{
+                    width: "100%",
+                    maxWidth: 360,
+                    bgcolor: "background.paper",
+                  }}
+                  subheader={
+                    <ListSubheader>Observable Properties</ListSubheader>
+                  }
                 >
-                  Cancel
-                </Button>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={handleAddIngressNodes}
-                  
-                >
-                  Add
-                </Button>
-              </DialogActions>
+                  {ingressNodes.map((node) => (
+                    <ListItemButton
+                      key={node.name}
+                      sx={{
+                        "&:hover": { backgroundColor: "#f0f0f0" },
+                      }}
+                    >
+                      <ListItemIcon>
+                        <SensorsIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={node.name} />
+                      <IconButton
+                        edge="end"
+                        onClick={() => handleDeleteIngressFilterNode(node)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItemButton>
+                  ))}
+                </List>
+              </Grid2>
+            </Grid2>
+          </>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handlerClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={handleAddIngressNodes}
+            type="submit"
+          >
+            Add
+          </Button>
+        </DialogActions>
       </Dialog>
     </form>
   );

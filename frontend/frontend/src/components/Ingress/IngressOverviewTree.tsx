@@ -61,7 +61,7 @@ function TransitionComponent(props: TransitionProps) {
 }
 
 const StyledTreeItem = styled((props: TreeItemProps) => (
-  <TreeItem {...props} TransitionComponent={TransitionComponent} />
+  <TreeItem {...props} TransitionComponent={TransitionComponent} disabled={false}/>
 ))(({ theme }) => ({
   [`& .${treeItemClasses.iconContainer}`]: {
     "& .close": {
@@ -106,13 +106,13 @@ const RenderTree: React.FC<RenderTreeProps> = ({ nodes, onItemClick, clickable, 
       {nodes.map((node) => {
         const childrenKey = findChildrenKey(node);
         const isClickable = clickable;
-
         return (
           <StyledTreeItem
             key={node.id}
             sx={{ color: isClickable ? "black" : "grey" }}
-            nodeId={node.name}
+            nodeId={node.id}
             label={node.name}
+            disabled={false}
             onClick={(event) => {
               if (isClickable) {
                 onItemClick(node);
@@ -187,15 +187,15 @@ const CustomizedTreeView: React.FC<TreeViewProps> = ({
     if (searchString) {
       // find the first matching label and its ancestors
       const matchingNodes = findMatchingNodes(data?.companies, searchString);
-      setExpanded(matchingNodes.map((node) => node.name));
+      setExpanded(matchingNodes.map((node) => node.id));
     }
   }, [data, searchString]);
 
   // if graphql error, return error message
 
   // console.log(data);
-  const handleToggle = (event: React.ChangeEvent<{}>, nodeIds: string[]) => {
-    setExpanded(nodeIds);
+  const handleToggle = (event: React.ChangeEvent<{}>, nodeNames: string[]) => {
+    setExpanded(nodeNames);
   };
 
   return (

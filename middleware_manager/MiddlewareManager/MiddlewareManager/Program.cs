@@ -1,4 +1,5 @@
 
+using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
 using Serilog;
 
@@ -17,7 +18,10 @@ builder.Configuration.SetBasePath(Directory.GetCurrentDirectory())
 builder.Services.AddControllers();
 builder.Services.AddSingleton<IIngressRepository, IngressRepository>();
 builder.Services.AddSingleton<IEgressRepository, EgressRepository>();
+builder.Services.AddSingleton<IEgressGroupRepository, EgressGroupRepository>();
+
 builder.Services.AddSingleton<IContainingElementRepository, ContainingElementRepository>();
+builder.Services.AddSingleton<IConnectionDetailsFactory, ConnectionDetailsFactory>();
 
 builder.Host.UseSerilog();
 

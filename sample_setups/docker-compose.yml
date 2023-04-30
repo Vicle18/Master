@@ -144,6 +144,7 @@ services:
       - meta_store_neo4j
     networks:
       shared_network:
+
 ## MQTT
   mosquitto:
     image: eclipse-mosquitto
@@ -182,11 +183,9 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - "8090:8080"
+      - "8050:8080"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - server
     profiles:
       - nginx
     networks:
@@ -196,6 +195,7 @@ services:
     build:
       context: ./opcua
       dockerfile: Dockerfile
+    restart: always
     ports:
       - 8888:8888
     profiles:
@@ -251,6 +251,7 @@ services:
       - ingress
     networks:
       shared_network:
+
 networks:
   shared_network:
     name: "shared_network"

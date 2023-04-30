@@ -1,5 +1,6 @@
 
 using System.Runtime.CompilerServices;
+using IngressAdapter.DataModel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -14,31 +15,17 @@ public class RTDEIngressClient : IIngressClient
     private readonly IConfiguration _config;
     private RtdeClient client;
     private readonly RTDEConfiguration _rtdeConfig;
-    private readonly Dictionary<string, string> _transitionPairs;
-    private Action<string, string> _messageHandler;
-    
+    private Action<string> _messageHandler;
+    private string _statusMessage = "";
     public RTDEIngressClient(IConfiguration config)
     {
         _config = config;
         
         _rtdeConfig = new RTDEConfiguration();
         _config.GetSection("INGRESS_CONFIG").GetSection("PARAMETERS").Bind(_rtdeConfig);
-        _transitionPairs = new Dictionary<string, string>();
-        ExtractTransitionPairs(_rtdeConfig.TRANSMISSION_PAIRS);
-    }   
-    
-    private void ExtractTransitionPairs(string pairs)
-    {
-        string[] pairArray = pairs.Split(",");
-        foreach (var stringPair in pairArray)
-        {
-            var pair = stringPair.Split(":");
-            _transitionPairs.Add(pair[0], pair[1]);
-        }
-        Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs) );
     }
-    
-    public async Task<bool> Initialize(Action<string, string> messageHandler)
+
+    public async Task<bool> Initialize(Action<string> messageHandler)
     {
         try
         {
@@ -54,6 +41,8 @@ public class RTDEIngressClient : IIngressClient
         catch (Exception e)
         {
             Console.WriteLine(e);
+            _statusMessage =
+                $"Could not connect to RTDE Client with host {_rtdeConfig.HOST} and port {_rtdeConfig.PORT}, {e.Message}";
             throw;
         }
         
@@ -64,23 +53,19 @@ public class RTDEIngressClient : IIngressClient
         Log.Debug( "Closed socket for RTDE Streaming");
     }
 
-    public void StartIngestion()
+    public void StartIngestion(TransmissionDetails _transmissionDetails)
     {
         try
         {
             Log.Debug("Starting RTDE Stream");
             var values = new Dictionary<string, object>();
-
-            foreach (var pair in _transitionPairs)
-            {
-                Log.Debug( "adding output: {output}" , pair);
-                values.Add(pair.Key, CreateTempObjectBasedOnType(MapOutputToType(pair.Key)));
-            }
             
-            var post = new DynamicEntity(values);
+                values.Add(_rtdeConfig.OUTPUT, CreateTempObjectBasedOnType(MapOutputToType(_rtdeConfig.OUTPUT)));
+
+                var post = new DynamicEntity(values);
             dynamic outputObject = post;
             Log.Debug( $"{values}");
-            var initResponse = client.Setup_Ur_Outputs(values, Int16.Parse(_rtdeConfig.CHANGED_FREQUENCY)); 
+            var initResponse = client.Setup_Ur_Outputs(values, Int16.Parse(_transmissionDetails.FREQUENCY)); 
             
             Log.Debug( "Setting up outputs, received: {response}", initResponse);
             client.OnDataReceive += new EventHandler(OnDataReceive);
@@ -92,6 +77,16 @@ public class RTDEIngressClient : IIngressClient
         {
             Log.Debug("Error when starting ingestion for RTDE: {error}", e.Message);
         }
+    }
+
+    public bool IsConnected()
+    {
+        return client?.IsConnected() ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
     }
 
     private string MapOutputToType(string output)
@@ -136,7 +131,7 @@ public class RTDEIngressClient : IIngressClient
 
         foreach (var pair in client.UrStructOuput)
         {
-            _messageHandler(_transitionPairs[pair.Key], JsonConvert.SerializeObject(pair.Value));
+            _messageHandler( JsonConvert.SerializeObject(pair.Value));
         }
     }
 

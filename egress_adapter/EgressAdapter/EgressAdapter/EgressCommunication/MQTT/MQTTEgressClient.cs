@@ -4,6 +4,7 @@ using System.Text;
 using EgressAdapter.BusCommunication;
 using MQTTnet;
 using MQTTnet.Client;
+using Newtonsoft.Json.Linq;
 
 namespace EgressAdapter.EgressCommunication.MQTT;
 
@@ -15,6 +16,7 @@ public class MQTTEgressClient : IEgressClient
     private readonly Dictionary<string, string> _transitionPairs;
     private static IMqttClient mqttClient;
     private MqttFactory factory;
+    private string _statusMessage;
 
     public MQTTEgressClient(IConfiguration config)
     {
@@ -22,38 +24,24 @@ public class MQTTEgressClient : IEgressClient
         _mqttConfig = new MQTTConfiguration();
         _config.GetSection("EGRESS_CONFIG").GetSection("PARAMETERS").Bind(_mqttConfig);
         Log.Debug("Received ingress config: {config}", _mqttConfig);
-        _transitionPairs = new Dictionary<string, string>();
-        ExtractTransitionPairs(_mqttConfig.TRANSMISSION_PAIRS);
-    }
-
-    private void ExtractTransitionPairs(string pairs)
-    {
-        string[] pairArray = pairs.Split(",");
-        foreach (var stringPair in pairArray)
-        {
-            var pair = stringPair.Split(":");
-            _transitionPairs.Add(pair[0], pair[1]);
-        }
-
-        Log.Debug("Extracted TransitionPairs: {transitionpairs} ", string.Join(", ", _transitionPairs));
+        InitializeMqttClient().Wait();
     }
 
     public void Initialize(IBusClient busClient)
     {
-        Task task = Task.Run(async () =>
-        {
-            Log.Debug($"Starting initializing MQTT receiver");
-            await InitializeMqttClient();
-            Log.Debug($"Finished initializing MQTT receiver");
-            foreach (var pair in _transitionPairs)
-            {
-                busClient.Subscribe(pair.Key, (topic, value) => 
-                    PublishToTopic(pair.Value, value)
-                );
-            }
-        }, cts.Token);
+        // Task task = Task.Run(async () =>
+        // {
+        //     Log.Debug($"Starting initializing MQTT receiver");
+        //     Log.Debug($"Finished initializing MQTT receiver");
+        //
+        //     foreach (var pair in _transitionPairs)
+        //     {
+        //         busClient.Subscribe(pair.Key, (topic, value) => 
+        //             PublishToTopic(pair.Value, value)
+        //         );
+        //     }
+        // }, cts.Token);
     }
-    
 
     private async Task ConnectToMQTT(string mqttHost, string mqttPort, string mqttClientId)
     {
@@ -82,12 +70,16 @@ public class MQTTEgressClient : IEgressClient
                         Log.Error(ex,
                             "could not connect to MQTT broker with ip {ip} and port: {port}",
                             mqttHost, mqttPort);
+                        _statusMessage =
+                            $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                     }
                     catch (MQTTnet.Exceptions.MqttCommunicationException ex)
                     {
                         Log.Error(ex,
                             "could not connect to MQTT broker with ip {ip} and port: {port}",
                             mqttHost, mqttPort);
+                        _statusMessage =
+                            $"could not connect to MQTT broker with ip {mqttHost} and port: {mqttPort}, {ex.Message}";
                     }
                 });
             }
@@ -119,17 +111,25 @@ public class MQTTEgressClient : IEgressClient
         }, cts.Token);
     }
 
-    public async void PublishToTopic(string topic, string value)
+    public async Task PublishMessage(string message, string target)
     {
-        if (mqttClient.IsConnected)
-        {
-            Log.Debug("Publishing to MQTT {topic}", topic);
-            var publishMessage = new MqttApplicationMessageBuilder()
-                .WithTopic(topic)
-                .WithPayload(value)
-                .Build();
-            await mqttClient.PublishAsync(publishMessage);
-        }
+        Log.Debug("Publishing message {preparedMessage} to MQTT {topic}", message, target);
+        var publishMessage = new MqttApplicationMessageBuilder()
+            .WithTopic(target)   
+            .WithPayload(message)
+            .Build();
+        await mqttClient.PublishAsync(publishMessage);
+        Log.Debug("Published message {message} to MQTT {topic}", message, target);
+    }
+
+    public bool IsConnected()
+    {
+        return mqttClient?.IsConnected ?? false;
+    }
+
+    public string GetStatusMessage()
+    {
+        return _statusMessage;
     }
 
     public bool HasConnection()

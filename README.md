@@ -1,8 +1,11 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a ingress/v1.4.0 -m "my version 1.0.0"
-git push origin ingress/v1.4.0
+git tag -a egress/v1.0.6 -m "now "
+git push origin egress/v1.0.6
+
+git tag -a mvp -m "mvp"
+git push origin mvp
 ### informatio about pipeline metadata
 https://github.com/docker/metadata-action
 ## Start of Kubernetes Cluster based on configuration file (cd to root of experiments)
@@ -72,7 +75,7 @@ helm uninstall kowl
 
 ### Launch producer
 ```
-kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic my-topic
+kubectl run kafka-producer -ti --image=quay.io/strimzi/kafka:0.32.0-kafka-3.3.1 --rm=true --restart=Never -- bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap:9092 --topic robotStatus
 ```
 
 ### Launch consumer
@@ -159,3 +162,10 @@ kubectl cp pod-8341af19-8a7c-4a4f-b321-6cb7319e16c1:Logs/log20230416.txt ~/logs/
 ```
 
 ## Kill 
+## watch dog
+```
+kubectl apply -f sample_setups/watchdog/watchdog.yaml
+
+kubectl delete -f sample_setups/watchdog/watchdog.yaml
+```
+
