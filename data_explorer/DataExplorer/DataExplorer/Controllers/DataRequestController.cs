@@ -25,13 +25,13 @@ namespace DataExplorer.Controllers
             _topicRepo = topicRepo;
         }
         // GET: api/DataRequest
-        [HttpGet("amount/{topic}/{amount}", Name = "getAmount")]
+        [HttpGet("amount/{ingressId}/{amount}", Name = "getAmount")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAmount(string topic, int amount)
+        public async Task<IActionResult> GetAmount(string ingressId, int amount)
         {
             try
             {
-                var extractedTopic = await _topicRepo.GetTopic(topic);
+                var extractedTopic = await _topicRepo.GetTopic(ingressId);
                 var messages = _busClient.GetLastMessagesAmount(extractedTopic, amount);
                 _logger.LogDebug("got: {message}", string.Join(", ",messages.Select(m => m.Value).ToList()));
 
@@ -54,12 +54,12 @@ namespace DataExplorer.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                return NotFound($"Topic {topic} not found");
+                return NotFound($"Topic {ingressId} not found");
             }
 
         }
         
-        [HttpGet("seconds-ago/{topic}/{seconds}", Name = "getSeconds")]
+        [HttpGet("seconds-ago/{ingressId}/{seconds}", Name = "getSeconds")]
         public JArray GetFromSeconds(string topic, int seconds)
         {
             

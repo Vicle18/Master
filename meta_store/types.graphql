@@ -17,7 +17,7 @@ interface Resource {
 # }
 
 # Types
-type Company implements Resource{
+type Company implements ContainingElement{
     id: ID!
     name: String!
     description: String!

@@ -35,7 +35,6 @@ const GET_DATA_FOR_CONTAINING_ENTITY = gql`
     $cellsWhere2: CellWhere
     $machinesWhere2: MachineWhere
     $companiesWhere2: CompanyWhere
-    $observablePropertiesWhere2: ObservablePropertyWhere
     $linesWhere2: LineWhere
     $plantsWhere2: PlantWhere
   ) {
@@ -119,7 +118,7 @@ const GET_DATA_FOR_CONTAINING_ENTITY = gql`
       id
       name
       description
-      observableProperties(where: $observablePropertiesWhere2) {
+      observableProperties {
         id
         name
         description
@@ -138,7 +137,7 @@ const GET_DATA_FOR_CONTAINING_ENTITY = gql`
       id
       name
       description
-      observableProperties(where: $observablePropertiesWhere2) {
+      observableProperties {
         id
         name
         description
