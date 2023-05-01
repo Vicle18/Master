@@ -4,7 +4,7 @@ namespace MiddlewareManager.Repositories;
 
 public interface IEgressRepository
 {
-    public Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value,
+    public Task<CreateEgressResponse> CreateEgressEndpoint(string id, CreateEgressDto value,
         string connectionDetails);
 
     public Task<List<ObservableProperty>> getIngressProperties(string[] valueIngressNodes);

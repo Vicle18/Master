@@ -1052,7 +1052,9 @@ CREATE (topicZC:Topic {name: 'TopicZC'})
 CREATE (topicZD:Topic {name: 'TopicZD'})
 CREATE (topicZE:Topic {name: 'TopicZE'})
 CREATE (topicZF:Topic {name: 'TopicZF'})
+CREATE (topicZG:Topic {name: 'TopicZG'})
 
+CREATE (oeeOverall)-[:has]->(topicZG)
 
 
 CREATE (cuttingSpeed)-[:has]->(topicA)
