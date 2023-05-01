@@ -11,6 +11,7 @@ public class EnvVarCreator : IEnvVarCreator
     private MqttIngressEnvVarFactory _ingressMQTTFactory;
     private RtdeIngressEnvVarFactory _ingressRTDEFactory;
     private OpcuaIngressEnvVarFactory _ingressOPCUAFactory;
+    private RestIngressEnvVarFactory _ingressRESTFactory;
     private MqttEgressEnvVarFactory _egressMQTTFactory;
     private OpcuaEgressEnvVarFactory _egressOPCUAFactory;
 
@@ -26,6 +27,7 @@ public class EnvVarCreator : IEnvVarCreator
         _ingressMQTTFactory = new MqttIngressEnvVarFactory(_config);
         _ingressRTDEFactory = new RtdeIngressEnvVarFactory(_config);
         _ingressOPCUAFactory = new OpcuaIngressEnvVarFactory(_config);
+        _ingressRESTFactory = new RestIngressEnvVarFactory(_config);
     }
     
     private void InitEgressFactories()
@@ -45,6 +47,7 @@ public class EnvVarCreator : IEnvVarCreator
             case "OPCUA":
                 return _ingressOPCUAFactory.CreateEnvironmentVariables(data);
             case "REST":
+                return _ingressRESTFactory.CreateEnvironmentVariables(data);
                 Log.Error("REST IS NOT SUPPORTED YET");
                 throw new ArgumentException("Unsupported protocol");
             default:

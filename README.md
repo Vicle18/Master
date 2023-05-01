@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a meta-store/v1.1.9 -m "now "
-git push origin meta-store/v1.1.9
+git tag -a ingress/v1.4.9 -m "now "
+git push origin ingress/v1.4.9
 
 git tag -a mvp -m "mvp"
 git push origin mvp
