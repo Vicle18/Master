@@ -9,6 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Divider,
   FormControl,
   FormControlLabel,
   FormGroup,
@@ -20,6 +21,7 @@ import {
   ListItemText,
   ListSubheader,
   MenuItem,
+  Paper,
   Select,
   Slide,
   Snackbar,
@@ -89,7 +91,8 @@ const CreateEgressStepper: React.FC<Props> = ({
   const [ingressNodes, setIngressNodes] = useState<ingressNode[]>([]);
   const [selectedEgressGroup, setSelectedEgressGroup] = useState<any>();
 
-  const [selectedIngressNode, setSelectedIngressNode] = useState<ingressNode>(selectedIngress);
+  const [selectedIngressNode, setSelectedIngressNode] =
+    useState<ingressNode>(selectedIngress);
   const [selectedEgress, setSelectedEgress] = useState<string>("");
   const [openSnackbar, setOpenSnackbar] = React.useState(true);
   const [result, setResult] = useState<string | null>(null);
@@ -101,7 +104,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const handlerClose = () => {
-    setActiveStep(0)
+    setActiveStep(0);
 
     setPopupEgress(false);
   };
@@ -133,7 +136,7 @@ const CreateEgressStepper: React.FC<Props> = ({
   };
 
   const handleSubmit = (values: FormData) => {
-    setActiveStep(0)
+    setActiveStep(0);
 
     console.log("submit", values, ingressNodes);
     setPopupEgress(false);
@@ -167,7 +170,6 @@ const CreateEgressStepper: React.FC<Props> = ({
 
     console.log("submitting:", JSON.stringify(values));
 
-
     fetch(`${process.env.REACT_APP_MIDDLEWARE_URL}/api/Egress?=`, {
       method: "POST",
       headers: {
@@ -179,10 +181,9 @@ const CreateEgressStepper: React.FC<Props> = ({
       body: JSON.stringify(values),
     })
       .then((response) => {
-        console.log(response)
+        console.log(response);
         setResult(JSON.stringify(response));
-      }
-      )
+      })
       .then((data) => console.log("data: " + JSON.stringify(data)))
       .catch((error) => {
         console.error(error);
@@ -397,29 +398,29 @@ const CreateEgressStepper: React.FC<Props> = ({
 
                     {(values.protocol === "MQTT" ||
                       values.protocol === "OPCUA") && (
-                        <>
-                          <Field name="createBroker">
-                            {({ field }: FieldProps<FormData>) => (
-                              <FormControlLabel
-                                control={
-                                  <Switch
-                                    {...field}
-                                    defaultChecked={values.createBroker}
-                                    onChange={() => {
-                                      values.createBroker = !values.createBroker;
-                                      console.log(values.createBroker);
-                                      setCreateBroker(values.createBroker);
-                                    }}
-                                    // disabled={values.protocol === "OPCUA"}
-                                    color="primary"
-                                  />
-                                }
-                                label="Providing your own broker"
-                              />
-                            )}
-                          </Field>
-                        </>
-                      )}
+                      <>
+                        <Field name="createBroker">
+                          {({ field }: FieldProps<FormData>) => (
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  {...field}
+                                  defaultChecked={values.createBroker}
+                                  onChange={() => {
+                                    values.createBroker = !values.createBroker;
+                                    console.log(values.createBroker);
+                                    setCreateBroker(values.createBroker);
+                                  }}
+                                  // disabled={values.protocol === "OPCUA"}
+                                  color="primary"
+                                />
+                              }
+                              label="Providing your own broker"
+                            />
+                          )}
+                        </Field>
+                      </>
+                    )}
 
                     {createBroker && values.protocol === "MQTT" && (
                       <>
@@ -494,8 +495,12 @@ const CreateEgressStepper: React.FC<Props> = ({
                                 fullWidth
                                 margin="normal"
                                 size="small"
-                                error={touched.serverUrl && Boolean(errors.serverUrl)}
-                                helperText={touched.serverUrl && errors.serverUrl}
+                                error={
+                                  touched.serverUrl && Boolean(errors.serverUrl)
+                                }
+                                helperText={
+                                  touched.serverUrl && errors.serverUrl
+                                }
                               />
                             )}
                           </Field>
@@ -546,7 +551,9 @@ const CreateEgressStepper: React.FC<Props> = ({
                                 fullWidth
                                 margin="normal"
                                 size="small"
-                                error={touched.nodeType && Boolean(errors.nodeType)}
+                                error={
+                                  touched.nodeType && Boolean(errors.nodeType)
+                                }
                                 helperText={touched.nodeType && errors.nodeType}
                               />
                             )}
@@ -631,33 +638,43 @@ const CreateEgressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        <Typography variant="h6">
-                          Selected Element: {selectedIngressNode?.name}
+                        <Typography variant="h6" textAlign="center">
+                          Selected Observable Property
                         </Typography>
-                        <Typography>
-                          <Box component="span" fontWeight="bold">
-                            Id:
-                          </Box>{" "}
-                          {selectedIngressNode?.id}
-                        </Typography>
-                        <Typography>
-                          <Box component="span" fontWeight="bold">
-                            Name:
-                          </Box>{" "}
-                          {selectedIngressNode?.name}
-                        </Typography>
-                        <Typography>
-                          <Box component="span" fontWeight="bold">
-                            Topic:
-                          </Box>{" "}
-                          {selectedIngressNode?.topic?.name}
-                        </Typography>
-                        <Typography>
-                          <Box component="span" fontWeight="bold">
-                            Frequency:
-                          </Box>{" "}
-                          {selectedIngressNode?.frequency}
-                        </Typography>
+                        <Divider
+                          sx={{
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                        />
+                        {selectedIngressNode && (
+                          <Paper sx={{ backgroundColor: "white", paddingLeft: "10px" }}>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Name:
+                              </Box>{" "}
+                              {selectedIngressNode?.name}
+                            </Typography>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Id:
+                              </Box>{" "}
+                              {selectedIngressNode?.id}
+                            </Typography>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Topic:
+                              </Box>{" "}
+                              {selectedIngressNode?.topic?.name}
+                            </Typography>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Frequency:
+                              </Box>{" "}
+                              {selectedIngressNode?.frequency}
+                            </Typography>
+                          </Paper>
+                        )}
                       </Grid2>
                     </Grid2>
                   </>
@@ -857,12 +874,35 @@ const CreateEgressStepper: React.FC<Props> = ({
                           backgroundColor: "whitesmoke",
                         }}
                       >
-                        Selected Endpoint Group: {selectedEgressGroup?.name}
+                        <Typography variant="h6" textAlign="center">
+                          Selected Group
+                        </Typography>
+                        <Divider
+                          sx={{
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                          }}
+                        />
+                        {selectedEgressGroup && (
+                          <Paper sx={{ backgroundColor: "white", paddingLeft: "10px" }}>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Name:
+                              </Box>{" "}
+                              {selectedEgressGroup?.name}
+                            </Typography>
+                            <Typography>
+                              <Box component="span" fontWeight="bold">
+                                Description:
+                              </Box>{" "}
+                              {selectedEgressGroup?.description}
+                            </Typography>
+                          </Paper>
+                        )}
                       </Grid2>
                     </Grid2>
                   </>
                 )}
-
               </DialogContent>
               <DialogActions>
                 {errors.name && (
@@ -892,7 +932,7 @@ const CreateEgressStepper: React.FC<Props> = ({
                     />
                   </div>
                 )}
-                {!selectedIngressNode && (
+                {!selectedIngressNode && activeStep === steps.length - 1 &&(
                   <div>
                     <Chip
                       label={"An observable property is required"}
@@ -941,9 +981,12 @@ const CreateEgressStepper: React.FC<Props> = ({
                     variant="contained"
                     color="success"
                     type="submit"
-                    disabled={(!isValid || (selectedIngressNode == undefined || selectedEgressGroup == undefined))}
+                    disabled={
+                      !isValid ||
+                      selectedIngressNode == undefined ||
+                      selectedEgressGroup == undefined
+                    }
                   >
-
                     Create
                   </Button>
                 )}
@@ -952,34 +995,34 @@ const CreateEgressStepper: React.FC<Props> = ({
           )}
         </Formik>
       </Dialog>
-      {result && (<Snackbar
-        open={openSnackbar}
-        onClose={handleCloseSnackbar}
-        autoHideDuration={3000}
-        TransitionComponent={Slide}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        message={result}
-      >
-        {result === "Network Error" ? (
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
-            {result}
-          </Alert>
-        ) : (
-          <Alert
-            onClose={handleCloseSnackbar}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            {
-              "Egress Endpoint successfully created"
-            }
-          </Alert>
-        )}
-      </Snackbar>)}
+      {result && (
+        <Snackbar
+          open={openSnackbar}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={3000}
+          TransitionComponent={Slide}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          message={result}
+        >
+          {result === "Network Error" ? (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="error"
+              sx={{ width: "100%" }}
+            >
+              {result}
+            </Alert>
+          ) : (
+            <Alert
+              onClose={handleCloseSnackbar}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              {"Egress Endpoint successfully created"}
+            </Alert>
+          )}
+        </Snackbar>
+      )}
     </div>
   );
 };

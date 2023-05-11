@@ -23,6 +23,7 @@ public class ConnectionDetailsFactory : IConnectionDetailsFactory
             case "RTDE": return RTDE.CreateRTDEIngressConnection(id, value, topicName, transmissionDetails);
             case "MQTT": return MQTT.CreateMQTTIngressConnection(id, value, topicName, transmissionDetails);
             case "OPCUA": return OPCUA.CreateOPCUAIngressConnection(id, value, transmissionDetails);
+            case "REST": return REST.CreateRESTIngressConnection(id, value, transmissionDetails);
             default:
                 throw new ArgumentException("Unsupported protocol");
         }

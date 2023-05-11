@@ -1,26 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj": {}
+    "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj": {}
   },
   "projects": {
-    "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj": {
+    "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj",
+        "projectUniqueName": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj",
         "projectName": "TestIngressAdapter",
-        "projectPath": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj",
-        "packagesPath": "/Users/victorclemmensen/.nuget/packages/",
-        "outputPath": "/Users/victorclemmensen/repos/master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/obj/",
+        "projectPath": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/TestIngressAdapter.csproj",
+        "packagesPath": "/Users/bendesiewertsen/.nuget/packages/",
+        "outputPath": "/Users/bendesiewertsen/Documents/SDU/Master/Master/ingress_adapter/IngressAdapter/TestIngressAdapter/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/victorclemmensen/.nuget/NuGet/NuGet.Config"
+          "/Users/bendesiewertsen/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.pkg.github.com/SDU-SW-Engineering/index.json": {}
         },
         "frameworks": {
           "net6.0": {
@@ -71,7 +72,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.406/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.402/RuntimeIdentifierGraph.json"
         }
       }
     }

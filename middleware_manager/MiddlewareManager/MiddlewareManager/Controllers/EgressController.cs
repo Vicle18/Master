@@ -56,13 +56,13 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
+        public async Task<ActionResult<CreateEgressResponse>> Post([FromBody] CreateEgressDto value)
         {
 
             Log.Debug(JsonSerializer.Serialize(value));
             try
             {
-                Response response = null;
+                CreateEgressResponse response = null;
                 var id = Guid.NewGuid().ToString();
 
                 ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);

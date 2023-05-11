@@ -73,7 +73,7 @@ public class EgressRepository : IEgressRepository
         return observableProperties[0];
     }
 
-    public async Task<Response> CreateEgressEndpoint(string id, CreateEgressDto value, string connectionDetails)
+    public async Task<CreateEgressResponse> CreateEgressEndpoint(string id, CreateEgressDto value, string connectionDetails)
     {
         
         Log.Debug("BEFORE GRAPHQL REQUEST ");
@@ -141,7 +141,7 @@ public class EgressRepository : IEgressRepository
             }
         };
         _logger.LogDebug("sending graphql: {request}", JsonConvert.SerializeObject(request));
-        var response = await graphQLClient.SendMutationAsync<Response>(request);
+        var response = await graphQLClient.SendMutationAsync<CreateEgressResponse>(request);
         Log.Debug(JsonConvert.SerializeObject(response));
         _logger.LogCritical("when creating egress, got feedback: {feedback}", response.Data);
         return response.Data;

@@ -1,22 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using GraphQL;
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
-using GraphQL.Client.Serializer.SystemTextJson;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MiddlewareManager.AdapterModel;
 using MiddlewareManager.DataModel;
 using MiddlewareManager.Protocols;
 using MiddlewareManager.Repositories;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NuGet.Protocol;
 using Serilog;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
