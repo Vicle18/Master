@@ -154,6 +154,10 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     onItemClick={(parent: any) => {
                       // HandleIngressClick(parent.name);
                       setCurrentlySelectedParent(parent.name);
+                      setSelectedMachines([
+                        ...selectedMachines,
+                        parent.name,
+                      ]);
                     }}
 
                     filter={["machines"]}
@@ -161,7 +165,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                   />
                   <Divider />
 
-                  <Button
+                  {/* <Button
                     sx={{ marginTop: "20px", marginLeft: "375px" }}
                     variant="contained"
                     color="primary"
@@ -173,7 +177,7 @@ const ExportStepper: React.FC<Props> = ({ }) => {
                     }}
                   >
                     Add
-                  </Button>
+                  </Button> */}
                 </Grid2>
 
                 <Grid2

@@ -1,0 +1,37 @@
+{"@t":"2023-05-01T15:22:11.5181172Z","@mt":"Ingress adapter {id} is starting","id":"6e92ded7-6dab-470d-8d39-9d5cd97f9e09"}
+{"@t":"2023-05-01T15:22:11.5687647Z","@mt":"Initializing Controller","@l":"Debug"}
+{"@t":"2023-05-01T15:22:11.6149920Z","@mt":"Received bus config: {config}","@l":"Debug","config":"EgressAdapter.BusCommunication.KAFKA.KafkaConfiguration"}
+{"@t":"2023-05-01T15:22:11.6887124Z","@mt":"my-cluster-kafka-brokers:9092","@l":"Debug"}
+{"@t":"2023-05-01T15:22:12.2404625Z","@mt":"Received ingress config: {config}","@l":"Debug","config":"Host: mqtt-broker-3909e2b4-8291-4e90-88f6-e2d692f29e5f, Port: 1883"}
+{"@t":"2023-05-01T15:22:12.2486456Z","@mt":"Connecting to mqtt with broker: {broker}, and clientId {clientId}","@l":"Debug","broker":"mqtt-broker-3909e2b4-8291-4e90-88f6-e2d692f29e5f:1883","clientId":"69fc1b60-c1a3-4c11-87b0-7b84562f023a"}
+{"@t":"2023-05-01T15:22:17.7272956Z","@mt":"Starting heartbeat","@l":"Debug"}
+{"@t":"2023-05-01T15:22:17.7829742Z","@mt":"subscribed to {topic}","@l":"Debug","topic":"TestProperty7-a0da7939-940e-432a-915a-6c5ead76262f"}
+{"@t":"2023-05-01T15:22:18.0752714Z","@mt":"Printing {Host} and {Port}","@l":"Debug","Host":"my-cluster-kafka-brokers","Port":"9092"}
+{"@t":"2023-05-01T15:22:18.2763025Z","@mt":"Error occured: {error}","@l":"Error","error":"Subscribed topic not available: TestProperty7-a0da7939-940e-432a-915a-6c5ead76262f: Broker: Unknown topic or partition"}
+{"@t":"2023-05-01T15:22:18.3326587Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"test [[0]] @33"}
+{"@t":"2023-05-01T15:22:18.7820333Z","@mt":"Starting Transmission","@l":"Debug"}
+{"@t":"2023-05-01T15:22:19.2237705Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38960"}
+{"@t":"2023-05-01T15:22:19.2259098Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38961"}
+{"@t":"2023-05-01T15:22:22.8006717Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:23.7926272Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38984"}
+{"@t":"2023-05-01T15:22:27.8093467Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:28.8031656Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39006"}
+{"@t":"2023-05-01T15:22:32.8154577Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:33.7979814Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39026"}
+{"@t":"2023-05-01T15:22:37.8307000Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:38.7967405Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39046"}
+{"@t":"2023-05-01T15:22:42.8314731Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:43.8264063Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39066"}
+{"@t":"2023-05-01T15:22:47.8316586Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:48.8015888Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39086"}
+{"@t":"2023-05-01T15:22:52.8342499Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:53.8014284Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39106"}
+{"@t":"2023-05-01T15:22:57.8356214Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:58.7994067Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39126"}
+{"@t":"2023-05-01T15:23:02.8388867Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:03.8033228Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39146"}
+{"@t":"2023-05-01T15:23:07.8458988Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:08.8110294Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39166"}
+{"@t":"2023-05-01T15:23:12.8482772Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:13.8033900Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39186"}
+{"@t":"2023-05-01T15:23:17.8515580Z","@mt":"Still connected to MQTT Broker"}

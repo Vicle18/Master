@@ -1,0 +1,28 @@
+{"@t":"2023-05-01T15:22:16.0516015Z","@mt":"Ingress adapter {id} is starting","id":"a5aa222f-06b4-4abe-8c70-763bc858cbad"}
+{"@t":"2023-05-01T15:22:16.2352266Z","@mt":"Initializing Controller","@l":"Debug"}
+{"@t":"2023-05-01T15:22:16.4947257Z","@mt":"Received bus config: {config}","@l":"Debug","config":"IngressAdapter.BusCommunication.KAFKA.KafkaConfiguration"}
+{"@t":"2023-05-01T15:22:16.5499410Z","@mt":"my-cluster-kafka-brokers:9092","@l":"Debug"}
+{"@t":"2023-05-01T15:22:17.7511932Z","@mt":"{freq} {changedFres}","@l":"Debug","freq":"200","changedFres":"200","SourceContext":"IngressAdapter.Controller.Controller"}
+{"@t":"2023-05-01T15:22:17.8134668Z","@mt":"Initializing Ingress Communication","@l":"Debug","SourceContext":"IngressAdapter.Controller.Controller"}
+{"@t":"2023-05-01T15:22:18.0203438Z","@mt":"Initializing ingestion","@l":"Debug","SourceContext":"IngressAdapter.Controller.Controller"}
+{"@t":"2023-05-01T15:22:18.0435423Z","@mt":"trying to connect to  RTDE Server","@l":"Debug"}
+{"@t":"2023-05-01T15:22:18.7556913Z","@mt":"connection: {connected}","@l":"Debug","connected":true}
+{"@t":"2023-05-01T15:22:18.7599306Z","@mt":"Starting ingestion","@l":"Debug","SourceContext":"IngressAdapter.Controller.Controller"}
+{"@t":"2023-05-01T15:22:18.7622626Z","@mt":"Starting RTDE Stream","@l":"Debug"}
+{"@t":"2023-05-01T15:22:18.7631765Z","@mt":"System.Collections.Generic.Dictionary`2[System.String,System.Object]","@l":"Debug"}
+{"@t":"2023-05-01T15:22:18.7944443Z","@mt":"Setting up outputs, received: {response}","@l":"Debug","response":true}
+{"@t":"2023-05-01T15:22:19.2076850Z","@mt":"Starting Transmission","@l":"Debug"}
+{"@t":"2023-05-01T15:22:19.7173100Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38963"}
+{"@t":"2023-05-01T15:22:19.7579845Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38964"}
+{"@t":"2023-05-01T15:22:19.7993342Z","@mt":"Closed socket for RTDE Streaming","@l":"Debug"}
+{"@t":"2023-05-01T15:22:24.2299748Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @38985"}
+{"@t":"2023-05-01T15:22:29.2252321Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39007"}
+{"@t":"2023-05-01T15:22:34.2292462Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39027"}
+{"@t":"2023-05-01T15:22:39.2303083Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39047"}
+{"@t":"2023-05-01T15:22:44.2260306Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39067"}
+{"@t":"2023-05-01T15:22:49.2363599Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39087"}
+{"@t":"2023-05-01T15:22:54.2301992Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39107"}
+{"@t":"2023-05-01T15:22:59.2278882Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39127"}
+{"@t":"2023-05-01T15:23:04.2303450Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39147"}
+{"@t":"2023-05-01T15:23:09.2421356Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39167"}
+{"@t":"2023-05-01T15:23:14.2425443Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39187"}

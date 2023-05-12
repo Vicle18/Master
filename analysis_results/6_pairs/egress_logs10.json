@@ -1,0 +1,34 @@
+{"@t":"2023-05-01T15:22:19.7087375Z","@mt":"Ingress adapter {id} is starting","id":"c179705f-2615-4826-b2b6-71ba24f59c53"}
+{"@t":"2023-05-01T15:22:19.9097219Z","@mt":"Initializing Controller","@l":"Debug"}
+{"@t":"2023-05-01T15:22:19.9247627Z","@mt":"Received bus config: {config}","@l":"Debug","config":"EgressAdapter.BusCommunication.KAFKA.KafkaConfiguration"}
+{"@t":"2023-05-01T15:22:20.0425667Z","@mt":"my-cluster-kafka-brokers:9092","@l":"Debug"}
+{"@t":"2023-05-01T15:22:21.5218097Z","@mt":"Received ingress config: {config}","@l":"Debug","config":"Host: mqtt-broker-3909e2b4-8291-4e90-88f6-e2d692f29e5f, Port: 1883"}
+{"@t":"2023-05-01T15:22:21.5397860Z","@mt":"Connecting to mqtt with broker: {broker}, and clientId {clientId}","@l":"Debug","broker":"mqtt-broker-3909e2b4-8291-4e90-88f6-e2d692f29e5f:1883","clientId":"9cae6645-a03e-4581-9927-2e64000ab19d"}
+{"@t":"2023-05-01T15:22:26.9159445Z","@mt":"Starting heartbeat","@l":"Debug"}
+{"@t":"2023-05-01T15:22:26.9453123Z","@mt":"subscribed to {topic}","@l":"Debug","topic":"TestProperty10-b8cf260b-d98a-472f-98c8-0ed8f7195222"}
+{"@t":"2023-05-01T15:22:27.1170379Z","@mt":"Printing {Host} and {Port}","@l":"Debug","Host":"my-cluster-kafka-brokers","Port":"9092"}
+{"@t":"2023-05-01T15:22:27.2311669Z","@mt":"Error occured: {error}","@l":"Error","error":"Subscribed topic not available: TestProperty10-b8cf260b-d98a-472f-98c8-0ed8f7195222: Broker: Unknown topic or partition"}
+{"@t":"2023-05-01T15:22:27.2687704Z","@mt":"Starting Transmission","@l":"Debug"}
+{"@t":"2023-05-01T15:22:27.5179077Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"test [[0]] @36"}
+{"@t":"2023-05-01T15:22:27.5252982Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39000"}
+{"@t":"2023-05-01T15:22:27.5256022Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39001"}
+{"@t":"2023-05-01T15:22:31.9751567Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:32.2786274Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39020"}
+{"@t":"2023-05-01T15:22:36.9764387Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:37.2840444Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39040"}
+{"@t":"2023-05-01T15:22:41.9791764Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:42.2907217Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39060"}
+{"@t":"2023-05-01T15:22:46.9876909Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:47.2842724Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39080"}
+{"@t":"2023-05-01T15:22:51.9902865Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:52.2819426Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39100"}
+{"@t":"2023-05-01T15:22:56.9911078Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:22:57.2825089Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39120"}
+{"@t":"2023-05-01T15:23:01.9952723Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:02.2823668Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39140"}
+{"@t":"2023-05-01T15:23:06.9963815Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:07.2960983Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39160"}
+{"@t":"2023-05-01T15:23:11.9967279Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:12.3100073Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39180"}
+{"@t":"2023-05-01T15:23:17.0010291Z","@mt":"Still connected to MQTT Broker"}
+{"@t":"2023-05-01T15:23:17.3084744Z","@mt":"Delivered message to {topic}","@l":"Debug","topic":"ingress_availability [[0]] @39200"}
