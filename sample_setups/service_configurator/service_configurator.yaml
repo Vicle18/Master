@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-configurator-service
+  namespace: sso
+spec:
+  selector:
+    app: service-configurator
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-configurator-deployment
+  namespace: sso
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-configurator
+  template:
+    metadata:
+      labels:
+        app: service-configurator
+    spec:
+      containers:
+      - name: service-configurator-container
+        image: clemme/service-configurator
+        env:
+        - name: KUBERNETES_CONFIG__KUBERNETES_HOST
+          value: "https://172.17.0.1:34129"
+        - name: KUBERNETES_CONFIG__KUBERNETES_ACCESS_TOKEN
+          value: "eyJhbGciOiJSUzI1NiIsImtpZCI6IkFqMTBxY3ZVMFFJVURtUWpNbTJaWl9wUUg5TVdKQVNmYWZ1VHVVclZlcUEifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjg1NDUyMDk2LCJpYXQiOjE2ODI4NjAwOTYsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJzc28iLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoic2VydmljZS1vcmNoZXN0cmF0b3IiLCJ1aWQiOiJkNzMwMGVkMi1iMmI4LTQ4N2MtODA0Ni1mMmMyOTQ3NWFiM2UifX0sIm5iZiI6MTY4Mjg2MDA5Niwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnNzbzpzZXJ2aWNlLW9yY2hlc3RyYXRvciJ9.CERxzvpRWxkWoFWlCHnBVBApYx1kWQPC0kdnkpGQFbawb_D7E53ecdlNP-4E_OGPeyVK-msxuYV2ZhuGlU2lsDJHfFXlRKaj9zn8GrTcHAiDahzzHh_LpnVSeJ9PX04AMGWMKbIAmCMZeolHQaXtEKCHyRFE43C_NIijONCAYtXLoSXt-YFSD73zwoayZkDb6ieZcBNwKhC_VPx-Zdqzsf1itSVj25l_wvWQ6b2VTKc2V5LmWQ4MwHKvrh2GYXSVrigGClsBso22jF26ac_O6EES-fMB1ciLH9WivzF3jo0Czl8DLGHlK9BtkaSUGvQg5RApNqzF0JLJ6aafi04cYQ"
+        ports:
+        - containerPort: 80
