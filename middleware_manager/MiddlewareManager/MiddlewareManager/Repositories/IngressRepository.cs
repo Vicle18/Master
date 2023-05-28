@@ -19,11 +19,13 @@ public class IngressRepository : IIngressRepository
     {
         _config = config;
         _logger = logger;
+        var url = _config.GetValue<string>("METASTORE_URL");
+
         _logger.LogDebug("starting {repository}", "IngressRepository");
 
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
-            EndPoint = new Uri("http://localhost:4000")
+            EndPoint = new Uri(url)
         }, new SystemTextJsonSerializer());
     }
 

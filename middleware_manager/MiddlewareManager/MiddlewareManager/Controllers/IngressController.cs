@@ -16,7 +16,7 @@ namespace MiddlewareManager.Controllers
         private readonly IIngressRepository _ingressRepo;
         private readonly IConnectionDetailsFactory _connectionDetailsFactory;
         private readonly HttpClient _client;
-
+        private readonly string _serviceConfiguratorUrl;
         public IngressController(IConfiguration config, ILogger<IngressController> logger,
             IIngressRepository ingressRepo, IConnectionDetailsFactory connectionDetailsFactory)
         {
@@ -25,6 +25,7 @@ namespace MiddlewareManager.Controllers
             _ingressRepo = ingressRepo;
             _connectionDetailsFactory = connectionDetailsFactory;
             _logger.LogDebug("starting {controller}", "IngressController");
+            _serviceConfiguratorUrl = _config.GetValue<string>("SERVICE_ORCHESTRATOR_URL");
             _client = new HttpClient();
             
         }
@@ -57,7 +58,7 @@ namespace MiddlewareManager.Controllers
                 var response = await _ingressRepo.CreateObservableProperty(id, value, topicName,
                     JsonSerializer.Serialize(connectionDetails));
 
-                await HTTPForwarder.ForwardsIngressRequestToConfigurator( JsonSerializer.Serialize(connectionDetails), _client);
+                await HTTPForwarder.ForwardsIngressRequestToConfigurator( _config, JsonSerializer.Serialize(connectionDetails), _client);
                 
                 return Ok(response);
             }
@@ -81,7 +82,7 @@ namespace MiddlewareManager.Controllers
                 var response = await _ingressRepo.CreateObservableProperty(file.id, file, topicName,
                     file.connectionDetails);
 
-                await HTTPForwarder.ForwardsIngressRequestToConfigurator(file.connectionDetails, _client);
+                await HTTPForwarder.ForwardsIngressRequestToConfigurator(_config, file.connectionDetails, _client);
 
                 return Ok(response);
             }
@@ -130,7 +131,7 @@ namespace MiddlewareManager.Controllers
             try
             {
                 var database_response = await _ingressRepo.DeleteObservableProperty(id);
-                var _baseAddress = "https://localhost:7033";
+                var _baseAddress = _serviceConfiguratorUrl;
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"{_baseAddress}/api/Ingress/{id}");
                 var response = await _client.SendAsync(request);
 

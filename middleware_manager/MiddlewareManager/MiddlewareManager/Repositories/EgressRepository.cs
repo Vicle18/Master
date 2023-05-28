@@ -18,11 +18,13 @@ public class EgressRepository : IEgressRepository
     {
         _config = config;
         _logger = logger;
-        _logger.LogDebug("starting {repository}", "EgressRepository");
-
+        var url = _config.GetValue<string>("METASTORE_URL");
+        _logger.LogDebug("starting {repository}, connecting to metastore: {metastore}", "EgressRepository", url);
+        
+    
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
-            EndPoint = new Uri("http://localhost:4000")
+            EndPoint = new Uri(url)
         }, new SystemTextJsonSerializer());
     }
 
