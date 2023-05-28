@@ -149,16 +149,17 @@ kill
 
 ## Access pod
 ```
-kubectl exec --stdin --tty pod-3758378b-eb95-4616-8027-e278d31b07d1 -- /bin/bash
+kubectl exec --stdin --tty pod-0d14ada6-3c87-4fe2-824e-74794f4e94d6 -- /bin/bash
 ```
 
 ## Copy file from pod to local
 ```
 kubectl cp <pod-name>:<fully-qualified-file-name> /<path-to-your-file>/<file-name>
 
-kubectl cp pod-a6978edf-d339-4c52-aa11-3288995aa177:Logs/log20230416.txt ~/logs/ingress_logs500.json
+kubectl cp -n sso pod-0e832f4e-9f2a-4b86-a145-3209bc705575:Logs/log20230430.txt ~/logs/ingress_logs1.json
 
-kubectl cp pod-8341af19-8a7c-4a4f-b321-6cb7319e16c1:Logs/log20230416.txt ~/logs/egress_logs500.json
+kubectl cp pod-0d14ada6-3c87-4fe2-824e-74794f4e94d6:Logs/log20230430.txt ~/logs/egress_logs1.json
+
 ```
 
 ## Kill 
