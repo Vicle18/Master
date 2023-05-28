@@ -1,0 +1,139 @@
+services:
+## Kafka
+  kafka1:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka1
+    logging:
+      driver: none
+    ports:
+      - 19092:19092
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka1:9092,CONTROLLER://kafka1:9093,EXTERNAL://0.0.0.0:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,EXTERNAL://${HOST_DNS}:19092
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    networks:
+      shared_network:
+      
+  kafka2:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka2
+    logging:
+      driver: none
+    ports:
+      - 19094:19094
+    environment:
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka2:9092,CONTROLLER://kafka2:9093,EXTERNAL://0.0.0.0:19094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,EXTERNAL://${HOST_DNS}:19094
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    networks:
+      shared_network:
+
+  kafka3:
+    image: confluentinc/cp-kafka:7.2.1
+    container_name: kafka3
+    logging:
+      driver: none
+    ports:
+      - 19095:19095
+    environment:
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://kafka3:9092,CONTROLLER://kafka3:9093,EXTERNAL://0.0.0.0:19095
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9092,EXTERNAL://${HOST_DNS}:19095
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@kafka1:9093,2@kafka2:9093,3@kafka3:9093'
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+    volumes:
+      - ./run_workaround.sh:/tmp/run_workaround.sh
+    command: "bash -c '/tmp/run_workaround.sh && /etc/confluent/docker/run'"
+    networks:
+      shared_network:
+  # console:
+  #   container_name: redpanda-console
+  #   image: docker.redpanda.com/vectorized/console:v2.2.0
+  #   entrypoint: /bin/sh
+  #   command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+  #   restart: always
+  #   environment: 
+  #     CONFIG_FILEPATH: /tmp/config.yml
+  #     CONSOLE_CONFIG_FILE: |
+  #       kafka:
+  #         brokers: ["kafka1:9092"]
+  #   ports:
+  #     - 8090:8080
+  #   depends_on:
+  #     - kafka1
+  #   networks:
+  #     shared_network:
+
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    networks:
+      shared_network:
+  
+  ingress:
+    build:
+      context: ../ingress_adapter/IngressAdapter
+    environment:
+      - INGRESS_CONFIG__PROTOCOL=MQTT
+      - INGRESS_CONFIG__PARAMETERS__HOST=mosquitto
+      - INGRESS_CONFIG__PARAMETERS__PORT=1883
+      - INGRESS_CONFIG__PARAMETERS__TOPIC=testIngress
+      - DOTNET_ENVIRONMENT=Production
+
+      - INGRESS_CONFIG__TRANSMISSION_DETAILS__TARGET_TOPIC=testIngress
+      - INGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY=1
+      - INGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY=1
+      - INGRESS_CONFIG__TRANSMISSION_DETAILS__DOWN_SAMPLING_METHOD=LATEST
+      - INGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_TYPE=STRING
+
+      - BUS_CONFIG__PROTOCOL=KAFKA
+      - BUS_CONFIG__PARAMETERS__HOST=kafka1
+      - BUS_CONFIG__PARAMETERS__PORT=9092
+    restart: always
+    networks:
+      shared_network:
+  
+  egress:
+    build:
+      context: ../egress_adapter/EgressAdapter
+    environment:
+      - EGRESS_CONFIG__PROTOCOL=MQTT
+      - EGRESS_CONFIG__PARAMETERS__HOST=mosquitto
+      - EGRESS_CONFIG__PARAMETERS__PORT=1883
+      
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__ORIGIN_TOPIC=testIngress
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__TARGET=testEgress
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__FREQUENCY=1
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__CHANGED_FREQUENCY=1
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__DOWN_SAMPLING_METHOD=LATEST
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_TYPE=STRING
+      - EGRESS_CONFIG__TRANSMISSION_DETAILS__DATA_FORMAT=RAW
+      - BUS_CONFIG__PROTOCOL=KAFKA
+      - BUS_CONFIG__PARAMETERS__HOST=kafka1
+      - BUS_CONFIG__PARAMETERS__PORT=9092
+    restart: always
+    networks:
+      shared_network:
+
+networks:
+  shared_network:
+    name: "shared_network"
