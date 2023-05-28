@@ -19,9 +19,9 @@ public class IngressRepository : IIngressRepository
     {
         _config = config;
         _logger = logger;
-        var url = _config.GetValue<string>("METASTORE_URL");
+        string url = _config.GetValue<string>("METASTORE_URL");
 
-        _logger.LogDebug("starting {repository}", "IngressRepository");
+        _logger.LogDebug("starting {repository} with metastore {metaurl}", "IngressRepository", url);
 
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
