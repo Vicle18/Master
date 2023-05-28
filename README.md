@@ -4,14 +4,22 @@ The following repository contains the source code created in connection with the
 The software architecture is based on microservices deployed in Kubernetes. A detailed description of the architecture can be found in the thesis. This repository contains the source code for all the services, as well as the configuration files for the Kubernetes cluster and other configuration files used to deploy the services and peripheral software like Kafka and KeyCloak.
 
 More specifically, the repository contains the following services:
-- Ingress Adapter
-- Egress Adapter
-- Service Configurator
-- Middleware Manager
-- Data Explorer
-- Watchdog
-- Frontend
-- Meta Store
+- Ingress Adapter in the folder "ingress_adapter"
+- Egress Adapter in the folder "egress_adapter"
+- Service Configurator in the folder "service_orchestrator"
+- Middleware Manager in the folder "middleware_manager"
+- Data Explorer in the folder "data_explorer"
+- Watchdog in the folder "watchdog"
+- Frontend in the folder "frontend"
+- Meta Store in the folder "meta_store"
+
+Furthermore, the repository contains the following folders:
+- "kafka" contains the configuration files for deploying Kafka in Kubernetes
+- "keycloak" contains the configuration files for deploying KeyCloak in Kubernetes
+- "sample_setups" contains sample setups for deploying the services in Kubernetes and docker-compose
+- "experiment" contains the code used for the experiments conducted in the thesis
+- "analysis_results" contains the results of the experiments conducted in the thesis
+- ".github/workflows" contains the configuration files for the GitHub Actions used to build the services
 
 The rest of this document contains relevant code snippets and commands used to deploy the services and the peripheral software.
 # Useful Commands
