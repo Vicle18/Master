@@ -2,23 +2,22 @@ import requests
 
 urlIngress = "https://localhost:7014/api/Ingress"
 urlEgress = "https://localhost:7014/api/Egress"
-frequency = 300
+frequency = 1000
 output_file = "ids.txt"
-
 # Clear the output file
 with open(output_file, "w") as f:
     f.truncate(0)
 
-for i in range(2):
+for i in range(1):
     payload = {
         "name": f"TestProperty{i+1}",
         "description": f"description{i+1}",
         "containingElement": "Robot 1",
         "dataType": "NUMBER",
-        "output": "timestamp",
-        "host": "172.17.0.1",
-        "port": "30004",
-        "protocol": "RTDE",
+        "topic": "experiment",
+        "host": "mqtt-broker-3909e2b4-8291-4e90-88f6-e2d692f29e5f",
+        "port": "1883",
+        "protocol": "MQTT",
         "frequency": frequency,
         "changedFrequency": frequency,
         "downsampleMethod": "Average",
