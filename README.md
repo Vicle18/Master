@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a middleware-manager/v1.0.2 -m "now"
-git push origin middleware-manager/v1.0.2
+git tag -a service-configurator/v1.0.1 -m "now"
+git push origin service-configurator/v1.0.1
 
 git tag -a mvp -m "mvp"
 git push origin mvp
