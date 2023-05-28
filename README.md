@@ -1,8 +1,24 @@
+# General Information
+The following repository contains the source code created in connection with the Master thesis "Dynamic Configuration of Production Data Streams and Endpoints" by Victor Kyhe Clemmensen and Bende Siewertsen, written at the University of Southern Denmark in 2022/2023. 
+
+The software architecture is based on microservices deployed in Kubernetes. A detailed description of the architecture can be found in the thesis. This repository contains the source code for all the services, as well as the configuration files for the Kubernetes cluster and other configuration files used to deploy the services and peripheral software like Kafka and KeyCloak.
+
+More specifically, the repository contains the following services:
+- Ingress Adapter
+- Egress Adapter
+- Service Configurator
+- Middleware Manager
+- Data Explorer
+- Watchdog
+- Frontend
+- Meta Store
+
+The rest of this document contains relevant code snippets and commands used to deploy the services and the peripheral software.
 # Useful Commands
 
 ## pushing a new version
-git tag -a service-configurator/v1.0.1 -m "now"
-git push origin service-configurator/v1.0.1
+git tag -a service-configurator/v1.0.2 -m "now"
+git push origin service-configurator/v1.0.2
 
 git tag -a mvp -m "mvp"
 git push origin mvp
@@ -146,5 +162,25 @@ kubectl delete -f sample_setups/data_explorer/data_explorer.yaml
 kubectl apply -f sample_setups/watchdog/watchdog.yaml
 
 kubectl delete -f sample_setups/watchdog/watchdog.yaml
+```
+
+## service configurator
+```
+kubectl apply -f sample_setups/service_configurator/service_configurator.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=service-configurator" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8085:80
+
+kubectl delete -f sample_setups/service_configurator/service_configurator.yaml
+```
+
+## middleware manager
+```
+kubectl apply -f sample_setups/middleware_manager/middleware_manager.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=middleware-manager" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8082:80
+
+kubectl delete -f sample_setups/middleware_manager/middleware_manager.yaml
 ```
 
