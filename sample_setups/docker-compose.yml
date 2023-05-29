@@ -28,7 +28,7 @@ services:
       - 19094:19094
     environment:
       KAFKA_NODE_ID: 2
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENER_SEC;URITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://kafka2:9092,CONTROLLER://kafka2:9093,EXTERNAL://0.0.0.0:19094
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,EXTERNAL://${HOST_DNS}:19094
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
@@ -223,7 +223,7 @@ services:
     networks:
       shared_network:
 ## UR SIM
-  ur:
+  ur1:
     image: universalrobots/ursim_e-series
     ports:
       - 29999:29999
@@ -233,6 +233,56 @@ services:
       - ur
     networks:
       shared_network:
+  # ur2:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29992:29999
+  #     - 30002:30004
+  #     - 6082:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur3:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29993:29999
+  #     - 30003:30004
+  #     - 6083:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur4:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29994:29999
+  #     - 30004:30004
+  #     - 6084:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur5:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29995:29999
+  #     - 30005:30004
+  #     - 6085:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur6:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29996:29999
+  #     - 30006:30004
+  #     - 6086:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
 ## ingress
   ingress:
     # image: clemme/ingress:latest

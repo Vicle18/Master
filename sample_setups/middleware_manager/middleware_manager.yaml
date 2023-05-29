@@ -31,8 +31,8 @@ spec:
         image: clemme/middleware-manager
         env:
         - name: METASTORE_URL
-          value: "http://host.docker.internal:4000"
+          value: "http://meta-store-service:4000"
         - name: SERVICE_ORCHESTRATOR_URL
-          value: "http://serviceconfigurator:80"
+          value: "http://service-configurator-service:80"
         # ports:
         # - containerPort: 80
