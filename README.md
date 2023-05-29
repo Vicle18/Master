@@ -13,6 +13,15 @@ More specifically, the repository contains the following services:
 - Frontend in the folder "frontend"
 - Meta Store in the folder "meta_store"
 
+The dockerized services can be found on Docker Hub at the following links:
+- Ingress Adapter: https://hub.docker.com/r/clemme/ingress
+- Egress Adapter: https://hub.docker.com/r/clemme/egress
+- Service Configurator: https://hub.docker.com/r/clemme/service-configurator
+- Middleware Manager: https://hub.docker.com/r/clemme/middleware-manager
+- Data explorer: https://hub.docker.com/r/clemme/data-explorer
+- Watchdog: https://hub.docker.com/r/clemme/watchdog
+- Meta store: https://hub.docker.com/r/clemme/meta-store
+
 Furthermore, the repository contains the following folders:
 - "kafka" contains the configuration files for deploying Kafka in Kubernetes
 - "keycloak" contains the configuration files for deploying KeyCloak in Kubernetes
