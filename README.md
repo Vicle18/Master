@@ -25,8 +25,8 @@ The rest of this document contains relevant code snippets and commands used to d
 # Useful Commands
 
 ## pushing a new version
-git tag -a service-configurator/v1.0.2 -m "now"
-git push origin service-configurator/v1.0.2
+git tag -a frontend/v1.0.0 -m "now"
+git push origin frontend/v1.0.0
 
 git tag -a mvp -m "mvp"
 git push origin mvp

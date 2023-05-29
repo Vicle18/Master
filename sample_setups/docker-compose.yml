@@ -283,10 +283,10 @@ services:
       shared_network:
 ## frontend
   frontend:
-    build:
-      context: ../frontend/frontend
-      dockerfile: Dockerfile
-    # image: clemme/frontend:latest
+    # build:
+    #   context: ../frontend/frontend
+    #   dockerfile: Dockerfile
+    image: clemme/frontend:latest
     environment:
       "REACT_APP_MIDDLEWARE_URL": "http://host.docker.internal:8082"
       "REACT_APP_METASTORE": "http://host.docker.internal:4000"
