@@ -21,6 +21,7 @@ The dockerized services can be found on Docker Hub at the following links:
 - Data explorer: https://hub.docker.com/r/clemme/data-explorer
 - Watchdog: https://hub.docker.com/r/clemme/watchdog
 - Meta store: https://hub.docker.com/r/clemme/meta-store
+- Frontend: https://hub.docker.com/r/clemme/frontend
 
 Furthermore, the repository contains the following folders:
 - "kafka" contains the configuration files for deploying Kafka in Kubernetes
