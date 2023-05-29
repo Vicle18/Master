@@ -25,8 +25,8 @@ The rest of this document contains relevant code snippets and commands used to d
 # Useful Commands
 
 ## pushing a new version
-git tag -a frontend/v1.0.0 -m "now"
-git push origin frontend/v1.0.0
+git tag -a frontend/v1.0.1 -m "now"
+git push origin frontend/v1.0.1
 
 git tag -a mvp -m "mvp"
 git push origin mvp
@@ -192,3 +192,11 @@ kubectl --namespace sso port-forward $POD_NAME 8082:80
 kubectl delete -f sample_setups/middleware_manager/middleware_manager.yaml
 ```
 
+## frontend
+```
+kubectl apply -f sample_setups/frontend/frontend.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=frontend" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 3001:3000
+
+kubectl delete -f sample_setups/frontend/frontend.yaml
