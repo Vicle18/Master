@@ -331,6 +331,23 @@ services:
       - serviceconfigurator
     networks:
       shared_network:
+## frontend
+  frontend:
+    # build:
+    #   context: ../frontend/frontend
+    #   dockerfile: Dockerfile
+    image: clemme/frontend:latest
+    environment:
+      "REACT_APP_MIDDLEWARE_URL": "http://host.docker.internal:8082"
+      "REACT_APP_METASTORE": "http://host.docker.internal:4000"
+      "REACT_APP_METASTORE_URL": "http://host.docker.internal:4000"
+      "REACT_APP_DATAEXPLORER_URL": "http://host.docker.internal:8086"
+    ports:
+      - 3000:3000
+    profiles:
+      - frontend
+    networks:
+      shared_network:
 networks:
   shared_network:
     name: "shared_network"

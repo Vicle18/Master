@@ -1,8 +1,32 @@
+# General Information
+The following repository contains the source code created in connection with the Master thesis "Dynamic Configuration of Production Data Streams and Endpoints" by Victor Kyhe Clemmensen and Bende Siewertsen, written at the University of Southern Denmark in 2022/2023. 
+
+The software architecture is based on microservices deployed in Kubernetes. A detailed description of the architecture can be found in the thesis. This repository contains the source code for all the services, as well as the configuration files for the Kubernetes cluster and other configuration files used to deploy the services and peripheral software like Kafka and KeyCloak.
+
+More specifically, the repository contains the following services:
+- Ingress Adapter in the folder "ingress_adapter"
+- Egress Adapter in the folder "egress_adapter"
+- Service Configurator in the folder "service_orchestrator"
+- Middleware Manager in the folder "middleware_manager"
+- Data Explorer in the folder "data_explorer"
+- Watchdog in the folder "watchdog"
+- Frontend in the folder "frontend"
+- Meta Store in the folder "meta_store"
+
+Furthermore, the repository contains the following folders:
+- "kafka" contains the configuration files for deploying Kafka in Kubernetes
+- "keycloak" contains the configuration files for deploying KeyCloak in Kubernetes
+- "sample_setups" contains sample setups for deploying the services in Kubernetes and docker-compose
+- "experiment" contains the code used for the experiments conducted in the thesis
+- "analysis_results" contains the results of the experiments conducted in the thesis
+- ".github/workflows" contains the configuration files for the GitHub Actions used to build the services
+
+The rest of this document contains relevant code snippets and commands used to deploy the services and the peripheral software.
 # Useful Commands
 
 ## pushing a new version
-git tag -a service-configurator/v1.0.1 -m "now"
-git push origin service-configurator/v1.0.1
+git tag -a frontend/v1.0.0 -m "now"
+git push origin frontend/v1.0.0
 
 git tag -a mvp -m "mvp"
 git push origin mvp
@@ -168,5 +192,25 @@ kubectl cp pod-0d14ada6-3c87-4fe2-824e-74794f4e94d6:Logs/log20230430.txt ~/logs/
 kubectl apply -f sample_setups/watchdog/watchdog.yaml
 
 kubectl delete -f sample_setups/watchdog/watchdog.yaml
+```
+
+## service configurator
+```
+kubectl apply -f sample_setups/service_configurator/service_configurator.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=service-configurator" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8085:80
+
+kubectl delete -f sample_setups/service_configurator/service_configurator.yaml
+```
+
+## middleware manager
+```
+kubectl apply -f sample_setups/middleware_manager/middleware_manager.yaml
+
+export POD_NAME=$(kubectl get pods --namespace sso -l "app=middleware-manager" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace sso port-forward $POD_NAME 8082:80
+
+kubectl delete -f sample_setups/middleware_manager/middleware_manager.yaml
 ```
 
