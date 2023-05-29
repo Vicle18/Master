@@ -15,11 +15,11 @@ public class ContainingElementRepository : IContainingElementRepository
     {
         _config = config;
         _logger = logger;
-        _logger.LogDebug("starting {repository}", "IngressRepository");
-
+        var url = _config.GetValue<string>("METASTORE_URL");
+        _logger.LogDebug("starting {repository} , connecting to metastore: {metastore}", "IngressRepository", url);
         graphQLClient = new GraphQLHttpClient(new GraphQLHttpClientOptions
         {
-            EndPoint = new Uri("http://localhost:4000")
+            EndPoint = new Uri(url)
         }, new SystemTextJsonSerializer());
     }
     

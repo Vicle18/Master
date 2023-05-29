@@ -117,6 +117,38 @@ CREATE (product:Product {name: 'Product'})
 
 // Create the observable properties
 
+CREATE (oeeOverall:ObservableProperty {
+id: 'OEEOverallId',
+name: 'OEE Overall',
+description: '',
+frequency: 100,
+changedFrequency: 50,
+connectionDetails: '{
+  "PROTOCOL": "MQTT",
+    "PARAMETERS": {
+      "HOST": "22.48.159.115",
+      "PORT": 2175,
+      "TRANSMISSION_PAIRS": "cuttingSpeed:cuttingSpeed",
+      "FREQUENCY": 30,
+      "CHANGED_FREQUENCY": 0.5,
+      "DATA_FORMAT": "WITH_METADATA",
+      "METADATA": {
+        "TIMESTAMP": true,
+        "NAME": "DefaultName",
+        "DESCRIPTION": "Default Description",
+        "FREQUENCY": 30
+      }
+    }
+}',dataFormat: "RAW",
+  downsampleMethod: "Accumulated",
+  dataType:"STRING"
+})
+
+CREATE (companyA)-[:has]->(oeeOverall)
+
+
+
+
 CREATE (cuttingSpeed:ObservableProperty {
 id: 'cuttingSpeed',
 name: 'Cutting Speed',
@@ -128,7 +160,7 @@ connectionDetails: '{
     "PARAMETERS": {
       "HOST": "22.48.159.115",
       "PORT": 2175,
-      "TRANSMISSION_PAIRS": "cuttingSpeed:cuttingSpeed",
+      "TRANSMISSION_PAIRS": "oeeoverall:oeeoverall",
       "FREQUENCY": 30,
       "CHANGED_FREQUENCY": 0.5,
       "DATA_FORMAT": "WITH_METADATA",
@@ -1020,7 +1052,9 @@ CREATE (topicZC:Topic {name: 'TopicZC'})
 CREATE (topicZD:Topic {name: 'TopicZD'})
 CREATE (topicZE:Topic {name: 'TopicZE'})
 CREATE (topicZF:Topic {name: 'TopicZF'})
+CREATE (topicZG:Topic {name: 'TopicZG'})
 
+CREATE (oeeOverall)-[:has]->(topicZG)
 
 
 CREATE (cuttingSpeed)-[:has]->(topicA)

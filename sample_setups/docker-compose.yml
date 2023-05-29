@@ -301,7 +301,36 @@ services:
       - ingress
     networks:
       shared_network:
-
+## MiddlewareManager
+  middlewaremanager:
+    # build:
+    #   context: ../middleware_manager/MiddlewareManager
+    #   dockerfile: Dockerfile
+    image: clemme/middleware-manager:latest
+    environment:
+      "METASTORE_URL": "http://host.docker.internal:4000"
+      "SERVICE_ORCHESTRATOR_URL": "http://serviceconfigurator:80"
+    ports:
+      - 7014:80
+    profiles:
+      - middlewaremanager
+    networks:
+      shared_network:
+## service configurator
+  serviceconfigurator:
+    # build:
+    #   context: ../service_orchestrator/ServiceOrchestrator
+    #   dockerfile: Dockerfile
+    image: clemme/service-configurator:latest
+    environment:
+      "KUBERNETES_CONFIG__KUBERNETES_HOST": "https://host.docker.internal:34129"
+      "KUBERNETES_CONFIG__KUBERNETES_ACCESS_TOKEN": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkFqMTBxY3ZVMFFJVURtUWpNbTJaWl9wUUg5TVdKQVNmYWZ1VHVVclZlcUEifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjg1NDUyMDk2LCJpYXQiOjE2ODI4NjAwOTYsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJzc28iLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoic2VydmljZS1vcmNoZXN0cmF0b3IiLCJ1aWQiOiJkNzMwMGVkMi1iMmI4LTQ4N2MtODA0Ni1mMmMyOTQ3NWFiM2UifX0sIm5iZiI6MTY4Mjg2MDA5Niwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnNzbzpzZXJ2aWNlLW9yY2hlc3RyYXRvciJ9.CERxzvpRWxkWoFWlCHnBVBApYx1kWQPC0kdnkpGQFbawb_D7E53ecdlNP-4E_OGPeyVK-msxuYV2ZhuGlU2lsDJHfFXlRKaj9zn8GrTcHAiDahzzHh_LpnVSeJ9PX04AMGWMKbIAmCMZeolHQaXtEKCHyRFE43C_NIijONCAYtXLoSXt-YFSD73zwoayZkDb6ieZcBNwKhC_VPx-Zdqzsf1itSVj25l_wvWQ6b2VTKc2V5LmWQ4MwHKvrh2GYXSVrigGClsBso22jF26ac_O6EES-fMB1ciLH9WivzF3jo0Czl8DLGHlK9BtkaSUGvQg5RApNqzF0JLJ6aafi04cYQ"
+    ports:
+      - 8889:80
+    profiles:
+      - serviceconfigurator
+    networks:
+      shared_network:
 networks:
   shared_network:
     name: "shared_network"

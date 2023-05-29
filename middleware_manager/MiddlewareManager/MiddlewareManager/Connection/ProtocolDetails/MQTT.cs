@@ -32,7 +32,7 @@ public static class MQTT
             PARAMETERS = new ParameterDetails
             {
                 HOST = value.host ?? DetailsGenerator.GenerateHost(),
-                PORT = value.port.Length < 0 ? value.port.ToString() : DetailsGenerator.GeneratePort(),
+                PORT = value.port ?? DetailsGenerator.GeneratePort(),
             },
             TRANSMISSION_DETAILS = transmissionDetails
         };

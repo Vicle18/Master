@@ -86,6 +86,7 @@ public class Controller : IController
             await _ingressClient.Initialize(_transmissionDetails.FREQUENCY == _transmissionDetails.CHANGED_FREQUENCY ? TransmitMessage : TransmitMessageWithFrequencyChange);
             _logger.LogDebug("Starting ingestion");
             _ingressClient.StartIngestion(_transmissionDetails);
+            
         }
         catch (Exception e)
         {

@@ -9,7 +9,7 @@ public static class OPCUA
 {
     public static IConnectionDetails CreateOPCUAIngressConnection(string id, IngressDTOBase value, TransmissionDetails transmissionDetails)
     {
-        return new OPCUAConnectionDetails
+        return new RESTConnectionDetails
         {
             ID = id,
             PROTOCOL = value.protocol,
@@ -25,7 +25,7 @@ public static class OPCUA
     public static IConnectionDetails CreateOPCUAEgressConnection(string id, CreateEgressDto value,
         TransmissionDetails transmissionDetails)
     {
-        return new OPCUAConnectionDetails
+        return new RESTConnectionDetails
         {
             ID = id,
             PROTOCOL = value.protocol,
@@ -38,7 +38,7 @@ public static class OPCUA
     }
 }
 
-public class OPCUAConnectionDetails : IConnectionDetails
+public class RESTConnectionDetails : IConnectionDetails
 {
     public string SERVER_URL { get; set; }
 

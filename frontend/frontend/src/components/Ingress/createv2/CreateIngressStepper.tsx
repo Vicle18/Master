@@ -1,5 +1,8 @@
 import React, { ChangeEvent, useState } from "react";
 import axios from "axios";
+
+import { v4 as uuidv4 } from 'uuid';
+
 import {
   Alert,
   Box,
@@ -91,7 +94,8 @@ const CreateIngressStepper: React.FC<Props> = ({
   const theme = useTheme();
   const handlerClose = () => {
     setActiveStep(0)
-
+    resetValues();
+    setSelectedParent("");
     setPopupIngress(false);
   };
 
@@ -185,8 +189,8 @@ const CreateIngressStepper: React.FC<Props> = ({
       .then((response) => response.json())
       .then((data) => console.log("data: " + data))
       .catch((error) => console.error(error));
-
-    resetValues();
+      setSelectedParent("");
+      resetValues();
   };
 
   function HandleIngressClick(data: any): void {
@@ -211,10 +215,10 @@ const CreateIngressStepper: React.FC<Props> = ({
     initialValues.description = ""
     initialValues.frequency = ""
     initialValues.changedFrequency = ""
-    initialValues.dataFormat = ""
-    initialValues.id = ""
+    initialValues.id = uuidv4()
     initialValues.dataType = ""
-    initialValues.downsampleMethod = ""
+    initialValues.dataFormat = "RAW"
+    initialValues.downsampleMethod = "Average"
     initialValues.port = "";
     initialValues.host = "";
     initialValues.port = "";
@@ -491,6 +495,36 @@ const CreateIngressStepper: React.FC<Props> = ({
                             )}
                           </Field>
                           <Tooltip title="Please provide an ID for the OPC UA broker.">
+                            <IconButton sx={{ marginTop: "10px" }}>
+                              <HelpOutlineIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </>
+                    )}
+                    {values.protocol === "REST" && (
+                      <>
+                        <Box
+                          sx={{
+                            alignItems: "center",
+                            display: "flex",
+                          }}
+                        >
+                          <Field name="serverUrl">
+                            {({ field }: FieldProps<FormData>) => (
+                              <TextField
+                                {...field}
+                                label="Server URL"
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                size="small"
+                                error={touched.nodeId && Boolean(errors.nodeId)}
+                                helperText={touched.nodeId && errors.nodeId}
+                              />
+                            )}
+                          </Field>
+                          <Tooltip title="Please provide an server url, that should be contacted to extract data.">
                             <IconButton sx={{ marginTop: "10px" }}>
                               <HelpOutlineIcon />
                             </IconButton>

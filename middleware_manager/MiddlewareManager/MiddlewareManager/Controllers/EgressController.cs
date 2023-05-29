@@ -25,6 +25,7 @@ namespace MiddlewareManager.Controllers
         private readonly IConnectionDetailsFactory _connectionDetailsFactory;
         private readonly HttpClient _client;
         private List<string> _connectionDetails;
+        private readonly string _serviceConfiguratorUrl;
 
 
         public EgressController(IConfiguration config, ILogger<IngressController> logger,
@@ -35,6 +36,8 @@ namespace MiddlewareManager.Controllers
             _egressRepo = egressRepo;
             _connectionDetailsFactory = connectionDetailsFactory;
             _connectionDetails = new List<string>();
+            _serviceConfiguratorUrl = _config.GetValue<string>("SERVICE_ORCHESTRATOR_URL");
+
             _client = new HttpClient();
             _logger.LogDebug("starting {controller}", "IngressController");
         }
@@ -56,19 +59,19 @@ namespace MiddlewareManager.Controllers
 
         // POST: api/Egress
         [HttpPost]
-        public async Task<ActionResult<CreateObservablePropertiesResult>> Post([FromBody] CreateEgressDto value)
+        public async Task<ActionResult<CreateEgressResponse>> Post([FromBody] CreateEgressDto value)
         {
 
             Log.Debug(JsonSerializer.Serialize(value));
             try
             {
-                Response response = null;
+                CreateEgressResponse response = null;
                 var id = Guid.NewGuid().ToString();
 
                 ObservableProperty observableProperty = await _egressRepo.GetIngressProperty(value.ingressId);
                 var connectionDetails = _connectionDetailsFactory.CreateEgress(id, value, observableProperty);
                 _logger.LogDebug("creating new egress with connection details: {details}", JsonSerializer.Serialize(connectionDetails));
-                await HTTPForwarder.ForwardsEgressRequestToConfigurator(value, JsonSerializer.Serialize(connectionDetails), _client);
+                await HTTPForwarder.ForwardsEgressRequestToConfigurator(_config, value, JsonSerializer.Serialize(connectionDetails), _client);
 
                 response = await _egressRepo.CreateEgressEndpoint(id, value,
                 JsonSerializer.Serialize(connectionDetails));
@@ -96,7 +99,7 @@ namespace MiddlewareManager.Controllers
             try
             {
                 var databaseResponse = await _egressRepo.DeleteEgressEndpoint(id);
-                var baseAddress = "https://localhost:7033";
+                var baseAddress = _serviceConfiguratorUrl;
                 var request = new HttpRequestMessage(HttpMethod.Delete, $"{baseAddress}/api/Egress/{id}");
                 var response = await _client.SendAsync(request);
 

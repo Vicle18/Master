@@ -1,4 +1,4 @@
-using Serilog;
+    using Serilog;
 
 namespace IngressAdapter.Controller.FrequencyControl.FrequencyChanger;
 

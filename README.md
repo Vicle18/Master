@@ -1,8 +1,8 @@
 # Useful Commands
 
 ## pushing a new version
-git tag -a egress/v1.0.6 -m "now "
-git push origin egress/v1.0.6
+git tag -a service-configurator/v1.0.1 -m "now"
+git push origin service-configurator/v1.0.1
 
 git tag -a mvp -m "mvp"
 git push origin mvp

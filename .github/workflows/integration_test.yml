@@ -1,0 +1,31 @@
+name: Build Ingress Adapter
+
+on:
+  push:
+    branches:
+      - 'test'
+    tags:
+      - "test*"
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Start services
+        run: |
+          docker-compose -f ./integration_test/docker-compose.yml up -d
+      - name: Wait for startup
+        run: |
+          sleep 10
+          docker ps
+      - name: Run tests
+        run: |
+          pip install -r ./integration_test/requirements.txt
+          python3 ./integration_test/test.py
+      - name: Stop services
+        run: |
+          docker-compose -f ./integration_test/docker-compose.yml down
