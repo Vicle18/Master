@@ -10,6 +10,7 @@ COPY . .
 RUN npm install
 RUN npm ci 
 RUN npm i --save-dev @types/uuid
+RUN npm i serve@14.2.0
 # Build the app
 RUN npm run build
 # ==== RUN =======
