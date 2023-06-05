@@ -8,14 +8,16 @@ namespace MiddlewareManager.Controllers;
 
 public class HTTPForwarder
 {
+
     /**
     * Creates an HTTP request to the ServiceConfigurator
     */
     public static async Task ForwardsIngressRequestToConfigurator(
-        string connectionDetails, HttpClient client)
+        IConfiguration _config, string connectionDetails, HttpClient client)
     {
+        var _baseAddress = _config.GetValue<string>("SERVICE_ORCHESTRATOR_URL");
         // CreateEgress the HTTP request message with the JSON string as the content
-        var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Ingress?=");
+        var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseAddress}/api/Ingress?=");
         var contentObject = new JObject()
         {
             ["CreateBroker"] = true,
@@ -36,12 +38,14 @@ public class HTTPForwarder
     /**
          * Creates an HTTP request to the ServiceConfigurator
          */
-    public static async Task ForwardsEgressRequestToConfigurator(CreateEgressDto value,
+    public static async Task ForwardsEgressRequestToConfigurator(IConfiguration _config, CreateEgressDto value,
         string connectionDetails, HttpClient client)
     {
         try
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://localhost:7033/api/Egress?=");
+            var _baseAddress = _config.GetValue<string>("SERVICE_ORCHESTRATOR_URL");
+            // CreateEgress the HTTP request message with the JSON string as the content
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseAddress}/api/Egress?=");
             var contentObject = new JObject()
             {
                 ["CreateBroker"] = value.createBroker,

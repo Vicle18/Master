@@ -1,12 +1,12 @@
-name: Build Service Configurator
+name: Build Frontend
 
 on:
   push:
     branches:
       # - main
-      - 'feature/service-configurator**'
+      - 'feature/frontend**'
     tags:
-      - "service-configurator/v*.*.*"
+      - "frontend/v*.*.*"
   pull_request:
     branches: [ "main" ]
 
@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env: 
-      working-directory: ./service_orchestrator/ServiceOrchestrator/
+      working-directory: ./frontend/frontend/
     
     defaults:
       run:
@@ -30,13 +30,13 @@ jobs:
       with:
         # list of Docker images to use as base name for tags
         images: |
-          clemme/service-configurator
+          clemme/frontend
         # generate Docker tags based on the following events/attributes
-        # match the tag format "service-configurator/v1.0.0" and extracting the version number
+        # match the tag format "data-explorer/v1.0.0" and extracting the version number
         # and use the branch name as tag
         # use the latest tag
         tags: |
-          type=match,pattern=service-configurator/v(\d.\d.\d),group=1
+          type=match,pattern=frontend/v(\d.\d.\d),group=1
           type=ref,event=branch 
         flavor: |
           latest=true

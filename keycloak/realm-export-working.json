@@ -1247,13 +1247,13 @@
           },
           {
             "id": "9e65bc66-e714-4a7e-a525-7a7b462742d9",
-            "name": "Dev Team A can use consumer groups that start with a_ on any cluster",
+            "name": "EgressAdapter can use consumer groups that start with a_ on any cluster",
             "type": "resource",
             "logic": "POSITIVE",
             "decisionStrategy": "UNANIMOUS",
             "config": {
               "resources": "[\"Group:a_*\"]",
-              "applyPolicies": "[\"Dev Team A\"]"
+              "applyPolicies": "[\"EgressAdapter\"]"
             }
           },
           {

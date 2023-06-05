@@ -23,6 +23,7 @@ export interface FormData {
   dataFormat?: string;
   downsampleMethod?:string;
   metadata?: Metadata;
+  serverUrl?: string;
 }
 
 export const initialValues: FormData = {
@@ -41,8 +42,8 @@ export const initialValues: FormData = {
   containingElement: "",
   dataType: "",
   dataFormat: "RAW",
-  downsampleMethod: "Average"
-
+  downsampleMethod: "Average",
+  serverUrl: ""
 };
 
 // export const initialValues: FormData = {
@@ -107,5 +108,10 @@ export const validationSchema: Yup.ObjectSchema<FormData> = Yup.object().shape({
   }),
   containingElement: Yup.string().optional(),
   dataFormat: Yup.string().optional(),
-  metadata: Yup.object().optional()
+  metadata: Yup.object().optional(),
+  serverUrl: Yup.string().when("protocol", {
+    is: "REST",
+    then: (schema) => schema.required("server url is required"),
+    otherwise: (schema) => schema,
+  }),
 });

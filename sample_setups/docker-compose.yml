@@ -28,7 +28,7 @@ services:
       - 19094:19094
     environment:
       KAFKA_NODE_ID: 2
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_LISTENER_SEC;URITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_LISTENERS: PLAINTEXT://kafka2:9092,CONTROLLER://kafka2:9093,EXTERNAL://0.0.0.0:19094
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,EXTERNAL://${HOST_DNS}:19094
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
@@ -223,7 +223,7 @@ services:
     networks:
       shared_network:
 ## UR SIM
-  ur:
+  ur1:
     image: universalrobots/ursim_e-series
     ports:
       - 29999:29999
@@ -233,6 +233,56 @@ services:
       - ur
     networks:
       shared_network:
+  # ur2:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29992:29999
+  #     - 30002:30004
+  #     - 6082:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur3:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29993:29999
+  #     - 30003:30004
+  #     - 6083:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur4:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29994:29999
+  #     - 30004:30004
+  #     - 6084:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur5:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29995:29999
+  #     - 30005:30004
+  #     - 6085:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
+  # ur6:
+  #   image: universalrobots/ursim_e-series
+  #   ports:
+  #     - 29996:29999
+  #     - 30006:30004
+  #     - 6086:6080
+  #   profiles:
+  #     - ur
+  #   networks:
+  #     shared_network:
 ## ingress
   ingress:
     # image: clemme/ingress:latest
@@ -251,7 +301,107 @@ services:
       - ingress
     networks:
       shared_network:
-
+## MiddlewareManager
+  middlewaremanager:
+    # build:
+    #   context: ../middleware_manager/MiddlewareManager
+    #   dockerfile: Dockerfile
+    image: clemme/middleware-manager:latest
+    environment:
+      "METASTORE_URL": "http://host.docker.internal:4000"
+      "SERVICE_ORCHESTRATOR_URL": "http://serviceconfigurator:80"
+    ports:
+      - 7014:80
+    profiles:
+      - middlewaremanager
+    networks:
+      shared_network:
+## service configurator
+  serviceconfigurator:
+    # build:
+    #   context: ../service_orchestrator/ServiceOrchestrator
+    #   dockerfile: Dockerfile
+    image: clemme/service-configurator:latest
+    environment:
+      "KUBERNETES_CONFIG__KUBERNETES_HOST": "https://host.docker.internal:34129"
+      "KUBERNETES_CONFIG__KUBERNETES_ACCESS_TOKEN": "eyJhbGciOiJSUzI1NiIsImtpZCI6IkFqMTBxY3ZVMFFJVURtUWpNbTJaWl9wUUg5TVdKQVNmYWZ1VHVVclZlcUEifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjg1NDUyMDk2LCJpYXQiOjE2ODI4NjAwOTYsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJzc28iLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoic2VydmljZS1vcmNoZXN0cmF0b3IiLCJ1aWQiOiJkNzMwMGVkMi1iMmI4LTQ4N2MtODA0Ni1mMmMyOTQ3NWFiM2UifX0sIm5iZiI6MTY4Mjg2MDA5Niwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OnNzbzpzZXJ2aWNlLW9yY2hlc3RyYXRvciJ9.CERxzvpRWxkWoFWlCHnBVBApYx1kWQPC0kdnkpGQFbawb_D7E53ecdlNP-4E_OGPeyVK-msxuYV2ZhuGlU2lsDJHfFXlRKaj9zn8GrTcHAiDahzzHh_LpnVSeJ9PX04AMGWMKbIAmCMZeolHQaXtEKCHyRFE43C_NIijONCAYtXLoSXt-YFSD73zwoayZkDb6ieZcBNwKhC_VPx-Zdqzsf1itSVj25l_wvWQ6b2VTKc2V5LmWQ4MwHKvrh2GYXSVrigGClsBso22jF26ac_O6EES-fMB1ciLH9WivzF3jo0Czl8DLGHlK9BtkaSUGvQg5RApNqzF0JLJ6aafi04cYQ"
+    ports:
+      - 8889:80
+    profiles:
+      - serviceconfigurator
+    networks:
+      shared_network:
+## frontend
+  frontend:
+    # build:
+    #   context: ../frontend/frontend
+    #   dockerfile: Dockerfile
+    image: clemme/frontend:latest
+    environment:
+      "REACT_APP_MIDDLEWARE_URL": "http://host.docker.internal:8082"
+      "REACT_APP_METASTORE": "http://host.docker.internal:4000"
+      "REACT_APP_METASTORE_URL": "http://host.docker.internal:4000"
+      "REACT_APP_DATAEXPLORER_URL": "http://host.docker.internal:8086"
+    ports:
+      - 3000:3000
+    profiles:
+      - frontend
+    networks:
+      shared_network:
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    restart: always
+    volumes:
+    - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+    ports:
+    - '8125:8125'
+    profiles:
+      - grafana
+    networks:
+      shared_network:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    restart: always
+    environment:
+      - INFLUXDB_DB=influx
+      - INFLUXDB_ADMIN_USER=admin
+      - INFLUXDB_ADMIN_PASSWORD=admin
+    ports:
+      - '8086:8086'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+    profiles:
+      - grafana
+    networks:
+      shared_network:
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana-server
+  #   restart: always
+  #   depends_on:
+  #     - influxdb
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #     - GF_INSTALL_PLUGINS=
+  #   links:
+  #     - influxdb
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #   profiles:
+  #     - grafana
+  #   networks:
+  #     shared_network:
+      
+volumes:
+  grafana_data: {}
+  influxdb_data: {}
 networks:
   shared_network:
     name: "shared_network"
