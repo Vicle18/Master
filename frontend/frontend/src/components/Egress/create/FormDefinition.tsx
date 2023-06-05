@@ -44,7 +44,7 @@ export const egressInitialValues: FormData = {
   name: "",
   description: "",
   protocol: "",
-  host: "localhost", //172.17.0.1 is the default host for the mosquitto container on the docker network
+  host: "host.docker.internal", //172.17.0.1 is the default host for the mosquitto container on the docker network
   port: "8088",
   createBroker: false,
   frequency: 0,

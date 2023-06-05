@@ -35,8 +35,8 @@ The rest of this document contains relevant code snippets and commands used to d
 # Useful Commands
 
 ## pushing a new version
-git tag -a frontend/v1.0.1 -m "now"
-git push origin frontend/v1.0.1
+git tag -a frontend/v1.0.3 -m "now"
+git push origin frontend/v1.0.3
 
 git tag -a mvp -m "mvp"
 git push origin mvp

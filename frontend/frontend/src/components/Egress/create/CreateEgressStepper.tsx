@@ -143,7 +143,7 @@ const CreateEgressStepper: React.FC<Props> = ({
     values.ingressId = selectedIngressNode?.id;
     values.createBroker = !createBroker;
     if (values.createBroker && values.protocol === "MQTT") {
-      values.host = "localhost";
+      values.host = "host.docker.internal";
       values.port = "8088";
     }
     if (values.dataFormat === "WITH_METADATA") {
